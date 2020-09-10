@@ -1,0 +1,18 @@
+[[package]]
+category = "dev"
+description = "A formatter for Python code."
+name = "yapf"
+optional = false
+python-versions = "*"
+version = "0.30.0"
+
+[metadata]
+content-hash = "7a5ac42cc5c10ee956b09df21e5683cde7b41730ea55ee84e27389a43a04fb1b"
+lock-version = "1.0"
+python-versions = "^3.7"
+
+[metadata.files]
+yapf = [
+    {file = "yapf-0.30.0-py2.py3-none-any.whl", hash = "sha256:3abf61ba67cf603069710d30acbc88cfe565d907e16ad81429ae90ce9651e0c9"},
+    {file = "yapf-0.30.0.tar.gz", hash = "sha256:3000abee4c28daebad55da6c85f3cd07b8062ce48e2e9943c8da1b9667d48427"},
+]
