@@ -1,0 +1,17 @@
+version: "2"
+services:
+  nonebot:
+    build: .
+    volumes:
+      - "/etc/localtime:/etc/localtime"
+      - "./:/app/"
+    ports:
+      - "2333:2333"
+    env_file:
+      - ".env.prod"
+    environment:
+      - ENVIRONMENT=prod
+      - APP_MODULE=bot:app
+      - SECRET
+      - ACCESS_TOKEN
+    network_mode: bridge
