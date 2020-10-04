@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-20 23:59:20
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-09-21 00:53:44
+@LastEditTime   : 2020-10-04 15:13:26
 @Description    : GitHub Main Plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,8 +14,11 @@ from pathlib import Path
 
 import nonebot
 
-_sub_plugins = set()
+from .config import Config
 
-# !all matcher in github plugin using priority 5
-# TODO: Set priority in config file
+# store all github subplugins
+_sub_plugins = set()
+# load all github plugin config from global config
+github_config = Config(**nonebot.get_driver().config.dict())
+
 _sub_plugins |= nonebot.load_plugins(str(Path(__file__).parent.resolve()))

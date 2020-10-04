@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 00:05:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-09-21 01:10:50
+@LastEditTime   : 2020-10-04 15:12:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,9 +17,9 @@ from functools import reduce
 from nonebot import on_command
 from nonebot.typing import Bot, Event
 
-from .. import _sub_plugins
+from .. import _sub_plugins, github_config as config
 
-help = on_command("help", priority=5)
+help = on_command("help", priority=config.github_command_priority)
 help.__doc__ = """
 /help
 获取帮助
