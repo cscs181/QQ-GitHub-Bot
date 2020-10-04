@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-10-04 15:35:49
+@LastEditTime   : 2020-10-04 16:19:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,16 +21,16 @@ command = on_command("状态", permission=SUPERUSER, priority=10)
 
 @command.handle()
 async def server_status(bot: Bot, event: Event, state: dict):
-    cpu = f"CPU: {cpu_status():02d}%"
-    memory = f"Memory: {memory_status():02d}%"
+    cpu = f"CPU: {int(cpu_status()):02d}%"
+    memory = f"Memory: {int(memory_status()):02d}%"
     disk = f"Disk:\n" + "\n".join(
-        f"  {k}: {v:02d}%" for k, v in disk_usage().items())
+        f"  {k}: {int(v.percent):02d}%" for k, v in disk_usage().items())
     await bot.send(message=f"{cpu}\n{memory}\n{disk}", event=event)
 
 
 async def _poke(bot: Bot, event: Event, state: dict) -> bool:
     return (event.detail_type == "notify" and event.sub_type == "poke" and
-            event.raw_event["target_id"] == bot.self_id)
+            str(event.raw_event["target_id"]) == bot.self_id)
 
 
 poke = on_notice(_poke, priority=10, block=True)
