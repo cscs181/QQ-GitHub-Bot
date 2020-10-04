@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-09-18 00:46:25
+@LastEditTime   : 2020-10-04 15:35:49
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,7 +14,7 @@ from nonebot.typing import Bot, Event
 from nonebot.permission import SUPERUSER
 from nonebot import on_command, on_notice
 
-from .data_source import cpu_status, memory_status
+from .data_source import cpu_status, memory_status, disk_usage
 
 command = on_command("状态", permission=SUPERUSER, priority=10)
 
@@ -23,7 +23,9 @@ command = on_command("状态", permission=SUPERUSER, priority=10)
 async def server_status(bot: Bot, event: Event, state: dict):
     cpu = f"CPU: {cpu_status():02d}%"
     memory = f"Memory: {memory_status():02d}%"
-    await bot.send(message=f"{cpu}\n{memory}", event=event)
+    disk = f"Disk:\n" + "\n".join(
+        f"  {k}: {v:02d}%" for k, v in disk_usage().items())
+    await bot.send(message=f"{cpu}\n{memory}\n{disk}", event=event)
 
 
 async def _poke(bot: Bot, event: Event, state: dict) -> bool:
