@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-15 14:40:25
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2020-11-15 14:52:23
+ * @LastEditTime   : 2020-11-15 15:07:47
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -34,3 +34,25 @@ _✨ NoneBot 服务器状态（CPU, Memory, Disk Usage）查看插件 ✨_
 - 发送 Command `状态`
 - 向机器人发送戳一戳表情
 - 双击机器人头像戳一戳
+
+## 配置项
+
+配置方式：直接在 NoneBot 全局配置文件中添加以下配置项即可。
+
+### server_status_cpu
+
+- 类型: `bool`
+- 默认: `True`
+- 说明: 是否显示 CPU 占用百分比
+
+### server_status_memory
+
+- 类型: `bool`
+- 默认: `True`
+- 说明: 是否显示 Memory 占用百分比
+
+### server_status_disk
+
+- 类型: `bool`
+- 默认: `True`
+- 说明: 是否显示磁盘占用百分比
