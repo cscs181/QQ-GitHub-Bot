@@ -8,12 +8,12 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.7"
 psutil = "^5.7.2"
-# nonebot = "^2.0.0"
-# nb-cli = "^0.1.0"
+nb-cli = "^0.2.0"
+nonebot = "^2.0.0-alpha.4"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"
-# nonebot-test = "^0.1.0"
+nonebot-test = "^0.1.0"
 
 [[tool.poetry.source]]
 name = "aliyun"
