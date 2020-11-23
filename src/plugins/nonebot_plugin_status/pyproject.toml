@@ -16,7 +16,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.7"
 psutil = "^5.7.2"
-nonebot2 = "^2.0.0-alpha.4"
+nonebot2 = "^2.0.0-alpha.6"
 
 [tool.poetry.dev-dependencies]
 

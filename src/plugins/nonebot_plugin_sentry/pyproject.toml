@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "nonebot-plugin-sentry"
+version = "0.1.0"
+description = "Push your bot errors to Sentry.io"
+license = "MIT"
+authors = ["yanyongyu <yanyongyu_1@126.com>"]
+readme = "README.md"
+homepage = "https://github.com/cscs181/QQ-GitHub-Bot/tree/master/src/plugins/nonebot_plugin_sentry"
+repository = "https://github.com/cscs181/QQ-GitHub-Bot/tree/master/src/plugins/nonebot_plugin_sentry"
+documentation = "https://github.com/cscs181/QQ-GitHub-Bot/tree/master/src/plugins/nonebot_plugin_sentry#readme"
+keywords = ["nonebot", "nonebot2", "sentry"]
+packages = [
+    { include = "nonebot_plugin_sentry/*.py", from = ".." }
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+sentry-sdk = "^0.19.4"
+nonebot2 = "^2.0.0-alpha.6"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
