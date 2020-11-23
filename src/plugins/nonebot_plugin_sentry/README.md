@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-23 20:23:12
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2020-11-23 21:30:13
+ * @LastEditTime   : 2020-11-23 22:15:54
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -46,7 +46,7 @@ _✨ 在 Sentry.io 上进行 NoneBot 服务日志查看、错误处理 ✨_
 - `sentry_debug: bool = False`
 - `sentry_release: Optional[str] = None`
 - `sentry_release: Optional[str] = None`
-- `sentry_env: Optional[str] = None`
+- `sentry_environment: Optional[str] = nonebot env`
 - `sentry_server_name: Optional[str] = None`
 - `sentry_sample_rate: float = 1.`
 - `sentry_max_breadcrumbs: int = 100`

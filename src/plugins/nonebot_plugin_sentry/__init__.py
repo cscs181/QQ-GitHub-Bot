@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-11-23 20:18:10
+@LastEditTime   : 2020-11-23 22:18:01
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,8 +21,12 @@ driver = get_driver()
 global_config = driver.config
 config = Config(**global_config.dict())
 
-sentry_sdk.init(**config.dict(),
-                environment=config.sentry_env or driver.env,
+sentry_sdk.init(**{
+    key[7:]: value
+    for key, value in config.dict().items()
+    if key != "sentry_environment"
+},
+                environment=config.sentry_environment or driver.env,
                 default_integrations=False)
 
 

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-11-23 20:29:06
+@LastEditTime   : 2020-11-23 22:15:27
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,7 +20,7 @@ class Config(BaseSettings):
     sentry_debug: bool = False
     sentry_release: Optional[str] = None
     sentry_release: Optional[str] = None
-    sentry_env: Optional[str] = None
+    sentry_environment: Optional[str] = None
     sentry_server_name: Optional[str] = None
     sentry_sample_rate: float = 1.
     sentry_max_breadcrumbs: int = 100
