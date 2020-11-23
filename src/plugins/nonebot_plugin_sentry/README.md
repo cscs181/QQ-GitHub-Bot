@@ -2,17 +2,16 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-23 20:23:12
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2020-11-23 21:14:37
+ * @LastEditTime   : 2020-11-23 21:30:13
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 <p align="center">
-  <a href="https://v2.nonebot.dev/" style="display:inline-block;vertical-align:middle;">
+  <a href="https://v2.nonebot.dev/">
     <img src="https://raw.githubusercontent.com/nonebot/nonebot2/master/docs/.vuepress/public/logo.png" height="100" alt="nonebot">
   </a>
-  <span style="font-size:30px;display:inline-block;vertical-align:middle;">+</span>
-  <a href="https://sentry.io" style="display:inline-block;vertical-align:middle;">
+  <a href="https://sentry.io">
     <img src="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png" height="100" alt="sentry">
   </a>
 </p>
@@ -42,3 +41,25 @@ _✨ 在 Sentry.io 上进行 NoneBot 服务日志查看、错误处理 ✨_
 ## 配置项
 
 配置项具体含义参考: [Sentry Docs](https://docs.sentry.io/platforms/python/configuration/options/)
+
+- `sentry_dsn: str`
+- `sentry_debug: bool = False`
+- `sentry_release: Optional[str] = None`
+- `sentry_release: Optional[str] = None`
+- `sentry_env: Optional[str] = None`
+- `sentry_server_name: Optional[str] = None`
+- `sentry_sample_rate: float = 1.`
+- `sentry_max_breadcrumbs: int = 100`
+- `sentry_attach_stacktrace: bool = False`
+- `sentry_send_default_pii: bool = False`
+- `sentry_in_app_include: List[str] = Field(default_factory=lambda: [])`
+- `sentry_in_app_exclude: List[str] = Field(default_factory=lambda: [])`
+- `sentry_request_bodies: str = "medium"`
+- `sentry_with_locals: bool = True`
+- `sentry_ca_certs: Optional[str] = None`
+- `sentry_before_send: Optional[Callable[[Any, Any], Optional[Any]]] = None`
+- `sentry_before_breadcrumb: Optional[Callable[[Any, Any], Optional[Any]]] = None`
+- `sentry_transport: Optional[Any] = None`
+- `sentry_http_proxy: Optional[str] = None`
+- `sentry_https_proxy: Optional[str] = None`
+- `sentry_shutdown_timeout: int = 2`
