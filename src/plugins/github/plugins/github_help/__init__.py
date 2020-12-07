@@ -15,7 +15,8 @@ import inspect
 from functools import reduce
 
 from nonebot import on_command
-from nonebot.typing import Bot, Event
+from nonebot.typing import State
+from nonebot.adapters import Bot, Event
 
 from .. import _sub_plugins, github_config as config
 
@@ -27,7 +28,7 @@ help.__doc__ = """
 
 
 @help.handle()
-async def handle(bot: Bot, event: Event, state: dict):
+async def handle(bot: Bot, event: Event, state: State):
     matchers = reduce(lambda x, y: x.union(y.matcher), _sub_plugins, set())
     docs = "命令列表：\n"
     docs += "\n".join(

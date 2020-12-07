@@ -10,7 +10,8 @@
 """
 __author__ = "yanyongyu"
 
-from nonebot.typing import Bot, Event
+from nonebot.typing import State
+from nonebot.adapters import Bot, Event
 from nonebot.permission import SUPERUSER
 from nonebot import get_driver, on_command, on_notice, on_message
 
@@ -24,7 +25,7 @@ command = on_command("状态", permission=SUPERUSER, priority=10)
 
 
 @command.handle()
-async def server_status(bot: Bot, event: Event, state: dict):
+async def server_status(bot: Bot, event: Event, state: State):
     data = []
 
     if status_config.server_status_cpu:
@@ -40,7 +41,7 @@ async def server_status(bot: Bot, event: Event, state: dict):
     await bot.send(message="\n".join(data), event=event)
 
 
-async def _group_poke(bot: Bot, event: Event, state: dict) -> bool:
+async def _group_poke(bot: Bot, event: Event, state: State) -> bool:
     return (event.detail_type == "notify" and event.sub_type == "poke" and
             str(event.raw_event["target_id"]) == bot.self_id and
             event.user_id in global_config.superusers)
@@ -50,7 +51,7 @@ group_poke = on_notice(_group_poke, priority=10, block=True)
 group_poke.handle()(server_status)
 
 
-async def _poke(bot: Bot, event: Event, state: dict) -> bool:
+async def _poke(bot: Bot, event: Event, state: State) -> bool:
     return (event.detail_type == "private" and event.sub_type == "friend" and
             event.message[0].type == "poke")
 
