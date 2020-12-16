@@ -4,12 +4,12 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 00:05:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-10-04 15:12:34
+@LastEditTime   : 2020-12-16 11:55:52
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
-__package__ = "github.github_help"
+__package__ = "github.plugins.github_help"
 
 import inspect
 from functools import reduce
@@ -18,7 +18,7 @@ from nonebot import on_command
 from nonebot.typing import State
 from nonebot.adapters import Bot, Event
 
-from .. import _sub_plugins, github_config as config
+from ... import _sub_plugins, github_config as config
 
 help = on_command("help", priority=config.github_command_priority)
 help.__doc__ = """
