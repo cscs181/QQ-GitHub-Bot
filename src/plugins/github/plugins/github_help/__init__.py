@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 00:05:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-12-16 11:55:52
+@LastEditTime   : 2021-01-01 17:53:00
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,8 +15,7 @@ import inspect
 from functools import reduce
 
 from nonebot import on_command
-from nonebot.typing import State
-from nonebot.adapters import Bot, Event
+from nonebot.adapters import Bot
 
 from ... import _sub_plugins, github_config as config
 
@@ -28,7 +27,7 @@ help.__doc__ = """
 
 
 @help.handle()
-async def handle(bot: Bot, event: Event, state: State):
+async def handle(bot: Bot):
     matchers = reduce(lambda x, y: x.union(y.matcher), _sub_plugins, set())
     docs = "命令列表：\n"
     docs += "\n".join(

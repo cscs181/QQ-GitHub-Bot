@@ -10,7 +10,7 @@ python = "^3.7"
 psutil = "^5.7.2"
 nb-cli = "^0.2.0"
 sentry-sdk = "^0.19.4"
-nonebot2 = "^2.0.0-alpha.6"
+nonebot2 = "^2.0.0-alpha.8"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"
