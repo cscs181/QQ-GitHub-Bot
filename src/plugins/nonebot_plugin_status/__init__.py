@@ -31,14 +31,14 @@ async def server_status(bot: Bot, matcher: Matcher):
     data = []
 
     if status_config.server_status_cpu:
-        data.append(f"CPU: {int(cpu_status()):02d}%")
-
-    if status_config.server_status_memory:
-        data.append(f"Memory: {int(memory_status()):02d}%")
+        data.append(f"CPU:\n"+"\n".join(f" core{index+1}: {int(per_cpu):02d}%" for index,per_cpu in enumerate(cpu_status() )))
 
     if status_config.server_status_disk:
         data.append(f"Disk:\n" + "\n".join(
             f"  {k}: {int(v.percent):02d}%" for k, v in disk_usage().items()))
+
+    if status_config.server_status_memory:
+        data.append(f"Memory: {int(memory_status()):02d}%")
 
     await matcher.send(message="\n".join(data))
 
