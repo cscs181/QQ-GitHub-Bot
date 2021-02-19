@@ -16,7 +16,7 @@ import psutil
 
 
 def cpu_status() -> float:
-    return psutil.cpu_percent(interval=1)  # type: ignore
+    return psutil.cpu_percent(interval=1,percpux=True)  # type: ignore
 
 
 def memory_status() -> float:
