@@ -4,12 +4,11 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 00:05:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-01-01 17:53:00
+@LastEditTime   : 2021-03-06 22:26:21
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
-__package__ = "github.plugins.github_help"
 
 import inspect
 from functools import reduce

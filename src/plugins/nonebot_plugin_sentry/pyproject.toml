@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-sentry"
-version = "0.1.1"
+version = "0.2.0"
 description = "Push your bot errors to Sentry.io"
 license = "MIT"
 authors = ["yanyongyu <yanyongyu_1@126.com>"]
@@ -15,7 +15,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-sentry-sdk = "^0.19.4"
+sentry-sdk = "^1.0.0"
 nonebot2 = "^2.0.0-alpha.6"
 
 [tool.poetry.dev-dependencies]
