@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-06 23:52:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-07 01:17:38
+@LastEditTime   : 2021-03-07 11:19:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,11 +13,10 @@ __author__ = "yanyongyu"
 import os
 import io
 import codecs
-from typing import Any, List, Union
+from typing import Any, overload
 from typing_extensions import Literal
 
-T = Union[str, io.IOBase]
-SOURCE_TYPE = Union[T, List[T]]
+from .typing import SOURCE_TYPE
 
 
 class Source(object):

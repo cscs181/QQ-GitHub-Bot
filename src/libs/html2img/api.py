@@ -4,21 +4,21 @@
 @Author         : yanyongyu
 @Date           : 2021-03-06 23:06:56
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-07 01:02:35
+@LastEditTime   : 2021-03-07 12:31:31
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import List, Union
-from typing_extensions import Literal
+from typing import Optional
 
 from .imgkit import IMGKit
 from .config import Config
+from .typing import SOURCE_TYPE, OUTPUT_TYPE
 
 
-async def from_url(url: Union[str, List[str]],
-                   output_path: Union[str, Literal[False]],
+async def from_url(url: SOURCE_TYPE,
+                   output_path: OUTPUT_TYPE,
                    options=None,
                    toc=None,
                    cover=None,
@@ -37,18 +37,18 @@ async def from_url(url: Union[str, List[str]],
     :param cover_first: (optional) if True, cover always precedes TOC
     :return: True when success
     """
-    rtn = IMGKit(url,
-                 "url",
-                 options=options,
-                 toc=toc,
-                 cover=cover,
-                 config=config,
-                 cover_first=cover_first)
+    rtn = await IMGKit(url,
+                       "url",
+                       options=options,
+                       toc=toc,
+                       cover=cover,
+                       config=config,
+                       cover_first=cover_first)
     return rtn.to_img(output_path)
 
 
-async def from_file(filename,
-                    output_path,
+async def from_file(filename: SOURCE_TYPE,
+                    output_path: OUTPUT_TYPE,
                     options=None,
                     toc=None,
                     cover=None,
@@ -68,19 +68,19 @@ async def from_file(filename,
     :param cover_first: (optional) if True, cover always precedes TOC
     :return: True when success
     """
-    rtn = IMGKit(filename,
-                 "file",
-                 options=options,
-                 toc=toc,
-                 cover=cover,
-                 css=css,
-                 config=config,
-                 cover_first=cover_first)
+    rtn = await IMGKit(filename,
+                       "file",
+                       options=options,
+                       toc=toc,
+                       cover=cover,
+                       css=css,
+                       config=config,
+                       cover_first=cover_first)
     return rtn.to_img(output_path)
 
 
-async def from_string(string,
-                      output_path,
+async def from_string(string: SOURCE_TYPE,
+                      output_path: OUTPUT_TYPE,
                       options=None,
                       toc=None,
                       cover=None,
@@ -100,18 +100,19 @@ async def from_string(string,
     :param cover_first: (optional) if True, cover always precedes TOC
     :return: True when success
     """
-    rtn = IMGKit(string,
-                 "string",
-                 options=options,
-                 toc=toc,
-                 cover=cover,
-                 css=css,
-                 config=config,
-                 cover_first=cover_first)
+    rtn = await IMGKit(string,
+                       "string",
+                       options=options,
+                       toc=toc,
+                       cover=cover,
+                       css=css,
+                       config=config,
+                       cover_first=cover_first)
     return rtn.to_img(output_path)
 
 
-async def config(wkhtmltoimage="", meta_tag_prefix="imgkit-") -> Config:
+async def config(wkhtmltoimage: Optional[str] = None,
+                 meta_tag_prefix: str = "imgkit-") -> Config:
     """
     Constructs and returns a :class:`Config` with given options
 

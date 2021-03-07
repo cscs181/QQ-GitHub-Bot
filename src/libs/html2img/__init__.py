@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2021-03-06 23:03:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-06 23:04:07
-@Description    : None
+@LastEditTime   : 2021-03-07 12:30:43
+@Description    : Asyncio version of imgkit
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
