@@ -4,59 +4,72 @@
 @Author         : yanyongyu
 @Date           : 2021-03-06 23:52:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-07 11:19:41
+@LastEditTime   : 2021-03-08 23:52:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import os
-import io
-import codecs
-from typing import Any, overload
+import abc
 from typing_extensions import Literal
 
 from .typing import SOURCE_TYPE
 
 
-class Source(object):
+class Source(abc.ABC):
 
-    def __init__(self, url_or_file: SOURCE_TYPE, type_: Literal["url", "file",
-                                                                "string"]):
-        self.source = url_or_file
-        self.type = type_
+    def __init__(self, source: SOURCE_TYPE):
+        self.source = source
 
-        if self.type == "file":
-            self.check_files()
+    @property
+    @abc.abstractmethod
+    def type(self) -> str:
+        raise NotImplementedError
 
-    def is_url(self):
-        return self.type == "url"
+    def get_source(self) -> SOURCE_TYPE:
+        return self.source
 
-    def is_file(self, path: Any = None):
-        if path:
-            return isinstance(path, io.IOBase) or isinstance(
-                path, codecs.StreamReaderWriter)
-        else:
-            return self.type == "file"
+
+class StringSource(Source):
+
+    def __init__(self, source: str):
+        self.source = source
+
+    @property
+    def type(self) -> Literal["string"]:
+        return "string"
+
+    def get_source(self) -> str:
+        return self.source
+
+
+class FileSource(Source):
+
+    def __init__(self, source: SOURCE_TYPE):
+        super(FileSource, self).__init__(source)
+        self.check_files()
+
+    @property
+    def type(self) -> Literal["file"]:
+        return "file"
 
     def check_files(self):
         if isinstance(self.source, list):
             for path in self.source:
-                if isinstance(path, str) and not os.path.exists(path):
-                    raise IOError(f"No such file: {path}")
-                elif not hasattr(self.source, "read"):
+                if not isinstance(path, str):
+                    raise IOError(f"Unknown file type: {path}")
+                if not os.path.exists(path):
                     raise IOError(f"No such file: {path}")
         else:
-            if isinstance(self.source, str) and not os.path.exists(self.source):
+            if not isinstance(self.source, str):
+                raise IOError(f"Unknown file type: {self.source}")
+            if not os.path.exists(self.source):
                 raise IOError(f"No such file: {self.source}")
-            elif not hasattr(self.source, "read"):
-                raise IOError(f"No such file: {self.source}")
 
-    def is_string(self):
-        return self.type == "string"
 
-    def is_file_obj(self):
-        return hasattr(self.source, "read")
+class URLSource(Source):
 
-    def get_source(self):
-        return self.source
+    @property
+    def type(self) -> Literal["url"]:
+        return "url"

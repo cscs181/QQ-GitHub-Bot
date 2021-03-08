@@ -4,23 +4,21 @@
 @Author         : yanyongyu
 @Date           : 2021-03-07 00:01:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-07 12:31:02
+@LastEditTime   : 2021-03-09 01:33:58
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-import io
 import re
 import sys
-import codecs
 import asyncio
 from asyncio import subprocess
 from typing_extensions import Literal
-from typing import Dict, Tuple, Union, Optional, Generator
+from typing import Tuple, Union, Optional, Generator
 
-from .source import Source
 from .config import Config
+from .source import Source, URLSource, FileSource, StringSource
 from .typing import SOURCE_TYPE, OUTPUT_TYPE, OPTION_TYPE, CSS_TYPE
 
 
@@ -36,26 +34,26 @@ class IMGKit(object):
             return self.message
 
     def __init__(self,
-                 url_or_file: SOURCE_TYPE,
+                 source: SOURCE_TYPE,
                  source_type: Literal["url", "file", "string"],
-                 options: Optional[Dict[str, str]] = None,
+                 options: Optional[OPTION_TYPE] = None,
                  toc: Optional[OPTION_TYPE] = None,
                  cover: str = None,
+                 cover_first: bool = False,
                  css: CSS_TYPE = None,
-                 config: Optional[Config] = None,
-                 cover_first: bool = False):
-        self._source = Source(url_or_file, source_type)
+                 config: Optional[Config] = None):
+        self._source = URLSource(
+            source) if source_type == "url" else FileSource(
+                source) if source_type == "file" else StringSource(
+                    source)  # type: ignore
         self._config: Optional[Config] = config
         self._wkhtmltoimage = None
         self._xvfb = None
 
-        self.options: OPTION_TYPE = {}
-        if self.source.is_string():
+        self.options: OPTION_TYPE = options or {}
+        if isinstance(self._source, StringSource):
             self.options.update(
-                self._find_options_in_meta(url_or_file))  # type: ignore
-
-        if options:
-            self.options.update(options)
+                self._find_options_in_meta(source))  # type: ignore
 
         self.toc = toc or {}
         self.cover = cover
@@ -63,17 +61,21 @@ class IMGKit(object):
         self.css = css
 
     def __await__(self):
-        if not self.config:
-            self.config = yield from Config().__await__()
+        if not self._config:
+            self._config = yield from Config().__await__()
 
-        self.wkhtmltoimage = self.config.wkhtmltoimage
-        self.xvfb = self.config.xvfb
+        self.wkhtmltoimage = self._config.wkhtmltoimage
+        self.xvfb = self._config.xvfb
+
+        if isinstance(self._source, StringSource):
+            self.options = {
+                **self._find_options_in_meta(self._source.get_source()),
+                **self.options
+            }
         return self
 
     @property
-    def source(self):
-        if not self._source:
-            raise RuntimeError(f"ImgKit {self} is never awaited!")
+    def source(self) -> Source:
         return self._source
 
     @source.setter
@@ -140,7 +142,7 @@ class IMGKit(object):
 
     def _prepend_css(self, css_file: CSS_TYPE):
         source = self.source.get_source()
-        if self.source.is_url() or isinstance(source, list):
+        if isinstance(self.source, URLSource) or isinstance(source, list):
             raise self.SourceError(
                 "CSS files can be added only to a single file or string")
 
@@ -149,22 +151,21 @@ class IMGKit(object):
 
         css_data = []
         for p in css_file:
-            with codecs.open(p, encoding="UTF-8") as f:
+            with open(p, encoding="utf-8") as f:
                 css_data.append(f.read())
         css_data = "\n".join(css_data)
 
-        if self.source.is_file():
-            if isinstance(source, str):
-                with codecs.open(source, encoding="UTF-8") as f:
-                    inp = f.read()
+        if isinstance(self.source, FileSource):
+            with open(source, encoding="utf-8") as f:
+                inp = f.read()
+
+            if "</head>" in source:
+                self.source = StringSource(
+                    inp.replace("</head>",
+                                self._style_tag(css_data) + "</head>"))
             else:
-                inp = source.read()
-            self.source = Source(
-                inp.replace("</head>",
-                            self._style_tag(css_data) + "</head>"), "string")
-        elif self.source.is_string():
-            if isinstance(source, io.IOBase):
-                source = source.read()
+                self.source = StringSource(self._style_tag(css_data) + inp)
+        elif isinstance(self.source, StringSource):
             if "</head>" in source:
                 self.source.source = source.replace(
                     "</head>",
@@ -214,20 +215,15 @@ class IMGKit(object):
 
         # If the source is a string then we will pipe it into wkhtmltoimage
         # If the source is file-like then we will read from it and pipe it in
-        if self.source.is_string() or self.source.is_file_obj():
+        if isinstance(self.source, StringSource):
             yield "-"
         else:
             source = self.source.get_source()
             if isinstance(source, str):
                 yield source
-            elif isinstance(source, io.IOBase):
-                yield source.read()
             else:
                 for s in source:
-                    if isinstance(s, str):
-                        yield s
-                    elif isinstance(s, io.IOBase):
-                        yield s.read()
+                    yield s
 
         # If output_path evaluates to False append "-" to end of args
         # and wkhtmltoimage will pass generated IMG to stdout
@@ -239,19 +235,14 @@ class IMGKit(object):
     def command(self, output_path: OUTPUT_TYPE = None):
         return list(self._command(output_path))
 
-    def _find_options_in_meta(
-        self, content: Union[str, io.IOBase,
-                             codecs.StreamReaderWriter]) -> OPTION_TYPE:
+    def _find_options_in_meta(self, content: str) -> OPTION_TYPE:
         """Reads "content" and extracts options encoded in HTML meta tags
 
-        :param content: str or file-like object - contains HTML to parse
+        :param content: str - contains HTML to parse
 
         :returns:
             dict: {config option: value}
         """
-        if (isinstance(content, io.IOBase) or
-                isinstance(content, codecs.StreamReaderWriter)):
-            content = content.read()
 
         found: OPTION_TYPE = {}
 
@@ -276,10 +267,8 @@ class IMGKit(object):
         # string and prepend css to it and then pass it to stdin.
         # This is a workaround for a bug in wkhtmltoimage (look closely in README)
         source = self.source.get_source()
-        if self.source.is_string() or (self.source.is_file() and self.css):
+        if isinstance(self.source, StringSource):
             string = source.encode("utf-8")  # type: ignore
-        elif self.source.is_file_obj():
-            string = source.read().encode("utf-8")  # type: ignore
         else:
             string = None
         stdout, stderr = await proc.communicate(input=string)
@@ -317,16 +306,15 @@ class IMGKit(object):
             return stdout
         else:
             try:
-                with codecs.open(output_path, mode="rb") as f:
+                with open(output_path, mode="rb") as f:
                     text = f.read(4)
                     if text == "":
                         raise IOError(
-                            "Command failed: %s\n"
-                            "Check whhtmltoimage output without \"quiet\" "
-                            "option" % " ".join(args))
+                            f"Command failed: {args}\n"
+                            "Check whhtmltoimage output without \"--quiet\" option"
+                        )
                     return None
             except IOError as e:
                 raise IOError(
-                    "Command failed: %s\n"
-                    "Check whhtmltoimage output without \"quiet\" option\n"
-                    "%s " % (" ".join(args)), e)
+                    f"Command failed: {args}\n"
+                    "Check whhtmltoimage output without \"--quiet\" option")

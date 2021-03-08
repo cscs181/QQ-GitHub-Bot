@@ -4,37 +4,60 @@
 @Author         : yanyongyu
 @Date           : 2021-03-06 23:06:56
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-07 12:31:31
+@LastEditTime   : 2021-03-09 00:56:26
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import Optional
+from typing_extensions import Literal
+from typing import Optional, overload
 
 from .imgkit import IMGKit
 from .config import Config
-from .typing import SOURCE_TYPE, OUTPUT_TYPE
+from .typing import SOURCE_TYPE, OUTPUT_TYPE, OPTION_TYPE, CSS_TYPE
+
+
+@overload
+async def from_url(url: SOURCE_TYPE,
+                   output_path: str,
+                   options: Optional[OPTION_TYPE] = ...,
+                   toc: Optional[OPTION_TYPE] = ...,
+                   cover: str = ...,
+                   cover_first: bool = ...,
+                   config: Config = ...) -> None:
+    ...
+
+
+@overload
+async def from_url(url: SOURCE_TYPE,
+                   output_path: Optional[Literal[False]] = ...,
+                   options: Optional[OPTION_TYPE] = ...,
+                   toc: Optional[OPTION_TYPE] = ...,
+                   cover: str = ...,
+                   cover_first: bool = ...,
+                   config: Config = ...) -> bytes:
+    ...
 
 
 async def from_url(url: SOURCE_TYPE,
-                   output_path: OUTPUT_TYPE,
-                   options=None,
-                   toc=None,
-                   cover=None,
-                   config=None,
-                   cover_first=None):
+                   output_path: OUTPUT_TYPE = None,
+                   options: Optional[OPTION_TYPE] = None,
+                   toc: Optional[OPTION_TYPE] = None,
+                   cover: str = None,
+                   cover_first: bool = False,
+                   config: Config = None):
     """
     Convert URL/URLs to IMG file/files
 
     :param url: URL or list of URLs to be saved
-    :param output_path: path to output PDF file/files. False means file will be returned as string
+    :param output_path: (optional) path to output PDF file/files. False means file will be returned as string
     :param options: (optional) dict with wkhtmltopdf global and page options, with or w/o "--"
     :param toc: (optional) dict with toc-specific wkhtmltopdf options, with or w/o "--"
     :param cover: (optional) string with url/filename with a cover html page
     :param css: style of input
-    :param config: (optional) instance of imgkit.config.Config()
     :param cover_first: (optional) if True, cover always precedes TOC
+    :param config: (optional) instance of imgkit.config.Config()
     :return: True when success
     """
     rtn = await IMGKit(url,
@@ -44,28 +67,52 @@ async def from_url(url: SOURCE_TYPE,
                        cover=cover,
                        config=config,
                        cover_first=cover_first)
-    return rtn.to_img(output_path)
+    return await rtn.to_img(output_path)
+
+
+@overload
+async def from_file(filename: SOURCE_TYPE,
+                    output_path: str,
+                    options: Optional[OPTION_TYPE] = ...,
+                    toc: Optional[OPTION_TYPE] = ...,
+                    cover: str = ...,
+                    cover_first: bool = ...,
+                    css: Optional[CSS_TYPE] = ...,
+                    config: Config = ...) -> None:
+    ...
+
+
+@overload
+async def from_file(filename: SOURCE_TYPE,
+                    output_path: Optional[Literal[False]] = ...,
+                    options: Optional[OPTION_TYPE] = ...,
+                    toc: Optional[OPTION_TYPE] = ...,
+                    cover: str = ...,
+                    cover_first: bool = ...,
+                    css: Optional[CSS_TYPE] = ...,
+                    config: Config = ...) -> bytes:
+    ...
 
 
 async def from_file(filename: SOURCE_TYPE,
-                    output_path: OUTPUT_TYPE,
-                    options=None,
-                    toc=None,
-                    cover=None,
-                    css=None,
-                    config=None,
-                    cover_first=None):
+                    output_path: OUTPUT_TYPE = None,
+                    options: Optional[OPTION_TYPE] = None,
+                    toc: Optional[OPTION_TYPE] = None,
+                    cover: str = None,
+                    cover_first: bool = False,
+                    css: Optional[CSS_TYPE] = None,
+                    config: Config = None):
     """
     Convert HTML file/files to IMG file/files
 
-    :param filename: path of HTML file or list with paths or file-like object
-    :param output_path: path to output PDF file/files. False means file will be returned as string
+    :param filename: path of HTML file or list with paths
+    :param output_path: (optional) path to output PDF file/files. False means file will be returned as string
     :param options: (optional) dict with wkhtmltopdf global and page options, with or w/o "--"
     :param toc: (optional) dict with toc-specific wkhtmltopdf options, with or w/o "--"
     :param cover: (optional) string with url/filename with a cover html page
-    :param css: style of input
-    :param config: (optional) instance of imgkit.config.Config()
     :param cover_first: (optional) if True, cover always precedes TOC
+    :param css: (optional) style of input
+    :param config: (optional) instance of imgkit.config.Config()
     :return: True when success
     """
     rtn = await IMGKit(filename,
@@ -76,28 +123,52 @@ async def from_file(filename: SOURCE_TYPE,
                        css=css,
                        config=config,
                        cover_first=cover_first)
-    return rtn.to_img(output_path)
+    return await rtn.to_img(output_path)
 
 
-async def from_string(string: SOURCE_TYPE,
-                      output_path: OUTPUT_TYPE,
-                      options=None,
-                      toc=None,
-                      cover=None,
-                      css=None,
-                      config=None,
-                      cover_first=None):
+@overload
+async def from_string(string: str,
+                      output_path: str,
+                      options: Optional[OPTION_TYPE] = ...,
+                      toc: Optional[OPTION_TYPE] = ...,
+                      cover: str = ...,
+                      cover_first: bool = ...,
+                      css: Optional[CSS_TYPE] = ...,
+                      config: Config = ...) -> None:
+    ...
+
+
+@overload
+async def from_string(string: str,
+                      output_path: Optional[Literal[False]] = ...,
+                      options: Optional[OPTION_TYPE] = ...,
+                      toc: Optional[OPTION_TYPE] = ...,
+                      cover: str = ...,
+                      cover_first: bool = ...,
+                      css: Optional[CSS_TYPE] = ...,
+                      config: Config = ...) -> bytes:
+    ...
+
+
+async def from_string(string: str,
+                      output_path: OUTPUT_TYPE = None,
+                      options: Optional[OPTION_TYPE] = None,
+                      toc: Optional[OPTION_TYPE] = None,
+                      cover: str = None,
+                      cover_first: bool = False,
+                      css: Optional[CSS_TYPE] = None,
+                      config: Config = None):
     """
     Convert given string/strings to IMG file
 
-    :param string:
-    :param output_path: path to output PDF file/files. False means file will be returned as string
+    :param string: simple string
+    :param output_path: (optional) path to output PDF file/files. False means file will be returned as string
     :param options: (optional) dict with wkhtmltopdf global and page options, with or w/o "--"
     :param toc: (optional) dict with toc-specific wkhtmltopdf options, with or w/o "--"
     :param cover: (optional) string with url/filename with a cover html page
-    :param css: style of input
-    :param config: (optional) instance of imgkit.config.Config()
     :param cover_first: (optional) if True, cover always precedes TOC
+    :param css: (optional) style of input
+    :param config: (optional) instance of imgkit.config.Config()
     :return: True when success
     """
     rtn = await IMGKit(string,
@@ -108,7 +179,7 @@ async def from_string(string: SOURCE_TYPE,
                        css=css,
                        config=config,
                        cover_first=cover_first)
-    return rtn.to_img(output_path)
+    return await rtn.to_img(output_path)
 
 
 async def config(wkhtmltoimage: Optional[str] = None,

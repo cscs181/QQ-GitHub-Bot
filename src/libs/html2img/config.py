@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-06 23:07:39
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-07 00:23:58
+@LastEditTime   : 2021-03-09 00:22:51
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,38 +29,38 @@ class Config(object):
         proc: asyncio.subprocess.Process
         stdout: bytes
 
-        if not self.wkhtmltoimage:
+        if not self._wkhtmltoimage:
             if sys.platform == "win32":
                 proc = yield from asyncio.create_subprocess_exec(
                     "where", "wkhtmltoimage",
                     stdout=subprocess.PIPE).__await__()
                 stdout, _ = yield from proc.communicate().__await__()
-                self.wkhtmltoimage = stdout.strip()
+                self._wkhtmltoimage = stdout.strip()
             else:
                 proc = yield from asyncio.create_subprocess_exec(
                     "which", "wkhtmltoimage",
                     stdout=subprocess.PIPE).__await__()
                 stdout, _ = yield from proc.communicate().__await__()
-                self.wkhtmltoimage = stdout.strip()
+                self._wkhtmltoimage = stdout.strip()
 
-        if not self.xvfb:
+        if not self._xvfb:
             if sys.platform == "win32":
                 proc = yield from asyncio.create_subprocess_exec(
                     "where", "xvfb-run", stdout=subprocess.PIPE).__await__()
                 stdout, _ = yield from proc.communicate().__await__()
-                self.xvfb = stdout.strip()
+                self._xvfb = stdout.strip()
             else:
                 proc = yield from asyncio.create_subprocess_exec(
                     "which", "xvfb-run", stdout=subprocess.PIPE).__await__()
                 stdout, _ = yield from proc.communicate().__await__()
-                self.xvfb = stdout.strip()
+                self._xvfb = stdout.strip()
 
         try:
-            with open(self.wkhtmltoimage):
+            with open(self._wkhtmltoimage):
                 pass
         except IOError:
             raise IOError(
-                f"No wkhtmltoimage executable found: '{self.wkhtmltoimage}'\n"
+                f"No wkhtmltoimage executable found: '{self._wkhtmltoimage}'\n"
                 "If this file exists please check that this process can "
                 "read it. Otherwise please install wkhtmltopdf - "
                 "http://wkhtmltopdf.org\n") from None

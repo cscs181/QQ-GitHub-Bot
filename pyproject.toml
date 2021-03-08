@@ -9,11 +9,12 @@ license = "MIT"
 python = "^3.7.3"
 psutil = "^5.7.2"
 nb-cli = "^0.4.0"
+Markdown = "^3.3.4"
 sentry-sdk = "^1.0.0"
+typing-extensions = "^3.7.4"
 nonebot2 = "^2.0.0-alpha.11"
 # nonebot-adapter-cqhttp = "^2.0.0a11.post2"
 
-typing-extensions = "^3.7.4"
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"
 nonebot-plugin-test = "^0.2.0"
