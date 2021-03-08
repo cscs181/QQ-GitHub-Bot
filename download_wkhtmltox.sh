@@ -3,7 +3,7 @@
 # @Author         : yanyongyu
 # @Date           : 2021-03-08 22:03:15
 # @LastEditors    : yanyongyu
-# @LastEditTime   : 2021-03-08 23:23:33
+# @LastEditTime   : 2021-03-09 01:37:02
 # @Description    : None
 # @GitHub         : https://github.com/yanyongyu
 ###
@@ -15,9 +15,6 @@ if [ ! -n "$1" ]; then
     exit 1
 fi
 
-echo "Finded version: "
-
 curl -s https://wkhtmltopdf.org/downloads.html |
-    grep -o -m 1 "https://github.com/wkhtmltopdf/packaging/releases/download/.*$1.deb" |
-    xargs echo |
+    grep -Eo -m 1 "https://github.com/wkhtmltopdf/packaging/releases/download/.*$1.(deb|pkg|exe|rpm)" |
     wget -i -
