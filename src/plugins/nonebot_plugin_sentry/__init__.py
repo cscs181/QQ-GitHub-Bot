@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-11-23 22:18:01
+@LastEditTime   : 2021-03-09 16:39:07
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,6 +20,8 @@ from .config import Config
 driver = get_driver()
 global_config = driver.config
 config = Config(**global_config.dict())
+
+assert config.sentry_dsn, "Sentry DSN must provided!"
 
 sentry_sdk.init(**{
     key[7:]: value

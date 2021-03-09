@@ -1,6 +1,6 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8
 
-RUN ./install_wkhtmltox buster_amd64
+RUN ./download_wkhtmltox buster_amd64
 
 RUN dpkg -i wkhtmltox_*.deb
 

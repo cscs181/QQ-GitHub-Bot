@@ -6,12 +6,12 @@ services:
       - "/etc/localtime:/etc/localtime"
       - "./:/app/"
     ports:
-      - "2333:2333"
-    env_file:
-      - ".env.prod"
+      - "$PORT:$PORT"
     environment:
       - ENVIRONMENT=prod
+      - HOST=$HOST
+      - PORT=$PORT
       - APP_MODULE=bot:app
-      - SECRET
-      - ACCESS_TOKEN
+      # - SECRET=$SECRET
+      # - ACCESS_TOKEN=$ACCESS_TOKEN
     network_mode: bridge

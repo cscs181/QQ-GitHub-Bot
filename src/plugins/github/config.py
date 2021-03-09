@@ -4,17 +4,22 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 19:05:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-10-04 15:10:41
+@LastEditTime   : 2021-03-09 16:23:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
+
+from typing import Optional
 
 from pydantic import validator, BaseSettings
 
 
 class Config(BaseSettings):
     github_command_priority: int = 5
+    github_client_id: Optional[str] = None
+    github_client_secret: Optional[str] = None
+    github_redirect_uri: Optional[str] = None
 
     @validator("github_command_priority")
     def validate_priority(cls, v):
