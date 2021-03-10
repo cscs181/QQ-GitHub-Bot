@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 17:13:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-09 18:36:19
+@LastEditTime   : 2021-03-10 21:47:26
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -35,8 +35,8 @@ class Github:
                  retry: Optional[int] = None,
                  verify: bool = True):
         self._requester = Requester(token_or_client_id, client_secret, base_url,
-                                    timeout, user_agent, per_page, verify,
-                                    retry)
+                                    timeout, user_agent, per_page, retry,
+                                    verify)
 
     @property
     def oauth_scopes(self):
