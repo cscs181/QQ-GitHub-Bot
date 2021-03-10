@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 17:13:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-10 21:47:26
+@LastEditTime   : 2021-03-11 01:50:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,6 +16,7 @@ from typing import List, Optional
 from typing_extensions import Literal
 
 from .request import Requester
+from .models import LazyRepository, Repository
 
 DEFAULT_BASE_URL = "https://api.github.com"
 DEFAULT_STATUS_URL = "https://status.github.com"
@@ -32,133 +33,11 @@ class Github:
                  timeout: int = DEFAULT_TIMEOUT,
                  user_agent: str = "Python/GitHub",
                  per_page: int = DEFAULT_PER_PAGE,
-                 retry: Optional[int] = None,
                  verify: bool = True):
         self._requester = Requester(token_or_client_id, client_secret, base_url,
-                                    timeout, user_agent, per_page, retry,
-                                    verify)
+                                    timeout, user_agent, per_page, verify)
 
-    @property
-    def oauth_scopes(self):
-        """
-        :type: list of string
-        """
-        return self._requester.oauth_scopes
-
-    def get_rate_limit(self):
-        """
-        GET /rate_limit
-        
-        https://docs.github.com/en/rest/reference/rate-limit#get-rate-limit-status-for-the-authenticated-user
-        """
-        headers, data = self._requester.requestJsonAndCheck(
-            "GET", "/rate_limit")
-        return RateLimit.RateLimit(self._requester, headers, data["resources"],
-                                   True)
-
-    def get_license(self, key: str):
-        """
-        GET /license/:license 
-        
-        https://docs.github.com/en/rest/reference/licenses#get-a-license
-        """
-
-        assert isinstance(key, str), key
-        headers, data = self._requester.requestJsonAndCheck(
-            "GET", f"/licenses/{key}")
-        return github.License.License(self._requester,
-                                      headers,
-                                      data,
-                                      completed=True)
-
-    def get_licenses(self):
-        """
-        GET /licenses 
-        
-        https://docs.github.com/en/rest/reference/licenses#get-all-commonly-used-licenses
-        """
-
-        url_parameters = dict()
-
-        return github.PaginatedList.PaginatedList(github.License.License,
-                                                  self._requester, "/licenses",
-                                                  url_parameters)
-
-    def get_events(self):
-        """
-        GET /events
-        
-        https://docs.github.com/en/rest/reference/activity#list-public-events
-        """
-
-        return github.PaginatedList.PaginatedList(github.Event.Event,
-                                                  self._requester, "/events",
-                                                  None)
-
-    def get_user(self, username: Optional[str] = None):
-        """
-        GET /users/:user
-        
-        https://docs.github.com/en/rest/reference/users#get-a-user
-        
-        GET /user
-        https://docs.github.com/en/rest/reference/users#get-the-authenticated-user
-        """
-        if not username:
-            return AuthenticatedUser.AuthenticatedUser(self._requester, {},
-                                                       {"url": "/user"},
-                                                       completed=False)
-        else:
-            headers, data = self._requester.requestJsonAndCheck(
-                "GET", f"/users/{username}")
-            return github.NamedUser.NamedUser(self._requester,
-                                              headers,
-                                              data,
-                                              completed=True)
-
-    def get_users(self, since: Optional[int] = None):
-        """
-        GET /users
-        
-        https://docs.github.com/en/rest/reference/users#list-users
-        """
-        url_parameters = dict()
-        if since is not None:
-            url_parameters["since"] = since
-        return github.PaginatedList.PaginatedList(github.NamedUser.NamedUser,
-                                                  self._requester, "/users",
-                                                  url_parameters)
-
-    def get_organization(self, org):
-        """
-        GET /orgs/:org
-        
-        https://docs.github.com/en/rest/reference/orgs#get-an-organization
-        """
-        headers, data = self._requester.requestJsonAndCheck(
-            "GET", f"/orgs/{org}")
-        return github.Organization.Organization(self._requester,
-                                                headers,
-                                                data,
-                                                completed=True)
-
-    def get_organizations(self, since: Optional[int] = None):
-        """
-        GET /organizations
-        
-        https://docs.github.com/en/rest/reference/orgs#list-organizations
-        """
-        url_parameters = dict()
-        if since is not None:
-            url_parameters["since"] = since
-        return github.PaginatedList.PaginatedList(
-            github.Organization.Organization,
-            self._requester,
-            "/organizations",
-            url_parameters,
-        )
-
-    def get_repo(self, full_name: str, lazy: bool = False):
+    async def get_repo(self, full_name: str, lazy: bool = False):
         """
         GET /repos/:owner/:repo
         
@@ -166,157 +45,255 @@ class Github:
         """
         url = f"/repos/{full_name}"
         if lazy:
-            return Repository.Repository(self._requester, {}, {"url": url},
-                                         completed=False)
-        headers, data = self._requester.requestJsonAndCheck("GET", url)
-        return Repository.Repository(self._requester,
-                                     headers,
-                                     data,
-                                     completed=True)
+            return LazyRepository(full_name=full_name)
+        response = await self._requester.request_json("GET", url)
+        return Repository.parse_obj(response.json())
 
-    def get_repos(
-            self,
-            since: Optional[int] = None,
-            visibility: Literal["all", "public", "private", None] = None,
-            affiliation: Optional[List[Literal["owner", "collaborator",
-                                               "organization_member"]]] = None,
-            type: Optional[Literal["all", "owner", "public", "private",
-                                   "member"]] = None,
-            sort: Optional[Literal["created", "updated", "pushed",
-                                   "full_name"]] = None,
-            direction: Optional[Literal["asc", "desc"]] = None):
-        """
-        GET /user/repos
-        
-        https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user
-        """
-        url_parameters = dict()
-        if since is not None:
-            url_parameters["since"] = since
-        if visibility is not None:
-            url_parameters["visibility"] = visibility
-        if affiliation is not None:
-            url_parameters["affiliation"] = ",".join(affiliation)
-        if type is not None:
-            url_parameters["type"] = type
-        if sort is not None:
-            url_parameters["sort"] = sort
-        if direction is not None:
-            url_parameters["direction"] = direction
-        return github.PaginatedList.PaginatedList(
-            github.Repository.Repository,
-            self._requester,
-            "/repositories",
-            url_parameters,
-        )
-
-    def get_project(self, id: int):
-        """
-        GET /projects/:project_id
-        
-        https://docs.github.com/en/rest/reference/projects#get-a-project
-        """
-        headers, data = self._requester.requestJsonAndCheck(
-            "GET",
-            f"/projects/{id}",
-            headers={"Accept": Consts.mediaTypeProjectsPreview},
-        )
-        return github.Project.Project(self._requester,
-                                      headers,
-                                      data,
-                                      completed=True)
-
-    def get_project_column(self, id):
-        """
-        GET /projects/columns/:column_id
-        
-        https://docs.github.com/en/rest/reference/projects#get-a-project-column
-        """
-        headers, data = self._requester.requestJsonAndCheck(
-            "GET",
-            "/projects/columns/%d" % id,
-            headers={"Accept": Consts.mediaTypeProjectsPreview},
-        )
-        return github.ProjectColumn.ProjectColumn(self._requester,
-                                                  headers,
-                                                  data,
-                                                  completed=True)
-
-    def get_gist(self, id: str):
-        """
-        GET /gists/:id
-        
-        https://docs.github.com/en/rest/reference/gists#get-a-gist
-        """
-        headers, data = self._requester.requestJsonAndCheck(
-            "GET", f"/gists/{id}")
-        return github.Gist.Gist(self._requester, headers, data, completed=True)
-
-    def get_gists(self, since: Optional[datetime.datetime] = None):
-        """
-        GET /gists/public
-        
-        https://docs.github.com/en/rest/reference/gists#list-public-gists
-        """
-        url_parameters = dict()
-        if since:
-            url_parameters["since"] = since.strftime("%Y-%m-%dT%H:%M:%SZ")
-        return github.PaginatedList.PaginatedList(github.Gist.Gist,
-                                                  self._requester,
-                                                  "/gists/public",
-                                                  url_parameters)
-
-    def render_markdown(self,
-                        text: str,
-                        context: Optional[github.Repository.Repository] = None):
+    async def render_markdown(self,
+                              text: str,
+                              context: Optional[Repository] = None):
         """
         POST /markdown
         
         https://docs.github.com/en/rest/reference/markdown#render-a-markdown-document
         """
-        post_parameters = {"text": text}
-        if context:
-            post_parameters["mode"] = "gfm"
-            post_parameters["context"] = context._identity
-        status, headers, data = self._requester.requestJson(
-            "POST", "/markdown", input=post_parameters)
-        return data
+        data = {"text": text}
+        # TODO
+        # if context:
+        #     data["mode"] = "gfm"
+        #     data["context"] = context._identity
+        response = await self._requester.request_json("POST",
+                                                      "/markdown",
+                                                      json=data)
+        return response.text
 
-    def get_hook(self, full_name: str, id: str):
-        """
-        GET /repo/:full_name/hooks/:name
-        
-        https://docs.github.com/en/rest/reference/repos#get-a-repository-webhook
-        """
-        headers, attributes = self._requester.requestJsonAndCheck(
-            "GET", f"/repos/{full_name}/hooks/{id}")
-        return HookDescription.HookDescription(self._requester,
-                                               headers,
-                                               attributes,
-                                               completed=True)
+    # def get_hook(self, full_name: str, id: str):
+    #     """
+    #     GET /repo/:full_name/hooks/:name
 
-    def get_hooks(self):
-        """
-        GET /repo/:full_name/hooks
-        
-        https://docs.github.com/en/rest/reference/repos#list-repository-webhooks
-        """
-        headers, data = self._requester.requestJsonAndCheck(
-            "GET", f"/repo/{full_name}/hooks")
-        return [
-            HookDescription.HookDescription(self._requester,
-                                            headers,
-                                            attributes,
-                                            completed=True)
-            for attributes in data
-        ]
+    #     https://docs.github.com/en/rest/reference/repos#get-a-repository-webhook
+    #     """
+    #     headers, attributes = self._requester.request_json(
+    #         "GET", f"/repos/{full_name}/hooks/{id}")
+    #     return HookDescription.HookDescription(self._requester,
+    #                                            headers,
+    #                                            attributes,
+    #                                            completed=True)
 
-    def get_emojis(self):
-        """
-        GET /emojis
-        
-        https://docs.github.com/en/rest/reference/emojis#get-emojis
-        """
-        headers, attributes = self._requester.requestJsonAndCheck(
-            "GET", "/emojis")
-        return attributes
+    # def get_hooks(self):
+    #     """
+    #     GET /repo/:full_name/hooks
+
+    #     https://docs.github.com/en/rest/reference/repos#list-repository-webhooks
+    #     """
+    #     headers, data = self._requester.request_json(
+    #         "GET", f"/repo/{full_name}/hooks")
+    #     return [
+    #         HookDescription.HookDescription(self._requester,
+    #                                         headers,
+    #                                         attributes,
+    #                                         completed=True)
+    #         for attributes in data
+    #     ]
+
+    # def get_repos(
+    #         self,
+    #         since: Optional[int] = None,
+    #         visibility: Literal["all", "public", "private", None] = None,
+    #         affiliation: Optional[List[Literal["owner", "collaborator",
+    #                                            "organization_member"]]] = None,
+    #         type: Optional[Literal["all", "owner", "public", "private",
+    #                                "member"]] = None,
+    #         sort: Optional[Literal["created", "updated", "pushed",
+    #                                "full_name"]] = None,
+    #         direction: Optional[Literal["asc", "desc"]] = None):
+    #     """
+    #     GET /user/repos
+
+    #     https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user
+    #     """
+    #     url_parameters = dict()
+    #     if since is not None:
+    #         url_parameters["since"] = since
+    #     if visibility is not None:
+    #         url_parameters["visibility"] = visibility
+    #     if affiliation is not None:
+    #         url_parameters["affiliation"] = ",".join(affiliation)
+    #     if type is not None:
+    #         url_parameters["type"] = type
+    #     if sort is not None:
+    #         url_parameters["sort"] = sort
+    #     if direction is not None:
+    #         url_parameters["direction"] = direction
+    #     return github.PaginatedList.PaginatedList(
+    #         github.Repository.Repository,
+    #         self._requester,
+    #         "/repositories",
+    #         url_parameters,
+    #     )
+
+    # async def get_rate_limit(self):
+    #     """
+    #     GET /rate_limit
+
+    #     https://docs.github.com/en/rest/reference/rate-limit#get-rate-limit-status-for-the-authenticated-user
+    #     """
+    #     response = await self._requester.request_json("GET", "/rate_limit")
+    #     return RateLimit.RateLimit(self._requester, headers, data["resources"],
+    #                                True)
+
+    # async def get_license(self, key: str):
+    #     """
+    #     GET /license/:license
+
+    #     https://docs.github.com/en/rest/reference/licenses#get-a-license
+    #     """
+    #     response = await self._requester.request_json("GET", f"/licenses/{key}")
+    #     return License.License(self._requester, headers, data, completed=True)
+
+    # def get_licenses(self):
+    #     """
+    #     GET /licenses
+
+    #     https://docs.github.com/en/rest/reference/licenses#get-all-commonly-used-licenses
+    #     """
+    #     url_parameters = dict()
+    #     return github.PaginatedList.PaginatedList(github.License.License,
+    #                                               self._requester, "/licenses",
+    #                                               url_parameters)
+
+    # def get_events(self):
+    #     """
+    #     GET /events
+
+    #     https://docs.github.com/en/rest/reference/activity#list-public-events
+    #     """
+    #     return github.PaginatedList.PaginatedList(github.Event.Event,
+    #                                               self._requester, "/events",
+    #                                               None)
+
+    # def get_user(self, username: Optional[str] = None):
+    #     """
+    #     GET /users/:user
+
+    #     https://docs.github.com/en/rest/reference/users#get-a-user
+
+    #     GET /user
+    #     https://docs.github.com/en/rest/reference/users#get-the-authenticated-user
+    #     """
+    #     if not username:
+    #         return AuthenticatedUser.AuthenticatedUser(self._requester, {},
+    #                                                    {"url": "/user"},
+    #                                                    completed=False)
+    #     else:
+    #         headers, data = self._requester.request_json(
+    #             "GET", f"/users/{username}")
+    #         return github.NamedUser.NamedUser(self._requester,
+    #                                           headers,
+    #                                           data,
+    #                                           completed=True)
+
+    # def get_users(self, since: Optional[int] = None):
+    #     """
+    #     GET /users
+
+    #     https://docs.github.com/en/rest/reference/users#list-users
+    #     """
+    #     url_parameters = dict()
+    #     if since is not None:
+    #         url_parameters["since"] = since
+    #     return github.PaginatedList.PaginatedList(github.NamedUser.NamedUser,
+    #                                               self._requester, "/users",
+    #                                               url_parameters)
+
+    # def get_organization(self, org):
+    #     """
+    #     GET /orgs/:org
+
+    #     https://docs.github.com/en/rest/reference/orgs#get-an-organization
+    #     """
+    #     headers, data = self._requester.request_json("GET", f"/orgs/{org}")
+    #     return github.Organization.Organization(self._requester,
+    #                                             headers,
+    #                                             data,
+    #                                             completed=True)
+
+    # def get_organizations(self, since: Optional[int] = None):
+    #     """
+    #     GET /organizations
+
+    #     https://docs.github.com/en/rest/reference/orgs#list-organizations
+    #     """
+    #     url_parameters = dict()
+    #     if since is not None:
+    #         url_parameters["since"] = since
+    #     return github.PaginatedList.PaginatedList(
+    #         github.Organization.Organization,
+    #         self._requester,
+    #         "/organizations",
+    #         url_parameters,
+    #     )
+
+    # def get_project(self, id: int):
+    #     """
+    #     GET /projects/:project_id
+
+    #     https://docs.github.com/en/rest/reference/projects#get-a-project
+    #     """
+    #     headers, data = self._requester.request_json(
+    #         "GET",
+    #         f"/projects/{id}",
+    #         headers={"Accept": Consts.mediaTypeProjectsPreview},
+    #     )
+    #     return github.Project.Project(self._requester,
+    #                                   headers,
+    #                                   data,
+    #                                   completed=True)
+
+    # def get_project_column(self, id):
+    #     """
+    #     GET /projects/columns/:column_id
+
+    #     https://docs.github.com/en/rest/reference/projects#get-a-project-column
+    #     """
+    #     headers, data = self._requester.request_json(
+    #         "GET",
+    #         "/projects/columns/%d" % id,
+    #         headers={"Accept": Consts.mediaTypeProjectsPreview},
+    #     )
+    #     return github.ProjectColumn.ProjectColumn(self._requester,
+    #                                               headers,
+    #                                               data,
+    #                                               completed=True)
+
+    # def get_gist(self, id: str):
+    #     """
+    #     GET /gists/:id
+
+    #     https://docs.github.com/en/rest/reference/gists#get-a-gist
+    #     """
+    #     headers, data = self._requester.request_json("GET", f"/gists/{id}")
+    #     return github.Gist.Gist(self._requester, headers, data, completed=True)
+
+    # def get_gists(self, since: Optional[datetime.datetime] = None):
+    #     """
+    #     GET /gists/public
+
+    #     https://docs.github.com/en/rest/reference/gists#list-public-gists
+    #     """
+    #     url_parameters = dict()
+    #     if since:
+    #         url_parameters["since"] = since.strftime("%Y-%m-%dT%H:%M:%SZ")
+    #     return github.PaginatedList.PaginatedList(github.Gist.Gist,
+    #                                               self._requester,
+    #                                               "/gists/public",
+    #                                               url_parameters)
+
+    # def get_emojis(self):
+    #     """
+    #     GET /emojis
+
+    #     https://docs.github.com/en/rest/reference/emojis#get-emojis
+    #     """
+    #     headers, attributes = self._requester.request_json("GET", "/emojis")
+    #     return attributes

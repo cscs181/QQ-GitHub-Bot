@@ -8,7 +8,8 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.7.3"
 psutil = "^5.7.2"
-nb-cli = "^0.4.0"
+httpx = "^0.17.0"
+pydantic = "^1.8.1"
 Markdown = "^3.3.4"
 sentry-sdk = "^1.0.0"
 typing-extensions = "^3.7.4"
@@ -17,16 +18,17 @@ nonebot2 = "^2.0.0-alpha.11"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"
+nb-cli = "^0.4.0"
 nonebot-plugin-test = "^0.2.0"
 
 [nonebot.plugins]
 plugins = ["nonebot_plugin_test"]
 plugin_dirs = ["src/plugins"]
 
-# [[tool.poetry.source]]
-# name = "aliyun"
-# url = "https://mirrors.aliyun.com/pypi/simple/"
-# default = true
+[[tool.poetry.source]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+default = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
