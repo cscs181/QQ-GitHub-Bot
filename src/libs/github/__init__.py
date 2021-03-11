@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 17:13:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 01:50:46
+@LastEditTime   : 2021-03-11 17:11:10
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,8 +12,8 @@ __author__ = "yanyongyu"
 
 import time
 import datetime
-from typing import List, Optional
 from typing_extensions import Literal
+from typing import List, Optional, overload
 
 from .request import Requester
 from .models import LazyRepository, Repository
@@ -37,7 +37,22 @@ class Github:
         self._requester = Requester(token_or_client_id, client_secret, base_url,
                                     timeout, user_agent, per_page, verify)
 
-    async def get_repo(self, full_name: str, lazy: bool = False):
+    async def close(self):
+        return await self._requester.close()
+
+    @overload
+    async def get_repo(self, full_name: str,
+                       lazy: Literal[True]) -> LazyRepository:
+        ...
+
+    @overload
+    async def get_repo(self, full_name: str,
+                       lazy: Literal[False]) -> Repository:
+        ...
+
+    async def get_repo(self,
+                       full_name: str,
+                       lazy: bool = False) -> LazyRepository:
         """
         GET /repos/:owner/:repo
         
@@ -45,9 +60,13 @@ class Github:
         """
         url = f"/repos/{full_name}"
         if lazy:
-            return LazyRepository(full_name=full_name)
+            return LazyRepository(full_name=full_name,
+                                  _requester=self._requester)
         response = await self._requester.request_json("GET", url)
-        return Repository.parse_obj(response.json())
+        return Repository.parse_obj({
+            "_requester": self._requester,
+            **response.json()
+        })
 
     async def render_markdown(self,
                               text: str,

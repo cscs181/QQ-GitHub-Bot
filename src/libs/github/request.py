@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 17:34:53
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 01:51:02
+@LastEditTime   : 2021-03-11 16:35:39
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -26,8 +26,10 @@ class Requester:
             b64 = base64.b64encode(
                 f"{token_or_client_id}:{client_secret}".encode()).decode()
             self._authorization: str = f"Basic {b64}"
-        else:
+        elif token_or_client_id:
             self._authorization: str = f"token {token_or_client_id}"
+        else:
+            self._authorization: str = ""
 
         self._base_url = base_url
         self._timeout = timeout
@@ -35,14 +37,20 @@ class Requester:
         self._per_page = per_page
         self._verify = verify
 
-        headers = {
-            "User-Agent": self._user_agent,
-            "Authorization": self._authorization,
-            "Accept": "application/vnd.github.v3+json"
-        }
-        self._client = httpx.AsyncClient(headers=headers,
-                                         verify=self._verify,
-                                         timeout=self._timeout)
+        self._client: Optional[httpx.AsyncClient] = None
+
+    @property
+    def client(self) -> httpx.AsyncClient:
+        if not self._client:
+            headers = {
+                "User-Agent": self._user_agent,
+                "Authorization": self._authorization,
+                "Accept": "application/vnd.github.v3+json"
+            }
+            self._client = httpx.AsyncClient(headers=headers,
+                                             verify=self._verify,
+                                             timeout=self._timeout)
+        return self._client
 
     async def request_json(self,
                            method: str,
@@ -60,11 +68,15 @@ class Requester:
                       data: Optional[dict] = None,
                       json: Any = None):
         url = urllib.parse.urljoin(self._base_url, url)
-        response = await self._client.request(method,
-                                              url,
-                                              params=params,
-                                              headers=headers,
-                                              data=data,
-                                              json=json)
+        response = await self.client.request(method,
+                                             url,
+                                             params=params,
+                                             headers=headers,
+                                             data=data,
+                                             json=json)
         response.raise_for_status()
         return response
+
+    async def close(self):
+        await self._client.aclose()
+        self._client = None
