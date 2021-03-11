@@ -4,22 +4,37 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 19:17:05
+@LastEditTime   : 2021-03-12 01:02:56
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import base64
-from typing import Dict
+from pathlib import Path
+from typing import Dict, List
 
+import markdown
 from nonebot import on_regex
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment
 
+from src.libs import html2img
 from src.libs.github import Github
-from src.libs import html2img, md2img
 from ... import github_config as config
+
+HEADER = """
+# {title} <font color=#8b949e>#{number}</font>
+
+<span class="State State--{status}">{status}</span> <small><font color=#8b949e>{comments} comments</font></small>
+
+### **{login}** <small><font color=#8b949e>{updated_at}</font></small>
+"""
+OPTIONS: dict = {"encoding": "utf-8"}
+CSS_FILES: List[str] = [
+    str(Path(__file__).parent / "github.css"),
+    str(Path(__file__).parent / "status.css")
+]
 
 issue = on_regex(
     r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)#(?P<number>\d+)$",
@@ -44,11 +59,30 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
         g = Github(token)
     repo = await g.get_repo(f"{owner}/{repo}", True)
     issue_ = await repo.get_issue(number)
+    await g.close()
     if issue_.body_html:
-        img = await html2img.from_string(issue_.body_html)
+        html = '<article class="markdown-body">' + markdown.markdown(
+            HEADER.format(
+                title=issue_.title,
+                number=issue_.number,
+                status=issue_.state,
+                comments=issue_.comments,
+                login=issue_.user.login,
+                updated_at=issue_.updated_at.strftime(
+                    "%Y-%m-%d %H:%M:%S"))) + issue_.body_html + "</article>"
+        img = await html2img.from_string(html, options=OPTIONS, css=CSS_FILES)
     elif issue_.body:
-        img = await md2img.from_string(issue_.body)
+        html = '<article class="markdown-body">' + markdown.markdown(
+            HEADER.format(title=issue_.title,
+                          number=issue_.number,
+                          status=issue_.state,
+                          comments=issue_.comments,
+                          login=issue_.user.login,
+                          updated_at=issue_.updated_at.strftime(
+                              "%Y-%m-%d %H:%M:%S")) +
+            issue_.body) + "</article>"
+        img = await html2img.from_string(html, options=OPTIONS, css=CSS_FILES)
     else:
         return
-    await issue.finish(MessageSegment.image(f"base64://{base64.b64encode(img)}")
-                      )
+    await issue.finish(
+        MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"))

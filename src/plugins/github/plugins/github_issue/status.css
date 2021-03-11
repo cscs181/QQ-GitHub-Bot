@@ -1,0 +1,22 @@
+.State {
+    display: inline-block;
+    border-radius: 2em;
+    padding: 5px 12px;
+    font-size: 14px;
+    line-height: 20px;
+
+    color: #8b949e;
+    background-color: rgba(139, 148, 158, 0.1);
+    border: 1px solid rgba(139, 148, 158, 0.4);
+}
+
+.State--closed {
+    color: #f85149;
+    background-color: rgba(218, 54, 51, 0.1);
+    border: 1px solid rgba(218, 54, 51, 0.4);
+}
+.State--open {
+    color: #3fb950;
+    background-color: rgba(63, 185, 80, 0.1);
+    border: 1px solid rgba(63, 185, 80, 0.4);
+}
