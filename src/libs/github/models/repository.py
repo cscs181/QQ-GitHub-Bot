@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:33:54
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 16:57:40
+@LastEditTime   : 2021-03-11 19:08:28
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -27,9 +27,10 @@ class LazyRepository(BaseModel):
     full_name: str
 
     async def get_issue(self, number: int):
-        response = await self._requester.request(
-            "GET", f"/repos/{self.full_name}/issues/{number}")
-        return Issue.parse_obj(response.json())
+        headers = {"Accept": "application/vnd.github.v3.full+json"}
+        response = await self.requester.request(
+            "GET", f"/repos/{self.full_name}/issues/{number}", headers=headers)
+        return Issue.parse_obj({"requester": self.requester, **response.json()})
 
     # FIXME: pass a milestone object, assignee user object
     async def get_issues(self,

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 17:13:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 17:11:10
+@LastEditTime   : 2021-03-11 18:53:39
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -61,10 +61,10 @@ class Github:
         url = f"/repos/{full_name}"
         if lazy:
             return LazyRepository(full_name=full_name,
-                                  _requester=self._requester)
+                                  requester=self._requester)
         response = await self._requester.request_json("GET", url)
         return Repository.parse_obj({
-            "_requester": self._requester,
+            "requester": self._requester,
             **response.json()
         })
 
