@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-12 15:46:49
+@LastEditTime   : 2021-03-12 16:15:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -52,4 +52,5 @@ async def process_repo(bot: Bot, event: GroupMessageEvent, state: T_State):
         await bind.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
         return
 
+    # TODO: Store
     await bind.finish(f"本群成功绑定仓库 {repo.full_name} ！")

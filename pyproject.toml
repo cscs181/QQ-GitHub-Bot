@@ -16,6 +16,7 @@ playwright = "^1.9.2"
 typing-extensions = "^3.7.4"
 nonebot2 = "^2.0.0-alpha.11"
 nonebot-adapter-cqhttp = "^2.0.0a11.post2"
+redis = {version = "^3.5.3", extras = ["hiredis"]}
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"
