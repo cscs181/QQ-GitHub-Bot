@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 19:08:11
+@LastEditTime   : 2021-03-12 14:57:52
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -49,3 +49,7 @@ class Issue(BaseModel):
     updated_at: datetime
     closed_by: Optional[User]
     author_association: str
+
+    @property
+    def is_pull_request(self) -> bool:
+        return bool(self.pull_request)

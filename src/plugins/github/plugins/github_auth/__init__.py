@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-09 16:35:50
+@LastEditTime   : 2021-03-12 15:13:36
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -31,4 +31,4 @@ async def handle_private(bot: Bot, event: PrivateMessageEvent):
 
 @auth.handle()
 async def handle_group(bot: Bot, event: GroupMessageEvent):
-    await auth.finish("请私聊我并使用 /auth 命令登录你的 GitHub 账号")
+    await auth.finish("请私聊我并使用 /auth 命令授权你的 GitHub 账号")

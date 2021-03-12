@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:34:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 19:00:00
+@LastEditTime   : 2021-03-12 13:36:57
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,6 +39,9 @@ class BaseModel(_BaseModel):
                     for value in values[name]:
                         value["requester"] = values["requester"]
         return values
+
+    async def close(self):
+        await self.requester.close()
 
     @classmethod
     def parse_obj(cls: Type[_T], obj: Any) -> _T:

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 17:34:53
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 16:35:39
+@LastEditTime   : 2021-03-12 13:36:50
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -78,5 +78,6 @@ class Requester:
         return response
 
     async def close(self):
-        await self._client.aclose()
-        self._client = None
+        if self._client:
+            await self._client.aclose()
+            self._client = None
