@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-12 15:13:36
+@LastEditTime   : 2021-03-13 15:26:43
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,7 +19,7 @@ from ... import github_config as config
 auth = on_command("auth", priority=config.github_command_priority)
 auth.__doc__ = """
 /auth
-登录 github 账号
+授权 github 账号
 """
 
 

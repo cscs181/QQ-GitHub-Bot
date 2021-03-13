@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-12 16:15:55
+@LastEditTime   : 2021-03-13 16:11:26
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,13 +20,22 @@ from nonebot.adapters.cqhttp import GROUP_ADMIN, GROUP_OWNER
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
 
 from ...libs.repo import get_repo
+from ... import redis, github_config as config
 from src.libs.utils import allow_cancel, only_group
 
-REPO_REGEX = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)$"
+print(__name__)
+
+REDIS_KEY_FORMAT = "github_bind_{group_id}"
+REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)$"
 
 bind = on_command("bind",
                   only_group,
+                  priority=config.github_command_priority,
                   permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER)
+bind.__doc__ = """
+/bind owner/repo
+绑定当前群与指定仓库
+"""
 
 bind.args_parser(allow_cancel)
 
@@ -52,5 +61,24 @@ async def process_repo(bot: Bot, event: GroupMessageEvent, state: T_State):
         await bind.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
         return
 
-    # TODO: Store
+    redis.set(REDIS_KEY_FORMAT.format(group_id=event.group_id), repo.full_name)
     await bind.finish(f"本群成功绑定仓库 {repo.full_name} ！")
+
+
+unbind = on_command("unbind",
+                    only_group,
+                    priority=config.github_command_priority,
+                    permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER)
+unbind.__doc__ = """
+/unbind
+解绑当前群和指定仓库
+"""
+
+
+@unbind.handle()
+async def process_unbind(bot: Bot, event: GroupMessageEvent):
+    if redis.exists(REDIS_KEY_FORMAT.format(group_id=event.group_id)):
+        redis.delete(REDIS_KEY_FORMAT.format(group_id=event.group_id))
+        await unbind.finish("成功解绑仓库！")
+    else:
+        await unbind.finish("尚未绑定仓库！")
