@@ -20,8 +20,8 @@ redis = {version = "^3.5.3", extras = ["hiredis"]}
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"
-nb-cli = "^0.4.0"
 nonebot-plugin-test = "^0.2.0"
+nb-cli = {version = "^0.4.0", extras = ["deploy"]}
 
 [nonebot.plugins]
 plugins = ["nonebot_plugin_test"]

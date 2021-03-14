@@ -1,7 +1,16 @@
-version: "2"
+version: "3"
 services:
+  redis:
+    image: redis:6.2
+    container_name: bot_redis
+    command: redis-server --appendonly yes
+    volumes:
+      - bot_redis_data:/data
+    networks:
+      - bot_net
   nonebot:
     build: .
+    container_name: bot
     volumes:
       - "/etc/localtime:/etc/localtime"
       - "./:/app/"
@@ -14,4 +23,13 @@ services:
       - APP_MODULE=bot:app
       # - SECRET=$SECRET
       # - ACCESS_TOKEN=$ACCESS_TOKEN
-    network_mode: bridge
+    networks:
+      - bot_net
+    links:
+      - redis
+    depends_on:
+      - redis
+networks:
+  bot_net: {}
+volumes:
+  bot_redis_data: {}

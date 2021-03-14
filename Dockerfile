@@ -1,15 +1,21 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8
 
-RUN ./download_wkhtmltox buster_amd64
-
-RUN dpkg -i wkhtmltox_*.deb
-
 RUN python3 -m pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
 
 RUN python3 -m pip install poetry && poetry config virtualenvs.create false
 
 COPY ./pyproject.toml ./poetry.lock* /app/
 
-RUN poetry install --no-root --no-dev
+RUN poetry export --without-hashes -f requirements.txt \
+    | poetry run pip install -r /dev/stdin \
+    && poetry run playwright install
 
-RUN poetry run playwright install
+COPY ./download_wkhtmltox.sh /app/
+
+RUN echo "deb http://mirrors.aliyun.com/debian/ buster main contrib non-free" >> /etc/apt/sources.list\
+    && echo "deb http://mirrors.aliyun.com/debian/ buster-updates main contrib non-free" >> /etc/apt/sources.list\
+    && apt-get update
+
+RUN ./download_wkhtmltox.sh buster_amd64 \
+    && apt-get install -y xvfb ./wkhtmltox_*.deb\
+    && rm wkhtmltox_*.deb
