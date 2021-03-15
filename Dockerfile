@@ -8,6 +8,8 @@ COPY ./pyproject.toml ./poetry.lock* /app/
 
 RUN poetry export --without-hashes -f requirements.txt \
     | poetry run pip install -r /dev/stdin \
+    && poetry install --no-dev \
+    && echo "Install playwright headless browser..." \
     && poetry run playwright install
 
 COPY ./download_wkhtmltox.sh /app/
@@ -16,6 +18,7 @@ RUN echo "deb http://mirrors.aliyun.com/debian/ buster main contrib non-free" >>
     && echo "deb http://mirrors.aliyun.com/debian/ buster-updates main contrib non-free" >> /etc/apt/sources.list\
     && apt-get update
 
-RUN ./download_wkhtmltox.sh buster_amd64 \
+RUN echo "Install wkhtmltox renderer..." \
+    && ./download_wkhtmltox.sh buster_amd64 \
     && apt-get install -y xvfb ./wkhtmltox_*.deb\
-    && rm wkhtmltox_*.deb
+    && rm wkhtmltox_*.deb download_wkhtmltox.sh

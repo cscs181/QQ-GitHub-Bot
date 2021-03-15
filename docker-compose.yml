@@ -23,6 +23,8 @@ services:
       - APP_MODULE=bot:app
       # - SECRET=$SECRET
       # - ACCESS_TOKEN=$ACCESS_TOKEN
+      - REDIS_HOST=bot_redis
+      - REDIS_PORT=6379
     networks:
       - bot_net
     links:
