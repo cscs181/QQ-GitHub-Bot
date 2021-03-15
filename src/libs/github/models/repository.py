@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:33:54
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 19:08:28
+@LastEditTime   : 2021-03-16 01:08:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,6 +19,7 @@ from . import BaseModel
 from .user import User
 from .issue import Issue
 from .license import License
+from .hook import Hook, HookConfig
 from .permissions import Permissions
 from .organization import Organization
 
@@ -26,7 +27,7 @@ from .organization import Organization
 class LazyRepository(BaseModel):
     full_name: str
 
-    async def get_issue(self, number: int):
+    async def get_issue(self, number: int) -> Issue:
         headers = {"Accept": "application/vnd.github.v3.full+json"}
         response = await self.requester.request(
             "GET", f"/repos/{self.full_name}/issues/{number}", headers=headers)
@@ -68,6 +69,52 @@ class LazyRepository(BaseModel):
         if since:
             params["since"] = since.strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    async def get_hook(self, id: str) -> Hook:
+        """
+        GET /repo/:full_name/hooks/:id
+
+        https://docs.github.com/en/rest/reference/repos#get-a-repository-webhook
+        """
+        response = await self.requester.request_json(
+            "GET", f"/repos/{self.full_name}/hooks/{id}")
+        return Hook.parse_obj({"requester": self.requester, **response.json()})
+
+    async def get_hooks(self) -> List[Hook]:
+        """
+        GET /repo/:full_name/hooks
+
+        https://docs.github.com/en/rest/reference/repos#list-repository-webhooks
+        """
+        response = await self.requester.request_json(
+            "GET", f"/repos/{self.full_name}/hooks")
+        return [
+            Hook.parse_obj({
+                "requester": self.requester,
+                **hook
+            }) for hook in response.json()
+        ]
+
+    async def create_hook(self,
+                          config: HookConfig,
+                          events: Optional[List[str]] = None,
+                          active: Optional[bool] = None):
+        """
+        POST /repos/:full_name/hooks
+        
+        https://docs.github.com/en/rest/reference/repos#create-a-repository-webhook
+        """
+        data = {}
+        data["config"] = config.dict(exclude_unset=True)
+        data["config"][
+            "insecure_ssl"] = "1" if data["config"]["insecure_ssl"] else "0"
+        if events is not None:
+            data["events"] = events
+        if active is not None:
+            data["active"] = active
+        response = await self.requester.request_json(
+            "POST", f"/repos/{self.full_name}/hooks", json=data)
+        return Hook.parse_obj({"requester": self.requester, **response.json()})
+
 
 class Repository(LazyRepository):
     """
@@ -79,7 +126,7 @@ class Repository(LazyRepository):
     owner: Union[User, Organization]
     private: bool
     html_url: str
-    description: str
+    description: Optional[str]
     fork: bool
     url: str
     archive_url: str
@@ -123,7 +170,7 @@ class Repository(LazyRepository):
     mirror_url: Optional[str]
     hooks_url: str
     svn_url: str
-    homepage: str
+    homepage: Optional[str]
     language: Optional[str]
     forks_count: int
     forks: int

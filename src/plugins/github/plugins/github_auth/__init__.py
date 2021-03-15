@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-13 15:26:43
+@LastEditTime   : 2021-03-15 22:16:23
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -25,8 +25,7 @@ auth.__doc__ = """
 
 @auth.handle()
 async def handle_private(bot: Bot, event: PrivateMessageEvent):
-    await auth.finish("请前往以下链接进行授权：\n" +
-                      await get_auth_link(event.get_user_id()))
+    await auth.finish("请前往以下链接进行授权：\n" + get_auth_link(event.get_user_id()))
 
 
 @auth.handle()

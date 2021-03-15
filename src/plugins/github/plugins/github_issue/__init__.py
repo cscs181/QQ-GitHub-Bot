@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-14 11:03:44
+@LastEditTime   : 2021-03-15 23:15:06
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,8 +21,8 @@ from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, GroupMess
 
 from src.libs.utils import only_group
 from ... import github_config as config
-from ...libs.issue import get_issue, issue_to_image
 from ...libs.redis import get_group_bind_repo
+from ...libs.issue import get_issue, issue_to_image
 
 # allow using api without token
 try:
@@ -49,7 +49,7 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
     number = int(group["number"])
     token = None
     if get_user_token:
-        token = await get_user_token(event.get_user_id())
+        token = get_user_token(event.get_user_id())
     try:
         issue_ = await get_issue(owner, repo, number, token)
     except HTTPStatusError:
@@ -86,7 +86,7 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
 
     token = None
     if get_user_token:
-        token = await get_user_token(event.get_user_id())
+        token = get_user_token(event.get_user_id())
     try:
         issue_ = await get_issue(owner, repo, number, token)
     except HTTPStatusError:

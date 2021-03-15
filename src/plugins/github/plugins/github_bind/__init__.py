@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-14 11:01:36
+@LastEditTime   : 2021-03-15 22:07:08
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,7 +22,7 @@ from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
 from ...libs.repo import get_repo
 from ... import github_config as config
 from src.libs.utils import allow_cancel, only_group
-from ...libs.redis import set_group_bind_repo, set_group_unbind_repo, exists_group_bind_repo
+from ...libs.redis import set_group_bind_repo, delete_group_bind_repo, exists_group_bind_repo
 
 REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)$"
 
@@ -76,7 +76,7 @@ unbind.__doc__ = """
 @unbind.handle()
 async def process_unbind(bot: Bot, event: GroupMessageEvent):
     if exists_group_bind_repo(event.group_id):
-        set_group_unbind_repo(event.group_id)
+        delete_group_bind_repo(event.group_id)
         await unbind.finish("成功解绑仓库！")
     else:
         await unbind.finish("尚未绑定仓库！")

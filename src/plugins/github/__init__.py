@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-20 23:59:20
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-13 16:01:37
+@LastEditTime   : 2021-03-15 23:10:18
 @Description    : GitHub Main Plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -27,3 +27,5 @@ github_config = Config(**nonebot.get_driver().config.dict())
 
 _sub_plugins |= nonebot.load_plugins(
     str((Path(__file__).parent / "plugins").resolve()))
+
+from . import apis

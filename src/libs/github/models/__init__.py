@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:34:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-14 11:16:32
+@LastEditTime   : 2021-03-16 00:05:53
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -59,7 +59,7 @@ from .user import User
 from .issue import Issue
 from .label import Label
 from .license import License
+from .hook import Hook, HookConfig
 from .permissions import Permissions
 from .organization import Organization
-from .issue_pull_request import IssuePullRequest
 from .repository import LazyRepository, Repository

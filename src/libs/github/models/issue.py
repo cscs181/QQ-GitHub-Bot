@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-12 14:57:52
+@LastEditTime   : 2021-03-16 00:06:52
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,11 +13,19 @@ __author__ = "yanyongyu"
 from datetime import datetime
 from typing import List, Optional
 
+from pydantic import BaseModel as _BaseModel
+
 from . import BaseModel
 
 from .user import User
 from .label import Label
-from .issue_pull_request import IssuePullRequest
+
+
+class IssuePullRequest(_BaseModel):
+    url: str
+    html_url: str
+    diff_url: str
+    patch_url: str
 
 
 class Issue(BaseModel):

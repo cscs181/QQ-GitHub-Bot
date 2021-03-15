@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 17:13:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 18:53:39
+@LastEditTime   : 2021-03-15 23:36:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -85,35 +85,6 @@ class Github:
                                                       "/markdown",
                                                       json=data)
         return response.text
-
-    # def get_hook(self, full_name: str, id: str):
-    #     """
-    #     GET /repo/:full_name/hooks/:name
-
-    #     https://docs.github.com/en/rest/reference/repos#get-a-repository-webhook
-    #     """
-    #     headers, attributes = self._requester.request_json(
-    #         "GET", f"/repos/{full_name}/hooks/{id}")
-    #     return HookDescription.HookDescription(self._requester,
-    #                                            headers,
-    #                                            attributes,
-    #                                            completed=True)
-
-    # def get_hooks(self):
-    #     """
-    #     GET /repo/:full_name/hooks
-
-    #     https://docs.github.com/en/rest/reference/repos#list-repository-webhooks
-    #     """
-    #     headers, data = self._requester.request_json(
-    #         "GET", f"/repo/{full_name}/hooks")
-    #     return [
-    #         HookDescription.HookDescription(self._requester,
-    #                                         headers,
-    #                                         attributes,
-    #                                         completed=True)
-    #         for attributes in data
-    #     ]
 
     # def get_repos(
     #         self,
