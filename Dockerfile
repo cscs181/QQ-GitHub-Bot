@@ -8,9 +8,9 @@ COPY ./pyproject.toml ./poetry.lock* /app/
 
 RUN poetry export --without-hashes -f requirements.txt \
     | poetry run pip install -r /dev/stdin \
-    && poetry install --no-dev \
     && echo "Install playwright headless browser..." \
-    && poetry run playwright install
+    && poetry run playwright install \
+    && poetry install --no-dev
 
 COPY ./download_wkhtmltox.sh /app/
 
