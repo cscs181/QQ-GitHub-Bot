@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-01-01 17:46:15
+@LastEditTime   : 2021-03-16 17:05:58
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,7 +18,7 @@ from nonebot import get_driver, on_command, on_notice, on_message
 from nonebot.adapters.cqhttp import PrivateMessageEvent, PokeNotifyEvent
 
 from .config import Config
-from .data_source import cpu_status, memory_status, disk_usage
+from .data_source import cpu_status, per_cpu_status, memory_status, disk_usage
 
 global_config = get_driver().config
 status_config = Config(**global_config.dict())
@@ -31,14 +31,20 @@ async def server_status(bot: Bot, matcher: Matcher):
     data = []
 
     if status_config.server_status_cpu:
-        data.append(f"CPU: {int(cpu_status()):02d}%")
+        if status_config.server_status_per_cpu:
+            data.append("CPU:")
+            for index, per_cpu in enumerate(per_cpu_status()):
+                data.append(f"  core{index + 1}: {int(per_cpu):02d}%")
+        else:
+            data.append(f"CPU: {int(cpu_status()):02d}%")
 
     if status_config.server_status_memory:
         data.append(f"Memory: {int(memory_status()):02d}%")
 
     if status_config.server_status_disk:
-        data.append(f"Disk:\n" + "\n".join(
-            f"  {k}: {int(v.percent):02d}%" for k, v in disk_usage().items()))
+        data.append("Disk:")
+        for k, v in disk_usage().items():
+            data.append(f"  {k}: {int(v.percent):02d}%")
 
     await matcher.send(message="\n".join(data))
 

@@ -4,19 +4,23 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:15:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-10-04 15:33:30
+@LastEditTime   : 2021-03-16 16:59:22
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import Dict
+from typing import List, Dict
 
 import psutil
 
 
 def cpu_status() -> float:
     return psutil.cpu_percent(interval=1)  # type: ignore
+
+
+def per_cpu_status() -> List[float]:
+    return psutil.cpu_percent(interval=1, percpu=True)  # type: ignore
 
 
 def memory_status() -> float:
