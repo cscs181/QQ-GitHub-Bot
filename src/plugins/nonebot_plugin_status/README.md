@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-15 14:40:25
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2020-11-15 15:07:47
+ * @LastEditTime   : 2021-03-16 17:14:08
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -44,6 +44,12 @@ _✨ NoneBot 服务器状态（CPU, Memory, Disk Usage）查看插件 ✨_
 - 类型: `bool`
 - 默认: `True`
 - 说明: 是否显示 CPU 占用百分比
+
+### server_status_per_cpu
+
+- 类型: `bool`
+- 默认: `False`
+- 说明: 是否显示每个 CPU 核心占用百分比
 
 ### server_status_memory
 
