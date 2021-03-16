@@ -20,6 +20,7 @@ services:
       - ENVIRONMENT=prod
       - HOST=$HOST
       - PORT=$PORT
+      - MAX_WORKERS=1
       - APP_MODULE=bot:app
       # - SECRET=$SECRET
       # - ACCESS_TOKEN=$ACCESS_TOKEN
