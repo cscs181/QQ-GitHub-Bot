@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###
 # @Author         : yanyongyu
 # @Date           : 2021-03-08 22:03:15
 # @LastEditors    : yanyongyu
-# @LastEditTime   : 2021-03-09 01:37:02
+# @LastEditTime   : 2021-03-16 18:16:47
 # @Description    : None
 # @GitHub         : https://github.com/yanyongyu
 ###

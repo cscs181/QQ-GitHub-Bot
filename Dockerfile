@@ -19,6 +19,7 @@ RUN echo "deb http://mirrors.aliyun.com/debian/ buster main contrib non-free" >>
     && apt-get update
 
 RUN echo "Install wkhtmltox renderer..." \
+    && chmod +x ./download_wkhtmltox.sh \
     && ./download_wkhtmltox.sh buster_amd64 \
     && apt-get install -y xvfb ./wkhtmltox_*.deb\
     && rm wkhtmltox_*.deb download_wkhtmltox.sh
