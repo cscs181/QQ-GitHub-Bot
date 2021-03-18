@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-16 00:59:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-16 01:01:00
+@LastEditTime   : 2021-03-19 01:09:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -42,7 +42,8 @@ async def create_hook(repo: Union[str, LazyRepository],
     g = Github(token)
 
     repo = await g.get_repo(repo, False) if isinstance(repo, str) else repo
-    config = HookConfig.parse_obj(config)
+    config = HookConfig.parse_obj(config) if isinstance(config,
+                                                        dict) else config
 
     try:
         return await repo.create_hook(config, events, active)

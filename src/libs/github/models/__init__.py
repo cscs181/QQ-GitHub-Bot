@@ -4,54 +4,44 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:34:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-16 00:05:53
+@LastEditTime   : 2021-03-19 01:23:51
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-import inspect
-from typing import Any, Type, Union, TypeVar
+from contextvars import ContextVar
+from typing import Type, TypeVar
 
-from pydantic import BaseModel as _BaseModel, root_validator
+from pydantic import BaseModel as _BaseModel, Field
 
 from ..request import Requester
 
 _T = TypeVar("_T", bound="BaseModel")
 
+_requester: ContextVar[Requester] = ContextVar("_requester")
+
 
 class BaseModel(_BaseModel):
-    requester: Requester
+    requester: Requester = Field(default_factory=lambda: _requester.get())
+
+    def __init__(self, **data):
+        hd = None
+        if "requester" in data:
+            hd = _requester.set(data["requester"])
+        super(BaseModel, self).__init__(**data)
+        if hd:
+            _requester.reset(hd)
 
     class Config:
         extra = "allow"
         arbitrary_types_allowed = True
 
-    @root_validator(pre=True)
-    def apply_requester(cls, values: dict) -> dict:
-        assert "requester" in values, "requester needed"
-        for name, info in cls.__fields__.items():
-            is_model = inspect.isclass(info.type_) and issubclass(
-                info.type_, BaseModel)
-            is_generic = (
-                hasattr(info.type_, "__origin__") and
-                info.type_.__origin__ is Union and  # type: ignore
-                any(issubclass(x, BaseModel)
-                    for x in info.type_.__args__)  # type: ignore
-            )
-            if name in values and (is_model or is_generic):
-                if isinstance(values[name], dict):
-                    values[name]["requester"] = values["requester"]
-                elif isinstance(values[name], list):
-                    for value in values[name]:
-                        value["requester"] = values["requester"]
-        return values
-
     async def close(self):
         await self.requester.close()
 
     @classmethod
-    def parse_obj(cls: Type[_T], obj: Any) -> _T:
+    def parse_obj(cls: Type[_T], obj: dict) -> _T:
         return super(BaseModel, cls).parse_obj(obj)  # type: ignore
 
 
