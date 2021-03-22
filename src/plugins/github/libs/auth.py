@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:30:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-16 00:16:40
+@LastEditTime   : 2021-03-23 00:35:49
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -43,7 +43,9 @@ def get_auth_link(username: str) -> str:
         "client_id":
             config.github_client_id,
         "redirect_uri":
-            urllib.parse.urljoin(config.github_self_host, "/api/github/auth"),
+            urllib.parse.urljoin(
+                config.github_self_host,  # type: ignore
+                "/api/github/auth"),
         "scope":
             "admin:repo_hook,repo",
         "state":

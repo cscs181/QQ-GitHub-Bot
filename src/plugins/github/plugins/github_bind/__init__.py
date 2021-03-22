@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-15 22:07:08
+@LastEditTime   : 2021-03-23 00:38:38
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -59,7 +59,7 @@ async def process_repo(bot: Bot, event: GroupMessageEvent, state: T_State):
         await bind.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
         return
 
-    set_group_bind_repo(event.group_id, repo.full_name)
+    set_group_bind_repo(str(event.group_id), repo.full_name)
     await bind.finish(f"本群成功绑定仓库 {repo.full_name} ！")
 
 
@@ -75,8 +75,8 @@ unbind.__doc__ = """
 
 @unbind.handle()
 async def process_unbind(bot: Bot, event: GroupMessageEvent):
-    if exists_group_bind_repo(event.group_id):
-        delete_group_bind_repo(event.group_id)
+    if exists_group_bind_repo(str(event.group_id)):
+        delete_group_bind_repo(str(event.group_id))
         await unbind.finish("成功解绑仓库！")
     else:
         await unbind.finish("尚未绑定仓库！")
