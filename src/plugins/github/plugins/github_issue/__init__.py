@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-15 23:15:06
+@LastEditTime   : 2021-03-24 00:30:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,8 +21,8 @@ from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, GroupMess
 
 from src.libs.utils import only_group
 from ... import github_config as config
-from ...libs.redis import get_group_bind_repo
 from ...libs.issue import get_issue, issue_to_image
+from ...libs.redis import get_group_bind_repo, set_message_info
 
 # allow using api without token
 try:
@@ -57,8 +57,9 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
         return
     img = await issue_to_image(issue_)
     if img:
-        await issue.finish(
+        message_id: int = await issue.send(
             MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"))
+        set_message_info(str(message_id), owner, repo, number)
 
 
 issue_short = on_regex(ISSUE_REGEX,
@@ -74,7 +75,7 @@ issue_short.__doc__ = """
 async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
     group = state["_matched_dict"]
     number = int(group["number"])
-    full_name = get_group_bind_repo(event.group_id)
+    full_name = get_group_bind_repo(str(event.group_id))
     if not full_name:
         await issue_short.finish("此群尚未与仓库绑定！")
         return
@@ -94,5 +95,6 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
         return
     img = await issue_to_image(issue_)
     if img:
-        await issue.finish(
+        message_id = await issue.send(
             MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"))
+        set_message_info(str(message_id), owner, repo, number)

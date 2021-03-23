@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-16 00:59:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-19 01:09:32
+@LastEditTime   : 2021-03-24 00:23:45
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -30,8 +30,9 @@ except AssertionError:
 def create_hook_url(full_name: str) -> str:
     random_string = secrets.token_urlsafe(16)
     set_repo_hook(random_string, full_name)
-    return urllib.parse.urljoin(config.github_self_host,
-                                f"/api/github/hooks/{random_string}")
+    return urllib.parse.urljoin(
+        config.github_self_host,  # type: ignore
+        f"/api/github/hooks/{random_string}")
 
 
 async def create_hook(repo: Union[str, LazyRepository],
