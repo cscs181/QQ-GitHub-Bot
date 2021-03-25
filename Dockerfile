@@ -12,7 +12,7 @@ RUN poetry export --without-hashes -f requirements.txt \
     && poetry run playwright install \
     && poetry install --no-dev
 
-COPY ./download_wkhtmltox.sh /app/
+COPY ./scripts/download_wkhtmltox.sh /app/
 
 RUN echo "deb http://mirrors.aliyun.com/debian/ buster main contrib non-free" >> /etc/apt/sources.list\
     && echo "deb http://mirrors.aliyun.com/debian/ buster-updates main contrib non-free" >> /etc/apt/sources.list\

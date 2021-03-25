@@ -32,6 +32,7 @@ services:
       - redis
     depends_on:
       - redis
+    restart: always
 networks:
   bot_net: {}
 volumes:
