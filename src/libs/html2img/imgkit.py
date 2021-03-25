@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-07 00:01:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-09 01:33:58
+@LastEditTime   : 2021-03-25 16:01:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -47,8 +47,6 @@ class IMGKit(object):
                 source) if source_type == "file" else StringSource(
                     source)  # type: ignore
         self._config: Optional[Config] = config
-        self._wkhtmltoimage = None
-        self._xvfb = None
 
         self.options: OPTION_TYPE = options or {}
         if isinstance(self._source, StringSource):
@@ -63,9 +61,6 @@ class IMGKit(object):
     def __await__(self):
         if not self._config:
             self._config = yield from Config().__await__()
-
-        self.wkhtmltoimage = self._config.wkhtmltoimage
-        self.xvfb = self._config.xvfb
 
         if isinstance(self._source, StringSource):
             self.options = {
@@ -94,13 +89,11 @@ class IMGKit(object):
 
     @property
     def wkhtmltoimage(self):
-        if not self._wkhtmltoimage:
-            raise RuntimeError(f"ImgKit {self} is never awaited!")
-        return self._wkhtmltoimage
+        return self.config.wkhtmltoimage
 
-    @wkhtmltoimage.setter
-    def wkhtmltoimage(self, value: Union[str, bytes]):
-        self._wkhtmltoimage = value
+    @property
+    def xvfb(self):
+        return self.config.xvfb
 
     def _gegetate_args(self,
                        options: OPTION_TYPE) -> Generator[str, None, None]:

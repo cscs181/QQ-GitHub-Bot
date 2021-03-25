@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-06 23:07:39
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-09 00:22:51
+@LastEditTime   : 2021-03-25 16:06:57
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -70,7 +70,8 @@ class Config(object):
     @property
     def wkhtmltoimage(self) -> Union[str, bytes]:
         if not self._wkhtmltoimage:
-            raise RuntimeError(f"Config {self} is never awaited!")
+            raise RuntimeError(
+                f"wkhtmltox not installed or Config {self} is never awaited!")
         return self._wkhtmltoimage
 
     @wkhtmltoimage.setter
@@ -80,7 +81,8 @@ class Config(object):
     @property
     def xvfb(self) -> Union[str, bytes]:
         if not self._xvfb:
-            raise RuntimeError(f"Config {self} is never awaited!")
+            raise RuntimeError(
+                f"xvfb not installed or Config {self} is never awaited!")
         return self._xvfb
 
     @xvfb.setter

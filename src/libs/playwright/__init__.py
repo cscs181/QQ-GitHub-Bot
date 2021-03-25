@@ -4,15 +4,16 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 13:42:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-12 14:00:53
+@LastEditTime   : 2021-03-25 16:17:09
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import Optional
+from typing import Optional, Generator
+from contextlib import asynccontextmanager
 
-from playwright.async_api import async_playwright, Browser
+from playwright.async_api import async_playwright, Browser, Page
 
 _browser: Optional[Browser] = None
 
@@ -26,3 +27,13 @@ async def init(**kwargs) -> Browser:
 
 async def get_browser(**kwargs) -> Browser:
     return _browser or await init(**kwargs)
+
+
+@asynccontextmanager
+async def get_new_page(**kwargs) -> Generator[Page, None, None]:
+    browser = await get_browser()
+    page = await browser.new_page(**kwargs)
+    try:
+        yield page
+    finally:
+        await page.close()

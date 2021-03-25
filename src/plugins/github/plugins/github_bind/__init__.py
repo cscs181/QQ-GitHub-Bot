@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-23 00:38:38
+@LastEditTime   : 2021-03-25 15:40:54
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,7 +21,7 @@ from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
 
 from ...libs.repo import get_repo
 from ... import github_config as config
-from src.libs.utils import allow_cancel, only_group
+from src.utils import allow_cancel, only_group
 from ...libs.redis import set_group_bind_repo, delete_group_bind_repo, exists_group_bind_repo
 
 REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)$"

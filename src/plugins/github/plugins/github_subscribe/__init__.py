@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 23:14:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-16 01:09:42
+@LastEditTime   : 2021-03-25 15:51:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,9 +19,9 @@ from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 from nonebot.adapters.cqhttp import GROUP_ADMIN, GROUP_OWNER, PRIVATE_FRIEND
 
+from src.utils import allow_cancel
 from ... import github_config as config
 from ...libs.auth import get_user_token
-from src.libs.utils import allow_cancel
 from ...libs.hook import create_hook, has_hook, create_hook_url
 
 REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)$"
@@ -60,8 +60,7 @@ async def process_repo(bot: Bot, event: MessageEvent, state: T_State):
         return
 
     try:
-        if not await has_hook(f"{owner}/{repo_name}", token,
-                              config.github_self_host):  # type: ignore
+        if not await has_hook(f"{owner}/{repo_name}", token):
             url = create_hook_url(f"{owner}/{repo_name}")
             await create_hook(
                 f"{owner}/{repo_name}", {
@@ -77,5 +76,4 @@ async def process_repo(bot: Bot, event: MessageEvent, state: T_State):
         await subscribe.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
         return
 
-    # TODO: save hook url repo
     await subscribe.finish(f"成功订阅仓库 {owner}/{repo_name}！")

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-12 15:35:56
+@LastEditTime   : 2021-03-25 16:15:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,7 +19,7 @@ from src.libs import html2img
 from src.libs.github import Github
 from ... import github_config as config
 from src.libs.github.models import Issue
-from src.libs.playwright import get_browser
+from src.libs.playwright import get_new_page
 
 
 async def get_issue(owner: str,
@@ -96,13 +96,12 @@ async def issue_to_image(issue: Issue,
     if not wkhtmltoimage:
         imgkit._prepend_css(CSS_FILES)
         html: str = imgkit.source.get_source()  # type: ignore
-        browser = await get_browser()
-        page = await browser.new_page(viewport={"width": width, "height": 300})
-        try:
+        async with get_new_page(viewport={
+                "width": width,
+                "height": 300
+        }) as page:
             await page.set_content(html)
             img = await page.screenshot(full_page=True)
-        finally:
-            await page.close()
-        return img
+            return img
     else:
         return await imgkit.to_img()

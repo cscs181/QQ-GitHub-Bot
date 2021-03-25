@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-24 00:30:41
+@LastEditTime   : 2021-03-25 15:41:25
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,10 +19,11 @@ from httpx import HTTPStatusError
 from nonebot.typing import T_State
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, GroupMessageEvent
 
-from src.libs.utils import only_group
+from src.utils import only_group
 from ... import github_config as config
+from ...utils import send_github_message
+from ...libs.redis import get_group_bind_repo
 from ...libs.issue import get_issue, issue_to_image
-from ...libs.redis import get_group_bind_repo, set_message_info
 
 # allow using api without token
 try:
@@ -57,9 +58,9 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
         return
     img = await issue_to_image(issue_)
     if img:
-        message_id: int = await issue.send(
+        await send_github_message(
+            issue, owner, repo, number,
             MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"))
-        set_message_info(str(message_id), owner, repo, number)
 
 
 issue_short = on_regex(ISSUE_REGEX,
@@ -95,6 +96,6 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
         return
     img = await issue_to_image(issue_)
     if img:
-        message_id = await issue.send(
+        await send_github_message(
+            issue_short, owner, repo, number,
             MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"))
-        set_message_info(str(message_id), owner, repo, number)

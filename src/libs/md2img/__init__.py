@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 00:26:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-09 01:33:46
+@LastEditTime   : 2021-03-25 15:57:19
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,7 +12,7 @@ __author__ = "yanyongyu"
 
 from io import BytesIO
 from typing_extensions import Literal
-from typing import Any, Union, TextIO, Mapping, Optional, Sequence, BinaryIO
+from typing import Any, Union, Mapping, Optional, Sequence, BinaryIO
 
 import markdown
 
