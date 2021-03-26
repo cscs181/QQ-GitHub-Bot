@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 15:39:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-11 16:53:48
+@LastEditTime   : 2021-03-26 16:46:39
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -32,5 +32,5 @@ class User(BaseModel):
     repos_url: str
     events_url: str
     received_events_url: str
-    type: Literal["User"]
+    type: Literal["User", "Bot"]
     site_admin: bool

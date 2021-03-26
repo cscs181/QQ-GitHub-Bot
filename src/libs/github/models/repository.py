@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:33:54
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-16 01:08:41
+@LastEditTime   : 2021-03-26 15:35:27
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -28,6 +28,11 @@ class LazyRepository(BaseModel):
     full_name: str
 
     async def get_issue(self, number: int) -> Issue:
+        """
+        GET /repo/:full_name/issues/:number
+        
+        https://docs.github.com/en/rest/reference/issues#get-an-issue
+        """
         headers = {"Accept": "application/vnd.github.v3.full+json"}
         response = await self.requester.request(
             "GET", f"/repos/{self.full_name}/issues/{number}", headers=headers)
