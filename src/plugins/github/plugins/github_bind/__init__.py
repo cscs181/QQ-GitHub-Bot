@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-25 15:40:54
+@LastEditTime   : 2021-03-27 14:49:03
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,7 +22,8 @@ from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
 from ...libs.repo import get_repo
 from ... import github_config as config
 from src.utils import allow_cancel, only_group
-from ...libs.redis import set_group_bind_repo, delete_group_bind_repo, exists_group_bind_repo
+from ...libs.redis import (set_group_bind_repo, get_group_bind_repo,
+                           delete_group_bind_repo, exists_group_bind_repo)
 
 REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)$"
 
@@ -33,6 +34,8 @@ bind = on_command("bind",
 bind.__doc__ = """
 /bind owner/repo
 绑定当前群与指定仓库
+/bind
+查询当前绑定的仓库
 """
 
 bind.args_parser(allow_cancel)
@@ -43,6 +46,16 @@ async def process_arg(bot: Bot, event: GroupMessageEvent, state: T_State):
     arg = event.get_plaintext().strip()
     if arg:
         state["full_name"] = arg
+
+
+@bind.handle()
+async def check_exists(bot: Bot, event: GroupMessageEvent, state: T_State):
+    if "full_name" in state:
+        return
+
+    exist_repo = get_group_bind_repo(str(event.group_id))
+    if exist_repo:
+        await bind.finish(f"当前已绑定仓库：{exist_repo}")
 
 
 @bind.got("full_name", prompt="绑定仓库的全名？(e.g. owner/repo)")
