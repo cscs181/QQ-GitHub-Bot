@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 23:14:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-25 15:51:12
+@LastEditTime   : 2021-03-31 23:20:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,6 +13,7 @@ __author__ = "yanyongyu"
 import re
 
 from nonebot import on_command
+from nonebot.log import logger
 from httpx import HTTPStatusError
 from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
@@ -72,8 +73,13 @@ async def process_repo(bot: Bot, event: MessageEvent, state: T_State):
         if e.response.status_code == 403:
             await subscribe.finish(f"你无权操作仓库 {owner}/{repo_name}！")
             return
-        print(e.response.status_code, e.response.text)
-        await subscribe.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
+        elif e.response.status_code == 404:
+            await subscribe.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
+            return
+        logger.opt(color=True,
+                   exception=e).error(f"github_subscribe: create_hook")
+        await subscribe.finish("订阅仓库时发生错误，请联系开发者或重试")
         return
 
+    # TODO: subscribe repo with (repo, user, bot) info
     await subscribe.finish(f"成功订阅仓库 {owner}/{repo_name}！")
