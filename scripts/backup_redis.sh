@@ -8,4 +8,4 @@
 # @GitHub         : https://github.com/yanyongyu
 ###
 
-docker run --rm --volumes-from $(docker-compose config --volumes) -v $(pwd):/backup busybox tar cvf /backup/backup-$(date +"%s").tar /data
+docker run --rm --volumes-from bot_redis -v $(pwd):/backup busybox tar -cvf /backup/backup-$(date +"%s").tar -C / data/
