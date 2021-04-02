@@ -19,7 +19,7 @@ COPY ./pyproject.toml ./poetry.lock* /app/
 RUN poetry export --without-hashes -f requirements.txt \
     | poetry run pip install -r /dev/stdin \
     && echo "Install playwright headless browser..." \
-    && poetry run playwright install \
+    && poetry run playwright install chromium \
     && apt-get install -y libnss3-dev libxss1 libasound2 libxrandr2\
     libatk1.0-0 libgtk-3-0 libgbm-dev\
     && poetry install --no-dev
