@@ -17,4 +17,24 @@ GitHub Bot for QQ
 
 ## 简介
 
-**In Developing...**
+在 QQ 内 **订阅**, **查看**, **处理** GitHub Issue and Pull Request 。
+
+## 配置
+
+配置项参考 [.env 文件](./.env)
+
+## 部署
+
+1. 使用 `nb-cli`
+
+   ```bash
+   pip install nb-cli[deploy]
+   nb build
+   nb up
+   ```
+
+2. 使用 `docker-compose`
+
+   ```bash
+   docker-compose up -d
+   ```
