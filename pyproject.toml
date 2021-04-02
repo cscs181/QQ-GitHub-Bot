@@ -14,23 +14,23 @@ Markdown = "^3.3.4"
 sentry-sdk = "^1.0.0"
 playwright = "^1.9.2"
 typing-extensions = "^3.7.4"
-nonebot2 = "^2.0.0-alpha.12"
+nonebot2 = "=2.0.0a13.post1"
 nonebot-adapter-cqhttp = "^2.0.0-alpha.12"
 redis = {version = "^3.5.3", extras = ["hiredis"]}
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"
 nonebot-plugin-test = "^0.2.0"
-nb-cli = {version = "^0.4.0", extras = ["deploy"]}
+nb-cli = {version = "^0.4.1", extras = ["deploy"]}
 
 [nonebot.plugins]
 plugins = ["nonebot_plugin_test"]
 plugin_dirs = ["src/plugins"]
 
-[[tool.poetry.source]]
-name = "aliyun"
-url = "https://mirrors.aliyun.com/pypi/simple/"
-default = true
+# [[tool.poetry.source]]
+# name = "aliyun"
+# url = "https://mirrors.aliyun.com/pypi/simple/"
+# default = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

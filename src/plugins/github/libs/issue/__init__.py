@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-26 17:38:11
+@LastEditTime   : 2021-04-02 14:50:56
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,7 +13,6 @@ __author__ = "yanyongyu"
 from pathlib import Path
 from typing import List, Optional
 
-import httpx
 import markdown
 
 from src.libs import html2img
@@ -56,6 +55,8 @@ DIFF_CONTENT = """
 ````
 """
 OPTIONS: dict = {"encoding": "utf-8"}
+if config.xvfb_installed:
+    OPTIONS["xvfb"] = ""
 CSS_FILES: List[str] = [
     str(Path(__file__).parent / "github.css"),
     str(Path(__file__).parent / "status.css")

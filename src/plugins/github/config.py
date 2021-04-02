@@ -21,6 +21,7 @@ class Config(BaseSettings):
     github_client_secret: Optional[str] = None
     github_self_host: Optional[str] = None
     github_self_ssl: bool = False
+    xvfb_installed: bool = False
 
     @validator("github_command_priority")
     def validate_priority(cls, v):

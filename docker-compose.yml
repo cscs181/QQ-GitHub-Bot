@@ -12,7 +12,7 @@ services:
     build: .
     container_name: bot
     volumes:
-      - "/etc/localtime:/etc/localtime"
+      # - "/etc/localtime:/etc/localtime"
       - "./:/app/"
     ports:
       - "$PORT:$PORT"
@@ -24,6 +24,7 @@ services:
       - APP_MODULE=bot:app
       # - SECRET=$SECRET
       # - ACCESS_TOKEN=$ACCESS_TOKEN
+      - XVFB_INSTALLED=true
       - REDIS_HOST=bot_redis
       - REDIS_PORT=6379
     networks:
