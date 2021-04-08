@@ -4,22 +4,26 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-04-02 14:50:56
+@LastEditTime   : 2021-04-09 00:21:08
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from pathlib import Path
+from datetime import timedelta
 from typing import List, Optional
 
 import markdown
+from nonebot import require
 
 from src.libs import html2img
 from src.libs.github import Github
 from ... import github_config as config
 from src.libs.github.models import Issue
 from src.libs.playwright import get_new_page
+
+cache = require("redis_provider").cache
 
 
 async def get_issue(owner: str,
@@ -63,8 +67,35 @@ CSS_FILES: List[str] = [
 ]
 
 
+@cache(ex=timedelta(minutes=30))
+async def _gen_image(html: str,
+                     width: int,
+                     height: int,
+                     wkhtmltoimage: bool = False) -> Optional[bytes]:
+    imgkit = await html2img.IMGKit(html,
+                                   "string",
+                                   options={
+                                       **OPTIONS, "width": width,
+                                       "height": height
+                                   },
+                                   css=CSS_FILES)
+    if not wkhtmltoimage:
+        imgkit._prepend_css(CSS_FILES)
+        html = imgkit.source.get_source()  # type: ignore
+        async with get_new_page(viewport={
+                "width": width,
+                "height": height
+        }) as page:
+            await page.set_content(html)
+            img = await page.screenshot(full_page=True)
+            return img
+    else:
+        return await imgkit.to_img()
+
+
 async def issue_diff_to_image(issue: Issue,
                               width: int = 800,
+                              height: int = 300,
                               wkhtmltoimage: bool = False) -> Optional[bytes]:
     if not issue.is_pull_request:
         return
@@ -87,27 +118,12 @@ async def issue_diff_to_image(issue: Issue,
             "noclasses": True
         }}) + "</article>"
 
-    OPTIONS["width"] = width
-    imgkit = await html2img.IMGKit(html,
-                                   "string",
-                                   options=OPTIONS,
-                                   css=CSS_FILES)
-    if not wkhtmltoimage:
-        imgkit._prepend_css(CSS_FILES)
-        html: str = imgkit.source.get_source()  # type: ignore
-        async with get_new_page(viewport={
-                "width": width,
-                "height": 300
-        }) as page:
-            await page.set_content(html)
-            img = await page.screenshot(full_page=True)
-            return img
-    else:
-        return await imgkit.to_img()
+    return await _gen_image(html, width, height, wkhtmltoimage)
 
 
 async def issue_to_image(issue: Issue,
                          width: int = 800,
+                         height: int = 300,
                          wkhtmltoimage: bool = False) -> Optional[bytes]:
     CONTENT = HEADER + COMMENT_HEADER
     if issue.body_html:
@@ -173,20 +189,4 @@ async def issue_to_image(issue: Issue,
     finally:
         await issue.close()
 
-    OPTIONS["width"] = width
-    imgkit = await html2img.IMGKit(html,
-                                   "string",
-                                   options=OPTIONS,
-                                   css=CSS_FILES)
-    if not wkhtmltoimage:
-        imgkit._prepend_css(CSS_FILES)
-        html: str = imgkit.source.get_source()  # type: ignore
-        async with get_new_page(viewport={
-                "width": width,
-                "height": 300
-        }) as page:
-            await page.set_content(html)
-            img = await page.screenshot(full_page=True)
-            return img
-    else:
-        return await imgkit.to_img()
+    return await _gen_image(html, width, height, wkhtmltoimage)
