@@ -32,17 +32,29 @@ except ImportError:
     get_user_token = None
 
 ISSUE_REGEX = r"^#(?P<number>\d+)$"
-REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)$"
-REPO_ISSUE_REGEX = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)#(?P<number>\d+)$"
+REPO_REGEX: str = (r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
+                   r"(?P<repo>[a-zA-Z0-9_\-]+)$")
+REPO_ISSUE_REGEX = (r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
+                    r"(?P<repo>[a-zA-Z0-9_\-]+)#(?P<number>\d+)$")
+GITHUB_LINK_REGEX = (
+    r"github\.com/"
+    r"(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
+    r"(?P<repo>[a-zA-Z0-9_\-]+)/(?:issues|pull)/(?P<number>\d+)")
 
 issue = on_regex(REPO_ISSUE_REGEX, priority=config.github_command_priority)
 issue.__doc__ = """
 ^owner/repo#number$
 获取指定仓库 issue / pr
 """
+link = on_regex(GITHUB_LINK_REGEX, priority=config.github_command_priority)
+link.__doc__ = """
+github.com/owner/repo/issues/number
+识别链接获取仓库 issue / pr
+"""
 
 
 @issue.handle()
+@link.handle()
 async def handle(bot: Bot, event: MessageEvent, state: T_State):
     group: Dict[str, str] = state["_matched_dict"]
     owner = group["owner"]
