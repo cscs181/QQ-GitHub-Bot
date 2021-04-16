@@ -51,7 +51,7 @@ async def server_status(bot: Bot, matcher: Matcher):
 
 async def _group_poke(bot: Bot, event: Event, state: T_State) -> bool:
     return isinstance(event, PokeNotifyEvent) and str(
-        event.user_id) in global_config.superusers
+        event.user_id) in global_config.superusers and event.is_tome()
 
 
 group_poke = on_notice(_group_poke, priority=10, block=True)
