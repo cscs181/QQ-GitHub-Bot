@@ -40,7 +40,8 @@ issue.__doc__ = """
 ^owner/repo$
 获取指定仓库封面
 """
-link = on_regex(GITHUB_LINK_REGEX, priority=config.github_command_priority)
+# lower priority than issue link
+link = on_regex(GITHUB_LINK_REGEX, priority=config.github_command_priority + 1)
 link.__doc__ = """
 github.com/owner/repo
 识别链接获取仓库封面
