@@ -212,3 +212,6 @@ class Repository(LazyRepository):
     organization: Optional[Organization] = None
     parent: Optional["Repository"] = None
     source: Optional["Repository"] = None
+
+
+Repository.update_forward_refs()
