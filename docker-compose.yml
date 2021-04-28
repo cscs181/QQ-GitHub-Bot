@@ -8,6 +8,7 @@ services:
       - bot_redis_data:/data
     networks:
       - bot_net
+    restart: always
   nonebot:
     build: .
     container_name: bot
