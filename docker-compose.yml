@@ -1,4 +1,4 @@
-version: "3"
+version: "2"
 services:
   redis:
     image: redis:6.2
@@ -35,6 +35,8 @@ services:
     depends_on:
       - redis
     restart: always
+    mem_limit: 1024M
+    mem_reservation: 512M
 networks:
   bot_net: {}
 volumes:
