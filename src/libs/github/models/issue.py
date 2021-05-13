@@ -4,14 +4,14 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-26 16:20:01
+@LastEditTime   : 2021-05-14 01:45:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Union, Optional
 
 from pydantic import BaseModel as _BaseModel
 
@@ -20,6 +20,9 @@ from . import BaseModel, PaginatedList
 from .user import User
 from .label import Label
 from .comment import Comment
+from .timeline import (TimelineEvent, TimelineEventCommited,
+                       TimelineEventCommented, TimelineEventReviewed,
+                       TimelineEventRenamed)
 
 
 class IssuePullRequest(_BaseModel):
@@ -74,4 +77,21 @@ class Issue(BaseModel):
                              self.requester,
                              "GET",
                              self.comments_url,
+                             headers=headers)
+
+    async def get_timeline(self) -> PaginatedList[TimelineEvent]:
+        """
+        GET /repo/:full_name/issues/:number/timeline
+        
+        https://docs.github.com/en/rest/reference/issues#list-timeline-events-for-an-issue
+        """
+        headers = {
+            "Accept": "application/vnd.github.mockingbird-preview.full+json"
+        }
+        return PaginatedList(Union[TimelineEventCommited,
+                                   TimelineEventCommented,
+                                   TimelineEventReviewed, TimelineEventRenamed],
+                             self.requester,
+                             "GET",
+                             f"{self.url}/timeline",
                              headers=headers)

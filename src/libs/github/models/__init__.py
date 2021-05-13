@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:34:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-26 16:47:42
+@LastEditTime   : 2021-05-14 01:23:03
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,7 +13,7 @@ __author__ = "yanyongyu"
 from contextvars import ContextVar
 from typing import Any, List, Dict, Type, TypeVar, Generic, AsyncIterator
 
-from pydantic import BaseModel as _BaseModel, Field
+from pydantic import BaseModel as _BaseModel, Field, parse_obj_as
 
 from ..request import Requester
 
@@ -86,7 +86,7 @@ class PaginatedList(AsyncIterator, Generic[C]):
         response = await self.requester.request_json(*self.args, **self.kwargs)
         content = response.json()
         self._contents.extend([
-            self.cls.parse_obj({
+            parse_obj_as(self.cls, {
                 "requester": self.requester,
                 **x
             }) for x in content
@@ -100,6 +100,7 @@ from .label import Label
 from .license import License
 from .comment import Comment
 from .hook import Hook, HookConfig
+from .timeline import TimelineEvent
 from .permissions import Permissions
 from .organization import Organization
 from .repository import LazyRepository, Repository
