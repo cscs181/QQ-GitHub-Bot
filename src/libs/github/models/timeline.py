@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-14 02:18:47
+@LastEditTime   : 2021-05-14 18:13:03
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -73,7 +73,6 @@ class TimelineEventCommented(TimelineEvent):
     body: str
     body_text: Optional[str]
     body_html: Optional[str]
-    performed_via_github_app: bool
     actor: User
 
 
@@ -117,4 +116,3 @@ class TimelineEventRenamed(TimelineEvent):
     commit_url: Optional[str]
     created_at: datetime
     rename: TimelineEventRenamedDetail
-    performed_via_github_app: Optional[bool]

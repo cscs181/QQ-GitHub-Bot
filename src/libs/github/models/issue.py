@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-14 01:45:44
+@LastEditTime   : 2021-05-14 18:13:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -40,6 +40,7 @@ class Issue(BaseModel):
     labels_url: str
     comments_url: str
     events_url: str
+    timeline_url: str
     html_url: str
     number: int
     state: str
@@ -93,5 +94,5 @@ class Issue(BaseModel):
                                    TimelineEventReviewed, TimelineEventRenamed],
                              self.requester,
                              "GET",
-                             f"{self.url}/timeline",
+                             self.timeline_url,
                              headers=headers)
