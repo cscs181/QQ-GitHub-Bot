@@ -208,9 +208,9 @@ class Repository(LazyRepository):
     allow_squash_merge: Optional[bool] = None
     delete_branch_on_merge: Optional[bool] = None
     allow_merge_commit: Optional[bool] = Optional[None]
-    subscribers_count: int
-    network_count: int
-    license: Optional[License]
+    subscribers_count: int = 0
+    network_count: int = 0
+    license: Optional[License] = None
     organization: Optional[Organization] = None
     parent: Optional["Repository"] = None
     source: Optional["Repository"] = None
