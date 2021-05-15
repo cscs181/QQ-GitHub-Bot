@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-14 17:11:26
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-14 18:19:48
+ * @LastEditTime   : 2021-05-15 17:56:55
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -23,6 +23,7 @@
       type="text/css"
     />
   </head>
+
   <body>
     <div class="application-main">
       <main>
@@ -50,12 +51,14 @@
               ></path>
             </svg>
             <span class="author flex-self-stretch">
-              <a href="#" style="box-shadow: transparent 0px 0px"> {owner} </a>
+              <a href="#" style="box-shadow: transparent 0px 0px">
+                {{owner|escape}}
+              </a>
             </span>
             <span class="mx-1 flex-self-stretch color-text-secondary">/</span>
             <strong class="flex-self-stretch">
               <a href="#" style="box-shadow: transparent 0px 0px">
-                {repo_name}
+                {{repo_name|escape}}
               </a>
             </strong>
           </h1>
@@ -84,10 +87,10 @@
                         break-word
                       "
                     >
-                      <span class="markdown-title">{title}</span>
-                      <span class="f1-light color-text-tertiary"
-                        >#{number}</span
-                      >
+                      <span class="markdown-title">{{issue.title|escape}}</span>
+                      <span class="f1-light color-text-tertiary">
+                        #{{issue.number|escape}}
+                      </span>
                     </h1>
                   </div>
                 </div>
@@ -110,11 +113,41 @@
                       flex-self-start flex-md-self-center
                     "
                   >
-                    <span class="State State--{status}">{status}</span>
+                    <span class="State State--{{issue.state|escape}} mr-2">
+                      {{issue.state|escape}}
+                    </span>
                   </div>
                   <div class="d-flex flex-items-baseline">
                     <div class="flex-auto min-width-0 mb-2">
-                      {comments} comments
+                      {{issue.comments}} comments
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="discussion_bucket">
+                <div
+                  class="
+                    d-flex
+                    flex-column flex-md-row
+                    gutter-lg gutter-condensed
+                  "
+                >
+                  <div class="flex-shrink-0 col-12 mb-4 mb-md-0">
+                    <div class="ml-0 pl-0 ml-md-6 pl-md-3">
+                      <!-- prettier-ignore -->
+                      {% set event = issue %}
+                      {% include "comment.html" %}
+
+                      {% for event in timeline -%}
+
+                      {% if event|classname == "TimelineEventCommented" -%}
+                      {% include "comment.html" %}
+
+                      {% elif event|classname == "TimelineEventCommited" -%}
+                      {% include "commit.html" %}
+                      {%- endif %}
+                      
+                      {%- endfor %}
                     </div>
                   </div>
                 </div>

@@ -91,7 +91,8 @@ class Issue(BaseModel):
         }
         return PaginatedList(Union[TimelineEventCommited,
                                    TimelineEventCommented,
-                                   TimelineEventReviewed, TimelineEventRenamed],
+                                   TimelineEventReviewed, TimelineEventRenamed,
+                                   TimelineEvent],
                              self.requester,
                              "GET",
                              self.timeline_url,

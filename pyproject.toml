@@ -17,6 +17,8 @@ typing-extensions = "^3.7.4"
 nonebot2 = "=2.0.0a13.post1"
 nonebot-adapter-cqhttp = "^2.0.0-alpha.12"
 redis = {version = "^3.5.3", extras = ["hiredis"]}
+Jinja2 = "^3.0.0"
+humanize = "^3.5.0"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-25 15:41:25
+@LastEditTime   : 2021-05-15 18:14:30
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -68,7 +68,7 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
     except HTTPStatusError:
         await issue.finish(f"Issue #{number} not found for repo {owner}/{repo}")
         return
-    img = await issue_to_image(issue_)
+    img = await issue_to_image(owner, repo, issue_)
     if img:
         await send_github_message(
             issue, owner, repo, number,
@@ -106,7 +106,7 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
     except HTTPStatusError:
         await issue.finish(f"Issue #{number} not found for repo {owner}/{repo}")
         return
-    img = await issue_to_image(issue_)
+    img = await issue_to_image(owner, repo, issue_)
     if img:
         await send_github_message(
             issue_short, owner, repo, number,

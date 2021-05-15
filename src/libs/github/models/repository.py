@@ -33,7 +33,9 @@ class LazyRepository(BaseModel):
         
         https://docs.github.com/en/rest/reference/issues#get-an-issue
         """
-        headers = {"Accept": "application/vnd.github.v3.full+json"}
+        headers = {
+            "Accept": "application/vnd.github.mockingbird-preview.full+json"
+        }
         response = await self.requester.request(
             "GET", f"/repos/{self.full_name}/issues/{number}", headers=headers)
         return Issue.parse_obj({"requester": self.requester, **response.json()})

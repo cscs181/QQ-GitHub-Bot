@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-04-09 00:21:08
+@LastEditTime   : 2021-05-15 18:14:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,6 +18,7 @@ import markdown
 from nonebot import require
 
 from src.libs import html2img
+from .render import issue_to_html
 from src.libs.github import Github
 from ... import github_config as config
 from src.libs.github.models import Issue
@@ -45,26 +46,9 @@ async def get_issue(owner: str,
     return issue
 
 
-HEADER = """
-# {title} <font color=#8b949e>{type}#{number}</font>
-
-<span class="State State--{status}">{status}</span> <small><font color=#8b949e>{comments} comments</font></small>
-"""
-COMMENT_HEADER = """
-### **{login}** <small><font color=#8b949e>{updated_at}</font></small>
-"""
-DIFF_CONTENT = """
-````diff
-{diff_content}
-````
-"""
 OPTIONS: dict = {"encoding": "utf-8"}
 if config.xvfb_installed:
     OPTIONS["xvfb"] = ""
-CSS_FILES: List[str] = [
-    str(Path(__file__).parent / "github.css"),
-    str(Path(__file__).parent / "status.css")
-]
 
 
 @cache(ex=timedelta(minutes=30))
@@ -77,10 +61,8 @@ async def _gen_image(html: str,
                                    options={
                                        **OPTIONS, "width": width,
                                        "height": height
-                                   },
-                                   css=CSS_FILES)
+                                   })
     if not wkhtmltoimage:
-        imgkit._prepend_css(CSS_FILES)
         html = imgkit.source.get_source()  # type: ignore
         async with get_new_page(viewport={
                 "width": width,
@@ -93,6 +75,7 @@ async def _gen_image(html: str,
         return await imgkit.to_img()
 
 
+# FIXME
 async def issue_diff_to_image(issue: Issue,
                               width: int = 800,
                               height: int = 300,
@@ -106,87 +89,26 @@ async def issue_diff_to_image(issue: Issue,
     finally:
         await issue.close()
     diff_content = response.text
-    html = '<article class="markdown-body">' + markdown.markdown(
-        HEADER.format(title=issue.title,
-                      type="pr",
-                      number=issue.number,
-                      status=issue.state,
-                      comments=issue.comments) +
-        DIFF_CONTENT.format(diff_content=diff_content),
-        extensions=["fenced_code", "codehilite"],
-        extension_configs={"codehilite": {
-            "noclasses": True
-        }}) + "</article>"
+    # html = '<article class="markdown-body">' + markdown.markdown(
+    #     HEADER.format(title=issue.title,
+    #                   type="pr",
+    #                   number=issue.number,
+    #                   status=issue.state,
+    #                   comments=issue.comments) +
+    #     DIFF_CONTENT.format(diff_content=diff_content),
+    #     extensions=["fenced_code", "codehilite"],
+    #     extension_configs={"codehilite": {
+    #         "noclasses": True
+    #     }}) + "</article>"
 
-    return await _gen_image(html, width, height, wkhtmltoimage)
+    # return await _gen_image(html, width, height, wkhtmltoimage)
 
 
-async def issue_to_image(issue: Issue,
+async def issue_to_image(owner: str,
+                         repo_name: str,
+                         issue: Issue,
                          width: int = 800,
                          height: int = 300,
                          wkhtmltoimage: bool = False) -> Optional[bytes]:
-    CONTENT = HEADER + COMMENT_HEADER
-    if issue.body_html:
-        html = '<article class="markdown-body">' + markdown.markdown(
-            CONTENT.format(
-                title=issue.title,
-                type="pr" if issue.is_pull_request else "issue",
-                number=issue.number,
-                status=issue.state,
-                comments=issue.comments,
-                login=issue.user.login,
-                updated_at=issue.updated_at.strftime(
-                    "%Y-%m-%d %H:%M:%S"))) + issue.body_html + "</article>"
-    elif issue.body:
-        html = '<article class="markdown-body">' + markdown.markdown(
-            CONTENT.format(
-                title=issue.title,
-                type="pr" if issue.is_pull_request else "issue",
-                number=issue.number,
-                status=issue.state,
-                comments=issue.comments,
-                login=issue.user.login,
-                updated_at=issue.updated_at.strftime("%Y-%m-%d %H:%M:%S")) +
-            issue.body,
-            extensions=["fenced_code", "codehilite"],
-            extension_configs={"codehilite": {
-                "noclasses": True
-            }}) + "</article>"
-    else:
-        html = '<article class="markdown-body">' + markdown.markdown(
-            CONTENT.format(title=issue.title,
-                           type="pr" if issue.is_pull_request else "issue",
-                           number=issue.number,
-                           status=issue.state,
-                           comments=issue.comments,
-                           login=issue.user.login,
-                           updated_at=issue.updated_at.strftime(
-                               "%Y-%m-%d %H:%M:%S")) +
-            "_No description provided._\n") + "</article>"
-
-    try:
-        comments = await issue.get_comments()
-        async for comment in comments:
-            if comment.body_html:
-                html += markdown.markdown(
-                    COMMENT_HEADER.format(
-                        login=comment.user.login,
-                        updated_at=comment.updated_at)) + comment.body_html
-            elif comment.body:
-                html += markdown.markdown(
-                    COMMENT_HEADER.format(login=comment.user.login,
-                                          updated_at=comment.updated_at) +
-                    comment.body,
-                    extensions=["fenced_code", "codehilite"],
-                    extension_configs={"codehilite": {
-                        "noclasses": True
-                    }})
-            else:
-                html += markdown.markdown(
-                    COMMENT_HEADER.format(login=comment.user.login,
-                                          updated_at=comment.updated_at) +
-                    "_No description provided._\n")
-    finally:
-        await issue.close()
-
+    html = await issue_to_html(owner, repo_name, issue)
     return await _gen_image(html, width, height, wkhtmltoimage)

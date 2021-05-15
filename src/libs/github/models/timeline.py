@@ -28,7 +28,7 @@ class TimelineEvent(BaseModel):
 class TimelineEventCommitedUser(_BaseModel):
     name: str
     email: str
-    data: datetime
+    date: datetime
 
 
 class TimelineEventCommitedTree(_BaseModel):
