@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-14 18:13:03
+@LastEditTime   : 2021-05-16 12:46:25
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -97,7 +97,10 @@ class TimelineEventReviewed(TimelineEvent):
     body: str
     body_text: Optional[str]
     body_html: Optional[str]
-    links: TimelineEventReviewedLinks
+    links: TimelineEventReviewedLinks = Field(alias="_links")
+
+    class Config:
+        allow_population_by_field_name = True
 
 
 class TimelineEventRenamedDetail(_BaseModel):
@@ -116,3 +119,6 @@ class TimelineEventRenamed(TimelineEvent):
     commit_url: Optional[str]
     created_at: datetime
     rename: TimelineEventRenamedDetail
+
+
+# TODO: other events

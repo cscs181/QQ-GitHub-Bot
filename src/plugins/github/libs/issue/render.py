@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-14 18:26:47
+@LastEditTime   : 2021-05-16 12:47:10
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -32,8 +32,18 @@ def relative_time(value: datetime):
     return humanize.naturaltime(datetime.now(value.tzinfo) - value)
 
 
+def review_state(value: str) -> str:
+    states = {
+        "approved": "approved these changes",
+        "changes_requested": "requested changes",
+        "commented": "reviewed"
+    }
+    return states.get(value, value)
+
+
 env.filters["classname"] = classname
 env.filters["relative_time"] = relative_time
+env.filters["review_state"] = review_state
 
 
 async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
@@ -41,6 +51,7 @@ async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
     timeline = await issue.get_timeline()
     return await template.render_async(owner=owner,
                                        repo_name=repo_name,
+                                       showavatar=True,
                                        issue=issue,
                                        timeline=timeline)
     # return HTML.format(owner=escape(owner),

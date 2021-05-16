@@ -28,5 +28,6 @@ async def allow_cancel(bot: Bot, event: Event, state: T_State):
     """An args parser allows to finish the session."""
     message = str(event.get_message())
     if message == "取消":
+        await bot.send(event, "已取消")
         raise FinishedException
     state[state["_current_key"]] = str(event.get_message())

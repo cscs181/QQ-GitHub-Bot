@@ -2,12 +2,13 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-15 15:08:50
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-15 16:50:54
+ * @LastEditTime   : 2021-05-16 12:21:39
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 <div class="TimelineItem pt-0">
+  {% if showavatar %}
   <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">
     <a class="d-inline-block" href="#">
       <img
@@ -18,6 +19,7 @@
       />
     </a>
   </div>
+  {% endif %}
   <div class="TimelineItem-body my-0">
     <div
       class="
@@ -57,7 +59,14 @@
               {{event.user.login|escape}}
             </a>
           </strong>
-          <a class="Link--secondary"> {{event.updated_at|relative_time}} </a>
+          <a class="Link--secondary">
+            <!-- prettier-ignore -->
+            {% if event.updated_at is defined -%}
+            {{event.updated_at|relative_time}}
+            {%- else -%}
+            left a comment
+            {%- endif %}
+          </a>
         </h3>
       </div>
       <div>
@@ -67,7 +76,7 @@
               <td
                 class="d-block width-full p-3 overflow-visible f5 markdown-body"
               >
-                {{event.body_html|default("")}}
+                {{event.body_html|default(event.body_text)|default(event.body)}}
               </td>
             </tr>
           </tbody>

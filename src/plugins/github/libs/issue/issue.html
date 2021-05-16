@@ -145,10 +145,19 @@
 
                       {% elif event|classname == "TimelineEventCommited" -%}
                       {% include "commit.html" %}
+
+                      {% elif event|classname == "TimelineEventReviewed" -%}
+                      {% include "review.html" %}
                       {%- endif %}
-                      
+
+                      <!-- TODO: other events -->
+
                       {%- endfor %}
                     </div>
+                    <div
+                      class="color-bg-canvas border-top"
+                      style="height: 50px"
+                    ></div>
                   </div>
                 </div>
               </div>
