@@ -12,9 +12,9 @@ services:
   nonebot:
     build: .
     container_name: bot
-    volumes:
-      # - "/etc/localtime:/etc/localtime"
-      - "./:/app/"
+    # volumes:
+    #   - "/etc/localtime:/etc/localtime"
+    #   - "./:/app/"
     ports:
       - "$PORT:$PORT"
     environment:

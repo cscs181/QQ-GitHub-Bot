@@ -14,7 +14,7 @@ ENV LC_ALL zh_CN.UTF-8
 
 RUN python3 -m pip install poetry && poetry config virtualenvs.create false
 
-COPY ./pyproject.toml ./poetry.lock* /app/
+COPY ./ /app/
 
 RUN poetry export --without-hashes -f requirements.txt \
     | poetry run pip install -r /dev/stdin \
@@ -24,10 +24,8 @@ RUN poetry export --without-hashes -f requirements.txt \
     libatk1.0-0 libgtk-3-0 libgbm-dev\
     && poetry install --no-dev
 
-COPY ./scripts/download_wkhtmltox.sh /app/
-
 RUN echo "Install wkhtmltox renderer..." \
-    && chmod +x ./download_wkhtmltox.sh \
-    && ./download_wkhtmltox.sh buster_amd64 \
+    && chmod +x ./scripts/download_wkhtmltox.sh \
+    && ./scripts/download_wkhtmltox.sh buster_amd64 \
     && apt-get install -y xvfb ./wkhtmltox_*.deb\
-    && rm wkhtmltox_*.deb download_wkhtmltox.sh
+    && rm wkhtmltox_*.deb
