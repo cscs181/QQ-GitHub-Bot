@@ -19,6 +19,7 @@ nonebot-adapter-cqhttp = "^2.0.0-alpha.12"
 redis = {version = "^3.5.3", extras = ["hiredis"]}
 Jinja2 = "^3.0.0"
 humanize = "^3.5.0"
+unidiff = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"

@@ -49,9 +49,6 @@ class IMGKit(object):
         self._config: Optional[Config] = config
 
         self.options: OPTION_TYPE = options or {}
-        if isinstance(self._source, StringSource):
-            self.options.update(
-                self._find_options_in_meta(source))  # type: ignore
 
         self.toc = toc or {}
         self.cover = cover

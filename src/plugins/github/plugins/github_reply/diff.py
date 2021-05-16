@@ -50,7 +50,8 @@ async def handle_link(bot: Bot, event: MessageEvent, state: T_State):
         await diff.finish(f"Issue #{message_info.number} not found for repo"
                           f" {message_info.owner}/{message_info.repo}")
         return
-    img = await issue_diff_to_image(issue_)
+    img = await issue_diff_to_image(message_info.owner, message_info.repo,
+                                    issue_)
     if img:
         await send_github_message(
             diff, message_info.owner, message_info.repo, message_info.number,

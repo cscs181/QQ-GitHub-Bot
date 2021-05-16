@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-16 12:47:10
+@LastEditTime   : 2021-05-16 23:52:11
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,10 +17,13 @@ from datetime import datetime
 
 import jinja2
 import humanize
+from unidiff import PatchSet
 
 from src.libs.github.models import Issue
 
-env = jinja2.Environment(loader=jinja2.FileSystemLoader(Path(__file__).parent),
+env = jinja2.Environment(extensions=["jinja2.ext.loopcontrols"],
+                         loader=jinja2.FileSystemLoader(
+                             Path(__file__).parent / "templates"),
                          enable_async=True)
 
 
@@ -54,9 +57,12 @@ async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
                                        showavatar=True,
                                        issue=issue,
                                        timeline=timeline)
-    # return HTML.format(owner=escape(owner),
-    #                    repo_name=escape(repo_name),
-    #                    title=escape(issue.title),
-    #                    number=issue.number,
-    #                    status=escape(issue.state),
-    #                    comments=issue.comments)
+
+
+async def pr_diff_to_html(owner: str, repo_name: str, issue: Issue) -> str:
+    template = env.get_template("diff.html")
+    diff = await issue.get_diff()
+    return await template.render_async(owner=owner,
+                                       repo_name=repo_name,
+                                       issue=issue,
+                                       diff=PatchSet(diff))

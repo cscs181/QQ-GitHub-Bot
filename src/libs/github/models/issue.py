@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-14 18:13:34
+@LastEditTime   : 2021-05-16 22:47:53
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,7 +22,8 @@ from .label import Label
 from .comment import Comment
 from .timeline import (TimelineEvent, TimelineEventCommited,
                        TimelineEventCommented, TimelineEventReviewed,
-                       TimelineEventRenamed)
+                       TimelineEventRenamed, TimelineEventMerged,
+                       TimelineEventClosed)
 
 
 class IssuePullRequest(_BaseModel):
@@ -92,8 +93,20 @@ class Issue(BaseModel):
         return PaginatedList(Union[TimelineEventCommited,
                                    TimelineEventCommented,
                                    TimelineEventReviewed, TimelineEventRenamed,
+                                   TimelineEventMerged, TimelineEventClosed,
                                    TimelineEvent],
                              self.requester,
                              "GET",
                              self.timeline_url,
                              headers=headers)
+
+    async def get_diff(self) -> str:
+        """
+        GET /repo/:full_name/pull/:number.diff
+        """
+        if not self.is_pull_request:
+            raise RuntimeError(f"Issue {self.number} is not a pull request")
+
+        response = await self.requester.request("GET",
+                                                self.pull_request.diff_url)
+        return response.text
