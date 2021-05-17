@@ -2,342 +2,212 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-16 22:59:29
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-17 01:20:25
+ * @LastEditTime   : 2021-05-17 10:13:06
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <link rel="dns-prefetch" href="https://github.githubassets.com" />
-    <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
-    <link rel="dns-prefetch" href="https://github-cloud.s3.amazonaws.com" />
-    <link
-      rel="dns-prefetch"
-      href="https://user-images.githubusercontent.com/"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/@primer/css@^17.0.0/dist/primer.css"
-      rel="stylesheet"
-      type="text/css"
-    />
-  </head>
-
-  <body>
-    <div class="application-main">
-      <main>
-        <div class="color-bg-secondary pt-3 mb-5">
-          <h1
-            class="
-              d-flex
-              px-3 px-md-4 px-lg-5
-              flex-wrap flex-items-center
-              break-word
-              f3
-              text-normal
-            "
-          >
-            <svg
-              class="octicon octicon-repo color-text-secondary mr-2"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              width="16"
-              height="16"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"
-              ></path>
-            </svg>
-            <span class="author flex-self-stretch">
-              <a href="#" style="box-shadow: transparent 0px 0px">
-                {{owner|escape}}
-              </a>
-            </span>
-            <span class="mx-1 flex-self-stretch color-text-secondary">/</span>
-            <strong class="flex-self-stretch">
-              <a href="#" style="box-shadow: transparent 0px 0px">
-                {{repo_name|escape}}
-              </a>
-            </strong>
-          </h1>
-        </div>
+<!-- prettier-ignore -->
+{% extends "main.html" %}
+{% block main %}
+{% include "repo-header.html" %}
+<div class="container-xl clearfix new-discussion-timeline px-3 px-md-4 px-lg-5">
+  <div class="repository-content">
+    <div class="clearfix">
+      {% include "issue-header.html" %}
+      <div id="diff-view">
+        {% for file in diff -%}
         <div
           class="
-            container-xl
-            clearfix
-            new-discussion-timeline
-            px-3 px-md-4 px-lg-5
+            position-relative
+            mb-4
+            color-bg-white
+            border
+            rounded-2
+            color-border-secondary
           "
         >
-          <div class="repository-content">
-            <div class="clearfix">
-              <div class="color-bg-canvas mb-3" id="header">
-                <div>
-                  <div class="d-flex flex-column flex-md-row">
-                    <h1
+          <div
+            class="
+              d-flex
+              flex-md-row flex-column flex-md-items-center
+              px-2
+              py-1
+              color-bg-secondary
+              border-bottom
+              rounded-top-2
+            "
+            style="position: sticky; top: 0; z-index: 6"
+          >
+            <div
+              class="f6 flex-auto min-width-0 mb-md-0 mb-2"
+              style="line-height: 32px"
+            >
+              <button class="btn-octicon" style="width: 22px">
+                <svg
+                  class="octicon octicon-chevron-down Details-content--hidden"
+                  viewBox="0 0 16 16"
+                  version="1.1"
+                  width="16"
+                  height="16"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
+                  ></path>
+                </svg>
+              </button>
+              <span class="diffstat">
+                <!-- prettier-ignore -->
+                {% set changed = file.added + file.removed %}
+                {% set percent = (5 * file.added / changed)|round|int %}
+                {{ changed }}
+                {% for i in range(percent) %}
+                <span class="diffstat-block-added"></span>
+                <!-- prettier-ignore -->
+                {% endfor %}
+                {% for i in range(5 - percent) %}
+                <span class="diffstat-block-deleted"></span>
+                {% endfor %}
+              </span>
+              <a class="Link--primary"> {{file.path}} </a>
+            </div>
+          </div>
+          <div>
+            <div class="data highlight overflow-x-auto">
+              <table class="width-full">
+                <tbody>
+                  {% for hunk in file -%}
+                  <tr>
+                    <!-- prettier-ignore -->
+                    <td
                       class="
-                        text-normal
-                        mb-2
-                        lh-condensed
-                        f1
-                        mr-0
-                        flex-auto
-                        break-word
+                        f6
+                        px-2
+                        color-bg-info
+                        color-text-tertiary
+                      "
+                      style="
+                        vertical-align: top;
+                        line-height: 20px;
+                        text-align: right;
+                        width: 1%;
+                        min-width: 50px;
                       "
                     >
-                      <span class="markdown-title">{{issue.title|escape}}</span>
-                      <span class="f1-light color-text-tertiary">
-                        #{{issue.number|escape}}
-                      </span>
-                    </h1>
-                  </div>
-                </div>
-                <div
-                  class="
-                    d-flex
-                    flex-items-center flex-wrap
-                    mt-0
-                    color-text-secondary
-                    pb-2
-                    border-bottom
-                    color-border-primary
-                    f5
-                  "
-                >
-                  <div
-                    class="
-                      flex-shrink-0
-                      mb-2
-                      flex-self-start flex-md-self-center
-                    "
-                  >
+                      ...
+                    </td>
                     <!-- prettier-ignore -->
-                    {% if timeline|selectattr("event", "equalto", "merged")|list|length >= 1 %}
-                      {% set state = "merged" %}
-                      {% else %}
-                      {% set state = issue.state %}
-                      {% endif %}
-                    <span class="State State--{{state|escape}} mr-2">
-                      <!-- prettier-ignore -->
-                      {% if state == "open" %}
-                        {% include "components/svg-closed.html" %}
-                        {% elif state == "closed" %}
-                        {% include "components/svg-closed.html" %}
-                        {% elif state == "merged" %}
-                        {% include "components/svg-merged.html" %}
-                        {% endif %}
-                        {{state|escape}}
-                    </span>
-                  </div>
-                  <div class="d-flex flex-items-baseline">
-                    <div class="flex-auto min-width-0 mb-2">
-                      {{issue.comments}} comments
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="diff-view">
-                {% for file in diff -%}
-                <div
-                  class="
-                    position-relative
-                    mb-4
-                    color-bg-white
-                    border
-                    rounded-2
-                    color-border-secondary
-                  "
-                >
-                  <div
-                    class="
-                      d-flex
-                      flex-md-row flex-column flex-md-items-center
-                      px-2
-                      py-1
-                      color-bg-secondary
-                      border-bottom
-                      rounded-top-2
-                    "
-                    style="position: sticky; top: 0; z-index: 6"
-                  >
-                    <div
-                      class="f6 flex-auto min-width-0 mb-md-0 mb-2"
-                      style="line-height: 32px"
+                    <td
+                      class="
+                        f6
+                        px-2
+                        color-bg-info
+                        color-text-tertiary
+                      "
+                      style="
+                        vertical-align: top;
+                        line-height: 20px;
+                        text-align: right;
+                        width: 1%;
+                        min-width: 50px;
+                      "
                     >
-                      <button class="btn-octicon" style="width: 22px">
-                        <svg
-                          class="
-                            octicon octicon-chevron-down
-                            Details-content--hidden
-                          "
-                          viewBox="0 0 16 16"
-                          version="1.1"
-                          width="16"
-                          height="16"
-                          aria-hidden="true"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
-                          ></path>
-                        </svg>
-                      </button>
-                      <span class="diffstat">
-                        <!-- prettier-ignore -->
-                        {% set changed = file.added + file.removed %}
-                        {% set percent = (5 * file.added / changed)|round|int %}
-                        {{ changed }}
-                        {% for i in range(percent) %}
-                        <span class="diffstat-block-added"></span>
-                        <!-- prettier-ignore -->
-                        {% endfor %}
-                        {% for i in range(5 - percent) %}
-                        <span class="diffstat-block-deleted"></span>
-                        {% endfor %}
+                      ...
+                    </td>
+                    <td
+                      class="
+                        f6
+                        break-word
+                        position-relative
+                        px-2
+                        py-1
+                        color-bg-info color-text-secondary
+                      "
+                      style="vertical-align: center; line-height: 20px"
+                    >
+                      {{ "@@ -%d,%d +%d,%d @@%s\n"|format( hunk.source_start,
+                      hunk.source_length, hunk.target_start, hunk.target_length,
+                      " " + hunk.section_header if hunk.section_header else '')
+                      }}
+                    </td>
+                  </tr>
+                  {% for line in hunk -%}
+                  <tr>
+                    <!-- prettier-ignore -->
+                    <td
+                      class="
+                        f6
+                        px-2
+                        color-text-tertiary
+                        {% if line.is_added -%}
+                        color-bg-success
+                        {% elif line.is_removed -%}
+                        color-bg-danger
+                        {%- endif %}
+                      "
+                      style="
+                        vertical-align: top;
+                        line-height: 20px;
+                        text-align: right;
+                        width: 1%;
+                        min-width: 50px;
+                      "
+                    >
+                      {{ line.source_line_no or "" }}
+                    </td>
+                    <!-- prettier-ignore -->
+                    <td
+                      class="
+                        f6
+                        px-2
+                        color-text-tertiary
+                        {% if line.is_added -%}
+                        color-bg-success
+                        {% elif line.is_removed -%}
+                        color-bg-danger
+                        {%- endif %}
+                      "
+                      style="
+                        vertical-align: top;
+                        line-height: 20px;
+                        text-align: right;
+                        width: 1%;
+                        min-width: 50px;
+                      "
+                    >
+                      {{ line.target_line_no or "" }}
+                    </td>
+                    <!-- prettier-ignore -->
+                    <td
+                      class="
+                        position-relative
+                        px-2
+                        {% if line.is_added -%}
+                        color-bg-success
+                        {% elif line.is_removed -%}
+                        color-bg-danger
+                        {%- endif %}
+                      "
+                      style="vertical-align: top; line-height: 20px"
+                    >
+                      <span class="color-text-primary f6 text-mono">
+                        {{ line|string }}
                       </span>
-                      <a class="Link--primary"> {{file.path}} </a>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="data highlight overflow-x-auto">
-                      <table class="width-full">
-                        <tbody>
-                          {% for hunk in file -%}
-                          <tr>
-                            <!-- prettier-ignore -->
-                            <td
-                              class="
-                                f6
-                                px-2
-                                color-bg-info
-                                color-text-tertiary
-                              "
-                              style="
-                                vertical-align: top;
-                                line-height: 20px;
-                                text-align: right;
-                                width: 1%;
-                                min-width: 50px;
-                              "
-                            >
-                              ...
-                            </td>
-                            <!-- prettier-ignore -->
-                            <td
-                              class="
-                                f6
-                                px-2
-                                color-bg-info
-                                color-text-tertiary
-                              "
-                              style="
-                                vertical-align: top;
-                                line-height: 20px;
-                                text-align: right;
-                                width: 1%;
-                                min-width: 50px;
-                              "
-                            >
-                              ...
-                            </td>
-                            <td
-                              class="
-                                f6
-                                break-word
-                                position-relative
-                                px-2
-                                py-1
-                                color-bg-info color-text-secondary
-                              "
-                              style="vertical-align: center; line-height: 20px"
-                            >
-                              {{ "@@ -%d,%d +%d,%d @@%s\n"|format(
-                              hunk.source_start, hunk.source_length,
-                              hunk.target_start, hunk.target_length, " " +
-                              hunk.section_header if hunk.section_header else
-                              '') }}
-                            </td>
-                          </tr>
-                          {% for line in hunk -%}
-                          <tr>
-                            <!-- prettier-ignore -->
-                            <td
-                              class="
-                                f6
-                                px-2
-                                color-text-tertiary
-                                {% if line.is_added -%}
-                                color-bg-success
-                                {% elif line.is_removed -%}
-                                color-bg-danger
-                                {%- endif %}
-                              "
-                              style="
-                                vertical-align: top;
-                                line-height: 20px;
-                                text-align: right;
-                                width: 1%;
-                                min-width: 50px;
-                              "
-                            >
-                              {{ line.source_line_no or "" }}
-                            </td>
-                            <!-- prettier-ignore -->
-                            <td
-                              class="
-                                f6
-                                px-2
-                                color-text-tertiary
-                                {% if line.is_added -%}
-                                color-bg-success
-                                {% elif line.is_removed -%}
-                                color-bg-danger
-                                {%- endif %}
-                              "
-                              style="
-                                vertical-align: top;
-                                line-height: 20px;
-                                text-align: right;
-                                width: 1%;
-                                min-width: 50px;
-                              "
-                            >
-                              {{ line.target_line_no or "" }}
-                            </td>
-                            <!-- prettier-ignore -->
-                            <td
-                              class="
-                                position-relative
-                                px-2
-                                {% if line.is_added -%}
-                                color-bg-success
-                                {% elif line.is_removed -%}
-                                color-bg-danger
-                                {%- endif %}
-                              "
-                              style="vertical-align: top; line-height: 20px"
-                            >
-                              <span class="color-text-primary f6 text-mono">
-                                {{ line|string }}
-                              </span>
-                            </td>
-                          </tr>
-                          <!-- prettier-ignore -->
-                          {%- endfor %}
-                          {%- endfor %}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                {%- endfor %}
-              </div>
+                    </td>
+                  </tr>
+                  <!-- prettier-ignore -->
+                  {%- endfor %}
+                  {%- endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-      </main>
+        {%- endfor %}
+      </div>
     </div>
-  </body>
-</html>
+  </div>
+</div>
+{% endblock %}

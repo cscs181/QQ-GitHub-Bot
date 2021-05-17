@@ -54,7 +54,6 @@ async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
     timeline = await issue.get_timeline()
     return await template.render_async(owner=owner,
                                        repo_name=repo_name,
-                                       showavatar=True,
                                        issue=issue,
                                        timeline=timeline)
 

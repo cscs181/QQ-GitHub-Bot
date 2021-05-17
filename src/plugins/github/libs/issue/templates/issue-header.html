@@ -1,0 +1,56 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2021-05-17 10:03:08
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2021-05-17 10:06:05
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+<div class="color-bg-canvas mb-3" id="header">
+  <div>
+    <div class="d-flex flex-column flex-md-row">
+      <h1 class="text-normal mb-2 lh-condensed f1 mr-0 flex-auto break-word">
+        <span class="markdown-title">{{issue.title|escape}}</span>
+        <span class="f1-light color-text-tertiary">
+          #{{issue.number|escape}}
+        </span>
+      </h1>
+    </div>
+  </div>
+  <div
+    class="
+      d-flex
+      flex-items-center flex-wrap
+      mt-0
+      color-text-secondary
+      pb-2
+      border-bottom
+      color-border-primary
+      f5
+    "
+  >
+    <div class="flex-shrink-0 mb-2 flex-self-start flex-md-self-center">
+      <!-- prettier-ignore -->
+      {% if timeline|selectattr("event", "equalto", "merged")|list|length >= 1 %}
+          {% set state = "merged" %}
+          {% else %}
+          {% set state = issue.state %}
+          {% endif %}
+      <span class="State State--{{state|escape}} mr-2">
+        <!-- prettier-ignore -->
+        {% if state == "open" %}
+            {% include "components/svg-closed.html" %}
+            {% elif state == "closed" %}
+            {% include "components/svg-closed.html" %}
+            {% elif state == "merged" %}
+            {% include "components/svg-merged.html" %}
+            {% endif %}
+            {{state|escape}}
+      </span>
+    </div>
+    <div class="d-flex flex-items-baseline">
+      <div class="flex-auto min-width-0 mb-2">{{issue.comments}} comments</div>
+    </div>
+  </div>
+</div>
