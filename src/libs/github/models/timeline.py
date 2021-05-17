@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-16 21:41:24
+@LastEditTime   : 2021-05-17 18:53:05
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,7 +22,6 @@ from .user import User
 
 
 class TimelineEvent(BaseModel):
-    node_id: str
     event: str
 
 
@@ -52,6 +51,7 @@ class TimelineEventCommitedVerification(_BaseModel):
 
 class TimelineEventCommited(TimelineEvent):
     event: Literal["committed"]
+    node_id: str
     sha: str
     url: str
     html_url: str
@@ -66,6 +66,7 @@ class TimelineEventCommited(TimelineEvent):
 class TimelineEventCommented(TimelineEvent):
     event: Literal["commented"]
     id: int
+    node_id: str
     url: str
     html_url: str
     issue_url: str
@@ -91,6 +92,7 @@ class TimelineEventReviewedLinks(_BaseModel):
 class TimelineEventReviewed(TimelineEvent):
     event: Literal["reviewed"]
     id: int
+    node_id: str
     user: User
     state: str
     html_url: str
@@ -112,6 +114,7 @@ class TimelineEventRenamedDetail(_BaseModel):
 class TimelineEventRenamed(TimelineEvent):
     event: Literal["renamed"]
     id: int
+    node_id: str
     url: str
     actor: User
     commit_id: Optional[str]
@@ -123,6 +126,7 @@ class TimelineEventRenamed(TimelineEvent):
 class TimelineEventMerged(TimelineEvent):
     event: Literal["merged"]
     id: int
+    node_id: str
     url: str
     actor: User
     commit_id: str
@@ -133,6 +137,7 @@ class TimelineEventMerged(TimelineEvent):
 class TimelineEventClosed(TimelineEvent):
     event: Literal["closed"]
     id: int
+    node_id: str
     url: str
     actor: User
     commit_id: Optional[str]
