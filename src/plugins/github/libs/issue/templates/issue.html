@@ -37,6 +37,9 @@
               {% elif event|classname == "TimelineEventReviewed" -%}
               {% include "review.html" %}
 
+              {% elif event|classname == "TimelineEventReviewRequested" -%}
+              {% include "review_request.html" %}
+
               {% elif event|classname == "TimelineEventRenamed" -%}
               {% include "rename.html" %}
 
@@ -54,7 +57,7 @@
               {% include "close.html" %}
               {%- endif %}
               
-              {% else %}
+              {%- else -%}
               <!-- TODO: other events -->
               <!-- prettier-ignore -->
               {%- endif %}

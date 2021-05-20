@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-16 22:47:53
+@LastEditTime   : 2021-05-21 01:02:36
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,8 +22,8 @@ from .label import Label
 from .comment import Comment
 from .timeline import (TimelineEvent, TimelineEventCommited,
                        TimelineEventCommented, TimelineEventReviewed,
-                       TimelineEventRenamed, TimelineEventMerged,
-                       TimelineEventClosed)
+                       TimelineEventReviewRequested, TimelineEventRenamed,
+                       TimelineEventMerged, TimelineEventClosed)
 
 
 class IssuePullRequest(_BaseModel):
@@ -92,9 +92,10 @@ class Issue(BaseModel):
         }
         return PaginatedList(Union[TimelineEventCommited,
                                    TimelineEventCommented,
-                                   TimelineEventReviewed, TimelineEventRenamed,
-                                   TimelineEventMerged, TimelineEventClosed,
-                                   TimelineEvent],
+                                   TimelineEventReviewed,
+                                   TimelineEventReviewRequested,
+                                   TimelineEventRenamed, TimelineEventMerged,
+                                   TimelineEventClosed, TimelineEvent],
                              self.requester,
                              "GET",
                              self.timeline_url,

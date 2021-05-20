@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-17 18:53:05
+@LastEditTime   : 2021-05-21 02:24:18
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -106,6 +106,19 @@ class TimelineEventReviewed(TimelineEvent):
     links: TimelineEventReviewedLinks = Field(alias="_links")
 
 
+class TimelineEventReviewRequested(TimelineEvent):
+    event: Literal["review_requested"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+    review_requester: User
+    requested_reviewer: User
+
+
 class TimelineEventRenamedDetail(_BaseModel):
     to: str
     from_: str = Field(alias="from")
@@ -132,6 +145,23 @@ class TimelineEventMerged(TimelineEvent):
     commit_id: str
     commit_url: str
     created_at: datetime
+
+
+class TimelineEventLabeledInfo(_BaseModel):
+    name: str
+    color: str
+
+
+class TimelineEventLabeled(TimelineEvent):
+    event: Literal["labeled"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+    label: TimelineEventLabeledInfo
 
 
 class TimelineEventClosed(TimelineEvent):
