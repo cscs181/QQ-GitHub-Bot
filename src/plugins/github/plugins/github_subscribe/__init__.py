@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 23:14:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-31 23:20:41
+@LastEditTime   : 2021-05-21 15:19:19
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -76,7 +76,7 @@ async def process_repo(bot: Bot, event: MessageEvent, state: T_State):
         elif e.response.status_code == 404:
             await subscribe.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
             return
-        logger.opt(color=True,
+        logger.opt(colors=True,
                    exception=e).error(f"github_subscribe: create_hook")
         await subscribe.finish("订阅仓库时发生错误，请联系开发者或重试")
         return
