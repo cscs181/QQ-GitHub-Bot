@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-21 01:02:36
+@LastEditTime   : 2021-05-21 14:43:11
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -23,7 +23,8 @@ from .comment import Comment
 from .timeline import (TimelineEvent, TimelineEventCommited,
                        TimelineEventCommented, TimelineEventReviewed,
                        TimelineEventReviewRequested, TimelineEventRenamed,
-                       TimelineEventMerged, TimelineEventClosed)
+                       TimelineEventLabeled, TimelineEventMerged,
+                       TimelineEventClosed)
 
 
 class IssuePullRequest(_BaseModel):
@@ -71,7 +72,7 @@ class Issue(BaseModel):
     async def get_comments(self) -> PaginatedList[Comment]:
         """
         GET /repo/:full_name/issues/:number/comments
-        
+
         https://docs.github.com/en/rest/reference/issues#list-issue-comments
         """
         headers = {"Accept": "application/vnd.github.v3.full+json"}
@@ -84,22 +85,21 @@ class Issue(BaseModel):
     async def get_timeline(self) -> PaginatedList[TimelineEvent]:
         """
         GET /repo/:full_name/issues/:number/timeline
-        
+
         https://docs.github.com/en/rest/reference/issues#list-timeline-events-for-an-issue
         """
         headers = {
             "Accept": "application/vnd.github.mockingbird-preview.full+json"
         }
-        return PaginatedList(Union[TimelineEventCommited,
-                                   TimelineEventCommented,
-                                   TimelineEventReviewed,
-                                   TimelineEventReviewRequested,
-                                   TimelineEventRenamed, TimelineEventMerged,
-                                   TimelineEventClosed, TimelineEvent],
-                             self.requester,
-                             "GET",
-                             self.timeline_url,
-                             headers=headers)
+        return PaginatedList(
+            Union[TimelineEventCommited, TimelineEventCommented,
+                  TimelineEventReviewed, TimelineEventReviewRequested,
+                  TimelineEventRenamed, TimelineEventLabeled,
+                  TimelineEventMerged, TimelineEventClosed, TimelineEvent],
+            self.requester,
+            "GET",
+            self.timeline_url,
+            headers=headers)
 
     async def get_diff(self) -> str:
         """

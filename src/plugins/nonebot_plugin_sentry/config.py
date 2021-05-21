@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2020-11-23 22:15:27
+@LastEditTime   : 2021-05-21 14:56:31
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,7 +18,6 @@ from pydantic import Field, BaseSettings
 class Config(BaseSettings):
     sentry_dsn: str
     sentry_debug: bool = False
-    sentry_release: Optional[str] = None
     sentry_release: Optional[str] = None
     sentry_environment: Optional[str] = None
     sentry_server_name: Optional[str] = None

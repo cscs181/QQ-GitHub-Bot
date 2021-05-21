@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-16 23:52:11
+@LastEditTime   : 2021-05-21 15:04:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,8 +18,9 @@ from datetime import datetime
 import jinja2
 import humanize
 from unidiff import PatchSet
+from nonebot.log import logger
 
-from src.libs.github.models import Issue
+from src.libs.github.models import Issue, TimelineEvent
 
 env = jinja2.Environment(extensions=["jinja2.ext.loopcontrols"],
                          loader=jinja2.FileSystemLoader(
@@ -44,9 +45,19 @@ def review_state(value: str) -> str:
     return states.get(value, value)
 
 
+def debug_event(event: TimelineEvent):
+    # not sub class of TimelineEvent
+    if type(event) is TimelineEvent:
+        # event not passed process
+        logger.error(f"Unhandled event type: {event.event}", event=event.dict())
+        return ""
+    return event
+
+
 env.filters["classname"] = classname
 env.filters["relative_time"] = relative_time
 env.filters["review_state"] = review_state
+env.filters["debug_event"] = debug_event
 
 
 async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
