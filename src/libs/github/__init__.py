@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 17:13:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-15 23:36:46
+@LastEditTime   : 2021-05-22 17:26:15
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -35,6 +35,12 @@ class Github:
         self._requester = Requester(token_or_client_id, client_secret, base_url,
                                     timeout, user_agent, per_page, verify)
 
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.close()
+
     async def close(self):
         return await self._requester.close()
 
@@ -53,7 +59,7 @@ class Github:
                        lazy: bool = False) -> LazyRepository:
         """
         GET /repos/:owner/:repo
-        
+
         https://docs.github.com/en/rest/reference/repos#get-a-repository
         """
         url = f"/repos/{full_name}"
@@ -71,7 +77,7 @@ class Github:
                               context: Optional[Repository] = None):
         """
         POST /markdown
-        
+
         https://docs.github.com/en/rest/reference/markdown#render-a-markdown-document
         """
         data = {"text": text}

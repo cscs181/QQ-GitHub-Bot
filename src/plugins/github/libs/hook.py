@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-16 00:59:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-25 15:49:43
+@LastEditTime   : 2021-05-22 17:34:51
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -42,27 +42,19 @@ async def create_hook(repo: Union[str, LazyRepository],
                       token: str,
                       events: Optional[List[str]] = None,
                       active: Optional[bool] = None) -> Hook:
-    g = Github(token)
+    async with Github(token) as g:
+        repo = await g.get_repo(repo, True) if isinstance(repo, str) else repo
+        config = HookConfig.parse_obj(config) if isinstance(config,
+                                                            dict) else config
 
-    repo = await g.get_repo(repo, False) if isinstance(repo, str) else repo
-    config = HookConfig.parse_obj(config) if isinstance(config,
-                                                        dict) else config
-
-    try:
         return await repo.create_hook(config, events, active)
-    finally:
-        await g.close()
 
 
 async def has_hook(repo: Union[str, LazyRepository], token: str) -> bool:
-    g = Github(token)
+    async with Github(token) as g:
+        repo = await g.get_repo(repo, True) if isinstance(repo, str) else repo
 
-    repo = await g.get_repo(repo, False) if isinstance(repo, str) else repo
-
-    try:
         hooks = await repo.get_hooks()
         return any(
             hook.config.url.startswith(config.github_self_host)  # type: ignore
             for hook in hooks)
-    finally:
-        await g.close()
