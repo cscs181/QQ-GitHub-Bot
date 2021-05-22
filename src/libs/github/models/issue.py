@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-21 14:43:11
+@LastEditTime   : 2021-05-22 15:13:00
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,11 +20,13 @@ from . import BaseModel, PaginatedList
 from .user import User
 from .label import Label
 from .comment import Comment
-from .timeline import (TimelineEvent, TimelineEventCommited,
-                       TimelineEventCommented, TimelineEventReviewed,
-                       TimelineEventReviewRequested, TimelineEventRenamed,
-                       TimelineEventLabeled, TimelineEventMerged,
-                       TimelineEventClosed)
+from .timeline import (
+    TimelineEvent, TimelineEventCommited, TimelineEventForcePushed,
+    TimelineEventHeadDeleted, TimelineEventReferenced, TimelineEventCommented,
+    TimelineEventReviewed, TimelineEventReviewRequested, TimelineEventRenamed,
+    TimelineEventLabeled, TimelineEventUnlabeled, TimelineEventMerged,
+    TimelineEventClosed, TimelineEventAddedToProject,
+    TimelineEventMovedColumnsInProject, TimelineEventRemovedFromProject)
 
 
 class IssuePullRequest(_BaseModel):
@@ -92,10 +94,15 @@ class Issue(BaseModel):
             "Accept": "application/vnd.github.mockingbird-preview.full+json"
         }
         return PaginatedList(
-            Union[TimelineEventCommited, TimelineEventCommented,
-                  TimelineEventReviewed, TimelineEventReviewRequested,
-                  TimelineEventRenamed, TimelineEventLabeled,
-                  TimelineEventMerged, TimelineEventClosed, TimelineEvent],
+            Union[TimelineEventCommited, TimelineEventForcePushed,
+                  TimelineEventHeadDeleted, TimelineEventReferenced,
+                  TimelineEventCommented, TimelineEventReviewed,
+                  TimelineEventReviewRequested, TimelineEventRenamed,
+                  TimelineEventLabeled, TimelineEventUnlabeled,
+                  TimelineEventMerged, TimelineEventClosed,
+                  TimelineEventAddedToProject,
+                  TimelineEventMovedColumnsInProject,
+                  TimelineEventRemovedFromProject, TimelineEvent],
             self.requester,
             "GET",
             self.timeline_url,

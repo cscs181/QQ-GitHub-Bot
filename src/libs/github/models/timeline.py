@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-21 14:47:24
+@LastEditTime   : 2021-05-22 15:04:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -61,6 +61,39 @@ class TimelineEventCommited(TimelineEvent):
     message: str
     parents: List[TimelineEventCommitedCommit]
     verification: TimelineEventCommitedVerification
+
+
+class TimelineEventForcePushed(TimelineEvent):
+    event: Literal["head_ref_force_pushed"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+
+
+class TimelineEventHeadDeleted(TimelineEvent):
+    event: Literal["head_ref_deleted"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+
+
+class TimelineEventReferenced(TimelineEvent):
+    event: Literal["referenced"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: str
+    commit_url: str
+    created_at: datetime
 
 
 class TimelineEventCommented(TimelineEvent):
@@ -136,7 +169,7 @@ class TimelineEventRenamed(TimelineEvent):
     rename: TimelineEventRenamedDetail
 
 
-class TimelineEventLabeledInfo(_BaseModel):
+class TimelineEventLabelInfo(_BaseModel):
     name: str
     color: str
 
@@ -150,7 +183,19 @@ class TimelineEventLabeled(TimelineEvent):
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
-    label: TimelineEventLabeledInfo
+    label: TimelineEventLabelInfo
+
+
+class TimelineEventUnlabeled(TimelineEvent):
+    event: Literal["unlabeled"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+    label: TimelineEventLabelInfo
 
 
 class TimelineEventMerged(TimelineEvent):
@@ -166,6 +211,39 @@ class TimelineEventMerged(TimelineEvent):
 
 class TimelineEventClosed(TimelineEvent):
     event: Literal["closed"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+
+
+class TimelineEventAddedToProject(TimelineEvent):
+    event: Literal["added_to_project"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+
+
+class TimelineEventMovedColumnsInProject(TimelineEvent):
+    event: Literal["moved_columns_in_project"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+
+
+class TimelineEventRemovedFromProject(TimelineEvent):
+    event: Literal["removed_from_project"]
     id: int
     node_id: str
     url: str
