@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-22 15:05:35
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-22 15:06:45
+ * @LastEditTime   : 2021-05-25 21:07:45
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -32,13 +32,15 @@
         src="{{ event.actor.avatar_url }}"
       />
     </a>
-    <a class="author Link--primary text-bold"> {{ event.actor.login }} </a>
+    <a class="author Link--primary text-bold">
+      {{ event.actor.login|escape }}
+    </a>
     <!-- prettier-ignore -->
     removed the
     {% set labelname = event.label.name %}
     {% set labelcolor = event.label.color %}
     {% include "components/issue-label.html" %}
     label
-    <a class="Link--secondary">{{event.created_at|relative_time}}</a>
+    <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
   </div>
 </div>

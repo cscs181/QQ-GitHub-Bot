@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-16 22:59:29
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-25 20:49:55
+ * @LastEditTime   : 2021-05-25 20:58:17
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -62,7 +62,7 @@
                 <!-- prettier-ignore -->
                 {% set changed = file.added + file.removed %}
                 {% set percent = (5 * file.added / changed)|round|int %}
-                {{ changed }}
+                {{ changed|escape }}
                 {% for i in range(percent) %}
                 <span class="diffstat-block-added"></span>
                 <!-- prettier-ignore -->
@@ -71,7 +71,7 @@
                 <span class="diffstat-block-deleted"></span>
                 {% endfor %}
               </span>
-              <a class="Link--primary"> {{file.path}} </a>
+              <a class="Link--primary"> {{ file.path|escape }} </a>
             </div>
           </div>
           <div>

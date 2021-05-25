@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-15 17:00:16
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-22 14:44:17
+ * @LastEditTime   : 2021-05-25 21:03:11
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -38,11 +38,11 @@
           >
             <div class="AvatarStack-body">
               <a class="avatar avatar-user">
-                <img height="20" width="20" src="{{event.author.avatar}}">
+                <img height="20" width="20" src="{{ event.author.avatar }}">
               </a>
               {% if coauthor -%}
               <a class="avatar avatar-user">
-                <img height="20" width="20" src="{{event.committer.avatar}}">
+                <img height="20" width="20" src="{{ event.committer.avatar }}">
               </a>
               {%- endif %}
             </div>

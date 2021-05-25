@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-15 15:08:50
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-22 15:16:29
+ * @LastEditTime   : 2021-05-25 21:02:58
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -15,7 +15,7 @@
         class="avatar rounded"
         height="40"
         width="40"
-        src="{{event.user.avatar_url}}"
+        src="{{ event.user.avatar_url }}"
       />
     </a>
   </div>
@@ -45,7 +45,7 @@
         <div class="d-none d-sm-flex">
           {% if event.author_association != "NONE" -%}
           <span class="Label Label--primary text-semibold">
-            {{event.author_association|title|escape}}
+            {{ event.author_association|title|escape }}
           </span>
           <!-- prettier-ignore -->
           {%- endif %}
@@ -56,13 +56,13 @@
         <h3 class="min-width-0 py-2 flex-auto text-normal f5">
           <strong class="css-truncate">
             <a class="Link--primary css-truncate-target width-fit">
-              {{event.user.login|escape}}
+              {{ event.user.login|escape }}
             </a>
           </strong>
           <a class="Link--secondary">
             <!-- prettier-ignore -->
             {% if event.updated_at is defined -%}
-            {{event.updated_at|relative_time}}
+            {{ event.updated_at|relative_time }}
             {%- else -%}
             left a comment
             {%- endif %}
