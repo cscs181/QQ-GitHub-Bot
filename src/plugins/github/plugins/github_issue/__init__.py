@@ -33,13 +33,13 @@ except ImportError:
 
 ISSUE_REGEX = r"^#(?P<number>\d+)$"
 REPO_REGEX: str = (r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
-                   r"(?P<repo>[a-zA-Z0-9_\-]+)$")
+                   r"(?P<repo>[a-zA-Z0-9_\-\.]+)$")
 REPO_ISSUE_REGEX = (r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
-                    r"(?P<repo>[a-zA-Z0-9_\-]+)#(?P<number>\d+)$")
+                    r"(?P<repo>[a-zA-Z0-9_\-\.]+)#(?P<number>\d+)$")
 GITHUB_LINK_REGEX = (
     r"github\.com/"
     r"(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
-    r"(?P<repo>[a-zA-Z0-9_\-]+)/(?:issues|pull)/(?P<number>\d+)")
+    r"(?P<repo>[a-zA-Z0-9_\-\.]+)/(?:issues|pull)/(?P<number>\d+)")
 
 issue = on_regex(REPO_ISSUE_REGEX, priority=config.github_command_priority)
 issue.__doc__ = """

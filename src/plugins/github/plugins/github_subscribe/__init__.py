@@ -25,7 +25,7 @@ from ... import github_config as config
 from ...libs.auth import get_user_token
 from ...libs.hook import create_hook, has_hook, create_hook_url
 
-REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)$"
+REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
 
 subscribe = on_command("subscribe",
                        priority=config.github_command_priority,

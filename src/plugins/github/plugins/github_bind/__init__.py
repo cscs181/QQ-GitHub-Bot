@@ -25,7 +25,7 @@ from src.utils import allow_cancel, only_group
 from ...libs.redis import (set_group_bind_repo, get_group_bind_repo,
                            delete_group_bind_repo, exists_group_bind_repo)
 
-REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-]+)$"
+REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
 
 bind = on_command("bind",
                   only_group,

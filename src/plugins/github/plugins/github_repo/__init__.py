@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-04-26 18:33:54
+@LastEditTime   : 2021-05-25 16:29:22
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -30,10 +30,10 @@ except ImportError:
 
 ISSUE_REGEX = r"^#(?P<number>\d+)$"
 REPO_REGEX: str = (r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
-                   r"(?P<repo>[a-zA-Z0-9_\-]+)$")
+                   r"(?P<repo>[a-zA-Z0-9_\-\.]+)$")
 GITHUB_LINK_REGEX = (r"github\.com/"
                      r"(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
-                     r"(?P<repo>[a-zA-Z0-9_\-]+)")
+                     r"(?P<repo>[a-zA-Z0-9_\-\.]+)")
 
 issue = on_regex(REPO_REGEX, priority=config.github_command_priority)
 issue.__doc__ = """
