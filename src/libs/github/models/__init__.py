@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:34:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-15 18:04:44
+@LastEditTime   : 2021-05-28 19:04:19
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -23,7 +23,7 @@ _requester: ContextVar[Requester] = ContextVar("_requester")
 
 
 class BaseModel(_BaseModel):
-    requester: Requester = Field(default_factory=lambda: _requester.get())
+    requester: Requester = Field(default_factory=_requester.get)
 
     def __init__(self, **data):
         hd = None

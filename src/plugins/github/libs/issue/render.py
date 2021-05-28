@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-21 15:04:44
+@LastEditTime   : 2021-05-28 19:39:09
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -63,6 +63,7 @@ env.filters["debug_event"] = debug_event
 async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
     template = env.get_template("issue.html")
     timeline = await issue.get_timeline()
+    await issue.close()
     return await template.render_async(owner=owner,
                                        repo_name=repo_name,
                                        issue=issue,
@@ -72,6 +73,7 @@ async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
 async def pr_diff_to_html(owner: str, repo_name: str, issue: Issue) -> str:
     template = env.get_template("diff.html")
     diff = await issue.get_diff()
+    await issue.close()
     return await template.render_async(owner=owner,
                                        repo_name=repo_name,
                                        issue=issue,
