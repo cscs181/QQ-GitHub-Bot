@@ -4,17 +4,15 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-17 01:27:08
+@LastEditTime   : 2021-05-29 14:13:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from pathlib import Path
 from datetime import timedelta
-from typing import List, Optional
+from typing import Dict, Optional
 
-import markdown
 from nonebot import require
 
 from src.libs import html2img
@@ -46,7 +44,7 @@ async def get_issue(owner: str,
     return issue
 
 
-OPTIONS: dict = {"encoding": "utf-8"}
+OPTIONS: Dict[str, str] = {"encoding": "utf-8"}
 if config.xvfb_installed:
     OPTIONS["xvfb"] = ""
 
@@ -68,8 +66,8 @@ async def _gen_image(html: str,
         imgkit = await html2img.IMGKit(html,
                                        "string",
                                        options={
-                                           **OPTIONS, "width": width,
-                                           "height": height
+                                           **OPTIONS, "width": str(width),
+                                           "height": str(height)
                                        })
         return await imgkit.to_img()
 

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-16 11:32:33
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-25 21:07:26
+ * @LastEditTime   : 2021-05-29 15:12:49
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -33,7 +33,7 @@
       ></path>
     </svg>
   </div>
-  {% elif event.state == "approved" %}
+  {%- elif event.state == "approved" -%}
   <div class="TimelineItem-badge color-bg-success-inverse color-text-white">
     <svg
       class="octicon octicon-check"
@@ -49,7 +49,7 @@
       ></path>
     </svg>
   </div>
-  {% elif event.state == "commented" %}
+  {%- else -%}
   <div class="TimelineItem-badge">
     <svg
       aria-hidden="true"

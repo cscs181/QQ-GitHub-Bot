@@ -1,8 +1,8 @@
 <!--
  * @Author         : yanyongyu
- * @Date           : 2021-05-21 01:06:07
+ * @Date           : 2021-05-29 15:35:16
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-29 14:28:33
+ * @LastEditTime   : 2021-05-29 15:37:42
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -24,8 +24,6 @@
     </svg>
   </div>
   <div class="TimelineItem-body">
-    {% set self_request = event.review_requester.login ==
-    event.requested_reviewer.login %}
     <a class="d-inline-block">
       <img
         class="avatar avatar-user"
@@ -37,16 +35,10 @@
     <a class="author Link--primary text-bold">
       {{ event.review_requester.login|escape }}
     </a>
-    <!-- prettier-ignore -->
-    {% if self_request -%}
-    self-requested a review
-    {%- else -%}
-    requested a review from
+    removed the request for review from
     <a class="author Link--primary text-bold">
       {{ event.requested_reviewer.login|escape }}
     </a>
-    <!-- prettier-ignore -->
-    {%- endif %}
     <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
   </div>
 </div>

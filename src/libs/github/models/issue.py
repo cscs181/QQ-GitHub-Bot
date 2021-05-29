@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-22 15:13:00
+@LastEditTime   : 2021-05-29 15:34:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -23,9 +23,10 @@ from .comment import Comment
 from .timeline import (
     TimelineEvent, TimelineEventCommited, TimelineEventForcePushed,
     TimelineEventHeadDeleted, TimelineEventReferenced, TimelineEventCommented,
-    TimelineEventReviewed, TimelineEventReviewRequested, TimelineEventRenamed,
-    TimelineEventLabeled, TimelineEventUnlabeled, TimelineEventMerged,
-    TimelineEventClosed, TimelineEventAddedToProject,
+    TimelineEventReviewed, TimelineEventReviewRequested,
+    TimelineEventReviewRemoved, TimelineEventReviewDismissed,
+    TimelineEventRenamed, TimelineEventLabeled, TimelineEventUnlabeled,
+    TimelineEventMerged, TimelineEventClosed, TimelineEventAddedToProject,
     TimelineEventMovedColumnsInProject, TimelineEventRemovedFromProject)
 
 
@@ -97,7 +98,8 @@ class Issue(BaseModel):
             Union[TimelineEventCommited, TimelineEventForcePushed,
                   TimelineEventHeadDeleted, TimelineEventReferenced,
                   TimelineEventCommented, TimelineEventReviewed,
-                  TimelineEventReviewRequested, TimelineEventRenamed,
+                  TimelineEventReviewRequested, TimelineEventReviewRemoved,
+                  TimelineEventReviewDismissed, TimelineEventRenamed,
                   TimelineEventLabeled, TimelineEventUnlabeled,
                   TimelineEventMerged, TimelineEventClosed,
                   TimelineEventAddedToProject,

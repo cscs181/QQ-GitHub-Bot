@@ -4,12 +4,13 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:34:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-28 19:04:19
+@LastEditTime   : 2021-05-29 15:27:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+import copy
 from contextvars import ContextVar
 from typing import Any, List, Dict, Type, TypeVar, Generic, AsyncIterator
 
@@ -75,8 +76,9 @@ class PaginatedList(AsyncIterator, Generic[C]):
         return current
 
     def __aiter__(self) -> "PaginatedList[C]":
-        self._index = 0
-        return self
+        new_page = copy.deepcopy(self)
+        new_page._index = 0
+        return new_page
 
     async def _get_next_page(self) -> List[C]:
         self._current_page += 1

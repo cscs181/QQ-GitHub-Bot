@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-22 15:04:46
+@LastEditTime   : 2021-05-29 15:35:38
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -150,6 +150,38 @@ class TimelineEventReviewRequested(TimelineEvent):
     created_at: datetime
     review_requester: User
     requested_reviewer: User
+
+
+class TimelineEventReviewRemoved(TimelineEvent):
+    event: Literal["review_request_removed"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+    review_requester: User
+    requested_reviewer: User
+
+
+class TimelineEventReviewDismissedInfo(_BaseModel):
+    state: str
+    review_id: int
+    dismissal_message: Optional[str]
+    dismissal_commit_id: Optional[str]
+
+
+class TimelineEventReviewDismissed(TimelineEvent):
+    event: Literal["review_dismissed"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+    dismissed_review: TimelineEventReviewDismissedInfo
 
 
 class TimelineEventRenamedDetail(_BaseModel):

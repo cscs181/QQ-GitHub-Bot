@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-14 17:11:26
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-22 15:15:26
+ * @LastEditTime   : 2021-05-29 15:35:24
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -50,6 +50,12 @@
 
               {% elif event|classname == "TimelineEventReviewRequested" -%}
               {% include "review-request.html" %}
+
+              {% elif event|classname == "TimelineEventReviewRequestRemoved" -%}
+              {% include "review-remove.html" %}
+
+              {% elif event|classname == "TimelineEventReviewDismissed" -%}
+              {% include "review-dismiss.html" %}
 
               {% elif event|classname == "TimelineEventRenamed" -%}
               {% include "rename.html" %}

@@ -4,23 +4,24 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-28 19:39:09
+@LastEditTime   : 2021-05-29 15:27:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import Any
 from pathlib import Path
 from inspect import isclass
 from datetime import datetime
+from typing import Any, Optional
 
 import jinja2
 import humanize
 from unidiff import PatchSet
 from nonebot.log import logger
 
-from src.libs.github.models import Issue, TimelineEvent
+from src.libs.github.models import Issue, PaginatedList
+from src.libs.github.models.timeline import TimelineEvent, TimelineEventReviewed
 
 env = jinja2.Environment(extensions=["jinja2.ext.loopcontrols"],
                          loader=jinja2.FileSystemLoader(
@@ -40,7 +41,8 @@ def review_state(value: str) -> str:
     states = {
         "approved": "approved these changes",
         "changes_requested": "requested changes",
-        "commented": "reviewed"
+        "commented": "reviewed",
+        "dismissed": "reviewed"
     }
     return states.get(value, value)
 
@@ -54,10 +56,24 @@ def debug_event(event: TimelineEvent):
     return event
 
 
+@jinja2.pass_context
+async def find_dismissed_review(
+        ctx: jinja2.runtime.Context,
+        review_id: int) -> Optional[TimelineEventReviewed]:
+    timeline: Optional[PaginatedList[TimelineEvent]] = ctx.get("timeline", None)
+    if not timeline:
+        return
+
+    async for event in timeline:
+        if getattr(event, "id", None) == review_id:
+            return event if isinstance(event, TimelineEventReviewed) else None
+
+
 env.filters["classname"] = classname
 env.filters["relative_time"] = relative_time
 env.filters["review_state"] = review_state
 env.filters["debug_event"] = debug_event
+env.filters["find_dismissed_review"] = find_dismissed_review
 
 
 async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
