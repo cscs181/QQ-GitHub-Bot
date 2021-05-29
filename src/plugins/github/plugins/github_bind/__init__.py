@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-27 14:49:03
+@LastEditTime   : 2021-05-29 15:48:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -24,6 +24,12 @@ from ... import github_config as config
 from src.utils import allow_cancel, only_group
 from ...libs.redis import (set_group_bind_repo, get_group_bind_repo,
                            delete_group_bind_repo, exists_group_bind_repo)
+
+# allow using api without token
+try:
+    from ...libs.auth import get_user_token
+except ImportError:
+    get_user_token = None
 
 REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
 
@@ -66,8 +72,11 @@ async def process_repo(bot: Bot, event: GroupMessageEvent, state: T_State):
         await bind.reject(f"仓库名 {name} 不合法！请重新发送或取消")
     owner = matched.group("owner")
     repo_name = matched.group("repo")
+    token = None
+    if get_user_token:
+        token = get_user_token(event.get_user_id())
     try:
-        repo = await get_repo(owner, repo_name)
+        repo = await get_repo(owner, repo_name, token)
     except HTTPStatusError:
         await bind.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
         return
