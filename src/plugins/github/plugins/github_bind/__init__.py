@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-29 15:48:44
+@LastEditTime   : 2021-05-30 20:55:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,9 +13,9 @@ __author__ = "yanyongyu"
 import re
 
 from nonebot import on_command
-from httpx import HTTPStatusError
 from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
+from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import GROUP_ADMIN, GROUP_OWNER
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
 
@@ -77,6 +77,9 @@ async def process_repo(bot: Bot, event: GroupMessageEvent, state: T_State):
         token = get_user_token(event.get_user_id())
     try:
         repo = await get_repo(owner, repo_name, token)
+    except TimeoutException:
+        await bind.finish(f"获取仓库数据超时！请尝试重试")
+        return
     except HTTPStatusError:
         await bind.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
         return

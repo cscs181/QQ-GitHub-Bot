@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 23:14:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-21 15:19:19
+@LastEditTime   : 2021-05-30 21:05:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,9 +14,9 @@ import re
 
 from nonebot import on_command
 from nonebot.log import logger
-from httpx import HTTPStatusError
 from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
+from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import Bot, MessageEvent
 from nonebot.adapters.cqhttp import GROUP_ADMIN, GROUP_OWNER, PRIVATE_FRIEND
 
@@ -69,6 +69,9 @@ async def process_repo(bot: Bot, event: MessageEvent, state: T_State):
                     "content_type": "json",
                     "insecure_ssl": not config.github_self_ssl
                 }, token, ["issues", "issue_comment", "pull_request"])
+    except TimeoutException:
+        await subscribe.finish(f"获取仓库数据超时！请尝试重试")
+        return
     except HTTPStatusError as e:
         if e.response.status_code == 403:
             await subscribe.finish(f"你无权操作仓库 {owner}/{repo_name}！")

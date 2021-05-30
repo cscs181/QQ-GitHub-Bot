@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-26 14:50:25
+@LastEditTime   : 2021-05-30 21:02:19
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,8 +13,8 @@ __author__ = "yanyongyu"
 import base64
 
 from nonebot import on_command
-from httpx import HTTPStatusError
 from nonebot.typing import T_State
+from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment
 
 from ...libs.redis import MessageInfo
@@ -38,7 +38,7 @@ content.__doc__ = """
 
 
 @content.handle()
-async def handle_link(bot: Bot, event: MessageEvent, state: T_State):
+async def handle_content(bot: Bot, event: MessageEvent, state: T_State):
     message_info: MessageInfo = state[KEY_GITHUB_REPLY]
     token = None
     if get_user_token:
@@ -46,9 +46,12 @@ async def handle_link(bot: Bot, event: MessageEvent, state: T_State):
     try:
         issue_ = await get_issue(message_info.owner, message_info.repo,
                                  message_info.number, token)
+    except TimeoutException:
+        await content.finish(f"获取issue数据超时！请尝试重试")
+        return
     except HTTPStatusError:
-        await content.finish(f"Issue #{message_info.number} not found for repo"
-                             f" {message_info.owner}/{message_info.repo}")
+        await content.finish(f"仓库{message_info.owner}/{message_info.repo}"
+                             f"不存在issue#{message_info.number}！")
         return
     img = await issue_to_image(message_info.owner, message_info.repo, issue_)
     if img:

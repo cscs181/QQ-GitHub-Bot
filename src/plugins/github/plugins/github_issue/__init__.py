@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-15 18:14:30
+@LastEditTime   : 2021-05-30 20:59:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,8 +15,8 @@ import base64
 from typing import Dict
 
 from nonebot import on_regex
-from httpx import HTTPStatusError
 from nonebot.typing import T_State
+from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, GroupMessageEvent
 
 from src.utils import only_group
@@ -65,8 +65,11 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
         token = get_user_token(event.get_user_id())
     try:
         issue_ = await get_issue(owner, repo, number, token)
+    except TimeoutException:
+        await issue.finish(f"获取issue数据超时！请尝试重试")
+        return
     except HTTPStatusError:
-        await issue.finish(f"Issue #{number} not found for repo {owner}/{repo}")
+        await issue.finish(f"仓库{owner}/{repo}不存在issue#{number}！")
         return
     img = await issue_to_image(owner, repo, issue_)
     if img:
@@ -103,8 +106,11 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
         token = get_user_token(event.get_user_id())
     try:
         issue_ = await get_issue(owner, repo, number, token)
+    except TimeoutException:
+        await issue.finish(f"获取issue数据超时！请尝试重试")
+        return
     except HTTPStatusError:
-        await issue.finish(f"Issue #{number} not found for repo {owner}/{repo}")
+        await issue.finish(f"仓库{owner}/{repo}不存在issue#{number}！")
         return
     img = await issue_to_image(owner, repo, issue_)
     if img:
