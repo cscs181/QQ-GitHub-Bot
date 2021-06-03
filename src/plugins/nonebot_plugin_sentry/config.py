@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-21 14:56:31
+@LastEditTime   : 2021-06-03 23:26:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,7 +12,9 @@ __author__ = "yanyongyu"
 
 from typing import Any, List, Optional, Callable
 
-from pydantic import Field, BaseSettings
+from nonebot.log import logger
+
+from pydantic import Field, validator, BaseSettings
 
 
 class Config(BaseSettings):
@@ -37,6 +39,12 @@ class Config(BaseSettings):
     sentry_http_proxy: Optional[str] = None
     sentry_https_proxy: Optional[str] = None
     sentry_shutdown_timeout: int = 2
+
+    @validator("sentry_dsn")
+    def validate_dsn(cls, v):
+        if not v:
+            logger.warning("Sentry DSN not provided! Sentry plugin disabled!")
+        return v
 
     class Config:
         extra = "ignore"
