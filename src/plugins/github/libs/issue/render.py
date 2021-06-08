@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-29 15:27:55
+@LastEditTime   : 2021-06-08 19:33:37
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -52,8 +52,8 @@ def debug_event(event: TimelineEvent):
     if type(event) is TimelineEvent:
         # event not passed process
         logger.error(f"Unhandled event type: {event.event}", event=event.dict())
-        return ""
-    return event
+    # ignore other event types
+    return ""
 
 
 @jinja2.pass_context

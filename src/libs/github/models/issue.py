@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-29 15:34:12
+@LastEditTime   : 2021-06-08 19:38:56
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -23,11 +23,13 @@ from .comment import Comment
 from .timeline import (
     TimelineEvent, TimelineEventCommited, TimelineEventForcePushed,
     TimelineEventHeadDeleted, TimelineEventReferenced, TimelineEventCommented,
-    TimelineEventReviewed, TimelineEventReviewRequested,
-    TimelineEventReviewRemoved, TimelineEventReviewDismissed,
-    TimelineEventRenamed, TimelineEventLabeled, TimelineEventUnlabeled,
-    TimelineEventMerged, TimelineEventClosed, TimelineEventAddedToProject,
-    TimelineEventMovedColumnsInProject, TimelineEventRemovedFromProject)
+    TimelineEventCommentDeleted, TimelineEventMentioned,
+    TimelineEventSubscribed, TimelineEventReviewed,
+    TimelineEventReviewRequested, TimelineEventReviewRemoved,
+    TimelineEventReviewDismissed, TimelineEventRenamed, TimelineEventLabeled,
+    TimelineEventUnlabeled, TimelineEventMerged, TimelineEventClosed,
+    TimelineEventAddedToProject, TimelineEventMovedColumnsInProject,
+    TimelineEventRemovedFromProject)
 
 
 class IssuePullRequest(_BaseModel):
@@ -97,12 +99,13 @@ class Issue(BaseModel):
         return PaginatedList(
             Union[TimelineEventCommited, TimelineEventForcePushed,
                   TimelineEventHeadDeleted, TimelineEventReferenced,
-                  TimelineEventCommented, TimelineEventReviewed,
-                  TimelineEventReviewRequested, TimelineEventReviewRemoved,
-                  TimelineEventReviewDismissed, TimelineEventRenamed,
-                  TimelineEventLabeled, TimelineEventUnlabeled,
-                  TimelineEventMerged, TimelineEventClosed,
-                  TimelineEventAddedToProject,
+                  TimelineEventCommented, TimelineEventCommentDeleted,
+                  TimelineEventMentioned, TimelineEventSubscribed,
+                  TimelineEventReviewed, TimelineEventReviewRequested,
+                  TimelineEventReviewRemoved, TimelineEventReviewDismissed,
+                  TimelineEventRenamed, TimelineEventLabeled,
+                  TimelineEventUnlabeled, TimelineEventMerged,
+                  TimelineEventClosed, TimelineEventAddedToProject,
                   TimelineEventMovedColumnsInProject,
                   TimelineEventRemovedFromProject, TimelineEvent],
             self.requester,

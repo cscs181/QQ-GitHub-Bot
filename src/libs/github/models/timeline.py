@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-29 15:35:38
+@LastEditTime   : 2021-06-08 19:38:17
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -111,6 +111,39 @@ class TimelineEventCommented(TimelineEvent):
     body_text: Optional[str]
     body_html: Optional[str]
     actor: User
+
+
+class TimelineEventCommentDeleted(TimelineEvent):
+    event: Literal["comment_deleted"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+
+
+class TimelineEventMentioned(TimelineEvent):
+    event: Literal["mentioned"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+
+
+class TimelineEventSubscribed(TimelineEvent):
+    event: Literal["subscribed"]
+    id: int
+    node_id: str
+    url: str
+    actor: User
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
 
 
 class TimelineEventReviewedLink(_BaseModel):

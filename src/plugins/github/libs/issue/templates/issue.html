@@ -33,6 +33,9 @@
               {% if event|classname == "TimelineEventCommented" -%}
               {% include "comment.html" %}
 
+              {% if event|classname == "TimelineEventCommentDeleted" -%}
+              {% include "comment-delete.html" %}
+
               {% elif event|classname == "TimelineEventCommited" -%}
               {% include "commit.html" %}
 
