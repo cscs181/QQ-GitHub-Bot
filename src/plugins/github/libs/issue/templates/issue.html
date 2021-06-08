@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-14 17:11:26
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-29 15:35:24
+ * @LastEditTime   : 2021-06-08 19:49:53
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -33,7 +33,7 @@
               {% if event|classname == "TimelineEventCommented" -%}
               {% include "comment.html" %}
 
-              {% if event|classname == "TimelineEventCommentDeleted" -%}
+              {% elif event|classname == "TimelineEventCommentDeleted" -%}
               {% include "comment-delete.html" %}
 
               {% elif event|classname == "TimelineEventCommited" -%}
