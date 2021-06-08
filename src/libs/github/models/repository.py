@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:33:54
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-26 15:35:27
+@LastEditTime   : 2021-06-08 19:56:15
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,12 +16,11 @@ from typing import List, Union, Optional
 
 from . import BaseModel
 
-from .user import User
 from .issue import Issue
 from .license import License
 from .hook import Hook, HookConfig
+from .user import User, Organization
 from .permissions import Permissions
-from .organization import Organization
 
 
 class LazyRepository(BaseModel):
@@ -30,7 +29,7 @@ class LazyRepository(BaseModel):
     async def get_issue(self, number: int) -> Issue:
         """
         GET /repo/:full_name/issues/:number
-        
+
         https://docs.github.com/en/rest/reference/issues#get-an-issue
         """
         headers = {
@@ -107,7 +106,7 @@ class LazyRepository(BaseModel):
                           active: Optional[bool] = None):
         """
         POST /repos/:full_name/hooks
-        
+
         https://docs.github.com/en/rest/reference/repos#create-a-repository-webhook
         """
         data = {}

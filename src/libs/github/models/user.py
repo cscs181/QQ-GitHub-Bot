@@ -4,18 +4,19 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 15:39:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-26 16:46:39
+@LastEditTime   : 2021-06-08 19:55:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from typing import Union
 from typing_extensions import Literal
 
 from . import BaseModel
 
 
-class User(BaseModel):
+class Person(BaseModel):
     login: str
     id: int
     node_id: str
@@ -32,5 +33,20 @@ class User(BaseModel):
     repos_url: str
     events_url: str
     received_events_url: str
-    type: Literal["User", "Bot"]
+    type: str
     site_admin: bool
+
+
+class User(Person):
+    type: Literal["User"]
+
+
+class Bot(Person):
+    type: Literal["Bot"]
+
+
+class Organization(Person):
+    type: Literal["Organization"]
+
+
+Actor = Union[User, Bot, Organization]

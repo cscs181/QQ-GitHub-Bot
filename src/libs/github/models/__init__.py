@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:34:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-29 15:27:44
+@LastEditTime   : 2021-06-08 19:59:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -96,7 +96,6 @@ class PaginatedList(AsyncIterator, Generic[C]):
         return content
 
 
-from .user import User
 from .issue import Issue
 from .label import Label
 from .license import License
@@ -104,5 +103,5 @@ from .comment import Comment
 from .hook import Hook, HookConfig
 from .timeline import TimelineEvent
 from .permissions import Permissions
-from .organization import Organization
+from .user import User, Organization
 from .repository import LazyRepository, Repository

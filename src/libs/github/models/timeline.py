@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-08 19:38:17
+@LastEditTime   : 2021-06-08 19:59:24
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,7 +18,7 @@ from pydantic import BaseModel as _BaseModel, Field
 
 from . import BaseModel
 
-from .user import User
+from .user import User, Actor
 
 
 class TimelineEvent(BaseModel):
@@ -68,7 +68,7 @@ class TimelineEventForcePushed(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -79,7 +79,7 @@ class TimelineEventHeadDeleted(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -90,7 +90,7 @@ class TimelineEventReferenced(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: str
     commit_url: str
     created_at: datetime
@@ -103,14 +103,14 @@ class TimelineEventCommented(TimelineEvent):
     url: str
     html_url: str
     issue_url: str
-    user: User
+    user: Actor
     created_at: datetime
     updated_at: datetime
     author_association: str
     body: str
     body_text: Optional[str]
     body_html: Optional[str]
-    actor: User
+    actor: Actor
 
 
 class TimelineEventCommentDeleted(TimelineEvent):
@@ -118,7 +118,7 @@ class TimelineEventCommentDeleted(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -129,7 +129,7 @@ class TimelineEventMentioned(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -140,7 +140,7 @@ class TimelineEventSubscribed(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -177,7 +177,7 @@ class TimelineEventReviewRequested(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -190,7 +190,7 @@ class TimelineEventReviewRemoved(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -210,7 +210,7 @@ class TimelineEventReviewDismissed(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -227,7 +227,7 @@ class TimelineEventRenamed(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -244,7 +244,7 @@ class TimelineEventLabeled(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -256,7 +256,7 @@ class TimelineEventUnlabeled(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -268,7 +268,7 @@ class TimelineEventMerged(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: str
     commit_url: str
     created_at: datetime
@@ -279,7 +279,7 @@ class TimelineEventClosed(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -290,7 +290,7 @@ class TimelineEventAddedToProject(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -301,7 +301,7 @@ class TimelineEventMovedColumnsInProject(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -312,7 +312,7 @@ class TimelineEventRemovedFromProject(TimelineEvent):
     id: int
     node_id: str
     url: str
-    actor: User
+    actor: Actor
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
