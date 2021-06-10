@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-09 16:39:07
+@LastEditTime   : 2021-06-10 23:49:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,16 +21,6 @@ driver = get_driver()
 global_config = driver.config
 config = Config(**global_config.dict())
 
-assert config.sentry_dsn, "Sentry DSN must provided!"
-
-sentry_sdk.init(**{
-    key[7:]: value
-    for key, value in config.dict().items()
-    if key != "sentry_environment"
-},
-                environment=config.sentry_environment or driver.env,
-                default_integrations=False)
-
 
 class Filter:
 
@@ -42,5 +32,20 @@ class Filter:
         return record["level"].no >= levelno
 
 
-logger.add(EventHandler("ERROR"), filter=Filter("ERROR"))
-logger.add(BreadcrumbHandler("INFO"), filter=Filter("INFO"))
+def init(config: Config):
+    sentry_config = {
+        key[7:]: value
+        for key, value in config.dict().items()
+        if key != "sentry_environment"
+    }
+    sentry_sdk.init(**sentry_config,
+                    environment=config.sentry_environment or
+                    driver.env.environment,
+                    default_integrations=False)
+
+    logger.add(EventHandler("ERROR"), filter=Filter("ERROR"))
+    logger.add(BreadcrumbHandler("INFO"), filter=Filter("INFO"))
+
+
+if config.sentry_dsn:
+    init(config)

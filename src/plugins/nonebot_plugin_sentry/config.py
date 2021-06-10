@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-03 23:26:46
+@LastEditTime   : 2021-06-10 23:48:15
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,7 +18,7 @@ from pydantic import Field, validator, BaseSettings
 
 
 class Config(BaseSettings):
-    sentry_dsn: str
+    sentry_dsn: Optional[str]
     sentry_debug: bool = False
     sentry_release: Optional[str] = None
     sentry_environment: Optional[str] = None
