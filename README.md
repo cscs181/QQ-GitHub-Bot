@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2020-09-10 17:28:03
+ * @LastEditTime   : 2021-06-10 23:34:41
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -21,7 +21,9 @@ GitHub Bot for QQ
 
 ## 配置
 
-配置项参考 [.env 文件](./.env)
+配置项参考 [.env 文件](./.env)，部分选项为可选。
+
+在项目目录下创建 `.env.prod` 文件以覆盖默认 `.env` 配置，配置项留空将会从环境变量寻找。
 
 ## 部署
 
