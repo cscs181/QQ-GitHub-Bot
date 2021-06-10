@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-sentry"
-version = "0.2.0"
+version = "0.2.1"
 description = "Push your bot errors to Sentry.io"
 license = "MIT"
 authors = ["yanyongyu <yanyongyu_1@126.com>"]
