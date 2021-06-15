@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:36:14
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-16 00:59:46
+@LastEditTime   : 2021-06-15 22:16:20
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -27,7 +27,5 @@ async def get_repo(owner: str,
     else:
         g = Github()
 
-    try:
+    async with g:
         return await g.get_repo(f"{owner}/{repo_name}", False)
-    finally:
-        await g.close()

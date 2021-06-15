@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:34:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-08 19:59:46
+@LastEditTime   : 2021-06-15 22:11:43
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -33,6 +33,12 @@ class BaseModel(_BaseModel):
         super(BaseModel, self).__init__(**data)
         if hd:
             _requester.reset(hd)
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.close()
 
     class Config:
         extra = "allow"

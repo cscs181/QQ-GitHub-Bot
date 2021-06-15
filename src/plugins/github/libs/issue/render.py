@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-08 19:33:37
+@LastEditTime   : 2021-06-15 22:12:28
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -78,19 +78,19 @@ env.filters["find_dismissed_review"] = find_dismissed_review
 
 async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
     template = env.get_template("issue.html")
-    timeline = await issue.get_timeline()
-    await issue.close()
-    return await template.render_async(owner=owner,
-                                       repo_name=repo_name,
-                                       issue=issue,
-                                       timeline=timeline)
+    async with issue:
+        timeline = await issue.get_timeline()
+        return await template.render_async(owner=owner,
+                                           repo_name=repo_name,
+                                           issue=issue,
+                                           timeline=timeline)
 
 
 async def pr_diff_to_html(owner: str, repo_name: str, issue: Issue) -> str:
     template = env.get_template("diff.html")
-    diff = await issue.get_diff()
-    await issue.close()
-    return await template.render_async(owner=owner,
-                                       repo_name=repo_name,
-                                       issue=issue,
-                                       diff=PatchSet(diff))
+    async with issue:
+        diff = await issue.get_diff()
+        return await template.render_async(owner=owner,
+                                           repo_name=repo_name,
+                                           issue=issue,
+                                           diff=PatchSet(diff))

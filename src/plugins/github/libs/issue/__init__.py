@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-29 14:13:41
+@LastEditTime   : 2021-06-15 22:20:20
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -36,12 +36,9 @@ async def get_issue(owner: str,
     else:
         g = Github()
 
-    try:
+    async with g:
         repo = await g.get_repo(f"{owner}/{repo_name}", True)
-        issue = await repo.get_issue(number)
-    finally:
-        await g.close()
-    return issue
+        return await repo.get_issue(number)
 
 
 OPTIONS: Dict[str, str] = {"encoding": "utf-8"}

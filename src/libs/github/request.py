@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 17:34:53
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-12 13:36:50
+@LastEditTime   : 2021-06-15 22:14:45
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -38,6 +38,12 @@ class Requester:
         self._verify = verify
 
         self._client: Optional[httpx.AsyncClient] = None
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.close()
 
     @property
     def client(self) -> httpx.AsyncClient:
