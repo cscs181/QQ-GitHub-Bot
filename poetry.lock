@@ -300,7 +300,7 @@ http2 = ["h2 (>=3.0.0,<4.0.0)"]
 
 [[package]]
 name = "humanize"
-version = "3.7.1"
+version = "3.9.0"
 description = "Python humanize utilities"
 category = "main"
 optional = false
@@ -483,7 +483,7 @@ invoke = ["invoke (>=1.3)"]
 
 [[package]]
 name = "playwright"
-version = "1.12.0"
+version = "1.12.1"
 description = "A high-level API to automate web browsers"
 category = "main"
 optional = false
@@ -1215,8 +1215,8 @@ httpx = [
     {file = "httpx-0.17.1.tar.gz", hash = "sha256:cc2a55188e4b25272d2bcd46379d300f632045de4377682aa98a8a6069d55967"},
 ]
 humanize = [
-    {file = "humanize-3.7.1-py3-none-any.whl", hash = "sha256:a0dca9eb010dd1fab61819acaea54be344a4c22c77261f72ac4dbee183dd9a59"},
-    {file = "humanize-3.7.1.tar.gz", hash = "sha256:b8e7878f3063174b212bb82b9e5bee3b24bc47931e44df0bd34bcb1d8e0acf2f"},
+    {file = "humanize-3.9.0-py3-none-any.whl", hash = "sha256:2cc4f7d2f5994ea9fcddd4b681ddea9abd23baa8cc64bd0af041a0162636f31c"},
+    {file = "humanize-3.9.0.tar.gz", hash = "sha256:892a5b7b87763c4c6997a58382c2b1f4614048a2e01c23ef1bb0456e6f9d4d5d"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
@@ -1299,11 +1299,11 @@ paramiko = [
     {file = "paramiko-2.7.2.tar.gz", hash = "sha256:7f36f4ba2c0d81d219f4595e35f70d56cc94f9ac40a6acdf51d6ca210ce65035"},
 ]
 playwright = [
-    {file = "playwright-1.12.0-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:fe00a13855f65601ea793d7d15a79ed92244debe418b33d48dab1a0d6fdbb287"},
-    {file = "playwright-1.12.0-py3-none-macosx_11_0_universal2.whl", hash = "sha256:9ef774e0eb049973ec08477d52e7592aee7b3788cc3a48d39bb160b24d2fd091"},
-    {file = "playwright-1.12.0-py3-none-manylinux1_x86_64.whl", hash = "sha256:d48ef97cae578976b8421fc48fa79f4eba49d3b0778e34165101764aa8b6dfe6"},
-    {file = "playwright-1.12.0-py3-none-win32.whl", hash = "sha256:b904b36e81ea4f9397f2727ef3a5ef2c8f99ed7b888783485097fc4e09ae6cf4"},
-    {file = "playwright-1.12.0-py3-none-win_amd64.whl", hash = "sha256:605b7609bafc5c9e4873bb48fe667e40a3ae1ae385333426b31ce87a8789e687"},
+    {file = "playwright-1.12.1-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:9aa5809b65948d5512224b275cd4b76b02302e6b1b854a3625bbf89950327db4"},
+    {file = "playwright-1.12.1-py3-none-macosx_11_0_universal2.whl", hash = "sha256:3f7f1d07e14eb35bca2640241cbec50e991fecf90e7a94b40c66a31261eae15e"},
+    {file = "playwright-1.12.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:cbfd3240e35c2836476416d3befb63b43fd537dbd9212a3108e08e7fd756c183"},
+    {file = "playwright-1.12.1-py3-none-win32.whl", hash = "sha256:be387ef47ae4c26eb5bda61d7f54e085e9d4a78d84226a56c995f9ab29e7443a"},
+    {file = "playwright-1.12.1-py3-none-win_amd64.whl", hash = "sha256:714280315b3b02135655d41121427f1e294053ffcfdf988af99241d3c7f1d17a"},
 ]
 poyo = [
     {file = "poyo-0.5.0-py2.py3-none-any.whl", hash = "sha256:3e2ca8e33fdc3c411cd101ca395668395dd5dc7ac775b8e809e3def9f9fe041a"},
