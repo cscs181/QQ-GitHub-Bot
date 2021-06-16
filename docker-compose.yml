@@ -14,7 +14,7 @@ services:
     container_name: bot
     # volumes:
     #   - "/etc/localtime:/etc/localtime"
-    #   - "./:/app/"
+    #   - "./.env:/app/.env.prod"  # replace "./.env" with your own config file
     ports:
       - "$PORT:$PORT"
     environment:
