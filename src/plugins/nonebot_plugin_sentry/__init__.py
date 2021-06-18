@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-10 23:49:34
+@LastEditTime   : 2021-06-18 20:03:07
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,8 +39,7 @@ def init(config: Config):
         if key != "sentry_environment"
     }
     sentry_sdk.init(**sentry_config,
-                    environment=config.sentry_environment or
-                    driver.env.environment,
+                    environment=config.sentry_environment or driver.env,
                     default_integrations=False)
 
     logger.add(EventHandler("ERROR"), filter=Filter("ERROR"))
