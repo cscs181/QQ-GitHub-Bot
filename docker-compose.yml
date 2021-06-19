@@ -13,7 +13,8 @@ services:
     build: .
     container_name: bot
     # volumes:
-    #   - "/etc/localtime:/etc/localtime"
+    #   - "/etc/timezone:/etc/timezone:ro"
+    #   - "/etc/localtime:/etc/localtime:ro"
     #   - "./.env:/app/.env.prod"  # replace "./.env" with your own config file
     ports:
       - "$PORT:$PORT"
