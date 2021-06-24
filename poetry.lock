@@ -444,7 +444,7 @@ python-socketio = ">=4.6.1,<5.0.0"
 
 [[package]]
 name = "nonebot2"
-version = "2.0.0a13"
+version = "2.0.0a13.post1"
 description = "An asynchronous python bot framework."
 category = "main"
 optional = false
@@ -632,7 +632,7 @@ six = ">=1.5"
 
 [[package]]
 name = "python-dotenv"
-version = "0.17.1"
+version = "0.18.0"
 description = "Read key-value pairs from a .env file and set them as environment variables"
 category = "main"
 optional = false
@@ -1291,8 +1291,8 @@ nonebot-plugin-test = [
     {file = "nonebot_plugin_test-0.2.0-py3-none-any.whl", hash = "sha256:75cd18cc282815a03250bb86c7d2a8d6a66a5064ac335bedc9a3e268a1e7dd13"},
 ]
 nonebot2 = [
-    {file = "nonebot2-2.0.0a13-py3-none-any.whl", hash = "sha256:08422f31e42a705270a0c0dd5704febc9c929f4e7b9e94146c56faf926733536"},
-    {file = "nonebot2-2.0.0a13.tar.gz", hash = "sha256:61f59fac17ca5f238802045ec34d58faeaf9be9a1aa4bc33fadb132c0679a9f6"},
+    {file = "nonebot2-2.0.0a13.post1-py3-none-any.whl", hash = "sha256:357f4117e2dab195c77b04f54d7cae965c5c073b9be607a981b255f6a0a992f2"},
+    {file = "nonebot2-2.0.0a13.post1.tar.gz", hash = "sha256:c8decc92d7f68693cdb40a253123100b1e7c52ef2e2616f0fc86820154ebee3c"},
 ]
 paramiko = [
     {file = "paramiko-2.7.2-py2.py3-none-any.whl", hash = "sha256:4f3e316fef2ac628b05097a637af35685183111d4bc1b5979bd397c2ab7b5898"},
@@ -1418,8 +1418,8 @@ python-dateutil = [
     {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
 ]
 python-dotenv = [
-    {file = "python-dotenv-0.17.1.tar.gz", hash = "sha256:b1ae5e9643d5ed987fc57cc2583021e38db531946518130777734f9589b3141f"},
-    {file = "python_dotenv-0.17.1-py2.py3-none-any.whl", hash = "sha256:00aa34e92d992e9f8383730816359647f358f4a3be1ba45e5a5cefd27ee91544"},
+    {file = "python-dotenv-0.18.0.tar.gz", hash = "sha256:effaac3c1e58d89b3ccb4d04a40dc7ad6e0275fda25fd75ae9d323e2465e202d"},
+    {file = "python_dotenv-0.18.0-py2.py3-none-any.whl", hash = "sha256:dd8fe852847f4fbfadabf6183ddd4c824a9651f02d51714fa075c95561959c7d"},
 ]
 python-engineio = [
     {file = "python-engineio-3.14.2.tar.gz", hash = "sha256:eab4553f2804c1ce97054c8b22cf0d5a9ab23128075248b97e1a5b2f29553085"},
