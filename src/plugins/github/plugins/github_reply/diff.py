@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-30 21:03:00
+@LastEditTime   : 2021-07-02 17:45:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -53,9 +53,16 @@ async def handle_diff(bot: Bot, event: MessageEvent, state: T_State):
         await diff.finish(f"仓库{message_info.owner}/{message_info.repo}"
                           f"不存在issue#{message_info.number}！")
         return
-    img = await issue_diff_to_image(message_info.owner, message_info.repo,
-                                    issue_)
-    if img:
-        await send_github_message(
-            diff, message_info.owner, message_info.repo, message_info.number,
-            MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"))
+
+    try:
+        img = await issue_diff_to_image(message_info.owner, message_info.repo,
+                                        issue_)
+    except TimeoutException:
+        await diff.finish(f"获取diff数据超时！请尝试重试")
+    else:
+        if img:
+            await send_github_message(
+                diff, message_info.owner, message_info.repo,
+                message_info.number,
+                MessageSegment.image(
+                    f"base64://{base64.b64encode(img).decode()}"))

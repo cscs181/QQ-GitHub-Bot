@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-30 20:55:12
+@LastEditTime   : 2021-07-02 17:53:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -70,6 +70,7 @@ async def process_repo(bot: Bot, event: GroupMessageEvent, state: T_State):
     matched = re.match(REPO_REGEX, name)
     if not matched:
         await bind.reject(f"仓库名 {name} 不合法！请重新发送或取消")
+        return
     owner = matched.group("owner")
     repo_name = matched.group("repo")
     token = None

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-30 20:59:34
+@LastEditTime   : 2021-07-02 17:48:19
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -98,6 +98,7 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
     match = re.match(REPO_REGEX, full_name)
     if not match:
         await issue_short.finish("绑定的仓库名不合法！请重新尝试绑定~")
+        return
     owner = match.group("owner")
     repo = match.group("repo")
 
@@ -112,8 +113,14 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
     except HTTPStatusError:
         await issue.finish(f"仓库{owner}/{repo}不存在issue#{number}！")
         return
-    img = await issue_to_image(owner, repo, issue_)
-    if img:
-        await send_github_message(
-            issue_short, owner, repo, number,
-            MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"))
+
+    try:
+        img = await issue_to_image(owner, repo, issue_)
+    except TimeoutException:
+        await issue.finish(f"获取issue数据超时！请尝试重试")
+    else:
+        if img:
+            await send_github_message(
+                issue_short, owner, repo, number,
+                MessageSegment.image(
+                    f"base64://{base64.b64encode(img).decode()}"))

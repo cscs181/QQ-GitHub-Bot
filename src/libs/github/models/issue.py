@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-08 19:38:56
+@LastEditTime   : 2021-07-02 17:55:01
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -120,6 +120,8 @@ class Issue(BaseModel):
         if not self.is_pull_request:
             raise RuntimeError(f"Issue {self.number} is not a pull request")
 
-        response = await self.requester.request("GET",
-                                                self.pull_request.diff_url)
+        response = await self.requester.request(
+            "GET",
+            self.pull_request.diff_url  # type: ignore
+        )
         return response.text

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 23:14:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-14 01:27:27
+@LastEditTime   : 2021-07-02 17:53:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -56,6 +56,7 @@ else:
         matched = re.match(REPO_REGEX, name)
         if not matched:
             await subscribe.reject(f"仓库名 {name} 不合法！请重新发送或取消")
+            return
         owner = matched.group("owner")
         repo_name = matched.group("repo")
 
