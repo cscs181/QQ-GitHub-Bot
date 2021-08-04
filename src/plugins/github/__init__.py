@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-20 23:59:20
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-15 23:10:18
+@LastEditTime   : 2021-08-04 13:39:45
 @Description    : GitHub Main Plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,12 +13,13 @@ __author__ = "yanyongyu"
 from pathlib import Path
 
 import nonebot
-from redis import Redis
 
 from .config import Config
 
+# nonebot2 < 2.0.0-alpha.14
 # quote with double quotes to use generic typing provided by pylance
-redis: "Redis[bytes]" = nonebot.require("redis_provider").redis
+# redis: "Redis[bytes]" = nonebot.require("redis_provider").redis
+from src.plugins.redis_provider import redis_client as redis
 
 # store all github subplugins
 _sub_plugins = set()

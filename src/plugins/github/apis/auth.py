@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 20:18:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-14 01:25:35
+@LastEditTime   : 2021-08-04 13:40:25
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,7 +19,7 @@ except ImportError:
     pass
 else:
 
-    app: FastAPI = nonebot.get_driver().server_app
+    app: FastAPI = nonebot.get_app()
 
     @app.get("/api/github/auth")
     async def auth(code: str, state: str):

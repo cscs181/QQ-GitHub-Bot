@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-15 22:20:20
+@LastEditTime   : 2021-08-04 13:41:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,8 +13,6 @@ __author__ = "yanyongyu"
 from datetime import timedelta
 from typing import Dict, Optional
 
-from nonebot import require
-
 from src.libs import html2img
 from src.libs.github import Github
 from ... import github_config as config
@@ -22,7 +20,7 @@ from src.libs.github.models import Issue
 from src.libs.playwright import get_new_page
 from .render import issue_to_html, pr_diff_to_html
 
-cache = require("redis_provider").cache
+from src.plugins.redis_provider import cache
 
 
 async def get_issue(owner: str,
