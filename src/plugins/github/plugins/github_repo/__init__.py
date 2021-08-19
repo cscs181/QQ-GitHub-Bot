@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-25 16:29:22
+@LastEditTime   : 2021-08-19 23:28:16
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,8 +14,8 @@ import secrets
 from typing import Dict
 
 from nonebot import on_regex
-from httpx import HTTPStatusError
 from nonebot.typing import T_State
+from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, GroupMessageEvent
 
 from ...libs.repo import get_repo
@@ -59,7 +59,7 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
         token = get_user_token(event.get_user_id())
     try:
         repo_ = await get_repo(owner, repo, token)
-    except HTTPStatusError:
+    except (HTTPStatusError, TimeoutException):
         return
 
     if not repo_.private:
