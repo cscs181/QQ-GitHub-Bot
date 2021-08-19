@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-20 00:46:20
+@LastEditTime   : 2021-08-20 01:15:57
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -314,12 +314,22 @@ class TimelineEventClosed(TimelineEvent):
 
 
 # Issue Added to Project
+class TimelineEventProjectCard(_BaseModel):
+    id: int
+    url: str
+    project_id: int
+    project_url: str
+    column_name: str
+    previous_column_name: str = ""
+
+
 class TimelineEventAddedToProject(TimelineEvent):
     event: Literal["added_to_project"]
     id: int
     node_id: str
     url: str
     actor: Actor
+    project_card: TimelineEventProjectCard
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
@@ -344,6 +354,7 @@ class TimelineEventRemovedFromProject(TimelineEvent):
     node_id: str
     url: str
     actor: Actor
+    project_card: TimelineEventProjectCard
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-20 01:10:46
+@LastEditTime   : 2021-08-20 01:11:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -95,7 +95,8 @@ class Issue(BaseModel):
         https://docs.github.com/en/rest/reference/issues#list-timeline-events-for-an-issue
         """
         headers = {
-            "Accept": "application/vnd.github.mockingbird-preview.full+json"
+            "Accept": "application/vnd.github.mockingbird-preview.full+json, "
+                      "application/vnd.github.starfox-preview+json"
         }
         return PaginatedList(
             Union[TimelineEventCommited, TimelineEventForcePushed,

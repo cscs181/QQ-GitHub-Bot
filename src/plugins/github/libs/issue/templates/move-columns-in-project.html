@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-22 14:59:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-25 21:04:40
+ * @LastEditTime   : 2021-08-20 01:24:27
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -33,7 +33,11 @@
       />
     </a>
     <a class="author Link--primary text-bold">{{ event.actor.login|escape }}</a>
-    moved this in project
+    moved this from
+    <strong>{{ event.project_card.column_name|escape }}</strong>
+    to
+    <strong>{{ event.project_card.previous_column_name|escape }}</strong>
+    in project
     <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
   </div>
 </div>
