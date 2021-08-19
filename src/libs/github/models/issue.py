@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-07-02 17:55:01
+@LastEditTime   : 2021-08-20 01:10:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -24,12 +24,13 @@ from .timeline import (
     TimelineEvent, TimelineEventCommited, TimelineEventForcePushed,
     TimelineEventHeadDeleted, TimelineEventReferenced, TimelineEventCommented,
     TimelineEventCommentDeleted, TimelineEventMentioned,
-    TimelineEventSubscribed, TimelineEventReviewed,
+    TimelineEventSubscribed, TimelineEventUnsubscribed, TimelineEventReviewed,
     TimelineEventReviewRequested, TimelineEventReviewRemoved,
     TimelineEventReviewDismissed, TimelineEventRenamed, TimelineEventLabeled,
     TimelineEventUnlabeled, TimelineEventMerged, TimelineEventClosed,
     TimelineEventAddedToProject, TimelineEventMovedColumnsInProject,
-    TimelineEventRemovedFromProject)
+    TimelineEventRemovedFromProject, TimelineEventMilestoned,
+    TimelineEventDemilestoned)
 
 
 class IssuePullRequest(_BaseModel):
@@ -101,13 +102,15 @@ class Issue(BaseModel):
                   TimelineEventHeadDeleted, TimelineEventReferenced,
                   TimelineEventCommented, TimelineEventCommentDeleted,
                   TimelineEventMentioned, TimelineEventSubscribed,
-                  TimelineEventReviewed, TimelineEventReviewRequested,
-                  TimelineEventReviewRemoved, TimelineEventReviewDismissed,
-                  TimelineEventRenamed, TimelineEventLabeled,
-                  TimelineEventUnlabeled, TimelineEventMerged,
-                  TimelineEventClosed, TimelineEventAddedToProject,
+                  TimelineEventUnsubscribed, TimelineEventReviewed,
+                  TimelineEventReviewRequested, TimelineEventReviewRemoved,
+                  TimelineEventReviewDismissed, TimelineEventRenamed,
+                  TimelineEventLabeled, TimelineEventUnlabeled,
+                  TimelineEventMerged, TimelineEventClosed,
+                  TimelineEventAddedToProject,
                   TimelineEventMovedColumnsInProject,
-                  TimelineEventRemovedFromProject, TimelineEvent],
+                  TimelineEventRemovedFromProject, TimelineEventMilestoned,
+                  TimelineEventDemilestoned, TimelineEvent],
             self.requester,
             "GET",
             self.timeline_url,
