@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-19 23:07:33
+@LastEditTime   : 2021-08-19 23:19:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,7 +16,7 @@ from typing import Dict
 
 from nonebot import on_regex
 from nonebot.typing import T_State
-from playwright.async_api import TimeoutError
+from playwright.async_api import Error
 from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, GroupMessageEvent
 
@@ -77,7 +77,7 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
         img = await issue_to_image(owner, repo, issue_)
     except TimeoutException:
         await issue.finish(f"获取issue数据超时！请尝试重试")
-    except TimeoutError:
+    except Error:
         await issue.finish(f"生成图片超时！请尝试重试")
     else:
         if img:
@@ -127,7 +127,7 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
         img = await issue_to_image(owner, repo, issue_)
     except TimeoutException:
         await issue.finish(f"获取issue数据超时！请尝试重试")
-    except TimeoutError:
+    except Error:
         await issue.finish(f"生成图片超时！请尝试重试")
     else:
         if img:

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-19 23:09:17
+@LastEditTime   : 2021-08-19 23:19:21
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,7 +14,7 @@ import base64
 
 from nonebot import on_command
 from nonebot.typing import T_State
-from playwright.async_api import TimeoutError
+from playwright.async_api import Error
 from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment
 
@@ -60,7 +60,7 @@ async def handle_content(bot: Bot, event: MessageEvent, state: T_State):
                                    issue_)
     except TimeoutException:
         await content.finish(f"获取issue数据超时！请尝试重试")
-    except TimeoutError:
+    except Error:
         await content.finish(f"生成图片超时！请尝试重试")
     else:
         if img:
