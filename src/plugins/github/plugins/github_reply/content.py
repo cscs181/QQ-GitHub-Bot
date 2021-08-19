@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-05-30 21:02:19
+@LastEditTime   : 2021-08-19 23:09:17
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,6 +14,7 @@ import base64
 
 from nonebot import on_command
 from nonebot.typing import T_State
+from playwright.async_api import TimeoutError
 from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment
 
@@ -53,8 +54,18 @@ async def handle_content(bot: Bot, event: MessageEvent, state: T_State):
         await content.finish(f"仓库{message_info.owner}/{message_info.repo}"
                              f"不存在issue#{message_info.number}！")
         return
-    img = await issue_to_image(message_info.owner, message_info.repo, issue_)
-    if img:
-        await send_github_message(
-            content, message_info.owner, message_info.repo, message_info.number,
-            MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"))
+
+    try:
+        img = await issue_to_image(message_info.owner, message_info.repo,
+                                   issue_)
+    except TimeoutException:
+        await content.finish(f"获取issue数据超时！请尝试重试")
+    except TimeoutError:
+        await content.finish(f"生成图片超时！请尝试重试")
+    else:
+        if img:
+            await send_github_message(
+                content, message_info.owner, message_info.repo,
+                message_info.number,
+                MessageSegment.image(
+                    f"base64://{base64.b64encode(img).decode()}"))

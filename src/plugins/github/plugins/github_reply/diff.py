@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-07-02 17:45:46
+@LastEditTime   : 2021-08-19 23:09:30
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,6 +14,7 @@ import base64
 
 from nonebot import on_command
 from nonebot.typing import T_State
+from playwright.async_api import TimeoutError
 from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment
 
@@ -59,6 +60,8 @@ async def handle_diff(bot: Bot, event: MessageEvent, state: T_State):
                                         issue_)
     except TimeoutException:
         await diff.finish(f"获取diff数据超时！请尝试重试")
+    except TimeoutError:
+        await diff.finish(f"生成图片超时！请尝试重试")
     else:
         if img:
             await send_github_message(

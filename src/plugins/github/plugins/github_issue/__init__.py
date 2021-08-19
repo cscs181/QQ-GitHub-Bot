@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-07-02 17:48:19
+@LastEditTime   : 2021-08-19 23:07:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,6 +16,7 @@ from typing import Dict
 
 from nonebot import on_regex
 from nonebot.typing import T_State
+from playwright.async_api import TimeoutError
 from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, GroupMessageEvent
 
@@ -71,11 +72,19 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
     except HTTPStatusError:
         await issue.finish(f"仓库{owner}/{repo}不存在issue#{number}！")
         return
-    img = await issue_to_image(owner, repo, issue_)
-    if img:
-        await send_github_message(
-            issue, owner, repo, number,
-            MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"))
+
+    try:
+        img = await issue_to_image(owner, repo, issue_)
+    except TimeoutException:
+        await issue.finish(f"获取issue数据超时！请尝试重试")
+    except TimeoutError:
+        await issue.finish(f"生成图片超时！请尝试重试")
+    else:
+        if img:
+            await send_github_message(
+                issue_short, owner, repo, number,
+                MessageSegment.image(
+                    f"base64://{base64.b64encode(img).decode()}"))
 
 
 issue_short = on_regex(ISSUE_REGEX,
@@ -118,6 +127,8 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
         img = await issue_to_image(owner, repo, issue_)
     except TimeoutException:
         await issue.finish(f"获取issue数据超时！请尝试重试")
+    except TimeoutError:
+        await issue.finish(f"生成图片超时！请尝试重试")
     else:
         if img:
             await send_github_message(
