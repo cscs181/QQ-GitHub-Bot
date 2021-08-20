@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-20 01:11:35
+@LastEditTime   : 2021-08-20 23:24:08
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -27,10 +27,10 @@ from .timeline import (
     TimelineEventSubscribed, TimelineEventUnsubscribed, TimelineEventReviewed,
     TimelineEventReviewRequested, TimelineEventReviewRemoved,
     TimelineEventReviewDismissed, TimelineEventRenamed, TimelineEventLabeled,
-    TimelineEventUnlabeled, TimelineEventMerged, TimelineEventClosed,
-    TimelineEventAddedToProject, TimelineEventMovedColumnsInProject,
-    TimelineEventRemovedFromProject, TimelineEventMilestoned,
-    TimelineEventDemilestoned)
+    TimelineEventUnlabeled, TimelineEventMerged, TimelineEventDeployed,
+    TimelineEventClosed, TimelineEventAddedToProject,
+    TimelineEventMovedColumnsInProject, TimelineEventRemovedFromProject,
+    TimelineEventMilestoned, TimelineEventDemilestoned)
 
 
 class IssuePullRequest(_BaseModel):
@@ -107,8 +107,8 @@ class Issue(BaseModel):
                   TimelineEventReviewRequested, TimelineEventReviewRemoved,
                   TimelineEventReviewDismissed, TimelineEventRenamed,
                   TimelineEventLabeled, TimelineEventUnlabeled,
-                  TimelineEventMerged, TimelineEventClosed,
-                  TimelineEventAddedToProject,
+                  TimelineEventMerged, TimelineEventDeployed,
+                  TimelineEventClosed, TimelineEventAddedToProject,
                   TimelineEventMovedColumnsInProject,
                   TimelineEventRemovedFromProject, TimelineEventMilestoned,
                   TimelineEventDemilestoned, TimelineEvent],

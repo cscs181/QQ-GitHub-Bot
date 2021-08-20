@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-20 01:15:57
+@LastEditTime   : 2021-08-20 23:23:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -298,6 +298,18 @@ class TimelineEventMerged(TimelineEvent):
     actor: Actor
     commit_id: str
     commit_url: str
+    created_at: datetime
+
+
+# Pull Request Deployed
+class TimelineEventDeployed(TimelineEvent):
+    type: Literal["deployed"]
+    id: int
+    node_id: str
+    url: str
+    actor: Actor
+    commit_id: Optional[str]
+    commit_url: Optional[str]
     created_at: datetime
 
 

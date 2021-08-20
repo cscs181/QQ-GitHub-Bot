@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-14 17:11:26
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-08-20 00:53:29
+ * @LastEditTime   : 2021-08-20 23:25:47
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -68,6 +68,9 @@
 
               {% elif event|classname == "TimelineEventUnlabeled" -%}
               {% include "unlabel.html" %}
+
+              {% elif event|classname == "TimelineEventDeployed" -%}
+              {% include "deployed.html" %}
 
               {% elif event|classname == "TimelineEventAddedToProject" -%}
               {% include "add-to-project.html" %}
