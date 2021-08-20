@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-20 23:31:52
+@LastEditTime   : 2021-08-20 23:57:43
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -133,7 +133,7 @@ class TimelineEventCommentDeleted(TimelineEvent):
 
 # Issue assigned to Person
 class TimelineEventAssigned(TimelineEvent):
-    type: Literal["assigned"]
+    event: Literal["assigned"]
     id: int
     node_id: str
     url: str
@@ -142,7 +142,7 @@ class TimelineEventAssigned(TimelineEvent):
     commit_url: Optional[str]
     created_at: datetime
     assignee: Actor
-    assigner: Actor
+    assigner: Optional[Actor] = None
 
 
 # Issue Mentioned Person
@@ -317,7 +317,7 @@ class TimelineEventMerged(TimelineEvent):
 
 # Pull Request Deployed
 class TimelineEventDeployed(TimelineEvent):
-    type: Literal["deployed"]
+    event: Literal["deployed"]
     id: int
     node_id: str
     url: str

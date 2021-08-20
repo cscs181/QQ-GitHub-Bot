@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-20 23:32:41
+@LastEditTime   : 2021-08-20 23:52:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -53,7 +53,7 @@ class Issue(BaseModel):
     number: int
     state: str
     title: str
-    body: str
+    body: Optional[str]
     body_text: Optional[str]
     body_html: Optional[str]
     user: User

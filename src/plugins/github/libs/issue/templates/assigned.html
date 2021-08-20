@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-08-20 23:33:46
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-08-20 23:37:56
+ * @LastEditTime   : 2021-08-20 23:49:02
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -25,20 +25,23 @@
     </svg>
   </div>
   <div class="TimelineItem-body">
-    {% set self_request = event.assigner.login == event.assignee.login %}
+    <!-- prettier-ignore -->
+    {% if event.assigner -%}
+    {% set assigner = event.assigner %}
+    {%- else -%}
+    {% set assigner = event.assignee %}
+    {%- endif %}
     <a class="d-inline-block">
       <img
         class="avatar avatar-user"
         height="20"
         width="20"
-        src="{{ event.assigner.avatar_url }}"
+        src="{{ assigner.avatar_url }}"
       />
     </a>
-    <a class="author Link--primary text-bold">
-      {{ event.assigner.login|escape }}
-    </a>
+    <a class="author Link--primary text-bold">{{ assigner.login|escape }}</a>
     <!-- prettier-ignore -->
-    {% if self_request -%}
+    {% if assigner == event.assignee -%}
     self-assigned this
     {%- else -%}
     assigned

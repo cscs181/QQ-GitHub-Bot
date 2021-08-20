@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-19 23:19:12
+@LastEditTime   : 2021-08-20 23:58:58
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -127,7 +127,8 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
         img = await issue_to_image(owner, repo, issue_)
     except TimeoutException:
         await issue.finish(f"获取issue数据超时！请尝试重试")
-    except Error:
+    except Error as e:
+        print(repr(e))
         await issue.finish(f"生成图片超时！请尝试重试")
     else:
         if img:
