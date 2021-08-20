@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-20 23:24:08
+@LastEditTime   : 2021-08-20 23:32:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -23,7 +23,7 @@ from .comment import Comment
 from .timeline import (
     TimelineEvent, TimelineEventCommited, TimelineEventForcePushed,
     TimelineEventHeadDeleted, TimelineEventReferenced, TimelineEventCommented,
-    TimelineEventCommentDeleted, TimelineEventMentioned,
+    TimelineEventCommentDeleted, TimelineEventAssigned, TimelineEventMentioned,
     TimelineEventSubscribed, TimelineEventUnsubscribed, TimelineEventReviewed,
     TimelineEventReviewRequested, TimelineEventReviewRemoved,
     TimelineEventReviewDismissed, TimelineEventRenamed, TimelineEventLabeled,
@@ -102,13 +102,14 @@ class Issue(BaseModel):
             Union[TimelineEventCommited, TimelineEventForcePushed,
                   TimelineEventHeadDeleted, TimelineEventReferenced,
                   TimelineEventCommented, TimelineEventCommentDeleted,
-                  TimelineEventMentioned, TimelineEventSubscribed,
-                  TimelineEventUnsubscribed, TimelineEventReviewed,
-                  TimelineEventReviewRequested, TimelineEventReviewRemoved,
-                  TimelineEventReviewDismissed, TimelineEventRenamed,
-                  TimelineEventLabeled, TimelineEventUnlabeled,
-                  TimelineEventMerged, TimelineEventDeployed,
-                  TimelineEventClosed, TimelineEventAddedToProject,
+                  TimelineEventAssigned, TimelineEventMentioned,
+                  TimelineEventSubscribed, TimelineEventUnsubscribed,
+                  TimelineEventReviewed, TimelineEventReviewRequested,
+                  TimelineEventReviewRemoved, TimelineEventReviewDismissed,
+                  TimelineEventRenamed, TimelineEventLabeled,
+                  TimelineEventUnlabeled, TimelineEventMerged,
+                  TimelineEventDeployed, TimelineEventClosed,
+                  TimelineEventAddedToProject,
                   TimelineEventMovedColumnsInProject,
                   TimelineEventRemovedFromProject, TimelineEventMilestoned,
                   TimelineEventDemilestoned, TimelineEvent],

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-20 23:23:33
+@LastEditTime   : 2021-08-20 23:31:52
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -129,6 +129,20 @@ class TimelineEventCommentDeleted(TimelineEvent):
     commit_id: Optional[str]
     commit_url: Optional[str]
     created_at: datetime
+
+
+# Issue assigned to Person
+class TimelineEventAssigned(TimelineEvent):
+    type: Literal["assigned"]
+    id: int
+    node_id: str
+    url: str
+    actor: Actor
+    commit_id: Optional[str]
+    commit_url: Optional[str]
+    created_at: datetime
+    assignee: Actor
+    assigner: Actor
 
 
 # Issue Mentioned Person
