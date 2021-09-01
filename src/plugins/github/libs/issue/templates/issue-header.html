@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-17 10:03:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-05-25 21:00:17
+ * @LastEditTime   : 2021-09-02 01:27:43
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -31,6 +31,7 @@
     "
   >
     <div class="flex-shrink-0 mb-2 flex-self-start flex-md-self-center">
+      <!-- FIXME: pr status check -->
       <!-- prettier-ignore -->
       {% if timeline|selectattr("event", "equalto", "merged")|list|length >= 1 %}
           {% set state = "merged" %}
