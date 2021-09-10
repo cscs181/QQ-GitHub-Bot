@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-16 17:05:58
+@LastEditTime   : 2021-09-10 12:47:59
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -23,7 +23,11 @@ from .data_source import cpu_status, per_cpu_status, memory_status, disk_usage
 global_config = get_driver().config
 status_config = Config(**global_config.dict())
 
-command = on_command("状态", permission=SUPERUSER, priority=10)
+command = on_command(
+    "状态",
+    permission=(status_config.server_status_only_superusers or None) and
+    SUPERUSER,
+    priority=10)
 
 
 @command.handle()
@@ -50,8 +54,9 @@ async def server_status(bot: Bot, matcher: Matcher):
 
 
 async def _group_poke(bot: Bot, event: Event, state: T_State) -> bool:
-    return isinstance(event, PokeNotifyEvent) and str(
-        event.user_id) in global_config.superusers and event.is_tome()
+    return isinstance(event, PokeNotifyEvent) and event.is_tome() and (
+        not status_config.server_status_only_superusers or
+        str(event.user_id) in global_config.superusers)
 
 
 group_poke = on_notice(_group_poke, priority=10, block=True)
@@ -63,5 +68,9 @@ async def _poke(bot: Bot, event: Event, state: T_State) -> bool:
             event.sub_type == "friend" and event.message[0].type == "poke")
 
 
-poke = on_message(_poke, permission=SUPERUSER, priority=10)
+poke = on_message(
+    _poke,
+    permission=(status_config.server_status_only_superusers or None) and
+    SUPERUSER,
+    priority=10)
 poke.handle()(server_status)

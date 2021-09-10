@@ -22,7 +22,7 @@ nonebot-adapter-cqhttp = "^2.0.0-alpha.15"
 redis = {version = "^3.5.3", extras = ["hiredis"]}
 
 [tool.poetry.dev-dependencies]
-yapf = "^0.30.0"
+yapf = "^0.31.0"
 # nonebot-plugin-test = "^0.2.0"
 nb-cli = {version = "^0.5.0", extras = ["deploy"]}
 

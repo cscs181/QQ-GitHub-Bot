@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-17 10:03:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-09-02 01:27:43
+ * @LastEditTime   : 2021-09-10 12:38:41
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -34,20 +34,20 @@
       <!-- FIXME: pr status check -->
       <!-- prettier-ignore -->
       {% if timeline|selectattr("event", "equalto", "merged")|list|length >= 1 %}
-          {% set state = "merged" %}
-          {% else %}
-          {% set state = issue.state %}
-          {% endif %}
+      {% set state = "merged" -%}
+      {%- else -%}
+      {% set state = issue.state %}
+      {%- endif %}
       <span class="State State--{{ state|escape }} mr-2">
         <!-- prettier-ignore -->
-        {% if state == "open" %}
-            {% include "components/svg-closed.html" %}
-            {% elif state == "closed" %}
-            {% include "components/svg-closed.html" %}
-            {% elif state == "merged" %}
-            {% include "components/svg-merged.html" %}
-            {% endif %}
-            {{ state|escape }}
+        {% if state == "open" -%}
+        {% include "components/svg-closed.html" %}
+        {%- elif state == "closed" -%}
+        {% include "components/svg-closed.html" %}
+        {%- elif state == "merged" -%}
+        {% include "components/svg-merged.html" %}
+        {%- endif %}
+        {{ state|escape }}
       </span>
     </div>
     <div class="d-flex flex-items-baseline">

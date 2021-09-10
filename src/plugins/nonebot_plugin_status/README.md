@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-15 14:40:25
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-03-16 17:14:08
+ * @LastEditTime   : 2021-09-10 12:42:40
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -38,6 +38,18 @@ _✨ NoneBot 服务器状态（CPU, Memory, Disk Usage）查看插件 ✨_
 ## 配置项
 
 配置方式：直接在 NoneBot 全局配置文件中添加以下配置项即可。
+
+### server_status_only_superusers
+
+- 类型: `bool`
+- 默认: `True`
+- 说明: 是否仅允许超级用户使用
+
+> 超级用户需在配置文件中如下配置:
+>
+> ```dotenv
+> SUPERUSERS=["your qq id"]
+> ```
 
 ### server_status_cpu
 
