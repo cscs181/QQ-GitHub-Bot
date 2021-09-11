@@ -10,23 +10,22 @@ services:
       - bot_net
     restart: always
   nonebot:
-    build: .
+    image: cscs181/qq-github-bot:latest # docker hub
+    # image: ghcr.io/cscs181/qq-github-bot:latest # github image mirror
+    # build: . # use "build" instead of "image" if you want to build the image yourself
     container_name: bot
     # volumes:
     #   - "/etc/timezone:/etc/timezone:ro"
     #   - "/etc/localtime:/etc/localtime:ro"
-    #   - "./.env:/app/.env.prod"  # replace "./.env" with your own config file
     ports:
       - "$PORT:$PORT"
+    # you can load config file by "env_file"
+    env_file:
+      - "./.env"
     environment:
       - ENVIRONMENT=prod
       - HOST=$HOST
       - PORT=$PORT
-      - MAX_WORKERS=1
-      - APP_MODULE=bot:app
-      # - SECRET=$SECRET
-      # - ACCESS_TOKEN=$ACCESS_TOKEN
-      - XVFB_INSTALLED=true
       - REDIS_HOST=bot_redis
       - REDIS_PORT=6379
     networks:

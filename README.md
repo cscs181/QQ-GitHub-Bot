@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-06-10 23:34:41
+ * @LastEditTime   : 2021-09-11 17:46:15
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -28,18 +28,27 @@ GitHub Bot for QQ
 ## 部署
 
 部署 `QQ-GitHub-Bot` 前，需要先行部署 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 并配置连接。
+
 配置连接的方法参考 `nonebot2` 文档: [配置协议端](https://v2.nonebot.dev/guide/cqhttp-guide.html#%E9%85%8D%E7%BD%AE-cqhttp-%E5%8D%8F%E8%AE%AE%E7%AB%AF-%E4%BB%A5-qq-%E4%B8%BA%E4%BE%8B)
 
-1. 使用 `nb-cli`
+1. 下载 [`docker-compose.yml`](./docker-compose.yml) 以及 [`.env`](./.env) 配置文件至任意空目录，修改 `.env` 中的如下配置项：
 
-   ```bash
-   pip install nb-cli[deploy]
-   nb build
-   nb up
+   ```dotenv
+   HOST=0.0.0.0
+   PORT=8080
+   SUPERUSERS=["机器人管理号"]
+
+   # Sentry DSN 网址，如果不使用可以留空
+   SENTRY_DSN=
+
+   # Github OAuth App 配置，留空将功能受限
+   GITHUB_CLIENT_ID=
+   GITHUB_CLIENT_SECRET=
+   GITHUB_SELF_HOST=
    ```
 
-2. 使用 `docker-compose`
+   > `docker-compose.yml` 中的配置视情况修改，**如无必要请勿修改！**
 
-   ```bash
-   docker-compose up -d
-   ```
+2. 启动
+
+   安装 `docker-compose` 并在目录下执行 `docker-compose up -d` 即可。
