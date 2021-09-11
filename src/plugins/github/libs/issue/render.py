@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-09-02 01:27:11
+@LastEditTime   : 2021-09-12 01:25:26
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -76,24 +76,27 @@ env.filters["debug_event"] = debug_event
 env.filters["find_dismissed_review"] = find_dismissed_review
 
 
-#! FIXME
-# pr status merged can only be found in timeline events
-# or using api: `/repos/{owner}/{repo}/pulls/{pull_number}/merge`
 async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
     template = env.get_template("issue.html")
     async with issue:
         timeline = await issue.get_timeline()
+        pull_request = None
+        if issue.is_pull_request:
+            pull_request = await issue.get_pull_request()
         return await template.render_async(owner=owner,
                                            repo_name=repo_name,
                                            issue=issue,
+                                           pull_request=pull_request,
                                            timeline=timeline)
 
 
 async def pr_diff_to_html(owner: str, repo_name: str, issue: Issue) -> str:
     template = env.get_template("diff.html")
     async with issue:
-        diff = await issue.get_diff()
+        pull_request = await issue.get_pull_request()
+        diff = await pull_request.get_diff()
         return await template.render_async(owner=owner,
                                            repo_name=repo_name,
                                            issue=issue,
+                                           pull_request=pull_request,
                                            diff=PatchSet(diff))

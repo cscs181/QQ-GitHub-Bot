@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 16:57:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-20 23:52:12
+@LastEditTime   : 2021-09-12 01:20:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,6 +20,7 @@ from . import BaseModel, PaginatedList
 from .user import User
 from .label import Label
 from .comment import Comment
+from .pull_request import PullRequest
 from .timeline import (
     TimelineEvent, TimelineEventCommited, TimelineEventForcePushed,
     TimelineEventHeadDeleted, TimelineEventReferenced, TimelineEventCommented,
@@ -118,15 +119,32 @@ class Issue(BaseModel):
             self.timeline_url,
             headers=headers)
 
+    async def get_pull_request(self) -> PullRequest:
+        """
+        GET /repo/:full_name/pull/:number
+        """
+        if not self.pull_request:
+            raise RuntimeError(f"Issue {self.number} is not a pull request")
+
+        headers = {
+            "Accept": "application/vnd.github.v3.full+json"
+        }
+        response = await self.requester.request(
+            "GET",
+            self.pull_request.url,
+            headers=headers
+        )
+        return PullRequest.parse_obj({"requester": self.requester, **response.json()})
+
     async def get_diff(self) -> str:
         """
         GET /repo/:full_name/pull/:number.diff
         """
-        if not self.is_pull_request:
+        if not self.pull_request:
             raise RuntimeError(f"Issue {self.number} is not a pull request")
 
         response = await self.requester.request(
             "GET",
-            self.pull_request.diff_url  # type: ignore
+            self.pull_request.diff_url
         )
         return response.text

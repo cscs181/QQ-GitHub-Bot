@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 00:57:33
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-20 23:57:43
+@LastEditTime   : 2021-09-12 01:04:08
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -181,15 +181,6 @@ class TimelineEventUnsubscribed(TimelineEvent):
 
 
 # Pull Request Reviewed
-class TimelineEventReviewedLink(_BaseModel):
-    href: str
-
-
-class TimelineEventReviewedLinks(_BaseModel):
-    html: TimelineEventReviewedLink
-    pull_request: TimelineEventReviewedLink
-
-
 class TimelineEventReviewed(TimelineEvent):
     event: Literal["reviewed"]
     id: int
@@ -204,7 +195,6 @@ class TimelineEventReviewed(TimelineEvent):
     body: Optional[str]
     body_text: Optional[str]
     body_html: Optional[str]
-    links: TimelineEventReviewedLinks = Field(alias="_links")
 
 
 # Pull Request Review Requested

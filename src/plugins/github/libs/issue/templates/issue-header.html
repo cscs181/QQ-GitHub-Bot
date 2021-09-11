@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-17 10:03:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-09-10 12:38:41
+ * @LastEditTime   : 2021-09-12 02:03:33
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -33,7 +33,7 @@
     <div class="flex-shrink-0 mb-2 flex-self-start flex-md-self-center">
       <!-- FIXME: pr status check -->
       <!-- prettier-ignore -->
-      {% if timeline|selectattr("event", "equalto", "merged")|list|length >= 1 %}
+      {% if pull_request and pull_request.merged %}
       {% set state = "merged" -%}
       {%- else -%}
       {% set state = issue.state %}
@@ -52,7 +52,36 @@
     </div>
     <div class="d-flex flex-items-baseline">
       <div class="flex-auto min-width-0 mb-2">
+        {% if pull_request -%}
+        <a
+          class="
+            author
+            Link--secondary
+            text-bold
+            css-truncate css-truncate-target
+          "
+          href="#"
+        >
+          {{ pull_request.user.login|escape }}
+        </a>
+        <!-- prettier-ignore -->
+        {% if pull_request.merged -%}
+        merged
+        {%- else -%}
+        wants to merge
+        {%- endif -%}
+        {{ pull_request.commits }} commits into
+        <span class="branch-name css-truncate">
+          <a class="no-underline">{{ pull_request.base.label|escape }}</a>
+        </span>
+        from
+        <span class="branch-name css-truncate">
+          <a class="no-underline">{{ pull_request.head.label|escape }}</a>
+        </span>
+        <!-- prettier-ignore -->
+        {%- else -%}
         {{ issue.comments }} comments
+        {%- endif %}
       </div>
     </div>
   </div>

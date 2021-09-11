@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:34:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-15 22:11:43
+@LastEditTime   : 2021-09-12 01:56:57
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -82,9 +82,8 @@ class PaginatedList(AsyncIterator, Generic[C]):
         return current
 
     def __aiter__(self) -> "PaginatedList[C]":
-        new_page = copy.deepcopy(self)
-        new_page._index = 0
-        return new_page
+        return PaginatedList(
+            self.cls, self.requester, *self.args, per_page=self.per_page, **self.kwargs)
 
     async def _get_next_page(self) -> List[C]:
         self._current_page += 1
@@ -102,6 +101,8 @@ class PaginatedList(AsyncIterator, Generic[C]):
         return content
 
 
+from .repository import LazyRepository, Repository
+
 from .issue import Issue
 from .label import Label
 from .license import License
@@ -110,4 +111,3 @@ from .hook import Hook, HookConfig
 from .timeline import TimelineEvent
 from .permissions import Permissions
 from .user import User, Organization
-from .repository import LazyRepository, Repository

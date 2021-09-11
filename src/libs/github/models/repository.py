@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:33:54
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-08 19:56:15
+@LastEditTime   : 2021-09-12 01:43:57
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,7 +16,6 @@ from typing import List, Union, Optional
 
 from . import BaseModel
 
-from .issue import Issue
 from .license import License
 from .hook import Hook, HookConfig
 from .user import User, Organization
@@ -26,7 +25,7 @@ from .permissions import Permissions
 class LazyRepository(BaseModel):
     full_name: str
 
-    async def get_issue(self, number: int) -> Issue:
+    async def get_issue(self, number: int) -> "Issue":
         """
         GET /repo/:full_name/issues/:number
 
@@ -216,3 +215,5 @@ class Repository(LazyRepository):
 
 
 Repository.update_forward_refs()
+
+from .issue import Issue
