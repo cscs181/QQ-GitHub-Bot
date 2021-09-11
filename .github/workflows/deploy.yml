@@ -11,6 +11,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: start deployment
+        uses: bobheadxi/deployments@v0.6.0
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: official-bot
+
       - name: remote ssh command
         uses: appleboy/ssh-action@master
         env:
@@ -23,3 +31,12 @@ jobs:
           script: |
             cd $DEPLOY_PATH
             docker-compose up --force-recreate -d
+
+      - name: update deployment status
+        uses: bobheadxi/deployments@v0.4.3
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
