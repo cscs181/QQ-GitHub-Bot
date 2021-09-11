@@ -1,0 +1,25 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows:
+      - "Release"
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: remote ssh command
+        uses: appleboy/ssh-action@master
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          envs: DEPLOY_PATH
+          script: |
+            cd $DEPLOY_PATH
+            docker-compose up --force-recreate -d
