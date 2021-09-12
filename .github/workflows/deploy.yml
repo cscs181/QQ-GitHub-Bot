@@ -30,7 +30,9 @@ jobs:
           envs: DEPLOY_PATH
           script: |
             cd $DEPLOY_PATH
-            docker-compose up --force-recreate -d
+            docker-compose down
+            docker-compose pull
+            docker-compose up -d
 
       - name: update deployment status
         uses: bobheadxi/deployments@v0.4.3
