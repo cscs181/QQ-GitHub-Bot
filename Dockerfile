@@ -29,7 +29,7 @@ RUN poetry export --without-hashes -f requirements.txt \
   && echo "Install playwright headless browser..." \
   && poetry run playwright install chromium \
   && apt-get install -y libnss3-dev libxss1 libasound2 libxrandr2\
-  libatk1.0-0 libgtk-3-0 libgbm-dev libxshmfense1\
+  libatk1.0-0 libgtk-3-0 libgbm-dev libxshmfence1\
   && poetry install --no-dev
 
 # RUN echo "Install wkhtmltox renderer..." \
