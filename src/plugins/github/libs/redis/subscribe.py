@@ -35,26 +35,34 @@ class SubscribeConfig:
 
 def set_subscribe(group_id: str, repo_name: str, **kwargs) -> Optional[bool]:
     return redis.set(
-        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id, repo_name=repo_name),
+        SUBSCRIBE_GROUP_REPO_FORMAT.format(
+            group_id=group_id, repo_name=repo_name
+        ),
         json.dumps(asdict(SubscribeConfig(**kwargs))),
     )
 
 
 def delete_subscribe(group_id: str, repo_name: str) -> int:
     return redis.delete(
-        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id, repo_name=repo_name)
+        SUBSCRIBE_GROUP_REPO_FORMAT.format(
+            group_id=group_id, repo_name=repo_name
+        )
     )
 
 
 def exists_subscribe(group_id: str, repo_name: str) -> int:
     return redis.exists(
-        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id, repo_name=repo_name)
+        SUBSCRIBE_GROUP_REPO_FORMAT.format(
+            group_id=group_id, repo_name=repo_name
+        )
     )
 
 
 def get_subscribe(group_id: str, repo_name: str) -> Optional[SubscribeConfig]:
     value = redis.get(
-        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id, repo_name=repo_name)
+        SUBSCRIBE_GROUP_REPO_FORMAT.format(
+            group_id=group_id, repo_name=repo_name
+        )
     )
     return value if value is None else SubscribeConfig(**json.loads(value))
 

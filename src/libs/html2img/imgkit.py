@@ -96,7 +96,9 @@ class IMGKit(object):
     def xvfb(self):
         return self.config.xvfb
 
-    def _gegetate_args(self, options: OPTION_TYPE) -> Generator[str, None, None]:
+    def _gegetate_args(
+        self, options: OPTION_TYPE
+    ) -> Generator[str, None, None]:
         """
         Generator of args parts based on options specification.
         """
@@ -155,7 +157,9 @@ class IMGKit(object):
 
             if "</head>" in source:
                 self.source = StringSource(
-                    inp.replace("</head>", self._style_tag(css_data) + "</head>")
+                    inp.replace(
+                        "</head>", self._style_tag(css_data) + "</head>"
+                    )
                 )
             else:
                 self.source = StringSource(self._style_tag(css_data) + inp)
@@ -252,7 +256,10 @@ class IMGKit(object):
         args = self.command(output_path)
 
         proc = await asyncio.create_subprocess_exec(
-            *args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            *args,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
 
         # If the source is a string then we will pipe it into wkhtmltoimage.

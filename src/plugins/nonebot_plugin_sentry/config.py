@@ -32,7 +32,9 @@ class Config(BaseSettings):
     sentry_with_locals: bool = True
     sentry_ca_certs: Optional[str] = None
     sentry_before_send: Optional[Callable[[Any, Any], Optional[Any]]] = None
-    sentry_before_breadcrumb: Optional[Callable[[Any, Any], Optional[Any]]] = None
+    sentry_before_breadcrumb: Optional[
+        Callable[[Any, Any], Optional[Any]]
+    ] = None
     sentry_transport: Optional[Any] = None
     sentry_http_proxy: Optional[str] = None
     sentry_https_proxy: Optional[str] = None

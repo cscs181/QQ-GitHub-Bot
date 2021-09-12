@@ -31,6 +31,9 @@ async def handle(bot: Bot):
     matchers = reduce(lambda x, y: x.union(y.matcher), _sub_plugins, set())
     docs = "命令列表：\n\n"
     docs += "\n\n".join(
-        map(lambda x: inspect.cleandoc(x.__doc__), filter(lambda x: x.__doc__, matchers))
+        map(
+            lambda x: inspect.cleandoc(x.__doc__),
+            filter(lambda x: x.__doc__, matchers),
+        )
     )
     await help.finish(docs)

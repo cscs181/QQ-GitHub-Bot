@@ -42,7 +42,9 @@ class Config(BaseSettings):
     @validator("github_self_host")
     def validate_hook(cls, v):
         if not v:
-            logger.warning("`github_self_host` not provided! github webhook is disabled!")
+            logger.warning(
+                "`github_self_host` not provided! github webhook is disabled!"
+            )
         return v
 
     class Config:

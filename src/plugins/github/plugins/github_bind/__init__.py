@@ -16,7 +16,12 @@ from nonebot import on_command
 from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
 from httpx import HTTPStatusError, TimeoutException
-from nonebot.adapters.cqhttp import GROUP_ADMIN, GROUP_OWNER, Bot, GroupMessageEvent
+from nonebot.adapters.cqhttp import (
+    GROUP_ADMIN,
+    GROUP_OWNER,
+    Bot,
+    GroupMessageEvent,
+)
 
 from src.utils import only_group, allow_cancel
 
@@ -35,7 +40,9 @@ try:
 except ImportError:
     get_user_token = None
 
-REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
+REPO_REGEX: str = (
+    r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
+)
 
 bind = on_command(
     "bind",

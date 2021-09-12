@@ -48,7 +48,9 @@ async def _gen_image(
     html: str, width: int, height: int, wkhtmltoimage: bool = False
 ) -> Optional[bytes]:
     if not wkhtmltoimage:
-        async with get_new_page(viewport={"width": width, "height": height}) as page:
+        async with get_new_page(
+            viewport={"width": width, "height": height}
+        ) as page:
             await page.set_content(html)
             img = await page.screenshot(full_page=True)
             return img

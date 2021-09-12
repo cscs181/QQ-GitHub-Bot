@@ -216,4 +216,6 @@ async def config(
     :param meta_tag_prefix: the prefix for ``pdfkit`` specific meta tags
     """
 
-    return await Config(wkhtmltoimage=wkhtmltoimage, meta_tag_prefix=meta_tag_prefix)
+    return await Config(
+        wkhtmltoimage=wkhtmltoimage, meta_tag_prefix=meta_tag_prefix
+    )

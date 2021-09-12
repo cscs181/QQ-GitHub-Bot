@@ -58,7 +58,12 @@ C = TypeVar("C", bound=BaseModel)
 
 class PaginatedList(AsyncIterator, Generic[C]):
     def __init__(
-        self, cls: Type[C], requester: Requester, *args, per_page: int = 30, **kwargs
+        self,
+        cls: Type[C],
+        requester: Requester,
+        *args,
+        per_page: int = 30,
+        **kwargs
     ):
         self.cls = cls
         self.requester = requester
@@ -80,7 +85,11 @@ class PaginatedList(AsyncIterator, Generic[C]):
 
     def __aiter__(self) -> "PaginatedList[C]":
         return PaginatedList(
-            self.cls, self.requester, *self.args, per_page=self.per_page, **self.kwargs
+            self.cls,
+            self.requester,
+            *self.args,
+            per_page=self.per_page,
+            **self.kwargs
         )
 
     async def _get_next_page(self) -> List[C]:
@@ -91,7 +100,10 @@ class PaginatedList(AsyncIterator, Generic[C]):
         response = await self.requester.request_json(*self.args, **self.kwargs)
         content = response.json()
         self._contents.extend(
-            [parse_obj_as(self.cls, {"requester": self.requester, **x}) for x in content]
+            [
+                parse_obj_as(self.cls, {"requester": self.requester, **x})
+                for x in content
+            ]
         )
         return content
 

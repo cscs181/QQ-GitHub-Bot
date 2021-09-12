@@ -29,7 +29,9 @@ def memory_status() -> float:
 
 def disk_usage() -> Dict[str, psutil._common.sdiskusage]:
     disk_parts = psutil.disk_partitions()
-    disk_usages = {d.mountpoint: psutil.disk_usage(d.mountpoint) for d in disk_parts}
+    disk_usages = {
+        d.mountpoint: psutil.disk_usage(d.mountpoint) for d in disk_parts
+    }
     return disk_usages
 
 

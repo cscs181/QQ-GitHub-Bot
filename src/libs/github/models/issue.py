@@ -159,7 +159,9 @@ class Issue(BaseModel):
         response = await self.requester.request(
             "GET", self.pull_request.url, headers=headers
         )
-        return PullRequest.parse_obj({"requester": self.requester, **response.json()})
+        return PullRequest.parse_obj(
+            {"requester": self.requester, **response.json()}
+        )
 
     async def get_diff(self) -> str:
         """
@@ -168,5 +170,7 @@ class Issue(BaseModel):
         if not self.pull_request:
             raise RuntimeError(f"Issue {self.number} is not a pull request")
 
-        response = await self.requester.request("GET", self.pull_request.diff_url)
+        response = await self.requester.request(
+            "GET", self.pull_request.diff_url
+        )
         return response.text

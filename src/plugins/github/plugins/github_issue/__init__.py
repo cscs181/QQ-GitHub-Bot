@@ -18,7 +18,12 @@ from nonebot import on_regex
 from nonebot.typing import T_State
 from playwright.async_api import Error
 from httpx import HTTPStatusError, TimeoutException
-from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, GroupMessageEvent
+from nonebot.adapters.cqhttp import (
+    Bot,
+    MessageEvent,
+    MessageSegment,
+    GroupMessageEvent,
+)
 
 from src.utils import only_group
 
@@ -91,7 +96,9 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
                 owner,
                 repo,
                 number,
-                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
+                MessageSegment.image(
+                    f"base64://{base64.b64encode(img).decode()}"
+                ),
             )
 
 
@@ -144,5 +151,7 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
                 owner,
                 repo,
                 number,
-                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
+                MessageSegment.image(
+                    f"base64://{base64.b64encode(img).decode()}"
+                ),
             )

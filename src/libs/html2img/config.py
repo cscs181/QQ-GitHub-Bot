@@ -18,7 +18,9 @@ from typing import Union, Optional
 
 class Config(object):
     def __init__(
-        self, wkhtmltoimage: Optional[str] = None, meta_tag_prefix: str = "imgkit-"
+        self,
+        wkhtmltoimage: Optional[str] = None,
+        meta_tag_prefix: str = "imgkit-",
     ):
         self.meta_tag_prefix = meta_tag_prefix
         self._wkhtmltoimage = wkhtmltoimage
@@ -84,7 +86,9 @@ class Config(object):
     @property
     def xvfb(self) -> Union[str, bytes]:
         if not self._xvfb:
-            raise RuntimeError(f"xvfb not installed or Config {self} is never awaited!")
+            raise RuntimeError(
+                f"xvfb not installed or Config {self} is never awaited!"
+            )
         return self._xvfb
 
     @xvfb.setter

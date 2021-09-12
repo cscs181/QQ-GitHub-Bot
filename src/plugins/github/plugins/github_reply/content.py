@@ -29,7 +29,9 @@ try:
 except ImportError:
     get_user_token = None
 
-content = on_command("content", is_github_reply, priority=config.github_command_priority)
+content = on_command(
+    "content", is_github_reply, priority=config.github_command_priority
+)
 content.__doc__ = """
 /content
 回复机器人一条github信息，给出对应内容
@@ -57,7 +59,9 @@ async def handle_content(bot: Bot, event: MessageEvent, state: T_State):
         return
 
     try:
-        img = await issue_to_image(message_info.owner, message_info.repo, issue_)
+        img = await issue_to_image(
+            message_info.owner, message_info.repo, issue_
+        )
     except TimeoutException:
         await content.finish(f"获取issue数据超时！请尝试重试")
     except Error:
@@ -69,5 +73,7 @@ async def handle_content(bot: Bot, event: MessageEvent, state: T_State):
                 message_info.owner,
                 message_info.repo,
                 message_info.number,
-                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
+                MessageSegment.image(
+                    f"base64://{base64.b64encode(img).decode()}"
+                ),
             )

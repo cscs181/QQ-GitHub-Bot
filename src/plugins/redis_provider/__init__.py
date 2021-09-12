@@ -52,7 +52,9 @@ def get_cache(sign: str) -> Any:
 
 
 def save_cache(sign: str, cache: Any, ex: Optional[timedelta] = None) -> None:
-    redis_client.set(CACHE_KEY_FORMAT.format(signature=sign), pickle.dumps(cache), ex)
+    redis_client.set(
+        CACHE_KEY_FORMAT.format(signature=sign), pickle.dumps(cache), ex
+    )
 
 
 # Export something for other plugin

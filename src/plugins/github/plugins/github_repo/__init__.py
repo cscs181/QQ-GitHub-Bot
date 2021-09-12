@@ -16,7 +16,12 @@ from typing import Dict
 from nonebot import on_regex
 from nonebot.typing import T_State
 from httpx import HTTPStatusError, TimeoutException
-from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, GroupMessageEvent
+from nonebot.adapters.cqhttp import (
+    Bot,
+    MessageEvent,
+    MessageSegment,
+    GroupMessageEvent,
+)
 
 from ...libs.repo import get_repo
 from ... import github_config as config

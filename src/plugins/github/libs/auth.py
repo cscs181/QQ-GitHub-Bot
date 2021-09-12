@@ -64,7 +64,9 @@ async def get_token_by_code(code: str) -> str:
             "code": code,
         }
         response = await client.post(
-            "https://github.com/login/oauth/access_token", json=data, headers=headers
+            "https://github.com/login/oauth/access_token",
+            json=data,
+            headers=headers,
         )
         response.raise_for_status()
         return response.json()["access_token"]

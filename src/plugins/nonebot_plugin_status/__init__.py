@@ -25,7 +25,8 @@ status_config = Config(**global_config.dict())
 
 command = on_command(
     "状态",
-    permission=(status_config.server_status_only_superusers or None) and SUPERUSER,
+    permission=(status_config.server_status_only_superusers or None)
+    and SUPERUSER,
     priority=10,
 )
 
@@ -78,7 +79,8 @@ async def _poke(bot: Bot, event: Event, state: T_State) -> bool:
 
 poke = on_message(
     _poke,
-    permission=(status_config.server_status_only_superusers or None) and SUPERUSER,
+    permission=(status_config.server_status_only_superusers or None)
+    and SUPERUSER,
     priority=10,
 )
 poke.handle()(server_status)
