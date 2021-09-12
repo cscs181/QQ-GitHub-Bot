@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qq-github-bot"
-version = "0.1.4"
+version = "0.1.5"
 description = "GitHub Bot for QQ"
 authors = ["yanyongyu <yanyongyu_1@126.com>"]
 license = "MIT"
