@@ -21,6 +21,7 @@ from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment, GroupMessageEvent
 
 from src.utils import only_group
+
 from ... import github_config as config
 from ...utils import send_github_message
 from ...libs.redis import get_group_bind_repo
@@ -33,14 +34,18 @@ except ImportError:
     get_user_token = None
 
 ISSUE_REGEX = r"^#(?P<number>\d+)$"
-REPO_REGEX: str = (r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
-                   r"(?P<repo>[a-zA-Z0-9_\-\.]+)$")
-REPO_ISSUE_REGEX = (r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
-                    r"(?P<repo>[a-zA-Z0-9_\-\.]+)#(?P<number>\d+)$")
+REPO_REGEX: str = (
+    r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/" r"(?P<repo>[a-zA-Z0-9_\-\.]+)$"
+)
+REPO_ISSUE_REGEX = (
+    r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
+    r"(?P<repo>[a-zA-Z0-9_\-\.]+)#(?P<number>\d+)$"
+)
 GITHUB_LINK_REGEX = (
     r"github\.com/"
     r"(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
-    r"(?P<repo>[a-zA-Z0-9_\-\.]+)/(?:issues|pull)/(?P<number>\d+)")
+    r"(?P<repo>[a-zA-Z0-9_\-\.]+)/(?:issues|pull)/(?P<number>\d+)"
+)
 
 issue = on_regex(REPO_ISSUE_REGEX, priority=config.github_command_priority)
 issue.__doc__ = """
@@ -82,14 +87,17 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
     else:
         if img:
             await send_github_message(
-                issue_short, owner, repo, number,
-                MessageSegment.image(
-                    f"base64://{base64.b64encode(img).decode()}"))
+                issue_short,
+                owner,
+                repo,
+                number,
+                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
+            )
 
 
-issue_short = on_regex(ISSUE_REGEX,
-                       rule=only_group,
-                       priority=config.github_command_priority)
+issue_short = on_regex(
+    ISSUE_REGEX, rule=only_group, priority=config.github_command_priority
+)
 issue_short.__doc__ = """
 ^#number$
 获取指定仓库 issue / pr (需通过 /bind 将群与仓库绑定后使用)
@@ -132,6 +140,9 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
     else:
         if img:
             await send_github_message(
-                issue_short, owner, repo, number,
-                MessageSegment.image(
-                    f"base64://{base64.b64encode(img).decode()}"))
+                issue_short,
+                owner,
+                repo,
+                number,
+                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
+            )

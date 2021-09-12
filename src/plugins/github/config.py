@@ -13,8 +13,7 @@ __author__ = "yanyongyu"
 from typing import Optional
 
 from nonebot.log import logger
-
-from pydantic import validator, BaseSettings
+from pydantic import BaseSettings, validator
 
 
 class Config(BaseSettings):
@@ -36,14 +35,14 @@ class Config(BaseSettings):
         if not all(v):
             logger.warning(
                 "`github_client_id` or `github_client_secret` not provided! "
-                "github authorization related plugins are disabled!")
+                "github authorization related plugins are disabled!"
+            )
         return v
 
     @validator("github_self_host")
     def validate_hook(cls, v):
         if not v:
-            logger.warning(
-                "`github_self_host` not provided! github webhook is disabled!")
+            logger.warning("`github_self_host` not provided! github webhook is disabled!")
         return v
 
     class Config:

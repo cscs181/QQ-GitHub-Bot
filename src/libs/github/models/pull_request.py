@@ -16,7 +16,6 @@ from typing import Any, List, Union, Optional
 from pydantic import BaseModel as _BaseModel
 
 from . import BaseModel
-
 from .label import Label
 from .user import User, Actor
 from .repository import Repository
@@ -97,8 +96,5 @@ class PullRequest(BaseModel):
     changed_files: int
 
     async def get_diff(self) -> str:
-        response = await self.requester.request(
-            "GET",
-            self.diff_url
-        )
+        response = await self.requester.request("GET", self.diff_url)
         return response.text

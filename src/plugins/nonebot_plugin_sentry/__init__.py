@@ -23,7 +23,6 @@ config = Config(**global_config.dict())
 
 
 class Filter:
-
     def __init__(self, level="INFO") -> None:
         self.level = level
 
@@ -38,9 +37,11 @@ def init(config: Config):
         for key, value in config.dict().items()
         if key != "sentry_environment"
     }
-    sentry_sdk.init(**sentry_config,
-                    environment=config.sentry_environment or driver.env,
-                    default_integrations=False)
+    sentry_sdk.init(
+        **sentry_config,
+        environment=config.sentry_environment or driver.env,
+        default_integrations=False
+    )
 
     logger.add(EventHandler("ERROR"), filter=Filter("ERROR"))
     logger.add(BreadcrumbHandler("INFO"), filter=Filter("INFO"))

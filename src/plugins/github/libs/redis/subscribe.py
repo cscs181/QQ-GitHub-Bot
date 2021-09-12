@@ -11,10 +11,10 @@
 __author__ = "yanyongyu"
 
 import re
-import json
 import glob
+import json
 from typing import List, Optional
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 
 from . import redis
 
@@ -35,33 +35,34 @@ class SubscribeConfig:
 
 def set_subscribe(group_id: str, repo_name: str, **kwargs) -> Optional[bool]:
     return redis.set(
-        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id,
-                                           repo_name=repo_name),
-        json.dumps(asdict(SubscribeConfig(**kwargs))))
+        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id, repo_name=repo_name),
+        json.dumps(asdict(SubscribeConfig(**kwargs))),
+    )
 
 
 def delete_subscribe(group_id: str, repo_name: str) -> int:
     return redis.delete(
-        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id,
-                                           repo_name=repo_name))
+        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id, repo_name=repo_name)
+    )
 
 
 def exists_subscribe(group_id: str, repo_name: str) -> int:
     return redis.exists(
-        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id,
-                                           repo_name=repo_name))
+        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id, repo_name=repo_name)
+    )
 
 
 def get_subscribe(group_id: str, repo_name: str) -> Optional[SubscribeConfig]:
     value = redis.get(
-        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id,
-                                           repo_name=repo_name))
+        SUBSCRIBE_GROUP_REPO_FORMAT.format(group_id=group_id, repo_name=repo_name)
+    )
     return value if value is None else SubscribeConfig(**json.loads(value))
 
 
 def get_group_subscribe(group_id: str) -> List[str]:
     subscribed = redis.keys(
-        SUBSCRIBE_GROUP_GLOB_PATTERN.format(group_id=glob.escape(group_id)))
+        SUBSCRIBE_GROUP_GLOB_PATTERN.format(group_id=glob.escape(group_id))
+    )
     return [
         match.group("repo_name")
         for key in subscribed
@@ -71,7 +72,8 @@ def get_group_subscribe(group_id: str) -> List[str]:
 
 def get_repo_subscribe(repo_name: str) -> List[str]:
     subscribed = redis.keys(
-        SUBSCRIBE_REPO_GLOB_PATTERN.format(repo_name=glob.escape(repo_name)))
+        SUBSCRIBE_REPO_GLOB_PATTERN.format(repo_name=glob.escape(repo_name))
+    )
     return [
         match.group("group_id")
         for key in subscribed

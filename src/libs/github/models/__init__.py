@@ -10,11 +10,12 @@
 """
 __author__ = "yanyongyu"
 
-import copy
 from contextvars import ContextVar
-from typing import Any, List, Dict, Type, TypeVar, Generic, AsyncIterator
+from typing import Any, Dict, List, Type, Generic, TypeVar, AsyncIterator
 
-from pydantic import BaseModel as _BaseModel, Field, parse_obj_as
+from pydantic import Field
+from pydantic import parse_obj_as
+from pydantic import BaseModel as _BaseModel
 
 from ..request import Requester
 
@@ -56,13 +57,9 @@ C = TypeVar("C", bound=BaseModel)
 
 
 class PaginatedList(AsyncIterator, Generic[C]):
-
-    def __init__(self,
-                 cls: Type[C],
-                 requester: Requester,
-                 *args,
-                 per_page: int = 30,
-                 **kwargs):
+    def __init__(
+        self, cls: Type[C], requester: Requester, *args, per_page: int = 30, **kwargs
+    ):
         self.cls = cls
         self.requester = requester
         self.args = args
@@ -83,7 +80,8 @@ class PaginatedList(AsyncIterator, Generic[C]):
 
     def __aiter__(self) -> "PaginatedList[C]":
         return PaginatedList(
-            self.cls, self.requester, *self.args, per_page=self.per_page, **self.kwargs)
+            self.cls, self.requester, *self.args, per_page=self.per_page, **self.kwargs
+        )
 
     async def _get_next_page(self) -> List[C]:
         self._current_page += 1
@@ -92,21 +90,18 @@ class PaginatedList(AsyncIterator, Generic[C]):
         params["per_page"] = self.per_page
         response = await self.requester.request_json(*self.args, **self.kwargs)
         content = response.json()
-        self._contents.extend([
-            parse_obj_as(self.cls, {
-                "requester": self.requester,
-                **x
-            }) for x in content
-        ])
+        self._contents.extend(
+            [parse_obj_as(self.cls, {"requester": self.requester, **x}) for x in content]
+        )
         return content
 
 
-from .repository import LazyRepository, Repository
+from .repository import Repository, LazyRepository  # isort: skip
 
 from .issue import Issue
 from .label import Label
-from .license import License
 from .comment import Comment
+from .license import License
 from .hook import Hook, HookConfig
 from .timeline import TimelineEvent
 from .permissions import Permissions

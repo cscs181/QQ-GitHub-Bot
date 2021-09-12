@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-07 00:01:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-25 16:01:12
+@LastEditTime   : 2021-09-12 12:54:16
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,11 +19,10 @@ from typing import Tuple, Union, Optional, Generator
 
 from .config import Config
 from .source import Source, URLSource, FileSource, StringSource
-from .typing import SOURCE_TYPE, OUTPUT_TYPE, OPTION_TYPE, CSS_TYPE
+from .typing import CSS_TYPE, OPTION_TYPE, OUTPUT_TYPE, SOURCE_TYPE
 
 
 class IMGKit(object):
-
     class SourceError(Exception):
         """Wrong source type for stylesheets"""
 
@@ -33,19 +32,24 @@ class IMGKit(object):
         def __str__(self):
             return self.message
 
-    def __init__(self,
-                 source: SOURCE_TYPE,
-                 source_type: Literal["url", "file", "string"],
-                 options: Optional[OPTION_TYPE] = None,
-                 toc: Optional[OPTION_TYPE] = None,
-                 cover: str = None,
-                 cover_first: bool = False,
-                 css: CSS_TYPE = None,
-                 config: Optional[Config] = None):
-        self._source = URLSource(
-            source) if source_type == "url" else FileSource(
-                source) if source_type == "file" else StringSource(
-                    source)  # type: ignore
+    def __init__(
+        self,
+        source: SOURCE_TYPE,
+        source_type: Literal["url", "file", "string"],
+        options: Optional[OPTION_TYPE] = None,
+        toc: Optional[OPTION_TYPE] = None,
+        cover: str = None,
+        cover_first: bool = False,
+        css: CSS_TYPE = None,
+        config: Optional[Config] = None,
+    ):
+        self._source = (
+            URLSource(source)
+            if source_type == "url"
+            else FileSource(source)
+            if source_type == "file"
+            else StringSource(source)  # type: ignore
+        )
         self._config: Optional[Config] = config
 
         self.options: OPTION_TYPE = options or {}
@@ -62,7 +66,7 @@ class IMGKit(object):
         if isinstance(self._source, StringSource):
             self.options = {
                 **self._find_options_in_meta(self._source.get_source()),
-                **self.options
+                **self.options,
             }
         return self
 
@@ -92,8 +96,7 @@ class IMGKit(object):
     def xvfb(self):
         return self.config.xvfb
 
-    def _gegetate_args(self,
-                       options: OPTION_TYPE) -> Generator[str, None, None]:
+    def _gegetate_args(self, options: OPTION_TYPE) -> Generator[str, None, None]:
         """
         Generator of args parts based on options specification.
         """
@@ -102,8 +105,8 @@ class IMGKit(object):
             yield optval
 
     def _normalize_options(
-            self,
-            options: OPTION_TYPE) -> Generator[Tuple[str, str], None, None]:
+        self, options: OPTION_TYPE
+    ) -> Generator[Tuple[str, str], None, None]:
         """
         Generator of 2-tuples (option-key, option-value).
         When options spec is a list, generate a 2-tuples per list item.
@@ -134,7 +137,8 @@ class IMGKit(object):
         source = self.source.get_source()
         if isinstance(self.source, URLSource) or isinstance(source, list):
             raise self.SourceError(
-                "CSS files can be added only to a single file or string")
+                "CSS files can be added only to a single file or string"
+            )
 
         if not isinstance(css_file, list):
             css_file = [css_file]
@@ -151,15 +155,15 @@ class IMGKit(object):
 
             if "</head>" in source:
                 self.source = StringSource(
-                    inp.replace("</head>",
-                                self._style_tag(css_data) + "</head>"))
+                    inp.replace("</head>", self._style_tag(css_data) + "</head>")
+                )
             else:
                 self.source = StringSource(self._style_tag(css_data) + inp)
         elif isinstance(self.source, StringSource):
             if "</head>" in source:
                 self.source.source = source.replace(
-                    "</head>",
-                    self._style_tag(css_data) + "</head>")
+                    "</head>", self._style_tag(css_data) + "</head>"
+                )
             else:
                 self.source.source = self._style_tag(css_data) + source
 
@@ -167,8 +171,7 @@ class IMGKit(object):
         return f"<style>{stylesheet}</style>"
 
     def _command(
-        self,
-        output_path: OUTPUT_TYPE = None
+        self, output_path: OUTPUT_TYPE = None
     ) -> Generator[Union[str, bytes], None, None]:
         """
         Generator of all command parts
@@ -239,7 +242,8 @@ class IMGKit(object):
         for x in re.findall(r"<meta [^>]*>", content):
             if re.search(rf"name=[\"']{self.config.meta_tag_prefix}", x):
                 name = re.findall(
-                    rf"name=[\"']{self.config.meta_tag_prefix}([^\"']*)", x)[0]
+                    rf"name=[\"']{self.config.meta_tag_prefix}([^\"']*)", x
+                )[0]
                 found[name] = re.findall(r"content=[\"']([^\"']*)", x)[0]
 
         return found
@@ -247,10 +251,9 @@ class IMGKit(object):
     async def to_img(self, output_path: OUTPUT_TYPE = None) -> Optional[bytes]:
         args = self.command(output_path)
 
-        proc = await asyncio.create_subprocess_exec(*args,
-                                                    stdin=subprocess.PIPE,
-                                                    stdout=subprocess.PIPE,
-                                                    stderr=subprocess.PIPE)
+        proc = await asyncio.create_subprocess_exec(
+            *args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
 
         # If the source is a string then we will pipe it into wkhtmltoimage.
         # If we want to add custom CSS to file then we read input file to
@@ -274,7 +277,8 @@ class IMGKit(object):
                 f"{stderr}\n"
                 "You will need to run wkhtmltoimage within a 'virtual' X server.\n"
                 "Go to the link below for more information\n"
-                "http://wkhtmltopdf.org")
+                "http://wkhtmltopdf.org"
+            )
 
         if "Error" in stderr:
             raise IOError("wkhtmltoimage reported an error:\n" + stderr)
@@ -301,10 +305,11 @@ class IMGKit(object):
                     if text == "":
                         raise IOError(
                             f"Command failed: {args}\n"
-                            "Check whhtmltoimage output without \"--quiet\" option"
+                            'Check whhtmltoimage output without "--quiet" option'
                         )
                     return None
             except IOError as e:
                 raise IOError(
                     f"Command failed: {args}\n"
-                    "Check whhtmltoimage output without \"--quiet\" option")
+                    'Check whhtmltoimage output without "--quiet" option'
+                )

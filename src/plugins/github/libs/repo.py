@@ -13,13 +13,12 @@ __author__ = "yanyongyu"
 from typing import Optional
 
 from src.libs.github import Github
-from .. import github_config as config
 from src.libs.github.models import Repository
 
+from .. import github_config as config
 
-async def get_repo(owner: str,
-                   repo_name: str,
-                   token: Optional[str] = None) -> Repository:
+
+async def get_repo(owner: str, repo_name: str, token: Optional[str] = None) -> Repository:
     if token:
         g = Github(token)
     elif config.github_client_id and config.github_client_secret:

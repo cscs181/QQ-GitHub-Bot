@@ -15,11 +15,10 @@ from typing_extensions import Literal
 from typing import List, Union, Optional
 
 from . import BaseModel
-
 from .license import License
 from .hook import Hook, HookConfig
-from .user import User, Organization
 from .permissions import Permissions
+from .user import User, Organization
 
 
 class LazyRepository(BaseModel):
@@ -31,29 +30,25 @@ class LazyRepository(BaseModel):
 
         https://docs.github.com/en/rest/reference/issues#get-an-issue
         """
-        headers = {
-            "Accept": "application/vnd.github.mockingbird-preview.full+json"
-        }
+        headers = {"Accept": "application/vnd.github.mockingbird-preview.full+json"}
         response = await self.requester.request(
-            "GET", f"/repos/{self.full_name}/issues/{number}", headers=headers)
+            "GET", f"/repos/{self.full_name}/issues/{number}", headers=headers
+        )
         return Issue.parse_obj({"requester": self.requester, **response.json()})
 
     # FIXME: pass a milestone object, assignee user object
-    async def get_issues(self,
-                         milestone: Optional[Union[int,
-                                                   Literal["*",
-                                                           "none"]]] = None,
-                         state: Optional[Literal["open", "closed",
-                                                 "all"]] = None,
-                         assignee: Optional[Union[str, Literal["*",
-                                                               "none"]]] = None,
-                         creator: Optional[str] = None,
-                         mentioned: Optional[str] = None,
-                         labels: Optional[List[str]] = None,
-                         sort: Optional[Literal["created", "updated",
-                                                "comments"]] = None,
-                         direction: Optional[Literal["asc", "desc"]] = None,
-                         since: Optional[datetime] = None):
+    async def get_issues(
+        self,
+        milestone: Optional[Union[int, Literal["*", "none"]]] = None,
+        state: Optional[Literal["open", "closed", "all"]] = None,
+        assignee: Optional[Union[str, Literal["*", "none"]]] = None,
+        creator: Optional[str] = None,
+        mentioned: Optional[str] = None,
+        labels: Optional[List[str]] = None,
+        sort: Optional[Literal["created", "updated", "comments"]] = None,
+        direction: Optional[Literal["asc", "desc"]] = None,
+        since: Optional[datetime] = None,
+    ):
         params = {}
         if milestone:
             params["milestone"] = milestone
@@ -81,7 +76,8 @@ class LazyRepository(BaseModel):
         https://docs.github.com/en/rest/reference/repos#get-a-repository-webhook
         """
         response = await self.requester.request_json(
-            "GET", f"/repos/{self.full_name}/hooks/{id}")
+            "GET", f"/repos/{self.full_name}/hooks/{id}"
+        )
         return Hook.parse_obj({"requester": self.requester, **response.json()})
 
     async def get_hooks(self) -> List[Hook]:
@@ -91,18 +87,19 @@ class LazyRepository(BaseModel):
         https://docs.github.com/en/rest/reference/repos#list-repository-webhooks
         """
         response = await self.requester.request_json(
-            "GET", f"/repos/{self.full_name}/hooks")
+            "GET", f"/repos/{self.full_name}/hooks"
+        )
         return [
-            Hook.parse_obj({
-                "requester": self.requester,
-                **hook
-            }) for hook in response.json()
+            Hook.parse_obj({"requester": self.requester, **hook})
+            for hook in response.json()
         ]
 
-    async def create_hook(self,
-                          config: HookConfig,
-                          events: Optional[List[str]] = None,
-                          active: Optional[bool] = None):
+    async def create_hook(
+        self,
+        config: HookConfig,
+        events: Optional[List[str]] = None,
+        active: Optional[bool] = None,
+    ):
         """
         POST /repos/:full_name/hooks
 
@@ -110,14 +107,14 @@ class LazyRepository(BaseModel):
         """
         data = {}
         data["config"] = config.dict(exclude_unset=True)
-        data["config"][
-            "insecure_ssl"] = "1" if data["config"]["insecure_ssl"] else "0"
+        data["config"]["insecure_ssl"] = "1" if data["config"]["insecure_ssl"] else "0"
         if events is not None:
             data["events"] = events
         if active is not None:
             data["active"] = active
         response = await self.requester.request_json(
-            "POST", f"/repos/{self.full_name}/hooks", json=data)
+            "POST", f"/repos/{self.full_name}/hooks", json=data
+        )
         return Hook.parse_obj({"requester": self.requester, **response.json()})
 
 
@@ -125,6 +122,7 @@ class Repository(LazyRepository):
     """
     https://docs.github.com/en/rest/reference/repos
     """
+
     id: int
     node_id: str
     name: str

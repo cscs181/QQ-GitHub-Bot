@@ -14,7 +14,7 @@ import pickle
 import inspect
 from functools import wraps
 from datetime import timedelta
-from typing import Any, Optional, TypeVar, Callable
+from typing import Any, TypeVar, Callable, Optional
 
 import redis
 import nonebot
@@ -27,12 +27,14 @@ CACHE_KEY_FORMAT = "cache_{signature}"
 global_config = get_driver().config
 redis_config = Config(**global_config.dict())
 
-redis_client = redis.Redis(redis_config.redis_host,
-                           redis_config.redis_port,
-                           redis_config.redis_db,
-                           charset="utf-8",
-                           password=redis_config.redis_password,
-                           username=redis_config.redis_username)
+redis_client = redis.Redis(
+    redis_config.redis_host,
+    redis_config.redis_port,
+    redis_config.redis_db,
+    charset="utf-8",
+    password=redis_config.redis_password,
+    username=redis_config.redis_username,
+)
 
 
 def gen_signature(args, kwds, kwd_mark=(object(),)) -> int:
@@ -50,8 +52,7 @@ def get_cache(sign: str) -> Any:
 
 
 def save_cache(sign: str, cache: Any, ex: Optional[timedelta] = None) -> None:
-    redis_client.set(CACHE_KEY_FORMAT.format(signature=sign),
-                     pickle.dumps(cache), ex)
+    redis_client.set(CACHE_KEY_FORMAT.format(signature=sign), pickle.dumps(cache), ex)
 
 
 # Export something for other plugin
@@ -63,7 +64,6 @@ F = TypeVar("F", bound=Callable[..., Any])
 
 @export
 def cache(ex: Optional[timedelta] = None) -> Callable[[F], F]:
-
     def decorator(func: F) -> F:
 
         if inspect.iscoroutinefunction(func):

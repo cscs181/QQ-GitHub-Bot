@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:28:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-12 15:46:09
+@LastEditTime   : 2021-09-12 12:22:06
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,7 +13,7 @@ __author__ = "yanyongyu"
 from nonebot.typing import T_State
 from nonebot.adapters import Bot, Event
 from nonebot.exception import FinishedException
-from nonebot.adapters.cqhttp import PrivateMessageEvent, GroupMessageEvent
+from nonebot.adapters.cqhttp import GroupMessageEvent, PrivateMessageEvent
 
 
 async def only_private(bot: Bot, event: Event, state: T_State):

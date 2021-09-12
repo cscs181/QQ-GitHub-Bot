@@ -12,46 +12,48 @@ __author__ = "yanyongyu"
 
 from io import BytesIO
 from typing_extensions import Literal
-from typing import Any, Union, Mapping, Optional, Sequence, BinaryIO
+from typing import Any, Union, Mapping, BinaryIO, Optional, Sequence
 
 import markdown
 
 from src.libs import html2img
 
 
-async def from_string(string: str,
-                      extensions: Optional[Sequence[Union[
-                          str, markdown.extensions.Extension]]] = None,
-                      extension_configs: Optional[Mapping[str,
-                                                          Mapping[str,
-                                                                  Any]]] = None,
-                      output_format: Optional[Literal["xhtml", "html"]] = None,
-                      tab_length: Optional[int] = None) -> bytes:
-    html = markdown.markdown(string,
-                             extensions=extensions or [],
-                             extension_configs=extension_configs or {},
-                             output_format=output_format or "xhtml",
-                             tab_length=tab_length or 4)
+async def from_string(
+    string: str,
+    extensions: Optional[Sequence[Union[str, markdown.extensions.Extension]]] = None,
+    extension_configs: Optional[Mapping[str, Mapping[str, Any]]] = None,
+    output_format: Optional[Literal["xhtml", "html"]] = None,
+    tab_length: Optional[int] = None,
+) -> bytes:
+    html = markdown.markdown(
+        string,
+        extensions=extensions or [],
+        extension_configs=extension_configs or {},
+        output_format=output_format or "xhtml",
+        tab_length=tab_length or 4,
+    )
     return await html2img.from_string(html)
 
 
-async def from_file(input: Optional[Union[str, BinaryIO]] = None,
-                    encoding: Optional[str] = None,
-                    extensions: Optional[Sequence[Union[
-                        str, markdown.extensions.Extension]]] = None,
-                    extension_configs: Optional[Mapping[str,
-                                                        Mapping[str,
-                                                                Any]]] = None,
-                    output_format: Optional[Literal["xhtml", "html"]] = None,
-                    tab_length: Optional[int] = None):
+async def from_file(
+    input: Optional[Union[str, BinaryIO]] = None,
+    encoding: Optional[str] = None,
+    extensions: Optional[Sequence[Union[str, markdown.extensions.Extension]]] = None,
+    extension_configs: Optional[Mapping[str, Mapping[str, Any]]] = None,
+    output_format: Optional[Literal["xhtml", "html"]] = None,
+    tab_length: Optional[int] = None,
+):
     output_ = BytesIO()
-    markdown.markdownFromFile(input=input,
-                              output=output_,
-                              encoding=encoding or "utf-8",
-                              extensions=extensions or [],
-                              extension_configs=extension_configs or {},
-                              output_format=output_format or "xhtml",
-                              tab_length=tab_length or 4)
+    markdown.markdownFromFile(
+        input=input,
+        output=output_,
+        encoding=encoding or "utf-8",
+        extensions=extensions or [],
+        extension_configs=extension_configs or {},
+        output_format=output_format or "xhtml",
+        tab_length=tab_length or 4,
+    )
 
     html = output_.read()
     output_.close()

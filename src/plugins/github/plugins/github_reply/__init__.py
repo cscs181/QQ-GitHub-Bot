@@ -37,4 +37,4 @@ async def check_reply(bot: Bot, event: Event, state: T_State):
         state[KEY_GITHUB_REPLY] = message_info
 
 
-from . import content, diff, link
+from . import diff, link, content

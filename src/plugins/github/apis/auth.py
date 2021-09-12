@@ -14,7 +14,7 @@ import nonebot
 from fastapi import FastAPI
 
 try:
-    from ..libs.auth import _decode_state, get_token_by_code, set_user_token
+    from ..libs.auth import _decode_state, set_user_token, get_token_by_code
 except ImportError:
     pass
 else:

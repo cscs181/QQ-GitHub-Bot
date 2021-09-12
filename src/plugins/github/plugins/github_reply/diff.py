@@ -20,8 +20,8 @@ from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment
 
 from ...libs.redis import MessageInfo
 from ...utils import send_github_message
+from . import KEY_GITHUB_REPLY, config, is_github_reply
 from ...libs.issue import get_issue, issue_diff_to_image
-from . import config, is_github_reply, KEY_GITHUB_REPLY
 
 # allow using api without token
 try:
@@ -29,9 +29,7 @@ try:
 except ImportError:
     get_user_token = None
 
-diff = on_command("diff",
-                  is_github_reply,
-                  priority=config.github_command_priority)
+diff = on_command("diff", is_github_reply, priority=config.github_command_priority)
 diff.__doc__ = """
 /diff
 回复机器人一条github pr信息，给出pr diff
@@ -45,19 +43,21 @@ async def handle_diff(bot: Bot, event: MessageEvent, state: T_State):
     if get_user_token:
         token = get_user_token(event.get_user_id())
     try:
-        issue_ = await get_issue(message_info.owner, message_info.repo,
-                                 message_info.number, token)
+        issue_ = await get_issue(
+            message_info.owner, message_info.repo, message_info.number, token
+        )
     except TimeoutException:
         await diff.finish(f"获取issue数据超时！请尝试重试")
         return
     except HTTPStatusError:
-        await diff.finish(f"仓库{message_info.owner}/{message_info.repo}"
-                          f"不存在issue#{message_info.number}！")
+        await diff.finish(
+            f"仓库{message_info.owner}/{message_info.repo}"
+            f"不存在issue#{message_info.number}！"
+        )
         return
 
     try:
-        img = await issue_diff_to_image(message_info.owner, message_info.repo,
-                                        issue_)
+        img = await issue_diff_to_image(message_info.owner, message_info.repo, issue_)
     except TimeoutException:
         await diff.finish(f"获取diff数据超时！请尝试重试")
     except Error:
@@ -65,7 +65,9 @@ async def handle_diff(bot: Bot, event: MessageEvent, state: T_State):
     else:
         if img:
             await send_github_message(
-                diff, message_info.owner, message_info.repo,
+                diff,
+                message_info.owner,
+                message_info.repo,
                 message_info.number,
-                MessageSegment.image(
-                    f"base64://{base64.b64encode(img).decode()}"))
+                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
+            )

@@ -15,23 +15,39 @@ from typing import List, Union, Optional
 
 from pydantic import BaseModel as _BaseModel
 
-from . import BaseModel, PaginatedList
-
 from .user import User
 from .label import Label
 from .comment import Comment
 from .pull_request import PullRequest
+from . import BaseModel, PaginatedList
 from .timeline import (
-    TimelineEvent, TimelineEventCommited, TimelineEventForcePushed,
-    TimelineEventHeadDeleted, TimelineEventReferenced, TimelineEventCommented,
-    TimelineEventCommentDeleted, TimelineEventAssigned, TimelineEventMentioned,
-    TimelineEventSubscribed, TimelineEventUnsubscribed, TimelineEventReviewed,
-    TimelineEventReviewRequested, TimelineEventReviewRemoved,
-    TimelineEventReviewDismissed, TimelineEventRenamed, TimelineEventLabeled,
-    TimelineEventUnlabeled, TimelineEventMerged, TimelineEventDeployed,
-    TimelineEventClosed, TimelineEventAddedToProject,
-    TimelineEventMovedColumnsInProject, TimelineEventRemovedFromProject,
-    TimelineEventMilestoned, TimelineEventDemilestoned)
+    TimelineEvent,
+    TimelineEventClosed,
+    TimelineEventMerged,
+    TimelineEventLabeled,
+    TimelineEventRenamed,
+    TimelineEventAssigned,
+    TimelineEventCommited,
+    TimelineEventDeployed,
+    TimelineEventReviewed,
+    TimelineEventCommented,
+    TimelineEventMentioned,
+    TimelineEventUnlabeled,
+    TimelineEventMilestoned,
+    TimelineEventReferenced,
+    TimelineEventSubscribed,
+    TimelineEventForcePushed,
+    TimelineEventHeadDeleted,
+    TimelineEventDemilestoned,
+    TimelineEventUnsubscribed,
+    TimelineEventReviewRemoved,
+    TimelineEventAddedToProject,
+    TimelineEventCommentDeleted,
+    TimelineEventReviewDismissed,
+    TimelineEventReviewRequested,
+    TimelineEventRemovedFromProject,
+    TimelineEventMovedColumnsInProject,
+)
 
 
 class IssuePullRequest(_BaseModel):
@@ -83,11 +99,9 @@ class Issue(BaseModel):
         https://docs.github.com/en/rest/reference/issues#list-issue-comments
         """
         headers = {"Accept": "application/vnd.github.v3.full+json"}
-        return PaginatedList(Comment,
-                             self.requester,
-                             "GET",
-                             self.comments_url,
-                             headers=headers)
+        return PaginatedList(
+            Comment, self.requester, "GET", self.comments_url, headers=headers
+        )
 
     async def get_timeline(self) -> PaginatedList[TimelineEvent]:
         """
@@ -97,27 +111,42 @@ class Issue(BaseModel):
         """
         headers = {
             "Accept": "application/vnd.github.mockingbird-preview.full+json, "
-                      "application/vnd.github.starfox-preview+json"
+            "application/vnd.github.starfox-preview+json"
         }
         return PaginatedList(
-            Union[TimelineEventCommited, TimelineEventForcePushed,
-                  TimelineEventHeadDeleted, TimelineEventReferenced,
-                  TimelineEventCommented, TimelineEventCommentDeleted,
-                  TimelineEventAssigned, TimelineEventMentioned,
-                  TimelineEventSubscribed, TimelineEventUnsubscribed,
-                  TimelineEventReviewed, TimelineEventReviewRequested,
-                  TimelineEventReviewRemoved, TimelineEventReviewDismissed,
-                  TimelineEventRenamed, TimelineEventLabeled,
-                  TimelineEventUnlabeled, TimelineEventMerged,
-                  TimelineEventDeployed, TimelineEventClosed,
-                  TimelineEventAddedToProject,
-                  TimelineEventMovedColumnsInProject,
-                  TimelineEventRemovedFromProject, TimelineEventMilestoned,
-                  TimelineEventDemilestoned, TimelineEvent],
+            Union[
+                TimelineEventCommited,
+                TimelineEventForcePushed,
+                TimelineEventHeadDeleted,
+                TimelineEventReferenced,
+                TimelineEventCommented,
+                TimelineEventCommentDeleted,
+                TimelineEventAssigned,
+                TimelineEventMentioned,
+                TimelineEventSubscribed,
+                TimelineEventUnsubscribed,
+                TimelineEventReviewed,
+                TimelineEventReviewRequested,
+                TimelineEventReviewRemoved,
+                TimelineEventReviewDismissed,
+                TimelineEventRenamed,
+                TimelineEventLabeled,
+                TimelineEventUnlabeled,
+                TimelineEventMerged,
+                TimelineEventDeployed,
+                TimelineEventClosed,
+                TimelineEventAddedToProject,
+                TimelineEventMovedColumnsInProject,
+                TimelineEventRemovedFromProject,
+                TimelineEventMilestoned,
+                TimelineEventDemilestoned,
+                TimelineEvent,
+            ],
             self.requester,
             "GET",
             self.timeline_url,
-            headers=headers)
+            headers=headers,
+        )
 
     async def get_pull_request(self) -> PullRequest:
         """
@@ -126,13 +155,9 @@ class Issue(BaseModel):
         if not self.pull_request:
             raise RuntimeError(f"Issue {self.number} is not a pull request")
 
-        headers = {
-            "Accept": "application/vnd.github.v3.full+json"
-        }
+        headers = {"Accept": "application/vnd.github.v3.full+json"}
         response = await self.requester.request(
-            "GET",
-            self.pull_request.url,
-            headers=headers
+            "GET", self.pull_request.url, headers=headers
         )
         return PullRequest.parse_obj({"requester": self.requester, **response.json()})
 
@@ -143,8 +168,5 @@ class Issue(BaseModel):
         if not self.pull_request:
             raise RuntimeError(f"Issue {self.number} is not a pull request")
 
-        response = await self.requester.request(
-            "GET",
-            self.pull_request.diff_url
-        )
+        response = await self.requester.request("GET", self.pull_request.diff_url)
         return response.text

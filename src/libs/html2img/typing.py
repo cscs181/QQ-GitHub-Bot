@@ -10,8 +10,8 @@
 """
 __author__ = "yanyongyu"
 
-from typing import List, Dict, Tuple, Union
 from typing_extensions import Literal
+from typing import Dict, List, Tuple, Union
 
 SOURCE_TYPE = Union[str, List[str]]
 OUTPUT_TYPE = Union[str, None, Literal[False]]

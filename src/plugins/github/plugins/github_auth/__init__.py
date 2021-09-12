@@ -10,9 +10,9 @@
 """
 __author__ = "yanyongyu"
 
-from nonebot.log import logger
 from nonebot import on_command
-from nonebot.adapters.cqhttp import Bot, PrivateMessageEvent, GroupMessageEvent
+from nonebot.log import logger
+from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, PrivateMessageEvent
 
 from ... import github_config as config
 

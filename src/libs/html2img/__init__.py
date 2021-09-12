@@ -11,4 +11,4 @@
 __author__ = "yanyongyu"
 
 from .imgkit import IMGKit
-from .api import from_url, from_file, from_string, config
+from .api import config, from_url, from_file, from_string

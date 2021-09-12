@@ -21,7 +21,7 @@ from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment
 from ...libs.redis import MessageInfo
 from ...utils import send_github_message
 from ...libs.issue import get_issue, issue_to_image
-from . import config, is_github_reply, KEY_GITHUB_REPLY
+from . import KEY_GITHUB_REPLY, config, is_github_reply
 
 # allow using api without token
 try:
@@ -29,9 +29,7 @@ try:
 except ImportError:
     get_user_token = None
 
-content = on_command("content",
-                     is_github_reply,
-                     priority=config.github_command_priority)
+content = on_command("content", is_github_reply, priority=config.github_command_priority)
 content.__doc__ = """
 /content
 回复机器人一条github信息，给出对应内容
@@ -45,19 +43,21 @@ async def handle_content(bot: Bot, event: MessageEvent, state: T_State):
     if get_user_token:
         token = get_user_token(event.get_user_id())
     try:
-        issue_ = await get_issue(message_info.owner, message_info.repo,
-                                 message_info.number, token)
+        issue_ = await get_issue(
+            message_info.owner, message_info.repo, message_info.number, token
+        )
     except TimeoutException:
         await content.finish(f"获取issue数据超时！请尝试重试")
         return
     except HTTPStatusError:
-        await content.finish(f"仓库{message_info.owner}/{message_info.repo}"
-                             f"不存在issue#{message_info.number}！")
+        await content.finish(
+            f"仓库{message_info.owner}/{message_info.repo}"
+            f"不存在issue#{message_info.number}！"
+        )
         return
 
     try:
-        img = await issue_to_image(message_info.owner, message_info.repo,
-                                   issue_)
+        img = await issue_to_image(message_info.owner, message_info.repo, issue_)
     except TimeoutException:
         await content.finish(f"获取issue数据超时！请尝试重试")
     except Error:
@@ -65,7 +65,9 @@ async def handle_content(bot: Bot, event: MessageEvent, state: T_State):
     else:
         if img:
             await send_github_message(
-                content, message_info.owner, message_info.repo,
+                content,
+                message_info.owner,
+                message_info.repo,
                 message_info.number,
-                MessageSegment.image(
-                    f"base64://{base64.b64encode(img).decode()}"))
+                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
+            )

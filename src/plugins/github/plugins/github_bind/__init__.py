@@ -16,14 +16,18 @@ from nonebot import on_command
 from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
 from httpx import HTTPStatusError, TimeoutException
-from nonebot.adapters.cqhttp import GROUP_ADMIN, GROUP_OWNER
-from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
+from nonebot.adapters.cqhttp import GROUP_ADMIN, GROUP_OWNER, Bot, GroupMessageEvent
+
+from src.utils import only_group, allow_cancel
 
 from ...libs.repo import get_repo
 from ... import github_config as config
-from src.utils import allow_cancel, only_group
-from ...libs.redis import (set_group_bind_repo, get_group_bind_repo,
-                           delete_group_bind_repo, exists_group_bind_repo)
+from ...libs.redis import (
+    get_group_bind_repo,
+    set_group_bind_repo,
+    delete_group_bind_repo,
+    exists_group_bind_repo,
+)
 
 # allow using api without token
 try:
@@ -33,10 +37,12 @@ except ImportError:
 
 REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
 
-bind = on_command("bind",
-                  only_group,
-                  priority=config.github_command_priority,
-                  permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER)
+bind = on_command(
+    "bind",
+    only_group,
+    priority=config.github_command_priority,
+    permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER,
+)
 bind.__doc__ = """
 /bind owner/repo
 绑定当前群与指定仓库
@@ -89,10 +95,12 @@ async def process_repo(bot: Bot, event: GroupMessageEvent, state: T_State):
     await bind.finish(f"本群成功绑定仓库 {repo.full_name} ！")
 
 
-unbind = on_command("unbind",
-                    only_group,
-                    priority=config.github_command_priority,
-                    permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER)
+unbind = on_command(
+    "unbind",
+    only_group,
+    priority=config.github_command_priority,
+    permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER,
+)
 unbind.__doc__ = """
 /unbind
 解绑当前群和指定仓库

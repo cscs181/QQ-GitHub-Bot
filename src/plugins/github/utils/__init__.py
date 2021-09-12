@@ -19,8 +19,12 @@ from ..libs.redis import set_message_info
 
 
 async def send_github_message(
-        matcher: Type[Matcher], owner: str, repo: str, number: int,
-        message: Union[str, Message, MessageSegment]) -> Any:
+    matcher: Type[Matcher],
+    owner: str,
+    repo: str,
+    number: int,
+    message: Union[str, Message, MessageSegment],
+) -> Any:
     message_sent: Dict[str, Any] = await matcher.send(message)
     set_message_info(str(message_sent["message_id"]), owner, repo, number)
     return message_sent

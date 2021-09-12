@@ -13,7 +13,7 @@ __author__ = "yanyongyu"
 from typing import Optional, Generator
 from contextlib import asynccontextmanager
 
-from playwright.async_api import async_playwright, Browser, Page
+from playwright.async_api import Page, Browser, async_playwright
 
 _browser: Optional[Browser] = None
 

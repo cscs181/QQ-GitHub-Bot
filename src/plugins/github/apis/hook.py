@@ -12,7 +12,7 @@ __author__ = "yanyongyu"
 
 import nonebot
 from nonebot.log import logger
-from fastapi import FastAPI, Body
+from fastapi import Body, FastAPI
 
 # from ..libs.hook import get_repo_hook
 

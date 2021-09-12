@@ -10,43 +10,49 @@
 """
 __author__ = "yanyongyu"
 
-from typing_extensions import Literal
 from typing import Optional, overload
+from typing_extensions import Literal
 
-from .imgkit import IMGKit
 from .config import Config
-from .typing import SOURCE_TYPE, OUTPUT_TYPE, OPTION_TYPE, CSS_TYPE
+from .imgkit import IMGKit
+from .typing import CSS_TYPE, OPTION_TYPE, OUTPUT_TYPE, SOURCE_TYPE
 
 
 @overload
-async def from_url(url: SOURCE_TYPE,
-                   output_path: str,
-                   options: Optional[OPTION_TYPE] = ...,
-                   toc: Optional[OPTION_TYPE] = ...,
-                   cover: str = ...,
-                   cover_first: bool = ...,
-                   config: Config = ...) -> None:
+async def from_url(
+    url: SOURCE_TYPE,
+    output_path: str,
+    options: Optional[OPTION_TYPE] = ...,
+    toc: Optional[OPTION_TYPE] = ...,
+    cover: str = ...,
+    cover_first: bool = ...,
+    config: Config = ...,
+) -> None:
     ...
 
 
 @overload
-async def from_url(url: SOURCE_TYPE,
-                   output_path: Optional[Literal[False]] = ...,
-                   options: Optional[OPTION_TYPE] = ...,
-                   toc: Optional[OPTION_TYPE] = ...,
-                   cover: str = ...,
-                   cover_first: bool = ...,
-                   config: Config = ...) -> bytes:
+async def from_url(
+    url: SOURCE_TYPE,
+    output_path: Optional[Literal[False]] = ...,
+    options: Optional[OPTION_TYPE] = ...,
+    toc: Optional[OPTION_TYPE] = ...,
+    cover: str = ...,
+    cover_first: bool = ...,
+    config: Config = ...,
+) -> bytes:
     ...
 
 
-async def from_url(url: SOURCE_TYPE,
-                   output_path: OUTPUT_TYPE = None,
-                   options: Optional[OPTION_TYPE] = None,
-                   toc: Optional[OPTION_TYPE] = None,
-                   cover: str = None,
-                   cover_first: bool = False,
-                   config: Config = None):
+async def from_url(
+    url: SOURCE_TYPE,
+    output_path: OUTPUT_TYPE = None,
+    options: Optional[OPTION_TYPE] = None,
+    toc: Optional[OPTION_TYPE] = None,
+    cover: str = None,
+    cover_first: bool = False,
+    config: Config = None,
+):
     """
     Convert URL/URLs to IMG file/files
 
@@ -60,48 +66,56 @@ async def from_url(url: SOURCE_TYPE,
     :param config: (optional) instance of imgkit.config.Config()
     :return: True when success
     """
-    rtn = await IMGKit(url,
-                       "url",
-                       options=options,
-                       toc=toc,
-                       cover=cover,
-                       config=config,
-                       cover_first=cover_first)
+    rtn = await IMGKit(
+        url,
+        "url",
+        options=options,
+        toc=toc,
+        cover=cover,
+        config=config,
+        cover_first=cover_first,
+    )
     return await rtn.to_img(output_path)
 
 
 @overload
-async def from_file(filename: SOURCE_TYPE,
-                    output_path: str,
-                    options: Optional[OPTION_TYPE] = ...,
-                    toc: Optional[OPTION_TYPE] = ...,
-                    cover: str = ...,
-                    cover_first: bool = ...,
-                    css: Optional[CSS_TYPE] = ...,
-                    config: Config = ...) -> None:
+async def from_file(
+    filename: SOURCE_TYPE,
+    output_path: str,
+    options: Optional[OPTION_TYPE] = ...,
+    toc: Optional[OPTION_TYPE] = ...,
+    cover: str = ...,
+    cover_first: bool = ...,
+    css: Optional[CSS_TYPE] = ...,
+    config: Config = ...,
+) -> None:
     ...
 
 
 @overload
-async def from_file(filename: SOURCE_TYPE,
-                    output_path: Optional[Literal[False]] = ...,
-                    options: Optional[OPTION_TYPE] = ...,
-                    toc: Optional[OPTION_TYPE] = ...,
-                    cover: str = ...,
-                    cover_first: bool = ...,
-                    css: Optional[CSS_TYPE] = ...,
-                    config: Config = ...) -> bytes:
+async def from_file(
+    filename: SOURCE_TYPE,
+    output_path: Optional[Literal[False]] = ...,
+    options: Optional[OPTION_TYPE] = ...,
+    toc: Optional[OPTION_TYPE] = ...,
+    cover: str = ...,
+    cover_first: bool = ...,
+    css: Optional[CSS_TYPE] = ...,
+    config: Config = ...,
+) -> bytes:
     ...
 
 
-async def from_file(filename: SOURCE_TYPE,
-                    output_path: OUTPUT_TYPE = None,
-                    options: Optional[OPTION_TYPE] = None,
-                    toc: Optional[OPTION_TYPE] = None,
-                    cover: str = None,
-                    cover_first: bool = False,
-                    css: Optional[CSS_TYPE] = None,
-                    config: Config = None):
+async def from_file(
+    filename: SOURCE_TYPE,
+    output_path: OUTPUT_TYPE = None,
+    options: Optional[OPTION_TYPE] = None,
+    toc: Optional[OPTION_TYPE] = None,
+    cover: str = None,
+    cover_first: bool = False,
+    css: Optional[CSS_TYPE] = None,
+    config: Config = None,
+):
     """
     Convert HTML file/files to IMG file/files
 
@@ -115,49 +129,57 @@ async def from_file(filename: SOURCE_TYPE,
     :param config: (optional) instance of imgkit.config.Config()
     :return: True when success
     """
-    rtn = await IMGKit(filename,
-                       "file",
-                       options=options,
-                       toc=toc,
-                       cover=cover,
-                       css=css,
-                       config=config,
-                       cover_first=cover_first)
+    rtn = await IMGKit(
+        filename,
+        "file",
+        options=options,
+        toc=toc,
+        cover=cover,
+        css=css,
+        config=config,
+        cover_first=cover_first,
+    )
     return await rtn.to_img(output_path)
 
 
 @overload
-async def from_string(string: str,
-                      output_path: str,
-                      options: Optional[OPTION_TYPE] = ...,
-                      toc: Optional[OPTION_TYPE] = ...,
-                      cover: str = ...,
-                      cover_first: bool = ...,
-                      css: Optional[CSS_TYPE] = ...,
-                      config: Config = ...) -> None:
+async def from_string(
+    string: str,
+    output_path: str,
+    options: Optional[OPTION_TYPE] = ...,
+    toc: Optional[OPTION_TYPE] = ...,
+    cover: str = ...,
+    cover_first: bool = ...,
+    css: Optional[CSS_TYPE] = ...,
+    config: Config = ...,
+) -> None:
     ...
 
 
 @overload
-async def from_string(string: str,
-                      output_path: Optional[Literal[False]] = ...,
-                      options: Optional[OPTION_TYPE] = ...,
-                      toc: Optional[OPTION_TYPE] = ...,
-                      cover: str = ...,
-                      cover_first: bool = ...,
-                      css: Optional[CSS_TYPE] = ...,
-                      config: Config = ...) -> bytes:
+async def from_string(
+    string: str,
+    output_path: Optional[Literal[False]] = ...,
+    options: Optional[OPTION_TYPE] = ...,
+    toc: Optional[OPTION_TYPE] = ...,
+    cover: str = ...,
+    cover_first: bool = ...,
+    css: Optional[CSS_TYPE] = ...,
+    config: Config = ...,
+) -> bytes:
     ...
 
 
-async def from_string(string: str,
-                      output_path: OUTPUT_TYPE = None,
-                      options: Optional[OPTION_TYPE] = None,
-                      toc: Optional[OPTION_TYPE] = None,
-                      cover: str = None,
-                      cover_first: bool = False,
-                      css: Optional[CSS_TYPE] = None,
-                      config: Config = None):
+async def from_string(
+    string: str,
+    output_path: OUTPUT_TYPE = None,
+    options: Optional[OPTION_TYPE] = None,
+    toc: Optional[OPTION_TYPE] = None,
+    cover: str = None,
+    cover_first: bool = False,
+    css: Optional[CSS_TYPE] = None,
+    config: Config = None,
+):
     """
     Convert given string/strings to IMG file
 
@@ -171,19 +193,22 @@ async def from_string(string: str,
     :param config: (optional) instance of imgkit.config.Config()
     :return: True when success
     """
-    rtn = await IMGKit(string,
-                       "string",
-                       options=options,
-                       toc=toc,
-                       cover=cover,
-                       css=css,
-                       config=config,
-                       cover_first=cover_first)
+    rtn = await IMGKit(
+        string,
+        "string",
+        options=options,
+        toc=toc,
+        cover=cover,
+        css=css,
+        config=config,
+        cover_first=cover_first,
+    )
     return await rtn.to_img(output_path)
 
 
-async def config(wkhtmltoimage: Optional[str] = None,
-                 meta_tag_prefix: str = "imgkit-") -> Config:
+async def config(
+    wkhtmltoimage: Optional[str] = None, meta_tag_prefix: str = "imgkit-"
+) -> Config:
     """
     Constructs and returns a :class:`Config` with given options
 
@@ -191,5 +216,4 @@ async def config(wkhtmltoimage: Optional[str] = None,
     :param meta_tag_prefix: the prefix for ``pdfkit`` specific meta tags
     """
 
-    return await Config(wkhtmltoimage=wkhtmltoimage,
-                        meta_tag_prefix=meta_tag_prefix)
+    return await Config(wkhtmltoimage=wkhtmltoimage, meta_tag_prefix=meta_tag_prefix)

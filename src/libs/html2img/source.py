@@ -18,7 +18,6 @@ from .typing import SOURCE_TYPE
 
 
 class Source(abc.ABC):
-
     def __init__(self, source: SOURCE_TYPE):
         self.source = source
 
@@ -32,7 +31,6 @@ class Source(abc.ABC):
 
 
 class StringSource(Source):
-
     def __init__(self, source: str):
         self.source = source
 
@@ -45,7 +43,6 @@ class StringSource(Source):
 
 
 class FileSource(Source):
-
     def __init__(self, source: SOURCE_TYPE):
         super(FileSource, self).__init__(source)
         self.check_files()
@@ -69,7 +66,6 @@ class FileSource(Source):
 
 
 class URLSource(Source):
-
     @property
     def type(self) -> Literal["url"]:
         return "url"

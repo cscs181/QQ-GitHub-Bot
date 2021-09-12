@@ -19,8 +19,7 @@ USER_STATE_FORMAT = "github_state_{state}"
 
 
 def set_state_bind_user(user_id: str, state: int) -> Optional[bool]:
-    return redis.set(USER_STATE_FORMAT.format(state=state), user_id,
-                     timedelta(minutes=5))
+    return redis.set(USER_STATE_FORMAT.format(state=state), user_id, timedelta(minutes=5))
 
 
 def get_state_bind_user(state: int) -> Optional[str]:

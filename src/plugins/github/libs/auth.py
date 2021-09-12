@@ -17,11 +17,16 @@ from typing import Optional
 import httpx
 
 from .. import github_config as config
-from .redis import (set_state_bind_user, get_state_bind_user, set_user_token as
-                    _set_user_token, get_user_token as _get_user_token)
+from .redis import get_user_token as _get_user_token
+from .redis import set_user_token as _set_user_token
+from .redis import get_state_bind_user, set_state_bind_user
 
 try:
-    assert config.github_client_id and config.github_client_secret and config.github_self_host
+    assert (
+        config.github_client_id
+        and config.github_client_secret
+        and config.github_self_host
+    )
 except AssertionError:
     raise ImportError(
         "GitHub OAuth Application info not fully provided! OAuth plugin will not work!"
@@ -40,16 +45,12 @@ def _decode_state(state: str) -> Optional[str]:
 
 def get_auth_link(username: str) -> str:
     query = {
-        "client_id":
-            config.github_client_id,
-        "redirect_uri":
-            urllib.parse.urljoin(
-                config.github_self_host,  # type: ignore
-                "/api/github/auth"),
-        "scope":
-            "admin:repo_hook,repo",
-        "state":
-            _encode_state(username)
+        "client_id": config.github_client_id,
+        "redirect_uri": urllib.parse.urljoin(
+            config.github_self_host, "/api/github/auth"  # type: ignore
+        ),
+        "scope": "admin:repo_hook,repo",
+        "state": _encode_state(username),
     }
     return f"https://github.com/login/oauth/authorize?{urllib.parse.urlencode(query)}"
 
@@ -60,12 +61,11 @@ async def get_token_by_code(code: str) -> str:
         data = {
             "client_id": config.github_client_id,
             "client_secret": config.github_client_secret,
-            "code": code
+            "code": code,
         }
         response = await client.post(
-            "https://github.com/login/oauth/access_token",
-            json=data,
-            headers=headers)
+            "https://github.com/login/oauth/access_token", json=data, headers=headers
+        )
         response.raise_for_status()
         return response.json()["access_token"]
 

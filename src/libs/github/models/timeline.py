@@ -14,10 +14,10 @@ from datetime import datetime
 from typing import List, Optional
 from typing_extensions import Literal
 
-from pydantic import BaseModel as _BaseModel, Field
+from pydantic import Field
+from pydantic import BaseModel as _BaseModel
 
 from . import BaseModel
-
 from .user import User, Actor
 
 

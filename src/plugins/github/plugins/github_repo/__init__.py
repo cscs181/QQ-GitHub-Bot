@@ -29,11 +29,14 @@ except ImportError:
     get_user_token = None
 
 ISSUE_REGEX = r"^#(?P<number>\d+)$"
-REPO_REGEX: str = (r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
-                   r"(?P<repo>[a-zA-Z0-9_\-\.]+)$")
-GITHUB_LINK_REGEX = (r"github\.com/"
-                     r"(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
-                     r"(?P<repo>[a-zA-Z0-9_\-\.]+)")
+REPO_REGEX: str = (
+    r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/" r"(?P<repo>[a-zA-Z0-9_\-\.]+)$"
+)
+GITHUB_LINK_REGEX = (
+    r"github\.com/"
+    r"(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/"
+    r"(?P<repo>[a-zA-Z0-9_\-\.]+)"
+)
 
 issue = on_regex(REPO_REGEX, priority=config.github_command_priority)
 issue.__doc__ = """
@@ -66,4 +69,6 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
         await issue.finish(
             MessageSegment.image(
                 "https://opengraph.githubassets.com/"
-                f"{secrets.token_urlsafe(16)}/{repo_.full_name}"))
+                f"{secrets.token_urlsafe(16)}/{repo_.full_name}"
+            )
+        )

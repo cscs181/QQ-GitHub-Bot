@@ -23,10 +23,11 @@ from nonebot.log import logger
 from src.libs.github.models import Issue, PaginatedList
 from src.libs.github.models.timeline import TimelineEvent, TimelineEventReviewed
 
-env = jinja2.Environment(extensions=["jinja2.ext.loopcontrols"],
-                         loader=jinja2.FileSystemLoader(
-                             Path(__file__).parent / "templates"),
-                         enable_async=True)
+env = jinja2.Environment(
+    extensions=["jinja2.ext.loopcontrols"],
+    loader=jinja2.FileSystemLoader(Path(__file__).parent / "templates"),
+    enable_async=True,
+)
 
 
 def classname(value: Any) -> str:
@@ -42,7 +43,7 @@ def review_state(value: str) -> str:
         "approved": "approved these changes",
         "changes_requested": "requested changes",
         "commented": "reviewed",
-        "dismissed": "reviewed"
+        "dismissed": "reviewed",
     }
     return states.get(value, value)
 
@@ -58,8 +59,8 @@ def debug_event(event: TimelineEvent):
 
 @jinja2.pass_context
 async def find_dismissed_review(
-        ctx: jinja2.runtime.Context,
-        review_id: int) -> Optional[TimelineEventReviewed]:
+    ctx: jinja2.runtime.Context, review_id: int
+) -> Optional[TimelineEventReviewed]:
     timeline: Optional[PaginatedList[TimelineEvent]] = ctx.get("timeline", None)
     if not timeline:
         return
@@ -83,11 +84,13 @@ async def issue_to_html(owner: str, repo_name: str, issue: Issue) -> str:
         pull_request = None
         if issue.is_pull_request:
             pull_request = await issue.get_pull_request()
-        return await template.render_async(owner=owner,
-                                           repo_name=repo_name,
-                                           issue=issue,
-                                           pull_request=pull_request,
-                                           timeline=timeline)
+        return await template.render_async(
+            owner=owner,
+            repo_name=repo_name,
+            issue=issue,
+            pull_request=pull_request,
+            timeline=timeline,
+        )
 
 
 async def pr_diff_to_html(owner: str, repo_name: str, issue: Issue) -> str:
@@ -95,8 +98,10 @@ async def pr_diff_to_html(owner: str, repo_name: str, issue: Issue) -> str:
     async with issue:
         pull_request = await issue.get_pull_request()
         diff = await pull_request.get_diff()
-        return await template.render_async(owner=owner,
-                                           repo_name=repo_name,
-                                           issue=issue,
-                                           pull_request=pull_request,
-                                           diff=PatchSet(diff))
+        return await template.render_async(
+            owner=owner,
+            repo_name=repo_name,
+            issue=issue,
+            pull_request=pull_request,
+            diff=PatchSet(diff),
+        )

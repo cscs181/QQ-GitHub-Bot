@@ -17,10 +17,9 @@ from typing import Union, Optional
 
 
 class Config(object):
-
-    def __init__(self,
-                 wkhtmltoimage: Optional[str] = None,
-                 meta_tag_prefix: str = "imgkit-"):
+    def __init__(
+        self, wkhtmltoimage: Optional[str] = None, meta_tag_prefix: str = "imgkit-"
+    ):
         self.meta_tag_prefix = meta_tag_prefix
         self._wkhtmltoimage = wkhtmltoimage
         self._xvfb = None
@@ -32,26 +31,28 @@ class Config(object):
         if not self._wkhtmltoimage:
             if sys.platform == "win32":
                 proc = yield from asyncio.create_subprocess_exec(
-                    "where", "wkhtmltoimage",
-                    stdout=subprocess.PIPE).__await__()
+                    "where", "wkhtmltoimage", stdout=subprocess.PIPE
+                ).__await__()
                 stdout, _ = yield from proc.communicate().__await__()
                 self._wkhtmltoimage = stdout.strip()
             else:
                 proc = yield from asyncio.create_subprocess_exec(
-                    "which", "wkhtmltoimage",
-                    stdout=subprocess.PIPE).__await__()
+                    "which", "wkhtmltoimage", stdout=subprocess.PIPE
+                ).__await__()
                 stdout, _ = yield from proc.communicate().__await__()
                 self._wkhtmltoimage = stdout.strip()
 
         if not self._xvfb:
             if sys.platform == "win32":
                 proc = yield from asyncio.create_subprocess_exec(
-                    "where", "xvfb-run", stdout=subprocess.PIPE).__await__()
+                    "where", "xvfb-run", stdout=subprocess.PIPE
+                ).__await__()
                 stdout, _ = yield from proc.communicate().__await__()
                 self._xvfb = stdout.strip()
             else:
                 proc = yield from asyncio.create_subprocess_exec(
-                    "which", "xvfb-run", stdout=subprocess.PIPE).__await__()
+                    "which", "xvfb-run", stdout=subprocess.PIPE
+                ).__await__()
                 stdout, _ = yield from proc.communicate().__await__()
                 self._xvfb = stdout.strip()
 
@@ -63,7 +64,8 @@ class Config(object):
                 f"No wkhtmltoimage executable found: '{self._wkhtmltoimage}'\n"
                 "If this file exists please check that this process can "
                 "read it. Otherwise please install wkhtmltopdf - "
-                "http://wkhtmltopdf.org\n") from None
+                "http://wkhtmltopdf.org\n"
+            ) from None
 
         return self
 
@@ -71,7 +73,8 @@ class Config(object):
     def wkhtmltoimage(self) -> Union[str, bytes]:
         if not self._wkhtmltoimage:
             raise RuntimeError(
-                f"wkhtmltox not installed or Config {self} is never awaited!")
+                f"wkhtmltox not installed or Config {self} is never awaited!"
+            )
         return self._wkhtmltoimage
 
     @wkhtmltoimage.setter
@@ -81,8 +84,7 @@ class Config(object):
     @property
     def xvfb(self) -> Union[str, bytes]:
         if not self._xvfb:
-            raise RuntimeError(
-                f"xvfb not installed or Config {self} is never awaited!")
+            raise RuntimeError(f"xvfb not installed or Config {self} is never awaited!")
         return self._xvfb
 
     @xvfb.setter

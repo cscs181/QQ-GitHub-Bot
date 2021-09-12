@@ -27,15 +27,14 @@ class MessageInfo:
     number: int
 
 
-def set_message_info(message_id: str, owner: str, repo: str,
-                     number: int) -> Optional[bool]:
+def set_message_info(
+    message_id: str, owner: str, repo: str, number: int
+) -> Optional[bool]:
     return redis.set(
         MESSAGE_ID_FORMAT.format(message_id=message_id),
-        json.dumps({
-            "owner": owner,
-            "repo": repo,
-            "number": number
-        }), timedelta(days=3))
+        json.dumps({"owner": owner, "repo": repo, "number": number}),
+        timedelta(days=3),
+    )
 
 
 def delete_message_info(message_id: str) -> int:

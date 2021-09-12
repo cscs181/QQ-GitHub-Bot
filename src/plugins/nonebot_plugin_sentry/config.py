@@ -10,11 +10,10 @@
 """
 __author__ = "yanyongyu"
 
-from typing import Any, List, Optional, Callable
+from typing import Any, List, Callable, Optional
 
 from nonebot.log import logger
-
-from pydantic import Field, validator, BaseSettings
+from pydantic import Field, BaseSettings, validator
 
 
 class Config(BaseSettings):
@@ -23,7 +22,7 @@ class Config(BaseSettings):
     sentry_release: Optional[str] = None
     sentry_environment: Optional[str] = None
     sentry_server_name: Optional[str] = None
-    sentry_sample_rate: float = 1.
+    sentry_sample_rate: float = 1.0
     sentry_max_breadcrumbs: int = 100
     sentry_attach_stacktrace: bool = False
     sentry_send_default_pii: bool = False
@@ -33,8 +32,7 @@ class Config(BaseSettings):
     sentry_with_locals: bool = True
     sentry_ca_certs: Optional[str] = None
     sentry_before_send: Optional[Callable[[Any, Any], Optional[Any]]] = None
-    sentry_before_breadcrumb: Optional[Callable[[Any, Any],
-                                                Optional[Any]]] = None
+    sentry_before_breadcrumb: Optional[Callable[[Any, Any], Optional[Any]]] = None
     sentry_transport: Optional[Any] = None
     sentry_http_proxy: Optional[str] = None
     sentry_https_proxy: Optional[str] = None
