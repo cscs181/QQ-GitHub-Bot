@@ -4,14 +4,14 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 13:42:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-25 16:17:09
+@LastEditTime   : 2021-11-01 14:05:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import Optional, Generator
 from contextlib import asynccontextmanager
+from typing import Optional, AsyncIterator
 
 from playwright.async_api import Page, Browser, async_playwright
 
@@ -30,7 +30,7 @@ async def get_browser(**kwargs) -> Browser:
 
 
 @asynccontextmanager
-async def get_new_page(**kwargs) -> Generator[Page, None, None]:
+async def get_new_page(**kwargs) -> AsyncIterator[Page]:
     browser = await get_browser()
     page = await browser.new_page(**kwargs)
     try:
