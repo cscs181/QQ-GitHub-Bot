@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2021-05-17 10:03:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-09-12 02:03:33
+ * @LastEditTime   : 2021-11-25 15:05:21
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -31,17 +31,18 @@
     "
   >
     <div class="flex-shrink-0 mb-2 flex-self-start flex-md-self-center">
-      <!-- FIXME: pr status check -->
       <!-- prettier-ignore -->
-      {% if pull_request and pull_request.merged %}
-      {% set state = "merged" -%}
+      {% if pull_request and pull_request.merged -%}
+      {% set state = "merged" %}
+      {%- elif pull_request and pull_request.draft -%}
+      {% set state = "draft" %}
       {%- else -%}
       {% set state = issue.state %}
       {%- endif %}
       <span class="State State--{{ state|escape }} mr-2">
         <!-- prettier-ignore -->
         {% if state == "open" -%}
-        {% include "components/svg-closed.html" %}
+        {% include "components/svg-open.html" %}
         {%- elif state == "closed" -%}
         {% include "components/svg-closed.html" %}
         {%- elif state == "merged" -%}
