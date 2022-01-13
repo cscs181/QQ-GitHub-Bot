@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-status"
-version = "0.2.2"
+version = "0.3.0"
 description = "Check your server status (CPU, Memory, Disk Usage) via nonebot"
 license = "MIT"
 authors = ["yanyongyu <yanyongyu_1@126.com>"]
@@ -16,9 +16,13 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.7.3"
 psutil = "^5.7.2"
-nonebot2 = "^2.0.0-alpha.8"
+nonebot2 = "^2.0.0-beta.1"
+nonebot-adapter-onebot = { version = "^2.0.0-beta.1", optional = true }
 
 [tool.poetry.dev-dependencies]
+
+[tool.poetry.extras]
+onebot = ["nonebot-adapter-onebot"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

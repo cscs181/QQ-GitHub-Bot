@@ -25,6 +25,7 @@ redis = {version = "^4.0.0", extras = ["hiredis"]}
 isort = "^5.9.3"
 black = "^21.8b0"
 nb-cli = "^0.6.0"
+nonebug = "^0.2.0"
 
 # [[tool.poetry.source]]
 # name = "aliyun"

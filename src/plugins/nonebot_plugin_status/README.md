@@ -2,13 +2,15 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-15 14:40:25
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-09-10 12:42:40
+ * @LastEditTime   : 2022-01-13 16:32:41
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
+<!-- markdownlint-disable MD033 MD036 MD041 -->
+
 <p align="center">
-  <a href="https://v2.nonebot.dev/"><img src="https://raw.githubusercontent.com/nonebot/nonebot2/master/docs/.vuepress/public/logo.png" width="200" height="200" alt="nonebot"></a>
+  <a href="https://v2.nonebot.dev/"><img src="https://v2.nonebot.dev/logo.png" width="200" height="200" alt="nonebot"></a>
 </p>
 
 <div align="center">
@@ -31,7 +33,12 @@ _✨ NoneBot 服务器状态（CPU, Memory, Disk Usage）查看插件 ✨_
 
 ## 使用方式
 
+通用:
+
 - 发送 Command `状态`
+
+OneBot:
+
 - 向机器人发送戳一戳表情
 - 双击机器人头像戳一戳
 
