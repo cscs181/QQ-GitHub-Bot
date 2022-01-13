@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2021-09-11 17:46:15
+ * @LastEditTime   : 2022-01-13 16:07:58
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -25,9 +25,9 @@ GitHub Bot for QQ
 
 在项目目录下创建 `.env.prod` 文件以覆盖默认 `.env` 配置，配置项留空将会从环境变量寻找。
 
-## 部署
+## 独立部署
 
-部署 `QQ-GitHub-Bot` 前，需要先行部署 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 并配置连接。
+独立部署 `QQ-GitHub-Bot` 前，需要先行部署 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 或其他 [OneBot V11 协议实现](https://11.onebot.dev/) 并配置连接。
 
 配置连接的方法参考 `nonebot2` 文档: [配置协议端](https://v2.nonebot.dev/guide/cqhttp-guide.html#%E9%85%8D%E7%BD%AE-cqhttp-%E5%8D%8F%E8%AE%AE%E7%AB%AF-%E4%BB%A5-qq-%E4%B8%BA%E4%BE%8B)
 

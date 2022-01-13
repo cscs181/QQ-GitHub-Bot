@@ -4,20 +4,20 @@
 @Author         : yanyongyu
 @Date           : 2020-09-10 17:12:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-06 21:55:25
+@LastEditTime   : 2022-01-13 16:10:11
 @Description    : Entry File of the Bot
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import nonebot
-from nonebot.adapters.cqhttp import Bot as CQHTTPBot
+from nonebot.adapters.onebot.v11 import Adapter as ONEBOT_V11_Adapter
 
 nonebot.init()
 app = nonebot.get_asgi()
 
 driver = nonebot.get_driver()
-driver.register_adapter("cqhttp", CQHTTPBot)
+driver.register_adapter(ONEBOT_V11_Adapter)
 
 config = driver.config
 nonebot.load_all_plugins(set(config.plugins), set(config.plugin_dirs))
