@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-25 17:16:42
+@LastEditTime   : 2022-01-26 18:10:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,7 +18,7 @@ from nonebot import on_regex
 from nonebot.typing import T_State
 from playwright.async_api import Error
 from httpx import HTTPStatusError, TimeoutException
-from nonebot.adapters.cqhttp import (
+from nonebot.adapters.onebot.v11 import (
     Bot,
     MessageEvent,
     MessageSegment,
@@ -118,11 +118,9 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
     full_name = get_group_bind_repo(str(event.group_id))
     if not full_name:
         await issue_short.finish("此群尚未与仓库绑定！")
-        return
     match = re.match(REPO_REGEX, full_name)
     if not match:
         await issue_short.finish("绑定的仓库名不合法！请重新尝试绑定~")
-        return
     owner = match.group("owner")
     repo = match.group("repo")
 
@@ -133,10 +131,8 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
         issue_ = await get_issue(owner, repo, number, token)
     except TimeoutException:
         await issue.finish(f"获取issue数据超时！请尝试重试")
-        return
     except HTTPStatusError:
         await issue.finish(f"仓库{owner}/{repo}不存在issue#{number}！")
-        return
 
     try:
         img = await issue_to_image(owner, repo, issue_)

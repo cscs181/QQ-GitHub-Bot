@@ -16,7 +16,7 @@ from typing import Dict
 from nonebot import on_regex
 from nonebot.typing import T_State
 from httpx import HTTPStatusError, TimeoutException
-from nonebot.adapters.cqhttp import (
+from nonebot.adapters.onebot.v11 import (
     Bot,
     MessageEvent,
     MessageSegment,

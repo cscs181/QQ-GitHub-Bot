@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-08-19 23:25:50
+@LastEditTime   : 2022-01-26 18:11:27
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,7 +16,7 @@ from nonebot import on_command
 from nonebot.typing import T_State
 from playwright.async_api import Error
 from httpx import HTTPStatusError, TimeoutException
-from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment
+from nonebot.adapters.onebot.v11 import Bot, MessageEvent, MessageSegment
 
 from ...libs.redis import MessageInfo
 from ...utils import send_github_message
@@ -50,13 +50,11 @@ async def handle_diff(bot: Bot, event: MessageEvent, state: T_State):
         )
     except TimeoutException:
         await diff.finish(f"获取issue数据超时！请尝试重试")
-        return
     except HTTPStatusError:
         await diff.finish(
             f"仓库{message_info.owner}/{message_info.repo}"
             f"不存在issue#{message_info.number}！"
         )
-        return
 
     try:
         img = await issue_diff_to_image(

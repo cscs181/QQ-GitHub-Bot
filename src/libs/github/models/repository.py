@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-11 01:33:54
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-09-12 01:43:57
+@LastEditTime   : 2022-01-26 18:09:31
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -207,7 +207,7 @@ class Repository(LazyRepository):
     temp_clone_token: Optional[str]
     allow_squash_merge: Optional[bool] = None
     delete_branch_on_merge: Optional[bool] = None
-    allow_merge_commit: Optional[bool] = Optional[None]
+    allow_merge_commit: Optional[bool] = None
     subscribers_count: int = 0
     network_count: int = 0
     license: Optional[License] = None

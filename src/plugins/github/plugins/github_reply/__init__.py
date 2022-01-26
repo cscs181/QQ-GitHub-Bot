@@ -13,7 +13,7 @@ __author__ = "yanyongyu"
 from nonebot.typing import T_State
 from nonebot.adapters import Bot, Event
 from nonebot.message import event_preprocessor
-from nonebot.adapters.cqhttp import MessageEvent
+from nonebot.adapters.onebot.v11 import MessageEvent
 
 from ... import github_config as config
 from ...libs.redis import get_message_info

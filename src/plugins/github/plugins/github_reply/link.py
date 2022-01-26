@@ -12,7 +12,7 @@ __author__ = "yanyongyu"
 
 from nonebot import on_command
 from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Bot
+from nonebot.adapters.onebot.v11 import Bot
 
 from ...libs.redis import MessageInfo
 from ...utils import send_github_message

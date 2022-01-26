@@ -17,7 +17,7 @@ from nonebot.log import logger
 from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
 from httpx import HTTPStatusError, TimeoutException
-from nonebot.adapters.cqhttp import (
+from nonebot.adapters.onebot.v11 import (
     GROUP_ADMIN,
     GROUP_OWNER,
     PRIVATE_FRIEND,

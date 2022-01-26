@@ -14,7 +14,7 @@ import inspect
 from functools import reduce
 
 from nonebot import on_command
-from nonebot.adapters.cqhttp import Bot
+from nonebot.adapters.onebot.v11 import Bot
 
 from ... import _sub_plugins
 from ... import github_config as config

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-14 01:28:43
+@LastEditTime   : 2022-01-26 18:10:29
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,7 +12,11 @@ __author__ = "yanyongyu"
 
 from nonebot import on_command
 from nonebot.log import logger
-from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, PrivateMessageEvent
+from nonebot.adapters.onebot.v11 import (
+    Bot,
+    GroupMessageEvent,
+    PrivateMessageEvent,
+)
 
 from ... import github_config as config
 

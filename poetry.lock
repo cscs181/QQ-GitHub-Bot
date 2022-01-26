@@ -28,11 +28,11 @@ python-dateutil = ">=2.7.0"
 
 [[package]]
 name = "asgiref"
-version = "3.4.1"
+version = "3.5.0"
 description = "ASGI specs, helper code, and adapters"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.extras]
 tests = ["pytest", "pytest-asyncio", "mypy (>=0.800)"]
@@ -233,7 +233,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "httpcore"
-version = "0.14.4"
+version = "0.14.5"
 description = "A minimal low-level HTTP client."
 category = "main"
 optional = false
@@ -247,6 +247,7 @@ sniffio = ">=1.0.0,<2.0.0"
 
 [package.extras]
 http2 = ["h2 (>=3,<5)"]
+socks = ["socksio (>=1.0.0,<2.0.0)"]
 
 [[package]]
 name = "httptools"
@@ -300,7 +301,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "importlib-metadata"
-version = "4.10.0"
+version = "4.10.1"
 description = "Read metadata from Python packages"
 category = "main"
 optional = false
@@ -417,7 +418,7 @@ python-versions = "*"
 
 [[package]]
 name = "nb-cli"
-version = "0.6.3"
+version = "0.6.5"
 description = "CLI for nonebot2"
 category = "dev"
 optional = false
@@ -432,6 +433,7 @@ nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 prompt-toolkit = ">=3.0.19,<4.0.0"
 pyfiglet = ">=0.8.post1,<0.9"
 tomlkit = ">=0.7.0,<0.8.0"
+wcwidth = ">=0.2.5,<0.3.0"
 
 [package.extras]
 deploy = ["docker-compose (>=1.29.2,<1.30.0)"]
@@ -475,17 +477,19 @@ httpx = ["httpx[http2] (>=0.20.0,<1.0.0)"]
 
 [[package]]
 name = "nonebug"
-version = "0.2.0"
+version = "0.2.1"
 description = "nonebot2 test framework"
 category = "dev"
 optional = false
 python-versions = ">=3.7.3,<4.0.0"
 
 [package.dependencies]
+asgiref = ">=3.4.0,<4.0.0"
 async-asgi-testclient = ">=1.4.8,<2.0.0"
 nonebot2 = ">=2.0.0-beta.1,<3.0.0"
 pytest = ">=6.2.5,<7.0.0"
 pytest-asyncio = ">=0.16.0,<0.17.0"
+typing-extensions = ">=4.0.0,<5.0.0"
 
 [[package]]
 name = "packaging"
@@ -520,7 +524,7 @@ test = ["appdirs (==1.4.4)", "pytest (>=6)", "pytest-cov (>=2.7)", "pytest-mock 
 
 [[package]]
 name = "playwright"
-version = "1.17.2"
+version = "1.18.1"
 description = "A high-level API to automate web browsers"
 category = "main"
 optional = false
@@ -600,11 +604,14 @@ email = ["email-validator (>=1.0.3)"]
 
 [[package]]
 name = "pyee"
-version = "8.2.2"
+version = "9.0.3"
 description = "A port of node.js's EventEmitter to python."
 category = "main"
 optional = false
 python-versions = "*"
+
+[package.dependencies]
+typing-extensions = "*"
 
 [[package]]
 name = "pyfiglet"
@@ -624,7 +631,7 @@ python-versions = "*"
 
 [[package]]
 name = "pyparsing"
-version = "3.0.6"
+version = "3.0.7"
 description = "Python parsing module"
 category = "main"
 optional = false
@@ -714,7 +721,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "redis"
-version = "4.1.0"
+version = "4.1.1"
 description = "Python client for Redis database and key-value store"
 category = "main"
 optional = false
@@ -723,11 +730,11 @@ python-versions = ">=3.6"
 [package.dependencies]
 deprecated = ">=1.2.3"
 hiredis = {version = ">=1.0.0", optional = true, markers = "extra == \"hiredis\""}
-packaging = ">=21.3"
+packaging = ">=20.4"
 
 [package.extras]
-cryptography = ["cryptography (>=36.0.1)", "requests (>=2.26.0)"]
 hiredis = ["hiredis (>=1.0.0)"]
+ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"]
 
 [[package]]
 name = "requests"
@@ -763,7 +770,7 @@ idna2008 = ["idna"]
 
 [[package]]
 name = "sentry-sdk"
-version = "1.5.2"
+version = "1.5.4"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -944,7 +951,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "win32-setctime"
-version = "1.0.4"
+version = "1.1.0"
 description = "A small Python utility to set file creation time on Windows"
 category = "main"
 optional = false
@@ -1000,8 +1007,8 @@ arrow = [
     {file = "arrow-1.2.1.tar.gz", hash = "sha256:c2dde3c382d9f7e6922ce636bf0b318a7a853df40ecb383b29192e6c5cc82840"},
 ]
 asgiref = [
-    {file = "asgiref-3.4.1-py3-none-any.whl", hash = "sha256:ffc141aa908e6f175673e7b1b3b7af4fdb0ecb738fc5c8b88f69f055c2415214"},
-    {file = "asgiref-3.4.1.tar.gz", hash = "sha256:4ef1ab46b484e3c706329cedeff284a5d40824200638503f5768edb6de7d58e9"},
+    {file = "asgiref-3.5.0-py3-none-any.whl", hash = "sha256:88d59c13d634dcffe0510be048210188edd79aeccb6a6c9028cdad6f31d730a9"},
+    {file = "asgiref-3.5.0.tar.gz", hash = "sha256:2f8abc20f7248433085eda803936d98992f1343ddb022065779f37c5da0181d0"},
 ]
 async-asgi-testclient = [
     {file = "async-asgi-testclient-1.4.9.tar.gz", hash = "sha256:ae507f44a53699611cff81ad548090dad24055fba02cce398e1ca9b84d1e1288"},
@@ -1159,8 +1166,8 @@ hiredis = [
     {file = "hiredis-2.0.0.tar.gz", hash = "sha256:81d6d8e39695f2c37954d1011c0480ef7cf444d4e3ae24bc5e89ee5de360139a"},
 ]
 httpcore = [
-    {file = "httpcore-0.14.4-py3-none-any.whl", hash = "sha256:9410fe352bea732311f2b2bee0555c8cc5e62b9a73b9d3272fe125a2aa6eb28e"},
-    {file = "httpcore-0.14.4.tar.gz", hash = "sha256:d4305811f604d3c2e22869147392f134796976ff946c96a8cfba87f4e0171d83"},
+    {file = "httpcore-0.14.5-py3-none-any.whl", hash = "sha256:2621ee769d0236574df51b305c5f4c69ca8f0c7b215221ad247b1ee42a9a9de1"},
+    {file = "httpcore-0.14.5.tar.gz", hash = "sha256:435ab519628a6e2393f67812dea3ca5c6ad23b457412cd119295d9f906d96a2b"},
 ]
 httptools = [
     {file = "httptools-0.2.0-cp35-cp35m-macosx_10_14_x86_64.whl", hash = "sha256:79dbc21f3612a78b28384e989b21872e2e3cf3968532601544696e4ed0007ce5"},
@@ -1192,8 +1199,8 @@ idna = [
     {file = "idna-3.3.tar.gz", hash = "sha256:9d643ff0a55b762d5cdb124b8eaa99c66322e2157b69160bc32796e824360e6d"},
 ]
 importlib-metadata = [
-    {file = "importlib_metadata-4.10.0-py3-none-any.whl", hash = "sha256:b7cf7d3fef75f1e4c80a96ca660efbd51473d7e8f39b5ab9210febc7809012a4"},
-    {file = "importlib_metadata-4.10.0.tar.gz", hash = "sha256:92a8b58ce734b2a4494878e0ecf7d79ccd7a128b5fc6014c401e0b61f006f0f6"},
+    {file = "importlib_metadata-4.10.1-py3-none-any.whl", hash = "sha256:899e2a40a8c4a1aec681feef45733de8a6c58f3f6a0dbed2eb6574b4387a77b6"},
+    {file = "importlib_metadata-4.10.1.tar.gz", hash = "sha256:951f0d8a5b7260e9db5e41d429285b5f451e928479f19d80818878527d36e95e"},
 ]
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
@@ -1369,8 +1376,8 @@ mypy-extensions = [
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
 nb-cli = [
-    {file = "nb-cli-0.6.3.tar.gz", hash = "sha256:9bf78e075da6117eddf3986afa2a735d96aad78703f120b242be4b9ce88d2c59"},
-    {file = "nb_cli-0.6.3-py3-none-any.whl", hash = "sha256:c15479a8e621f5636c48fc85ade333e168f5baabc2ad0ef446753979912d5f94"},
+    {file = "nb-cli-0.6.5.tar.gz", hash = "sha256:4fba1726419a429e14371c293d2c4ffdc4544f333fead2944febf9692f927774"},
+    {file = "nb_cli-0.6.5-py3-none-any.whl", hash = "sha256:f19026c9f90b9edeaab8fe05db828f570005ce7baa4f49019ee1276f99754ac3"},
 ]
 nonebot-adapter-onebot = [
     {file = "nonebot-adapter-onebot-2.0.0b1.tar.gz", hash = "sha256:9dad770371e577fead096ceacacc43b3ef304a8e238e8fff1163eefc4e947a75"},
@@ -1381,8 +1388,8 @@ nonebot2 = [
     {file = "nonebot2-2.0.0b1.tar.gz", hash = "sha256:e23b6656943738a9f8559e20ac51a8c3af799a2eea01e3e2188be01959f36455"},
 ]
 nonebug = [
-    {file = "nonebug-0.2.0-py3-none-any.whl", hash = "sha256:aa0f639f3fc039803640a952b1c12088e8b1ec5a30d1632e43301f215f96de22"},
-    {file = "nonebug-0.2.0.tar.gz", hash = "sha256:2b1dd24a68cff940037f847dab8ca710e305cd183cf7104019d34a935eceb31c"},
+    {file = "nonebug-0.2.1-py3-none-any.whl", hash = "sha256:f4d59effd50e400ee866df57902e4d749227a76857be26a0607fc2a5f6a05f7c"},
+    {file = "nonebug-0.2.1.tar.gz", hash = "sha256:2f363bd5d65081c802b7b19a72b07ada1ad8e61968cf313176f38a5cf97e84e2"},
 ]
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
@@ -1397,13 +1404,13 @@ platformdirs = [
     {file = "platformdirs-2.4.1.tar.gz", hash = "sha256:440633ddfebcc36264232365d7840a970e75e1018d15b4327d11f91909045fda"},
 ]
 playwright = [
-    {file = "playwright-1.17.2-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:9dcdb31f73fccbf8f23f90ac0c18cefaabe05ef78fe9861771b460aa312f4bc9"},
-    {file = "playwright-1.17.2-py3-none-macosx_11_0_arm64.whl", hash = "sha256:c78cc49ad970ddcec442aef70517aedc2196c5ef416c67f3e8fbbd1bd0ddfb64"},
-    {file = "playwright-1.17.2-py3-none-macosx_11_0_universal2.whl", hash = "sha256:404135562a8f49f29174073a4d6af6dc12021db256c01b4a983cce9438c203c6"},
-    {file = "playwright-1.17.2-py3-none-manylinux1_x86_64.whl", hash = "sha256:0164ba36a0eab00217ae548961bba92e2c67186f6b6ac43c2240c86663de6fa1"},
-    {file = "playwright-1.17.2-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b2ad61a2ba78149a2f32d18926c045e68782d5dc0e7250e7ce43643da142cc64"},
-    {file = "playwright-1.17.2-py3-none-win32.whl", hash = "sha256:8fefe383ba1baf474534c6fc2338113318725c420639bdbe1a57a371c20245b3"},
-    {file = "playwright-1.17.2-py3-none-win_amd64.whl", hash = "sha256:f64403941e0d6bfcc92d451150bbdb4d8eefdaa0c26866c27304106f86923d60"},
+    {file = "playwright-1.18.1-py3-none-macosx_10_13_x86_64.whl", hash = "sha256:e47ebe9d55a3d8e320b63aa688b671d9e40e50c906315cb225f20ffe7503b35d"},
+    {file = "playwright-1.18.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:528470e89827b09524acb197634381f62483c15b78dcbedc85528e0b727e705f"},
+    {file = "playwright-1.18.1-py3-none-macosx_11_0_universal2.whl", hash = "sha256:a5ce9c42e6108b5aeb63fdfefe2adbb9d0d85c1cba389bf7da0c56d1a6aa874e"},
+    {file = "playwright-1.18.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:d8a8d944da91f77c0a66d23e51bf8aa142a38820da8e70cf13b68636ee343346"},
+    {file = "playwright-1.18.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7ae5f8e6ae820d44b6fe04f94c261047536ee75724a032f2dd2be94c952303ed"},
+    {file = "playwright-1.18.1-py3-none-win32.whl", hash = "sha256:917b8472cab589cece536ae97491b4f124b324642190985440737d1fe8a55764"},
+    {file = "playwright-1.18.1-py3-none-win_amd64.whl", hash = "sha256:84572ba1d04cb3e31e30181fa4fa09ca64d7841af19e98ff221259e2d6a108e6"},
 ]
 pluggy = [
     {file = "pluggy-1.0.0-py2.py3-none-any.whl", hash = "sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3"},
@@ -1493,8 +1500,8 @@ pydantic = [
     {file = "pydantic-1.9.0.tar.gz", hash = "sha256:742645059757a56ecd886faf4ed2441b9c0cd406079c2b4bee51bcc3fbcd510a"},
 ]
 pyee = [
-    {file = "pyee-8.2.2-py2.py3-none-any.whl", hash = "sha256:c09f56e36eb10bf23aa2aacf145f690ded75b990a3d9523fd478b005940303d2"},
-    {file = "pyee-8.2.2.tar.gz", hash = "sha256:5c7e60f8df95710dbe17550e16ce0153f83990c00ef744841b43f371ed53ebea"},
+    {file = "pyee-9.0.3-py2.py3-none-any.whl", hash = "sha256:581efd42af562ebd42bcf13b0eac5341d3d887f37661cf965744fe2135fee3bb"},
+    {file = "pyee-9.0.3.tar.gz", hash = "sha256:ab60ed0f00eb465b32e527df2159d4f32cf06f2239b511a45f5e80184ceb9d6f"},
 ]
 pyfiglet = [
     {file = "pyfiglet-0.8.post1-py2.py3-none-any.whl", hash = "sha256:d555bcea17fbeaf70eaefa48bb119352487e629c9b56f30f383e2c62dd67a01c"},
@@ -1504,8 +1511,8 @@ pygtrie = [
     {file = "pygtrie-2.4.2.tar.gz", hash = "sha256:43205559d28863358dbbf25045029f58e2ab357317a59b11f11ade278ac64692"},
 ]
 pyparsing = [
-    {file = "pyparsing-3.0.6-py3-none-any.whl", hash = "sha256:04ff808a5b90911829c55c4e26f75fa5ca8a2f5f36aa3a51f68e27033341d3e4"},
-    {file = "pyparsing-3.0.6.tar.gz", hash = "sha256:d9bdec0013ef1eb5a84ab39a3b3868911598afa494f5faa038647101504e2b81"},
+    {file = "pyparsing-3.0.7-py3-none-any.whl", hash = "sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484"},
+    {file = "pyparsing-3.0.7.tar.gz", hash = "sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea"},
 ]
 pytest = [
     {file = "pytest-6.2.5-py3-none-any.whl", hash = "sha256:7310f8d27bc79ced999e760ca304d69f6ba6c6649c0b60fb0e04a4a77cacc134"},
@@ -1563,8 +1570,8 @@ pyyaml = [
     {file = "PyYAML-6.0.tar.gz", hash = "sha256:68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2"},
 ]
 redis = [
-    {file = "redis-4.1.0-py3-none-any.whl", hash = "sha256:e13fad67c098a33141bacde872786960e86a5c97a4255009bcd43c795fa1cc77"},
-    {file = "redis-4.1.0.tar.gz", hash = "sha256:21f0a23bce707909076e6ba2ce076cba59bff60d2ab22972e0647fdf620ffe47"},
+    {file = "redis-4.1.1-py3-none-any.whl", hash = "sha256:bc97d18938ca18d66737d0ef88584a2073069589e4026813cfba9ad6df9a9f40"},
+    {file = "redis-4.1.1.tar.gz", hash = "sha256:07420a3fbedd8e012c31d4fadac943fb81568946da202c5a5bc237774e5280a0"},
 ]
 requests = [
     {file = "requests-2.27.1-py2.py3-none-any.whl", hash = "sha256:f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d"},
@@ -1575,8 +1582,8 @@ rfc3986 = [
     {file = "rfc3986-1.5.0.tar.gz", hash = "sha256:270aaf10d87d0d4e095063c65bf3ddbc6ee3d0b226328ce21e036f946e421835"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.5.2.tar.gz", hash = "sha256:7bbaa32bba806ec629962f207b597e86831c7ee2c1f287c21ba7de7fea9a9c46"},
-    {file = "sentry_sdk-1.5.2-py2.py3-none-any.whl", hash = "sha256:2cec50166bcb67e1965f8073541b2321e3864cd6fd42a526bcde9f0c4e4cc3f8"},
+    {file = "sentry-sdk-1.5.4.tar.gz", hash = "sha256:f7e54567937ebcbe938c4df1075ec891587faeb7c74184b88cf2894e47c86116"},
+    {file = "sentry_sdk-1.5.4-py2.py3-none-any.whl", hash = "sha256:4fc7960a82c95d906a0514cf4d9aacba1743eb9863a5b7c2a01c525a7d9b21e6"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
@@ -1699,8 +1706,8 @@ websockets = [
     {file = "websockets-10.1.tar.gz", hash = "sha256:181d2b25de5a437b36aefedaf006ecb6fa3aa1328ec0236cdde15f32f9d3ff6d"},
 ]
 win32-setctime = [
-    {file = "win32_setctime-1.0.4-py3-none-any.whl", hash = "sha256:7964234073ad9bc7a689ef2ebe6ce931976b644fe73fd50cf7729c996b7d8385"},
-    {file = "win32_setctime-1.0.4.tar.gz", hash = "sha256:2b72b798fdc1d909fb3cc0d25e0be52a42f4848857e3588dd3947c6a18b42609"},
+    {file = "win32_setctime-1.1.0-py3-none-any.whl", hash = "sha256:231db239e959c2fe7eb1d7dc129f11172354f98361c4fa2d6d2d7e278baa8aad"},
+    {file = "win32_setctime-1.1.0.tar.gz", hash = "sha256:15cf5750465118d6929ae4de4eb46e8edae9a5634350c01ba582df868e932cb2"},
 ]
 wrapt = [
     {file = "wrapt-1.13.3-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:e05e60ff3b2b0342153be4d1b597bbcfd8330890056b9619f4ad6b8d5c96a81a"},

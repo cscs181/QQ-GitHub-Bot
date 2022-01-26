@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-07-02 17:53:32
+@LastEditTime   : 2022-01-26 18:11:58
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,7 +16,7 @@ from nonebot import on_command
 from nonebot.typing import T_State
 from nonebot.permission import SUPERUSER
 from httpx import HTTPStatusError, TimeoutException
-from nonebot.adapters.cqhttp import (
+from nonebot.adapters.onebot.v11 import (
     GROUP_ADMIN,
     GROUP_OWNER,
     Bot,
@@ -83,7 +83,6 @@ async def process_repo(bot: Bot, event: GroupMessageEvent, state: T_State):
     matched = re.match(REPO_REGEX, name)
     if not matched:
         await bind.reject(f"仓库名 {name} 不合法！请重新发送或取消")
-        return
     owner = matched.group("owner")
     repo_name = matched.group("repo")
     token = None
@@ -93,10 +92,8 @@ async def process_repo(bot: Bot, event: GroupMessageEvent, state: T_State):
         repo = await get_repo(owner, repo_name, token)
     except TimeoutException:
         await bind.finish(f"获取仓库数据超时！请尝试重试")
-        return
     except HTTPStatusError:
         await bind.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
-        return
 
     set_group_bind_repo(str(event.group_id), repo.full_name)
     await bind.finish(f"本群成功绑定仓库 {repo.full_name} ！")
