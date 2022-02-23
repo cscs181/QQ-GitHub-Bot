@@ -16,10 +16,10 @@ pydantic = "^1.9.0"
 Markdown = "^3.3.4"
 sentry-sdk = "^1.0.0"
 playwright = "^1.17.2"
-nonebot2 = "^2.0.0-beta.1"
+nonebot2 = "^2.0.0-beta.2"
 typing-extensions = "^4.0.0"
 nonebot-adapter-onebot = "^2.0.0-beta.1"
-redis = {version = "^4.0.0", extras = ["hiredis"]}
+redis = { version = "^4.0.0", extras = ["hiredis"] }
 
 [tool.poetry.dev-dependencies]
 isort = "^5.9.3"

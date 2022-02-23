@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-01-26 18:10:29
+@LastEditTime   : 2022-02-23 19:22:48
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,11 +12,7 @@ __author__ = "yanyongyu"
 
 from nonebot import on_command
 from nonebot.log import logger
-from nonebot.adapters.onebot.v11 import (
-    Bot,
-    GroupMessageEvent,
-    PrivateMessageEvent,
-)
+from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
 from ... import github_config as config
 
@@ -33,9 +29,9 @@ else:
     """
 
     @auth.handle()
-    async def handle_private(bot: Bot, event: PrivateMessageEvent):
+    async def handle_private(event: PrivateMessageEvent):
         await auth.finish("请前往以下链接进行授权：\n" + get_auth_link(event.get_user_id()))
 
     @auth.handle()
-    async def handle_group(bot: Bot, event: GroupMessageEvent):
+    async def handle_group(event: GroupMessageEvent):
         await auth.finish("请私聊我并使用 /auth 命令授权你的 GitHub 账号")
