@@ -57,9 +57,7 @@ async def handle_content(bot: Bot, event: MessageEvent, state: T_State):
         )
 
     try:
-        img = await issue_to_image(
-            message_info.owner, message_info.repo, issue_
-        )
+        img = await issue_to_image(message_info.owner, message_info.repo, issue_)
     except TimeoutException:
         await content.finish(f"获取issue数据超时！请尝试重试")
     except Error:
@@ -71,7 +69,5 @@ async def handle_content(bot: Bot, event: MessageEvent, state: T_State):
                 message_info.owner,
                 message_info.repo,
                 message_info.number,
-                MessageSegment.image(
-                    f"base64://{base64.b64encode(img).decode()}"
-                ),
+                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
             )

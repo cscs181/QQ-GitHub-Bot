@@ -86,9 +86,7 @@ class Config(object):
     @property
     def xvfb(self) -> Union[str, bytes]:
         if not self._xvfb:
-            raise RuntimeError(
-                f"xvfb not installed or Config {self} is never awaited!"
-            )
+            raise RuntimeError(f"xvfb not installed or Config {self} is never awaited!")
         return self._xvfb
 
     @xvfb.setter

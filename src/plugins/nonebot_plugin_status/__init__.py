@@ -4,21 +4,25 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-01-13 21:01:33
+@LastEditTime   : 2022-05-23 05:41:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from jinja2 import Environment
 from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
 from nonebot import on_notice, get_driver, on_command, on_message
 
 from .config import Config
-from .data_source import cpu_status, disk_usage, memory_status, per_cpu_status
+from .data_source import uptime, cpu_status, disk_usage, memory_status, per_cpu_status
 
 global_config = get_driver().config
 status_config = Config(**global_config.dict())
+
+_ev = Environment(autoescape=False, enable_async=True)
+_t = _ev.from_string(status_config.server_status_template)
 
 command = on_command(
     "状态",
@@ -29,25 +33,14 @@ command = on_command(
 
 @command.handle()
 async def server_status(matcher: Matcher):
-    data = []
-
-    if status_config.server_status_cpu:
-        if status_config.server_status_per_cpu:
-            data.append("CPU:")
-            for index, per_cpu in enumerate(per_cpu_status()):
-                data.append(f"  core{index + 1}: {int(per_cpu):02d}%")
-        else:
-            data.append(f"CPU: {int(cpu_status()):02d}%")
-
-    if status_config.server_status_memory:
-        data.append(f"Memory: {int(memory_status()):02d}%")
-
-    if status_config.server_status_disk:
-        data.append("Disk:")
-        for k, v in disk_usage().items():
-            data.append(f"  {k}: {int(v.percent):02d}%")
-
-    await matcher.send(message="\n".join(data))
+    message = await _t.render_async(
+        cpu_usage=cpu_status(),
+        per_cpu_usage=per_cpu_status(),
+        memory_usage=memory_status(),
+        disk_usage=disk_usage(),
+        uptime=uptime(),
+    )
+    await matcher.send(message=message.strip("\n"))
 
 
 try:

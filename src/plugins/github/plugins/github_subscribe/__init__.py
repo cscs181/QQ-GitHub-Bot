@@ -97,9 +97,7 @@ else:
             elif e.response.status_code == 404:
                 await subscribe.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
                 return
-            logger.opt(colors=True, exception=e).error(
-                f"github_subscribe: create_hook"
-            )
+            logger.opt(colors=True, exception=e).error(f"github_subscribe: create_hook")
             await subscribe.finish("订阅仓库时发生错误，请联系开发者或重试")
             return
 

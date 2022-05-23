@@ -21,9 +21,7 @@ from src.libs import html2img
 
 async def from_string(
     string: str,
-    extensions: Optional[
-        Sequence[Union[str, markdown.extensions.Extension]]
-    ] = None,
+    extensions: Optional[Sequence[Union[str, markdown.extensions.Extension]]] = None,
     extension_configs: Optional[Mapping[str, Mapping[str, Any]]] = None,
     output_format: Optional[Literal["xhtml", "html"]] = None,
     tab_length: Optional[int] = None,
@@ -41,9 +39,7 @@ async def from_string(
 async def from_file(
     input: Optional[Union[str, BinaryIO]] = None,
     encoding: Optional[str] = None,
-    extensions: Optional[
-        Sequence[Union[str, markdown.extensions.Extension]]
-    ] = None,
+    extensions: Optional[Sequence[Union[str, markdown.extensions.Extension]]] = None,
     extension_configs: Optional[Mapping[str, Mapping[str, Any]]] = None,
     output_format: Optional[Literal["xhtml", "html"]] = None,
     tab_length: Optional[int] = None,

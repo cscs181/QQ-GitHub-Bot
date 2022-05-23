@@ -30,9 +30,7 @@ class LazyRepository(BaseModel):
 
         https://docs.github.com/en/rest/reference/issues#get-an-issue
         """
-        headers = {
-            "Accept": "application/vnd.github.mockingbird-preview.full+json"
-        }
+        headers = {"Accept": "application/vnd.github.mockingbird-preview.full+json"}
         response = await self.requester.request(
             "GET", f"/repos/{self.full_name}/issues/{number}", headers=headers
         )
@@ -109,9 +107,7 @@ class LazyRepository(BaseModel):
         """
         data = {}
         data["config"] = config.dict(exclude_unset=True)
-        data["config"]["insecure_ssl"] = (
-            "1" if data["config"]["insecure_ssl"] else "0"
-        )
+        data["config"]["insecure_ssl"] = "1" if data["config"]["insecure_ssl"] else "0"
         if events is not None:
             data["events"] = events
         if active is not None:

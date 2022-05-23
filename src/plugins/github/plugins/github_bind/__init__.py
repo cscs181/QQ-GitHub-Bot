@@ -42,9 +42,7 @@ try:
 except ImportError:
     get_user_token = None
 
-REPO_REGEX: str = (
-    r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
-)
+REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
 
 bind = on_command(
     "bind",
@@ -83,9 +81,7 @@ async def check_exists(event: GroupMessageEvent, matcher: Matcher):
     prompt="绑定仓库的全名？(e.g. owner/repo)",
     parameterless=[Depends(allow_cancel)],
 )
-async def process_repo(
-    event: GroupMessageEvent, full_name: str = ArgPlainText()
-):
+async def process_repo(event: GroupMessageEvent, full_name: str = ArgPlainText()):
     matched = re.match(REPO_REGEX, full_name)
     if not matched:
         await bind.reject(f"仓库名 {full_name} 不合法！请重新发送或取消")

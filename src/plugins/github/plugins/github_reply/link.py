@@ -18,9 +18,7 @@ from ...libs.redis import MessageInfo
 from ...utils import send_github_message
 from . import KEY_GITHUB_REPLY, config, is_github_reply
 
-link = on_command(
-    "link", is_github_reply, priority=config.github_command_priority
-)
+link = on_command("link", is_github_reply, priority=config.github_command_priority)
 link.__doc__ = """
 /link
 回复机器人一条github信息，给出对应链接

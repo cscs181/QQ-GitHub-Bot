@@ -53,20 +53,14 @@ class Github:
         return await self._requester.close()
 
     @overload
-    async def get_repo(
-        self, full_name: str, lazy: Literal[True]
-    ) -> LazyRepository:
+    async def get_repo(self, full_name: str, lazy: Literal[True]) -> LazyRepository:
         ...
 
     @overload
-    async def get_repo(
-        self, full_name: str, lazy: Literal[False]
-    ) -> Repository:
+    async def get_repo(self, full_name: str, lazy: Literal[False]) -> Repository:
         ...
 
-    async def get_repo(
-        self, full_name: str, lazy: bool = False
-    ) -> LazyRepository:
+    async def get_repo(self, full_name: str, lazy: bool = False) -> LazyRepository:
         """
         GET /repos/:owner/:repo
 
@@ -74,17 +68,11 @@ class Github:
         """
         url = f"/repos/{full_name}"
         if lazy:
-            return LazyRepository(
-                full_name=full_name, requester=self._requester
-            )
+            return LazyRepository(full_name=full_name, requester=self._requester)
         response = await self._requester.request_json("GET", url)
-        return Repository.parse_obj(
-            {"requester": self._requester, **response.json()}
-        )
+        return Repository.parse_obj({"requester": self._requester, **response.json()})
 
-    async def render_markdown(
-        self, text: str, context: Optional[Repository] = None
-    ):
+    async def render_markdown(self, text: str, context: Optional[Repository] = None):
         """
         POST /markdown
 
@@ -95,9 +83,7 @@ class Github:
         # if context:
         #     data["mode"] = "gfm"
         #     data["context"] = context._identity
-        response = await self._requester.request_json(
-            "POST", "/markdown", json=data
-        )
+        response = await self._requester.request_json("POST", "/markdown", json=data)
         return response.text
 
     # def get_repos(

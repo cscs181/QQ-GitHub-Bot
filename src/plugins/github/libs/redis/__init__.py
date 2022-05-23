@@ -12,18 +12,8 @@ __author__ = "yanyongyu"
 
 from ... import redis
 from .state import get_state_bind_user, set_state_bind_user
-from .hook import (
-    get_repo_hook,
-    set_repo_hook,
-    delete_repo_hook,
-    exists_repo_hook,
-)
-from .token import (
-    get_user_token,
-    set_user_token,
-    delete_user_token,
-    exists_user_token,
-)
+from .hook import get_repo_hook, set_repo_hook, delete_repo_hook, exists_repo_hook
+from .token import get_user_token, set_user_token, delete_user_token, exists_user_token
 from .bind import (
     get_group_bind_repo,
     set_group_bind_repo,

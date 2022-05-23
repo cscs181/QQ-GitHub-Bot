@@ -96,9 +96,7 @@ class IMGKit(object):
     def xvfb(self):
         return self.config.xvfb
 
-    def _gegetate_args(
-        self, options: OPTION_TYPE
-    ) -> Generator[str, None, None]:
+    def _gegetate_args(self, options: OPTION_TYPE) -> Generator[str, None, None]:
         """
         Generator of args parts based on options specification.
         """
@@ -157,9 +155,7 @@ class IMGKit(object):
 
             if "</head>" in source:
                 self.source = StringSource(
-                    inp.replace(
-                        "</head>", self._style_tag(css_data) + "</head>"
-                    )
+                    inp.replace("</head>", self._style_tag(css_data) + "</head>")
                 )
             else:
                 self.source = StringSource(self._style_tag(css_data) + inp)

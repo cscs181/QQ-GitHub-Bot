@@ -96,9 +96,7 @@ async def handle(bot: Bot, event: MessageEvent, state: T_State):
                 owner,
                 repo,
                 number,
-                MessageSegment.image(
-                    f"base64://{base64.b64encode(img).decode()}"
-                ),
+                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
             )
 
 
@@ -147,7 +145,5 @@ async def handle_short(bot: Bot, event: GroupMessageEvent, state: T_State):
                 owner,
                 repo,
                 number,
-                MessageSegment.image(
-                    f"base64://{base64.b64encode(img).decode()}"
-                ),
+                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
             )

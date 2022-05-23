@@ -51,9 +51,7 @@ async def create_hook(
 ) -> Hook:
     async with Github(token) as g:
         repo = await g.get_repo(repo, True) if isinstance(repo, str) else repo
-        config = (
-            HookConfig.parse_obj(config) if isinstance(config, dict) else config
-        )
+        config = HookConfig.parse_obj(config) if isinstance(config, dict) else config
 
         return await repo.create_hook(config, events, active)
 

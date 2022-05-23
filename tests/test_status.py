@@ -1,4 +1,5 @@
 from typing import Dict, List
+from datetime import timedelta
 
 import psutil
 import pytest
@@ -15,11 +16,7 @@ async def test_status(app: App, monkeypatch: pytest.MonkeyPatch):
         PrivateMessageEvent,
     )
 
-    from src.plugins.nonebot_plugin_status import (
-        command,
-        group_poke,
-        status_config,
-    )
+    from src.plugins.nonebot_plugin_status import command, group_poke
 
     driver = nonebot.get_driver()
 
@@ -36,18 +33,18 @@ async def test_status(app: App, monkeypatch: pytest.MonkeyPatch):
     def _per_cpu_status() -> List[float]:
         return [10.0, 11.0]
 
-    monkeypatch.setattr(
-        "src.plugins.nonebot_plugin_status.cpu_status", _cpu_status
-    )
-    monkeypatch.setattr(
-        "src.plugins.nonebot_plugin_status.disk_usage", _disk_usage
-    )
+    def _uptime() -> timedelta:
+        return timedelta(days=1, seconds=1)
+
+    monkeypatch.setattr("src.plugins.nonebot_plugin_status.cpu_status", _cpu_status)
+    monkeypatch.setattr("src.plugins.nonebot_plugin_status.disk_usage", _disk_usage)
     monkeypatch.setattr(
         "src.plugins.nonebot_plugin_status.memory_status", _memory_status
     )
     monkeypatch.setattr(
         "src.plugins.nonebot_plugin_status.per_cpu_status", _per_cpu_status
     )
+    monkeypatch.setattr("src.plugins.nonebot_plugin_status.uptime", _uptime)
 
     with monkeypatch.context() as m:
         m.setattr(driver.config, "superusers", {"123"})
@@ -78,6 +75,7 @@ async def test_status(app: App, monkeypatch: pytest.MonkeyPatch):
                         "Memory: 10%",
                         "Disk:",
                         "  test: 00%",
+                        "Uptime: 1 day, 0:00:01",
                     ]
                 ),
                 True,
@@ -105,41 +103,7 @@ async def test_status(app: App, monkeypatch: pytest.MonkeyPatch):
                         "Memory: 10%",
                         "Disk:",
                         "  test: 00%",
-                    ]
-                ),
-                True,
-            )
-
-        m.setattr(status_config, "server_status_per_cpu", True)
-
-        async with app.test_matcher(command) as ctx:
-            adapter = ctx.create_adapter(base=Adapter)
-            bot = ctx.create_bot(base=Bot, adapter=adapter)
-
-            event = PrivateMessageEvent(
-                time=0,
-                self_id=0,
-                post_type="message",
-                sub_type="friend",
-                user_id=123,
-                message_type="private",
-                message_id=0,
-                message=Message("/状态"),
-                raw_message="/状态",
-                font=0,
-                sender=Sender(),
-            )
-            ctx.receive_event(bot, event)
-            ctx.should_call_send(
-                event,
-                "\n".join(
-                    [
-                        "CPU:",
-                        "  core1: 10%",
-                        "  core2: 11%",
-                        "Memory: 10%",
-                        "Disk:",
-                        "  test: 00%",
+                        "Uptime: 1 day, 0:00:01",
                     ]
                 ),
                 True,

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-15 14:40:25
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-01-13 16:32:41
+ * @LastEditTime   : 2022-05-23 05:58:29
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -58,26 +58,26 @@ OneBot:
 > SUPERUSERS=["your qq id"]
 > ```
 
-### server_status_cpu
+### server_status_template
 
-- 类型: `bool`
-- 默认: `True`
-- 说明: 是否显示 CPU 占用百分比
+- 类型: `str`
+- 默认: 请参考示例
+- 说明：发送的消息模板，支持的变量以及类型如下：
+  - cpu_usage (`float`): CPU 使用率
+  - memory_usage (`float`): 内存使用率
+  - disk_usage (`Dict[str, psutil._common.sdiskusage]`): 磁盘使用率，包含 total, used, free, percent 属性
+  - uptime (`timedelta`): 服务器运行时间
 
-### server_status_per_cpu
+配置文件示例（默认模板）
 
-- 类型: `bool`
-- 默认: `False`
-- 说明: 是否显示每个 CPU 核心占用百分比
-
-### server_status_memory
-
-- 类型: `bool`
-- 默认: `True`
-- 说明: 是否显示 Memory 占用百分比
-
-### server_status_disk
-
-- 类型: `bool`
-- 默认: `True`
-- 说明: 是否显示磁盘占用百分比
+```dotenv
+SERVER_STATUS_TEMPLATE="
+CPU: {{ '%02d' % cpu_usage }}%
+Memory: {{ '%02d' % memory_usage }}%
+Disk:
+{%- for name, usage in disk_usage.items() %}
+  {{ name }}: {{ '%02d' % usage.percent }}%
+{%- endfor %}
+Uptime: {{ uptime }}
+"
+```

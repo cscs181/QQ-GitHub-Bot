@@ -4,13 +4,15 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:15:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-16 16:59:22
+@LastEditTime   : 2022-05-23 04:38:37
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+import time
 from typing import Dict, List
+from datetime import timedelta
 
 import psutil
 
@@ -29,10 +31,12 @@ def memory_status() -> float:
 
 def disk_usage() -> Dict[str, psutil._common.sdiskusage]:
     disk_parts = psutil.disk_partitions()
-    disk_usages = {
-        d.mountpoint: psutil.disk_usage(d.mountpoint) for d in disk_parts
-    }
-    return disk_usages
+    return {d.mountpoint: psutil.disk_usage(d.mountpoint) for d in disk_parts}
+
+
+def uptime() -> timedelta:
+    diff = time.time() - psutil.boot_time()
+    return timedelta(seconds=diff)
 
 
 if __name__ == "__main__":
