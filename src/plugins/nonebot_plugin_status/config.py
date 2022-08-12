@@ -15,18 +15,18 @@ from typing import Any, Dict
 
 from pydantic import BaseSettings, root_validator
 
-CPU_TEMPLATE = "CPU: {{ '%02d' % cpu_usage }}%"
+CPU_TEMPLATE = "CPU: {{ cpu_usage }}%"
 PER_CPU_TEMPLATE = (
     "CPU:\n"
     "{%- for core in per_cpu_usage %}\n"
-    "  core{{ loop.index }}: {{ '%02d' % core }}%\n"
+    "  core{{ loop.index }}: {{ core }}%\n"
     "{%- endfor %}"
 )
-MEMORY_TEMPLATE = "Memory: {{ '%02d' % memory_usage }}%"
+MEMORY_TEMPLATE = "Memory: {{ memory_usage }}%"
 DISK_TEMPLATE = (
     "Disk:\n"
     "{%- for name, usage in disk_usage.items() %}\n"
-    "  {{ name }}: {{ '%02d' % usage.percent }}%\n"
+    "  {{ name }}: {{ usage.percent }}%\n"
     "{%- endfor %}"
 )
 UPTIME_TEMPLATE = "Uptime: {{ uptime }}"
