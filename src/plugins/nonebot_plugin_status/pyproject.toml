@@ -14,7 +14,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7.3"
+python = "^3.8"
 psutil = "^5.7.2"
 Jinja2 = "^3.0.0"
 nonebot2 = "^2.0.0-beta.1"
