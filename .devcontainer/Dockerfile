@@ -12,4 +12,5 @@ USER codespace
 
 # [Required] Poetry
 RUN curl -sSL https://install.python-poetry.org | python - -y
+ENV PATH="$HOME/.local/bin:$PATH"
 RUN poetry config virtualenvs.in-project true
