@@ -53,18 +53,20 @@ async def test_status(app: App, monkeypatch: pytest.MonkeyPatch):
             adapter = ctx.create_adapter(base=Adapter)
             bot = ctx.create_bot(base=Bot, adapter=adapter)
 
-            event = PrivateMessageEvent(
-                time=0,
-                self_id=0,
-                post_type="message",
-                sub_type="friend",
-                user_id=123,
-                message_type="private",
-                message_id=0,
-                message=Message("/状态"),
-                raw_message="/状态",
-                font=0,
-                sender=Sender(),
+            event = PrivateMessageEvent.parse_obj(
+                {
+                    "time": 0,
+                    "self_id": 0,
+                    "post_type": "message",
+                    "sub_type": "friend",
+                    "user_id": 123,
+                    "message_type": "private",
+                    "message_id": 0,
+                    "message": Message("/状态"),
+                    "raw_message": "/状态",
+                    "font": 0,
+                    "sender": Sender(),
+                }
             )
             ctx.receive_event(bot, event)
             ctx.should_call_send(

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-12-28 13:33:59
+@LastEditTime   : 2022-09-02 11:28:16
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,10 +13,10 @@ __author__ = "yanyongyu"
 from typing import Any, List, Callable, Optional
 
 from nonebot.log import logger
-from pydantic import Field, BaseSettings, validator
+from pydantic import Extra, Field, BaseModel, validator
 
 
-class Config(BaseSettings):
+class Config(BaseModel, extra=Extra.ignore):
     sentry_dsn: Optional[str]
     sentry_debug: bool = False
     sentry_release: Optional[str] = None
@@ -43,6 +43,3 @@ class Config(BaseSettings):
         if not v:
             logger.warning("Sentry DSN not provided! Sentry plugin disabled!")
         return v
-
-    class Config:
-        extra = "ignore"

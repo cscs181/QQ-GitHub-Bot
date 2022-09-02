@@ -15,7 +15,7 @@ from typing import Optional
 from datetime import timedelta
 from dataclasses import dataclass
 
-from . import redis
+from src.plugins.redis_provider import redis_client as redis
 
 MESSAGE_ID_FORMAT = "github_message_{message_id}"
 

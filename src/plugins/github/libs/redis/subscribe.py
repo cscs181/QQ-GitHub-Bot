@@ -16,7 +16,7 @@ import json
 from typing import List, Optional
 from dataclasses import asdict, dataclass
 
-from . import redis
+from src.plugins.redis_provider import redis_client as redis
 
 SUBSCRIBE_GROUP_REPO_FORMAT = "github_subscribe_{group_id}_{repo_name}"
 SUBSCRIBE_GROUP_GLOB_PATTERN = "github_subscribe_{group_id}_*"

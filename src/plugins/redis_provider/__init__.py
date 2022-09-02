@@ -4,36 +4,37 @@
 @Author         : yanyongyu
 @Date           : 2021-03-13 14:47:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-04-09 00:27:26
+@LastEditTime   : 2022-09-02 11:29:52
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import pickle
-import inspect
 from functools import wraps
 from datetime import timedelta
-from typing import Any, TypeVar, Callable, Optional
+from typing import Any, TypeVar, Callable, Optional, Awaitable, ParamSpec
 
-import redis
-import nonebot
+import redis.asyncio as redis
 from nonebot import get_driver
 
 from .config import Config
 
-CACHE_KEY_FORMAT = "cache_{signature}"
+P = ParamSpec("P")
+R = TypeVar("R")
+C = Callable[P, R]
 
-global_config = get_driver().config
-redis_config = Config(**global_config.dict())
+CACHE_KEY_FORMAT = "cache:{signature}"
 
-redis_client = redis.Redis(
-    redis_config.redis_host,
-    redis_config.redis_port,
-    redis_config.redis_db,
-    charset="utf-8",
-    password=redis_config.redis_password,
+redis_config = Config.parse_obj(get_driver().config)
+
+redis_client: "redis.Redis[bytes]" = redis.Redis(
+    host=redis_config.redis_host,
+    port=redis_config.redis_port,
+    db=redis_config.redis_db,
     username=redis_config.redis_username,
+    password=redis_config.redis_password,
+    encoding="utf-8",
 )
 
 
@@ -46,50 +47,30 @@ def gen_signature(args, kwds, kwd_mark=(object(),)) -> int:
     return hash(key)
 
 
-def get_cache(sign: str) -> Any:
-    cache = redis_client.get(CACHE_KEY_FORMAT.format(signature=sign))
+async def get_cache(sign: str) -> Any:
+    cache = await redis_client.get(CACHE_KEY_FORMAT.format(signature=sign))
     return pickle.loads(cache) if cache else cache
 
 
-def save_cache(sign: str, cache: Any, ex: Optional[timedelta] = None) -> None:
-    redis_client.set(CACHE_KEY_FORMAT.format(signature=sign), pickle.dumps(cache), ex)
+async def save_cache(sign: str, cache: Any, ex: Optional[timedelta] = None) -> None:
+    await redis_client.set(
+        CACHE_KEY_FORMAT.format(signature=sign), pickle.dumps(cache), ex
+    )
 
 
-# Export something for other plugin
-export = nonebot.export()
-export.redis = redis_client
+def cache(
+    ex: Optional[timedelta] = None,
+) -> Callable[[Callable[P, Awaitable[R]]], Callable[P, Awaitable[R]]]:
+    def decorator(func: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[R]]:
+        @wraps(func)
+        async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+            key = str(gen_signature(args, kwargs))
+            result = await get_cache(key)
+            if not result:
+                result = await func(*args, **kwargs)
+                await save_cache(key, result, ex)
+            return result
 
-F = TypeVar("F", bound=Callable[..., Any])
-
-
-@export
-def cache(ex: Optional[timedelta] = None) -> Callable[[F], F]:
-    def decorator(func: F) -> F:
-
-        if inspect.iscoroutinefunction(func):
-
-            @wraps(func)
-            async def async_wrapper(*args, **kwargs):
-                key = str(gen_signature(args, kwargs))
-                result = get_cache(key)
-                if not result:
-                    result = await func(*args, **kwargs)
-                    save_cache(key, result, ex)
-                return result
-
-            return async_wrapper  # type: ignore
-
-        else:
-
-            @wraps(func)
-            def wrapper(*args, **kwargs):
-                key = str(gen_signature(args, kwargs))
-                result = get_cache(key)
-                if not result:
-                    result = func(*args, **kwargs)
-                    save_cache(key, result)
-                return result
-
-            return wrapper  # type: ignore
+        return async_wrapper  # type: ignore
 
     return decorator

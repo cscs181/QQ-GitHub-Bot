@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-10-04 16:32:00
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-05-23 05:46:55
+@LastEditTime   : 2022-09-02 11:29:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,7 +13,7 @@ __author__ = "yanyongyu"
 import warnings
 from typing import Any, Dict
 
-from pydantic import BaseSettings, root_validator
+from pydantic import Extra, BaseModel, root_validator
 
 CPU_TEMPLATE = "CPU: {{ '%02d' % cpu_usage }}%"
 PER_CPU_TEMPLATE = (
@@ -32,7 +32,7 @@ DISK_TEMPLATE = (
 UPTIME_TEMPLATE = "Uptime: {{ uptime }}"
 
 
-class Config(BaseSettings):
+class Config(BaseModel, extra=Extra.ignore):
     server_status_only_superusers: bool = True
 
     # Deprecated: legacy settings
@@ -45,9 +45,6 @@ class Config(BaseSettings):
     server_status_template: str = "\n".join(
         (CPU_TEMPLATE, MEMORY_TEMPLATE, DISK_TEMPLATE, UPTIME_TEMPLATE)
     )
-
-    class Config:
-        extra = "ignore"
 
     @root_validator(pre=True)
     def transform_legacy_settings(cls, value: Dict[str, Any]) -> Dict[str, Any]:

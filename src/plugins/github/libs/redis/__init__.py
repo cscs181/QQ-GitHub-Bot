@@ -4,13 +4,12 @@
 @Author         : yanyongyu
 @Date           : 2021-03-14 10:53:42
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-26 14:34:43
+@LastEditTime   : 2022-09-02 11:24:29
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from ... import redis
 from .state import get_state_bind_user, set_state_bind_user
 from .hook import get_repo_hook, set_repo_hook, delete_repo_hook, exists_repo_hook
 from .token import get_user_token, set_user_token, delete_user_token, exists_user_token

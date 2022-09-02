@@ -12,7 +12,7 @@ __author__ = "yanyongyu"
 
 from typing import Optional
 
-from . import redis
+from src.plugins.redis_provider import redis_client as redis
 
 USER_TOKEN_FORMAT = "github_token_{user_id}"
 

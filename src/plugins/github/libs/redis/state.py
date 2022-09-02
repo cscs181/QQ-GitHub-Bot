@@ -13,7 +13,7 @@ __author__ = "yanyongyu"
 from typing import Optional
 from datetime import timedelta
 
-from . import redis
+from src.plugins.redis_provider import redis_client as redis
 
 USER_STATE_FORMAT = "github_state_{state}"
 

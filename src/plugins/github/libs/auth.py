@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:30:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-23 00:35:49
+@LastEditTime   : 2022-09-02 11:25:58
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,8 +29,8 @@ try:
     )
 except AssertionError:
     raise ImportError(
-        "GitHub OAuth Application info not fully provided! OAuth plugin will not work!"
-    )
+        "GitHub Application info not fully provided! OAuth plugin will not work!"
+    ) from None
 
 
 def _encode_state(username: str) -> str:
