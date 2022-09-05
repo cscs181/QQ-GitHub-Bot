@@ -14,7 +14,7 @@ from nonebot import on_command
 from nonebot.log import logger
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
-from ... import github_config as config
+from ... import config as config
 
 try:
     from ...libs.auth import get_auth_link

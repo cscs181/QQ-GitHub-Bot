@@ -15,6 +15,7 @@ import base64
 from typing import Dict
 
 from nonebot import on_regex
+from src.utils import only_group
 from nonebot.typing import T_State
 from playwright.async_api import Error
 from httpx import HTTPStatusError, TimeoutException
@@ -25,9 +26,7 @@ from nonebot.adapters.onebot.v11 import (
     GroupMessageEvent,
 )
 
-from src.utils import only_group
-
-from ... import github_config as config
+from ... import config as config
 from ...utils import send_github_message
 from ...libs.redis import get_group_bind_repo
 from ...libs.issue import get_issue, issue_to_image

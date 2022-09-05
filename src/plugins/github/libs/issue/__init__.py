@@ -17,9 +17,10 @@ from src.libs import html2img
 from src.libs.github import Github
 from src.libs.github.models import Issue
 from src.libs.playwright import get_new_page
-from src.plugins.redis_provider import cache
 
-from ... import github_config as config
+from src.plugins.redis import cache
+
+from ... import config as config
 from .render import issue_to_html, pr_diff_to_html
 
 

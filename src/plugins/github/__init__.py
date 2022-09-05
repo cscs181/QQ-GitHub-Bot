@@ -19,7 +19,7 @@ from .config import Config
 # store all github subplugins
 _sub_plugins = set()
 # load all github plugin config from global config
-github_config = Config.parse_obj(nonebot.get_driver().config)
+config = Config.parse_obj(nonebot.get_driver().config)
 
 _sub_plugins |= nonebot.load_plugins(str((Path(__file__).parent / "plugins").resolve()))
 

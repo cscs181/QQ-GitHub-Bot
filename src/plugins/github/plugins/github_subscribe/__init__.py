@@ -15,6 +15,7 @@ import re
 from nonebot import on_command
 from nonebot.log import logger
 from nonebot.typing import T_State
+from src.utils import allow_cancel
 from nonebot.permission import SUPERUSER
 from httpx import HTTPStatusError, TimeoutException
 from nonebot.adapters.onebot.v11 import (
@@ -25,9 +26,7 @@ from nonebot.adapters.onebot.v11 import (
     MessageEvent,
 )
 
-from src.utils import allow_cancel
-
-from ... import github_config as config
+from ... import config as config
 
 # disable plugin if token not provided
 try:

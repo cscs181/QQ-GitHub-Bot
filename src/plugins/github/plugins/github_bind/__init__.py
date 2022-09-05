@@ -15,6 +15,7 @@ import re
 from nonebot import on_command
 from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
+from src.utils import only_group, allow_cancel
 from httpx import HTTPStatusError, TimeoutException
 from nonebot.params import Depends, CommandArg, ArgPlainText
 from nonebot.adapters.onebot.v11 import (
@@ -25,10 +26,8 @@ from nonebot.adapters.onebot.v11 import (
     GroupMessageEvent,
 )
 
-from src.utils import only_group, allow_cancel
-
+from ... import config as config
 from ...libs.repo import get_repo
-from ... import github_config as config
 from ...libs.redis import (
     get_group_bind_repo,
     set_group_bind_repo,

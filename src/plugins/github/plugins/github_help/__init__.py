@@ -16,7 +16,7 @@ from functools import reduce
 from nonebot import on_command
 
 from ... import _sub_plugins
-from ... import github_config as config
+from ... import config as config
 
 help = on_command("help", priority=config.github_command_priority)
 help.__doc__ = """

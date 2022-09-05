@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-06-18 20:03:07
+@LastEditTime   : 2022-09-05 08:24:11
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,16 +22,7 @@ global_config = driver.config
 config = Config(**global_config.dict())
 
 
-class Filter:
-    def __init__(self, level="INFO") -> None:
-        self.level = level
-
-    def __call__(self, record):
-        levelno = logger.level(self.level).no
-        return record["level"].no >= levelno
-
-
-def init(config: Config):
+def init_sentry(config: Config):
     sentry_config = {
         key[7:]: value
         for key, value in config.dict().items()
@@ -43,9 +34,15 @@ def init(config: Config):
         default_integrations=False
     )
 
-    logger.add(EventHandler("ERROR"), filter=Filter("ERROR"))
-    logger.add(BreadcrumbHandler("INFO"), filter=Filter("INFO"))
+    logger.add(
+        EventHandler("ERROR"),
+        filter=lambda r: r["level"].no >= logger.level("ERROR").no,
+    )
+    logger.add(
+        BreadcrumbHandler("INFO"),
+        filter=lambda r: r["level"].no >= logger.level("INFO").no,
+    )
 
 
 if config.sentry_dsn:
-    init(config)
+    init_sentry(config)

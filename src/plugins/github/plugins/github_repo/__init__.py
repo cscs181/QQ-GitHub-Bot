@@ -23,8 +23,8 @@ from nonebot.adapters.onebot.v11 import (
     GroupMessageEvent,
 )
 
+from ... import config as config
 from ...libs.repo import get_repo
-from ... import github_config as config
 from ...utils import send_github_message
 
 # allow using api without token

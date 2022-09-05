@@ -13,7 +13,7 @@ __author__ = "yanyongyu"
 import pickle
 from functools import wraps
 from datetime import timedelta
-from typing import Any, TypeVar, Callable, Optional, Awaitable, ParamSpec
+from typing import Any, TypeVar, Callable, Awaitable, ParamSpec
 
 import redis.asyncio as redis
 from nonebot import get_driver
@@ -52,14 +52,14 @@ async def get_cache(sign: str) -> Any:
     return pickle.loads(cache) if cache else cache
 
 
-async def save_cache(sign: str, cache: Any, ex: Optional[timedelta] = None) -> None:
+async def save_cache(sign: str, cache: Any, ex: timedelta | None = None) -> None:
     await redis_client.set(
         CACHE_KEY_FORMAT.format(signature=sign), pickle.dumps(cache), ex
     )
 
 
 def cache(
-    ex: Optional[timedelta] = None,
+    ex: timedelta | None = None,
 ) -> Callable[[Callable[P, Awaitable[R]]], Callable[P, Awaitable[R]]]:
     def decorator(func: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[R]]:
         @wraps(func)

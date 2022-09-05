@@ -15,7 +15,7 @@ from nonebot.adapters import Bot, Event
 from nonebot.message import event_preprocessor
 from nonebot.adapters.onebot.v11 import MessageEvent
 
-from ... import github_config as config
+from ... import config as config
 from ...libs.redis import get_message_info
 
 KEY_GITHUB_REPLY = "github_reply"
