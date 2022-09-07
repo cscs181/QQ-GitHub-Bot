@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 08:45:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-06 09:13:35
+@LastEditTime   : 2022-09-07 11:38:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,7 +15,7 @@ import urllib.parse
 from typing import overload
 
 from src.plugins.github.utils import get_bot
-from src.plugins.github.libs.cache import create_state
+from src.plugins.github.cache import create_state
 
 from .auth import StateData
 from .user import USER_TYPES, USER_STRING_TYPES, USER_INTEGER_TYPES

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:30:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-06 12:05:58
+@LastEditTime   : 2022-09-07 11:38:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,8 +17,8 @@ from typing import TypedDict, overload
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_github
+from src.plugins.github.cache import get_state, create_state, delete_state
 
-from .cache import get_state, create_state, delete_state
 from .user import (
     USER_TYPES,
     USER_STRING_TYPES,
