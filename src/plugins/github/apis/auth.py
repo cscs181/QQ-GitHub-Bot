@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 20:18:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-05 12:20:14
+@LastEditTime   : 2022-09-06 09:27:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,7 +13,8 @@ __author__ = "yanyongyu"
 import nonebot
 from fastapi import FastAPI
 
-from ..libs.user_auth import (
+from src.plugins.github.models import User
+from src.plugins.github.libs.auth import (
     get_state_data,
     create_auth_user,
     delete_state_data,
@@ -32,5 +33,5 @@ async def auth(code: str, state: str):
     token = await get_token_by_code(code)
 
     await delete_state_data(state)
-    await create_auth_user(**user_data, access_token=token)
-    return {"message": "ok"}
+    user: User = await create_auth_user(**user_data, access_token=token)  # type: ignore
+    return {"message": f"{user.user_id} ok"}

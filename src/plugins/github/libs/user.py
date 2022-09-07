@@ -4,60 +4,74 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 11:32:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-05 11:57:25
+@LastEditTime   : 2022-09-06 12:06:18
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 
-from typing import Type, Literal, overload
+from typing import Any, Literal, overload
 
-from .models import QQUser, QQGuildUser
+from src.plugins.github.models import User
 
-USER_TYPES = Literal["qq", "qqguild"]
-USER_MODELS = Type[QQUser] | Type[QQGuildUser]
-USER_DATA = QQUser | QQGuildUser
-USER_TYPE_MAPPINGS: dict[USER_TYPES, USER_MODELS] = {
-    "qq": QQUser,
-    "qqguild": QQGuildUser,
-}
+USER_INTEGER_TYPES = Literal["qq"]
+USER_STRING_TYPES = Literal["qqguild"]
+USER_TYPES = USER_INTEGER_TYPES | USER_STRING_TYPES
+
+TYPE_FIELD_MAPPINGS: dict[USER_TYPES, str] = {"qq": "qq_id", "qqguild": "qqguild_id"}
 
 
 @overload
-async def get_user(type: Literal["qq"], user_id: int) -> QQUser:
+async def get_user(type: USER_INTEGER_TYPES, user_id: int) -> User:
     ...
 
 
 @overload
-async def get_user(type: Literal["qqguild"], user_id: str) -> QQGuildUser:
+async def get_user(type: USER_STRING_TYPES, user_id: str) -> User:
     ...
 
 
-async def get_user(type: USER_TYPES, user_id: int | str) -> USER_DATA:
-    model = USER_TYPE_MAPPINGS[type]
-    return await model.get(user_id=user_id)
-
-
-@overload
-async def create_or_update_user(
-    type: Literal["qq"], user_id: int, access_token: str
-) -> QQUser:
-    ...
+async def get_user(type: USER_TYPES, user_id: int | str) -> User:
+    if not (field := TYPE_FIELD_MAPPINGS.get(type)):
+        raise ValueError(f"Invalid user type {type}")
+    return await User.get(**{field: user_id})
 
 
 @overload
 async def create_or_update_user(
-    type: Literal["qqguild"], user_id: str, access_token: str
-) -> QQGuildUser:
+    type: USER_INTEGER_TYPES, user_id: int, **data: Any
+) -> User:
+    ...
+
+
+@overload
+async def create_or_update_user(
+    type: USER_STRING_TYPES, user_id: str, **data: Any
+) -> User:
     ...
 
 
 async def create_or_update_user(
-    type: USER_TYPES, user_id: int | str, access_token: str
-) -> USER_DATA:
-    model = USER_TYPE_MAPPINGS[type]
-    data, _ = await model.update_or_create(
-        user_id=user_id, defaults={"access_token": access_token}
-    )
-    return data
+    type: USER_TYPES, user_id: int | str, **data: Any
+) -> User:
+    if not (field := TYPE_FIELD_MAPPINGS.get(type)):
+        raise ValueError(f"Invalid user type {type}")
+
+    user, _ = await User.update_or_create(**{field: user_id}, defaults=data)
+    return user
+
+
+@overload
+async def delete_user(type: USER_INTEGER_TYPES, user_id: int) -> None:
+    ...
+
+
+@overload
+async def delete_user(type: USER_STRING_TYPES, user_id: str) -> None:
+    ...
+
+
+async def delete_user(type: USER_TYPES, user_id: int | str) -> None:
+    user: User = await get_user(type, user_id)  # type: ignore
+    await user.delete()
