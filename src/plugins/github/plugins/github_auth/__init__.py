@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-06 12:14:08
+@LastEditTime   : 2022-09-12 07:41:52
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,23 +13,15 @@ __author__ = "yanyongyu"
 from nonebot import on_command
 from nonebot.log import logger
 from nonebot.params import Depends
-from nonebot.typing import T_State
 from nonebot.plugin import PluginMetadata
-from tortoise.exceptions import DoesNotExist
 from nonebot.adapters.github import ActionFailed
-from nonebot.adapters.onebot.v11 import (
-    MessageEvent,
-    GroupMessageEvent,
-    PrivateMessageEvent,
-)
+from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_bot
-from src.plugins.github.libs.user import get_user
+from src.plugins.github.helpers import get_current_user
 from src.plugins.github.libs.auth import create_auth_link
-
-from .dependencies import get_qq_user, get_current_user
 
 __plugin_meta__ = PluginMetadata(
     "GitHub 帐号授权",
@@ -58,8 +50,8 @@ auth_check = on_command(("auth", "check"), priority=config.github_command_priori
 
 
 @auth_check.handle()
-async def handle_check(user: User = Depends(get_qq_user)):
-    pass
+async def handle_check(user: None = Depends(get_current_user)):
+    await auth_check.finish("你还没有授权 GitHub 帐号，请使用 /auth 进行授权或使用 /install 进行安装")
 
 
 @auth_check.handle()
@@ -92,8 +84,8 @@ auth_revoke = on_command(("auth", "revoke"), priority=config.github_command_prio
 
 
 @auth_revoke.handle()
-async def handle_revoke(user: User = Depends(get_qq_user)):
-    pass
+async def handle_revoke(user: None = Depends(get_current_user)):
+    await auth_check.finish("你还没有授权 GitHub 帐号，请使用 /auth 进行授权或使用 /install 进行安装")
 
 
 @auth_revoke.handle()

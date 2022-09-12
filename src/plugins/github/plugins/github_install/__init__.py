@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-06 12:21:14
+@LastEditTime   : 2022-09-12 08:36:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,6 +13,7 @@ __author__ = "yanyongyu"
 from nonebot import on_command
 from nonebot.log import logger
 from nonebot.params import Depends
+from githubkit.rest import Installation
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import ActionFailed
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
@@ -20,9 +21,10 @@ from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_bot
+from src.plugins.github.helpers import get_current_user
 from src.plugins.github.libs.install import create_install_link
 
-from .dependencies import get_qq_user, get_current_user
+from .dependencies import get_user_installation
 
 __plugin_meta__ = PluginMetadata(
     "GitHub APP 集成",
@@ -56,35 +58,17 @@ install_check = on_command(
 
 
 @install_check.handle()
-async def handle_check(user: User = Depends(get_qq_user)):
-    pass
+async def handle_check(user: None = Depends(get_current_user)):
+    await install_check.finish("你还没有绑定 GitHub 帐号，请使用 /install 进行安装")
 
 
 @install_check.handle()
-async def check_user_installation(user: User = Depends(get_current_user)):
-    bot = get_bot()
-
-    try:
-        resp = await bot.rest.users.async_get_authenticated()
-        resp = await bot.rest.apps.async_get_user_installation(
-            username=resp.parsed_data.login
-        )
-    except ActionFailed as e:
-        if e.response.status_code == 401:
-            await install_check.finish("你的 GitHub 帐号授权已过期，请使用 /auth 进行刷新")
-        logger.opt(exception=e).error(
-            f"Failed while getting installation in installation check: {e}"
-        )
-        await install_check.finish("未知错误发生，请尝试重试或联系管理员")
-    except Exception as e:
-        logger.opt(exception=e).error(
-            f"Failed while getting installation in installation check: {e}"
-        )
-        await install_check.finish("未知错误发生，请尝试重试或联系管理员")
-
-    data = resp.parsed_data
-    repo_selection = data.repository_selection
-    if account := data.account:
+async def check_user_installation(
+    installation: Installation = Depends(get_user_installation),
+):
+    # sourcery skip: merge-else-if-into-elif
+    repo_selection = installation.repository_selection
+    if account := installation.account:
         gh_user = account.name
         if repo_selection == "selected":
             await install_check.finish(f"{gh_user} 已安装 GitHub APP 并授权了部分仓库")
@@ -92,6 +76,28 @@ async def check_user_installation(user: User = Depends(get_current_user)):
             await install_check.finish(f"{gh_user} 已安装 GitHub APP 并授权了所有仓库")
     else:
         if repo_selection == "selected":
-            await install_check.finish(f"你已安装 GitHub APP 并授权了部分仓库")
+            await install_check.finish("你已安装 GitHub APP 并授权了部分仓库")
         else:
-            await install_check.finish(f"你已安装 GitHub APP 并授权了所有仓库")
+            await install_check.finish("你已安装 GitHub APP 并授权了所有仓库")
+
+
+install_revoke = on_command(
+    ("install", "revoke"), priority=config.github_command_priority
+)
+
+
+@install_revoke.handle()
+async def handle_revoke(user: None = Depends(get_current_user)):
+    await install_check.finish("你还没有绑定 GitHub 帐号，请使用 /install 进行安装")
+
+
+@install_revoke.handle()
+async def revoke_user(installation: Installation = Depends(get_user_installation)):
+    bot = get_bot()
+
+    try:
+        await bot.rest.apps.async_delete_installation(installation.id)
+    except Exception as e:
+        logger.opt(exception=e).error(
+            f"Failed while deleting installation in installation revoke: {e}"
+        )

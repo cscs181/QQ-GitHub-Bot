@@ -1,3 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+@Author         : yanyongyu
+@Date           : 2022-09-07 12:14:14
+@LastEditors    : yanyongyu
+@LastEditTime   : 2022-09-07 12:14:14
+@Description    : None
+@GitHub         : https://github.com/yanyongyu
+"""
+__author__ = "yanyongyu"
+
 import nonebot
 from nonebot.adapters.github import GitHubBot
 from githubkit import GitHub, TokenAuthStrategy
