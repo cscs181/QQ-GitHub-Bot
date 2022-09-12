@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-13 14:45:54
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-05 08:17:41
+@LastEditTime   : 2022-09-12 14:22:48
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,5 +21,5 @@ class Config(BaseSettings, extra=Extra.ignore):
     redis_username: str | None = None
 
     @validator("redis_db", pre=True)
-    def replace_empty_str(cls, value):
+    def replace_empty(cls, value):
         return value or 0
