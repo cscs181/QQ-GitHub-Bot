@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 07:41:52
+@LastEditTime   : 2022-09-12 09:21:01
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,7 +14,7 @@ from nonebot import on_command
 from nonebot.log import logger
 from nonebot.params import Depends
 from nonebot.plugin import PluginMetadata
-from nonebot.adapters.github import ActionFailed
+from nonebot.adapters.github import ActionFailed, ActionTimeout
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
 from src.plugins.github import config
@@ -62,6 +62,8 @@ async def check_user_status(user: User = Depends(get_current_user)):
             resp = await bot.rest.apps.async_check_token(
                 client_id=config.github_app.app_id, access_token=user.access_token
             )
+        except ActionTimeout:
+            await auth_check.finish("GitHub API 超时，请稍后再试")
         except ActionFailed as e:
             if e.response.status_code == 404:
                 await auth_check.finish("你的 GitHub 帐号授权已过期，请使用 /auth 进行刷新")
@@ -96,6 +98,8 @@ async def revoke_user(user: User = Depends(get_current_user)):
             await bot.rest.apps.async_delete_token(
                 client_id=config.github_app.client_id, access_token=user.access_token
             )
+        except ActionTimeout:
+            await auth_revoke.finish("GitHub API 超时，请稍后再试")
         except Exception as e:
             logger.opt(exception=e).error(
                 f"Failed while deleting token in auth revoke: {e}"

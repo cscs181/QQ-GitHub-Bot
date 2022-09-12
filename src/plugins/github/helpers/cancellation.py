@@ -31,8 +31,7 @@ def is_cancellation(message: Message | str) -> bool:
 
 def allow_cancellation(cancel_prompt: str | None = None) -> bool:
     async def dependency(matcher: Matcher, message: Message = EventMessage()) -> bool:
-        cancelled = is_cancellation(message)
-        if cancelled and cancel_prompt:
+        if (cancelled := is_cancellation(message)) and cancel_prompt:
             await matcher.finish(cancel_prompt)
         return not cancelled
 

@@ -4,25 +4,28 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 07:22:30
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 07:31:41
+@LastEditTime   : 2022-09-12 09:38:50
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from nonebot.log import logger
+from nonebot.adapters import Event
 from nonebot.params import Depends
 from tortoise.exceptions import DoesNotExist
-from nonebot.adapters.onebot.v11 import MessageEvent
 
 from src.plugins.github.models import User
 from src.plugins.github.libs.user import get_user
 
+from .event import QQ_EVENT
 
-async def get_qq_user(event: MessageEvent) -> User | None:
+
+async def get_qq_user(event: Event) -> User | None:
+    if not isinstance(event, QQ_EVENT):
+        return
     try:
-        user = await get_user("qq", event.user_id)
-        return user
+        return await get_user("qq", event.user_id)
     except DoesNotExist:
         return
     except Exception as e:

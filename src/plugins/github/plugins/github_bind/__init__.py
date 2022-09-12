@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-02-23 19:35:13
+@LastEditTime   : 2022-09-12 12:09:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,110 +13,110 @@ __author__ = "yanyongyu"
 import re
 
 from nonebot import on_command
+from nonebot.log import logger
+from nonebot.rule import is_type
 from nonebot.matcher import Matcher
-from nonebot.permission import SUPERUSER
-from src.utils import only_group, allow_cancel
-from httpx import HTTPStatusError, TimeoutException
+from nonebot.plugin import PluginMetadata
+from nonebot.adapters import Event, Message
 from nonebot.params import Depends, CommandArg, ArgPlainText
-from nonebot.adapters.onebot.v11 import (
-    GROUP_ADMIN,
-    GROUP_OWNER,
-    Bot,
-    Message,
-    GroupMessageEvent,
+from nonebot.adapters.github import ActionFailed, ActionTimeout
+
+from src.plugins.github import config
+from src.plugins.github.models import Group
+from src.plugins.github.utils import get_bot
+from src.plugins.github.libs.group import create_or_update_group
+from src.plugins.github.helpers import (
+    GROUP_MSG_EVENT,
+    GROUP_SUPERPERM,
+    QQ_GROUP_MSG_EVENT,
+    get_current_group,
+    allow_cancellation,
 )
 
-from ... import config as config
-from ...libs.repo import get_repo
-from ...libs.redis import (
-    get_group_bind_repo,
-    set_group_bind_repo,
-    delete_group_bind_repo,
-    exists_group_bind_repo,
+from .dependencies import bypass_update
+
+__plugin_meta__ = PluginMetadata(
+    "GitHub 群仓库绑定",
+    "群绑定 GitHub 仓库以进行快捷 Issue、PR 等操作（仅限群管理员）",
+    ("/bind [owner/repo]: 群查询或绑定 GitHub 仓库\n" "/unbind: 群解绑 GitHub 仓库"),
 )
 
-# allow using api without token
-try:
-    from ...libs.auth import get_user_token
-except ImportError:
-    get_user_token = None
 
-REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9][a-zA-Z0-9\-]*)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
+REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9](?:[a-zA-Z0-9\-]*[a-zA-Z0-9])?)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
 
 bind = on_command(
     "bind",
-    only_group,
+    is_type(*GROUP_MSG_EVENT),
     priority=config.github_command_priority,
-    permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER,
+    permission=GROUP_SUPERPERM,
 )
-bind.__doc__ = """
-/bind owner/repo
-绑定当前群与指定仓库
-/bind
-查询当前绑定的仓库
-"""
 
 
 @bind.handle()
-async def process_arg(
-    event: GroupMessageEvent, matcher: Matcher, arg: Message = CommandArg()
-):
+async def process_arg(matcher: Matcher, arg: Message = CommandArg()):
     if full_name := arg["text"]:
         matcher.set_arg("full_name", full_name)
 
 
-@bind.handle()
-async def check_exists(event: GroupMessageEvent, matcher: Matcher):
-    if matcher.get_arg("full_name"):
-        return
-
-    exist_repo = get_group_bind_repo(str(event.group_id))
-    if exist_repo:
-        await bind.finish(f"当前已绑定仓库：{exist_repo}")
+@bind.handle(parameterless=(Depends(bypass_update),))
+async def check_group_exists(group: Group = Depends(get_current_group)):
+    await bind.finish(f"当前已绑定仓库：{group.bind_repo}")
 
 
 @bind.got(
     "full_name",
     prompt="绑定仓库的全名？(e.g. owner/repo)",
-    parameterless=[Depends(allow_cancel)],
+    parameterless=(allow_cancellation("已取消"),),
 )
-async def process_repo(event: GroupMessageEvent, full_name: str = ArgPlainText()):
-    matched = re.match(REPO_REGEX, full_name)
-    if not matched:
+async def process_repo(event: Event, full_name: str = ArgPlainText()):
+    if not (matched := re.match(REPO_REGEX, full_name)):
         await bind.reject(f"仓库名 {full_name} 不合法！请重新发送或取消")
 
-    owner = matched.group("owner")
-    repo_name = matched.group("repo")
-    token = None
-    if get_user_token:
-        token = get_user_token(event.get_user_id())
+    bot = get_bot()
+    owner: str = matched["owner"]
+    repo: str = matched["repo"]
     try:
-        repo = await get_repo(owner, repo_name, token)
-    except TimeoutException:
-        await bind.finish(f"获取仓库数据超时！请尝试重试")
-    except HTTPStatusError:
-        await bind.reject(f"仓库名 {owner}/{repo_name} 不存在！请重新发送或取消")
+        await bot.rest.apps.async_get_repo_installation(owner=owner, repo=repo)
+    except ActionTimeout:
+        await bind.finish("GitHub API 超时，请稍后再试")
+    except ActionFailed as e:
+        if e.response.status_code == 404:
+            await bind.reject(f"仓库 {owner}/{repo} 不存在！请重新发送或取消")
+        logger.opt(exception=e).error(
+            f"Failed while getting repo installation in group bind: {e}"
+        )
+        await bind.finish("未知错误发生，请尝试重试或联系管理员")
+    except Exception as e:
+        logger.opt(exception=e).error(
+            f"Failed while getting repo installation in group bind: {e}"
+        )
+        await bind.finish("未知错误发生，请尝试重试或联系管理员")
 
-    set_group_bind_repo(str(event.group_id), repo.full_name)
-    await bind.finish(f"本群成功绑定仓库 {repo.full_name} ！")
+    if isinstance(event, QQ_GROUP_MSG_EVENT):
+        await create_or_update_group("qq", event.group_id, bind_repo=f"{owner}/{repo}")
+    else:
+        logger.error(f"Unprocessed event type: {event.__class__.__name__}")
+        await bind.finish("内部错误，请联系管理员")
+
+    await bind.finish(f"本群成功绑定仓库 {owner}/{repo} ！")
 
 
 unbind = on_command(
     "unbind",
-    only_group,
+    is_type(*GROUP_MSG_EVENT),
     priority=config.github_command_priority,
-    permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER,
+    permission=GROUP_SUPERPERM,
 )
-unbind.__doc__ = """
-/unbind
-解绑当前群和指定仓库
-"""
 
 
 @unbind.handle()
-async def process_unbind(event: GroupMessageEvent):
-    if exists_group_bind_repo(str(event.group_id)):
-        delete_group_bind_repo(str(event.group_id))
+async def process_unbind(group: Group | None = Depends(get_current_group)):
+    if group:
+        try:
+            await group.delete()
+        except Exception as e:
+            logger.opt(exception=e).error(f"Failed while deleting group: {e}")
+            await unbind.finish("未知错误发生，请尝试重试或联系管理员")
         await unbind.finish("成功解绑仓库！")
     else:
         await unbind.finish("尚未绑定仓库！")

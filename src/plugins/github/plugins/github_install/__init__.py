@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 08:36:41
+@LastEditTime   : 2022-09-12 09:20:43
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,11 +15,10 @@ from nonebot.log import logger
 from nonebot.params import Depends
 from githubkit.rest import Installation
 from nonebot.plugin import PluginMetadata
-from nonebot.adapters.github import ActionFailed
+from nonebot.adapters.github import ActionTimeout
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
 from src.plugins.github import config
-from src.plugins.github.models import User
 from src.plugins.github.utils import get_bot
 from src.plugins.github.helpers import get_current_user
 from src.plugins.github.libs.install import create_install_link
@@ -97,7 +96,10 @@ async def revoke_user(installation: Installation = Depends(get_user_installation
 
     try:
         await bot.rest.apps.async_delete_installation(installation.id)
+    except ActionTimeout:
+        await install_revoke.finish("GitHub API 超时，请稍后再试")
     except Exception as e:
         logger.opt(exception=e).error(
             f"Failed while deleting installation in installation revoke: {e}"
         )
+        await install_revoke.finish("未知错误发生，请尝试重试或联系管理员")
