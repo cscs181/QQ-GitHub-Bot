@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 13:43:00
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 14:21:11
+@LastEditTime   : 2022-09-12 15:50:36
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -33,7 +33,9 @@ tortoise_config = {
             },
         }
     },
-    "apps": {"bot": {"models": [models]}},
+    "apps": {
+        "bot": {"models": [models, "aerich.models"], "default_connection": "default"}
+    },
 }
 
 
