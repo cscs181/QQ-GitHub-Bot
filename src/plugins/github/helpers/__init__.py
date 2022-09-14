@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-07 12:17:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 10:16:40
+@LastEditTime   : 2022-09-14 11:21:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,6 +15,7 @@ from .event import USER_EVENT as USER_EVENT
 from .github import REPO_REGEX as REPO_REGEX
 from .event import GROUP_EVENT as GROUP_EVENT
 from .event import get_user_id as get_user_id
+from .github import ISSUE_REGEX as ISSUE_REGEX
 from .github import OWNER_REGEX as OWNER_REGEX
 from .event import get_group_id as get_group_id
 from .event import get_platform as get_platform
@@ -37,3 +38,4 @@ from .github import GITHUB_REPO_LINK_REGEX as GITHUB_REPO_LINK_REGEX
 from .github import GITHUB_ISSUE_LINK_REGEX as GITHUB_ISSUE_LINK_REGEX
 from .github import GITHUB_COMMIT_LINK_REGEX as GITHUB_COMMIT_LINK_REGEX
 from .github import GITHUB_PR_COMMIT_LINK_REGEX as GITHUB_PR_COMMIT_LINK_REGEX
+from .github import GITHUB_ISSUE_OR_PR_LINK_REGEX as GITHUB_ISSUE_OR_PR_LINK_REGEX

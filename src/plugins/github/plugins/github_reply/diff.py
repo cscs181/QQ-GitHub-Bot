@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-01-26 18:11:27
+@LastEditTime   : 2022-09-14 15:33:26
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,7 +21,7 @@ from nonebot.adapters.onebot.v11 import Bot, MessageEvent, MessageSegment
 from ...libs.redis import MessageInfo
 from ...utils import send_github_message
 from . import KEY_GITHUB_REPLY, config, is_github_reply
-from ...libs.issue import get_issue, issue_diff_to_image
+from ...libs.renderer import get_issue, issue_diff_to_image
 
 # allow using api without token
 try:
