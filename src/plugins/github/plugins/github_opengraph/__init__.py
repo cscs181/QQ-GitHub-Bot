@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 04:54:14
+@LastEditTime   : 2022-09-14 07:01:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,6 +13,8 @@ __author__ = "yanyongyu"
 import secrets
 
 from nonebot import on_regex
+from nonebot.log import logger
+from nonebot.adapters import Event
 from nonebot.params import Depends
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
@@ -23,6 +25,7 @@ from src.plugins.github.helpers import (
     GITHUB_REPO_LINK_REGEX,
     GITHUB_COMMIT_LINK_REGEX,
     GITHUB_PR_COMMIT_LINK_REGEX,
+    get_platform,
 )
 
 from .dependencies import check_repo, check_commit
@@ -47,12 +50,16 @@ repo_link_graph = on_regex(
 
 @repo_graph.handle()
 @repo_link_graph.handle()
-async def handle(repo: str = Depends(check_repo)):
-    await repo_graph.finish(
-        QQMS.image(
-            f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/{repo}"
-        )
-    )
+async def handle(event: Event, repo: str = Depends(check_repo)):
+    match get_platform(event):
+        case "qq":
+            await repo_graph.finish(
+                QQMS.image(
+                    f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/{repo}"
+                )
+            )
+        case _:
+            logger.error(f"Unprocessed event type: {type(event)}")
 
 
 commit_graph = on_regex(
@@ -65,9 +72,13 @@ pr_commit_graph = on_regex(
 
 @commit_graph.handle()
 @pr_commit_graph.handle()
-async def handle_commit(commit: str = Depends(check_commit)):
-    await commit_graph.finish(
-        QQMS.image(
-            f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/{commit}"
-        )
-    )
+async def handle_commit(event: Event, commit: str = Depends(check_commit)):
+    match get_platform(event):
+        case "qq":
+            await commit_graph.finish(
+                QQMS.image(
+                    f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/{commit}"
+                )
+            )
+        case _:
+            logger.error(f"Unprocessed event type: {type(event)}")
