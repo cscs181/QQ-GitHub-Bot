@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 09:20:43
+@LastEditTime   : 2022-09-14 10:27:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,8 +20,8 @@ from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
 from src.plugins.github import config
 from src.plugins.github.utils import get_bot
-from src.plugins.github.helpers import get_current_user
 from src.plugins.github.libs.install import create_install_link
+from src.plugins.github.helpers import get_user_info, get_current_user
 
 from .dependencies import get_user_installation
 
@@ -40,15 +40,17 @@ install = on_command("install", priority=config.github_command_priority)
 
 
 @install.handle()
-async def handle_private(event: PrivateMessageEvent):
-    await install.finish(
-        "请前往以下链接进行安装或管理：\n" + await create_install_link("qq", event.user_id)
-    )
+async def handle_group(event: GroupMessageEvent):
+    await install.finish("请私聊我并使用 /install 命令进行安装或管理")
 
 
 @install.handle()
-async def handle_group(event: GroupMessageEvent):
-    await install.finish("请私聊我并使用 /install 命令进行安装或管理")
+async def handle_private(event: PrivateMessageEvent):
+    if info := get_user_info(event):
+        await install.finish("请前往以下链接进行安装或管理：\n" + await create_install_link(info))
+    else:
+        logger.error(f"Unprocessed event type: {type(event)}")
+        await install.finish("内部错误，请尝试私聊我并使用 /install 命令进行安装或管理")
 
 
 install_check = on_command(

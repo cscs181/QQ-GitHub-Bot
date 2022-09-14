@@ -4,34 +4,58 @@
 @Author         : yanyongyu
 @Date           : 2022-09-13 15:59:44
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-13 16:02:54
+@LastEditTime   : 2022-09-14 10:58:30
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 
-from typing import Literal, Annotated
+from typing import Literal, Annotated, TypedDict
 
-from pydantic import Field, BaseModel
+from pydantic import Field, BaseModel, parse_raw_as
 
-from src.plugins.github.cache import get_message_tag, create_message_tag
+from src.plugins.github.cache import get_message_tag as get_cache
+from src.plugins.github.cache import create_message_tag as create_cache
+
+from .platform import PLATFORMS
+
+
+class MessageInfo(TypedDict):
+    type: PLATFORMS
+    message_id: str
 
 
 class RepoTag(BaseModel):
-    type: Literal["repo"]
+    type: Literal["repo"] = "repo"
     owner: str
     repo: str
 
 
-class IssueTag(BaseModel):
-    type: Literal["issue"]
+class IssueTag(RepoTag):
+    type: Literal["issue"] = "issue"
     issue_number: int
 
 
-class PullRequestTag(BaseModel):
-    type: Literal["pull_request"]
+class PullRequestTag(RepoTag):
+    type: Literal["pull_request"] = "pull_request"
     pull_request_number: int
 
 
-Tag = Annotated[RepoTag | IssueTag | PullRequestTag, Field(discriminator="type")]
+class CommitTag(RepoTag):
+    type: Literal["commit"] = "commit"
+    commit: str
+
+
+Tag = Annotated[
+    RepoTag | IssueTag | PullRequestTag | CommitTag, Field(discriminator="type")
+]
+
+
+async def create_message_tag(info: MessageInfo, tag: Tag):
+    await create_cache(info["type"], info["message_id"], tag.json())
+
+
+async def get_message_tag(info: MessageInfo) -> Tag | None:
+    cache = await get_cache(info["type"], info["message_id"])
+    return parse_raw_as(Tag, cache) if cache else None

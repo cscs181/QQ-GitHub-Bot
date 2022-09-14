@@ -4,14 +4,14 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 11:32:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 06:53:11
+@LastEditTime   : 2022-09-14 09:17:19
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 
-from typing import Any, Literal, TypedDict, overload
+from typing import Any, Literal, TypedDict
 
 from src.plugins.github.models import User, Group
 

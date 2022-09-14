@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 09:21:01
+@LastEditTime   : 2022-09-14 10:25:49
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,8 +20,8 @@ from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_bot
-from src.plugins.github.helpers import get_current_user
 from src.plugins.github.libs.auth import create_auth_link
+from src.plugins.github.helpers import get_user_info, get_current_user
 
 __plugin_meta__ = PluginMetadata(
     "GitHub 帐号授权",
@@ -37,13 +37,17 @@ auth = on_command("auth", priority=config.github_command_priority)
 
 
 @auth.handle()
-async def handle_private(event: PrivateMessageEvent):
-    await auth.finish("请前往以下链接进行授权：\n" + await create_auth_link("qq", event.user_id))
+async def handle_group(event: GroupMessageEvent):
+    await auth.finish("请私聊我并使用 /auth 命令授权你的 GitHub 账号")
 
 
 @auth.handle()
-async def handle_group(event: GroupMessageEvent):
-    await auth.finish("请私聊我并使用 /auth 命令授权你的 GitHub 账号")
+async def handle_private(event: PrivateMessageEvent):
+    if info := get_user_info(event):
+        await auth.finish("请前往以下链接进行授权：\n" + await create_auth_link(info))
+    else:
+        logger.error(f"Unprocessed event type: {type(event)}")
+        await auth.finish("内部错误，请尝试私聊我并使用 /auth 命令授权你的 GitHub 账号")
 
 
 auth_check = on_command(("auth", "check"), priority=config.github_command_priority)

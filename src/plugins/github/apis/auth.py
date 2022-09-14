@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 20:18:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 06:05:13
+@LastEditTime   : 2022-09-14 09:22:43
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -26,12 +26,12 @@ app: FastAPI = nonebot.get_app()
 
 @app.get("/api/github/auth")
 async def auth(code: str, state: str):
-    user_data = await get_state_data(state)
-    if not user_data:
+    user_info = await get_state_data(state)
+    if not user_info:
         return {"message": "oauth session expired"}
 
     token = await get_token_by_code(code)
 
     await delete_state_data(state)
-    user: User = await create_auth_user(**user_data, access_token=token)  # type: ignore
+    user: User = await create_auth_user(user_info, access_token=token)
     return {"message": f"{user.user_id} ok"}

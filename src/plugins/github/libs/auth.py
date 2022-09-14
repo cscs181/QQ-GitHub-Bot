@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:30:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 06:05:20
+@LastEditTime   : 2022-09-14 10:26:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,7 +12,6 @@ __author__ = "yanyongyu"
 
 import json
 import urllib.parse
-from typing import TypedDict, overload
 
 from src.plugins.github import config
 from src.plugins.github.models import User
@@ -23,34 +22,20 @@ from .platform import (
     PLATFORMS,
     USER_STRING_TYPES,
     USER_INTEGER_TYPES,
+    UserInfo,
     create_or_update_user,
 )
 
 
-class StateData(TypedDict):
-    type: PLATFORMS
-    user_id: int | str
-
-
-@overload
-async def create_auth_link(type: USER_INTEGER_TYPES, user_id: int) -> str:
-    ...
-
-
-@overload
-async def create_auth_link(type: USER_STRING_TYPES, user_id: str) -> str:
-    ...
-
-
-async def create_auth_link(type: PLATFORMS, user_id: int | str) -> str:
+async def create_auth_link(info: UserInfo) -> str:
     query = {
         "client_id": config.github_app.client_id,
-        "state": await create_state(json.dumps(StateData(type=type, user_id=user_id))),
+        "state": await create_state(json.dumps(info)),
     }
     return f"https://github.com/login/oauth/authorize?{urllib.parse.urlencode(query)}"
 
 
-async def get_state_data(state_id: str) -> StateData | None:
+async def get_state_data(state_id: str) -> UserInfo | None:
     return json.loads(data) if (data := await get_state(state_id)) is not None else None
 
 
@@ -58,26 +43,8 @@ async def delete_state_data(state_id: str) -> None:
     return await delete_state(state_id)
 
 
-@overload
-async def create_auth_user(
-    type: USER_INTEGER_TYPES, user_id: int, access_token: str
-) -> User:
-    ...
-
-
-@overload
-async def create_auth_user(
-    type: USER_STRING_TYPES, user_id: str, access_token: str
-) -> User:
-    ...
-
-
-async def create_auth_user(
-    type: PLATFORMS, user_id: int | str, access_token: str
-) -> User:
-    return await create_or_update_user(
-        type=type, user_id=user_id, access_token=access_token  # type: ignore
-    )
+async def create_auth_user(info: UserInfo, access_token: str) -> User:
+    return await create_or_update_user(info, access_token=access_token)
 
 
 async def get_token_by_code(code: str) -> str:
