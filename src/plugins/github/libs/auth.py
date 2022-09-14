@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:30:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-07 11:38:44
+@LastEditTime   : 2022-09-14 06:05:20
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,8 +19,8 @@ from src.plugins.github.models import User
 from src.plugins.github.utils import get_github
 from src.plugins.github.cache import get_state, create_state, delete_state
 
-from .user import (
-    USER_TYPES,
+from .platform import (
+    PLATFORMS,
     USER_STRING_TYPES,
     USER_INTEGER_TYPES,
     create_or_update_user,
@@ -28,7 +28,7 @@ from .user import (
 
 
 class StateData(TypedDict):
-    type: USER_TYPES
+    type: PLATFORMS
     user_id: int | str
 
 
@@ -42,7 +42,7 @@ async def create_auth_link(type: USER_STRING_TYPES, user_id: str) -> str:
     ...
 
 
-async def create_auth_link(type: USER_TYPES, user_id: int | str) -> str:
+async def create_auth_link(type: PLATFORMS, user_id: int | str) -> str:
     query = {
         "client_id": config.github_app.client_id,
         "state": await create_state(json.dumps(StateData(type=type, user_id=user_id))),
@@ -73,7 +73,7 @@ async def create_auth_user(
 
 
 async def create_auth_user(
-    type: USER_TYPES, user_id: int | str, access_token: str
+    type: PLATFORMS, user_id: int | str, access_token: str
 ) -> User:
     return await create_or_update_user(
         type=type, user_id=user_id, access_token=access_token  # type: ignore

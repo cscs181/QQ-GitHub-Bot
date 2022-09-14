@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 08:45:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-07 11:38:55
+@LastEditTime   : 2022-09-14 06:05:47
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,7 +18,7 @@ from src.plugins.github.utils import get_bot
 from src.plugins.github.cache import create_state
 
 from .auth import StateData
-from .user import USER_TYPES, USER_STRING_TYPES, USER_INTEGER_TYPES
+from .platform import PLATFORMS, USER_STRING_TYPES, USER_INTEGER_TYPES
 
 
 @overload
@@ -31,7 +31,7 @@ async def create_install_link(type: USER_STRING_TYPES, user_id: str) -> str:
     ...
 
 
-async def create_install_link(type: USER_TYPES, user_id: int | str) -> str:
+async def create_install_link(type: PLATFORMS, user_id: int | str) -> str:
     query = {
         "state": await create_state(json.dumps(StateData(type=type, user_id=user_id))),
     }

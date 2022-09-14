@@ -4,34 +4,19 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 07:22:30
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 09:38:50
+@LastEditTime   : 2022-09-14 06:47:56
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from nonebot.log import logger
 from nonebot.adapters import Event
-from nonebot.params import Depends
-from tortoise.exceptions import DoesNotExist
 
 from src.plugins.github.models import User
-from src.plugins.github.libs.user import get_user
+from plugins.github.libs.platform import get_user
 
-from .event import QQ_EVENT
-
-
-async def get_qq_user(event: Event) -> User | None:
-    if not isinstance(event, QQ_EVENT):
-        return
-    try:
-        return await get_user("qq", event.user_id)
-    except DoesNotExist:
-        return
-    except Exception as e:
-        logger.opt(exception=e).error(f"Failed while getting user: {e}")
-        raise
+from .event import get_user_info
 
 
-async def get_current_user(qq_user: User | None = Depends(get_qq_user)) -> User | None:
-    return qq_user
+async def get_current_user(event: Event) -> User | None:
+    return await get_user(info) if (info := get_user_info(event)) else None

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 12:09:33
+@LastEditTime   : 2022-09-14 06:56:45
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -24,11 +24,12 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 from src.plugins.github import config
 from src.plugins.github.models import Group
 from src.plugins.github.utils import get_bot
-from src.plugins.github.libs.group import create_or_update_group
+from src.plugins.github.libs.platform import create_or_update_group
 from src.plugins.github.helpers import (
-    GROUP_MSG_EVENT,
+    GROUP_EVENT,
+    FULLREPO_REGEX,
     GROUP_SUPERPERM,
-    QQ_GROUP_MSG_EVENT,
+    get_group_info,
     get_current_group,
     allow_cancellation,
 )
@@ -41,12 +42,9 @@ __plugin_meta__ = PluginMetadata(
     ("/bind [owner/repo]: 群查询或绑定 GitHub 仓库\n" "/unbind: 群解绑 GitHub 仓库"),
 )
 
-
-REPO_REGEX: str = r"^(?P<owner>[a-zA-Z0-9](?:[a-zA-Z0-9\-]*[a-zA-Z0-9])?)/(?P<repo>[a-zA-Z0-9_\-\.]+)$"
-
 bind = on_command(
     "bind",
-    is_type(*GROUP_MSG_EVENT),
+    is_type(*GROUP_EVENT),
     priority=config.github_command_priority,
     permission=GROUP_SUPERPERM,
 )
@@ -69,7 +67,7 @@ async def check_group_exists(group: Group = Depends(get_current_group)):
     parameterless=(allow_cancellation("已取消"),),
 )
 async def process_repo(event: Event, full_name: str = ArgPlainText()):
-    if not (matched := re.match(REPO_REGEX, full_name)):
+    if not (matched := re.match(f"^{FULLREPO_REGEX}$", full_name)):
         await bind.reject(f"仓库名 {full_name} 不合法！请重新发送或取消")
 
     bot = get_bot()
@@ -81,7 +79,7 @@ async def process_repo(event: Event, full_name: str = ArgPlainText()):
         await bind.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
         if e.response.status_code == 404:
-            await bind.reject(f"仓库 {owner}/{repo} 不存在！请重新发送或取消")
+            await bind.reject(f"仓库 {owner}/{repo} 未授权！请重新发送或取消")
         logger.opt(exception=e).error(
             f"Failed while getting repo installation in group bind: {e}"
         )
@@ -92,10 +90,10 @@ async def process_repo(event: Event, full_name: str = ArgPlainText()):
         )
         await bind.finish("未知错误发生，请尝试重试或联系管理员")
 
-    if isinstance(event, QQ_GROUP_MSG_EVENT):
-        await create_or_update_group("qq", event.group_id, bind_repo=f"{owner}/{repo}")
+    if info := get_group_info(event):
+        await create_or_update_group(info, bind_repo=f"{owner}/{repo}")
     else:
-        logger.error(f"Unprocessed event type: {event.__class__.__name__}")
+        logger.error(f"Unprocessed event type: {type(event)}")
         await bind.finish("内部错误，请联系管理员")
 
     await bind.finish(f"本群成功绑定仓库 {owner}/{repo} ！")
@@ -103,7 +101,7 @@ async def process_repo(event: Event, full_name: str = ArgPlainText()):
 
 unbind = on_command(
     "unbind",
-    is_type(*GROUP_MSG_EVENT),
+    is_type(*GROUP_EVENT),
     priority=config.github_command_priority,
     permission=GROUP_SUPERPERM,
 )
