@@ -1,0 +1,70 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-15 16:07:21
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-15 16:07:21
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "icons/repo.html.jinja" import octicon_repo %}
+{% from "icons/lock.html.jinja" import octicon_lock %}
+{% from "icons/star.html.jinja" import octicon_star %}
+{% from "icons/repo-forked.html.jinja" import octicon_repo_forked %}
+
+{% macro header(repo) %}
+<div class="pt-3 color-bg-subtle">
+  <div
+    class="
+      d-flex
+      flex-wrap flex-justify-end
+      px-3 px-md-4 px-lg-5
+      mb-3
+    "
+  >
+    <div class="flex-auto min-width-0 width-fit mr-3">
+      <div class="d-flex flex-wrap flex-items-center wb-break-word f3 text-normal">
+        {% if repo.private %}
+        {{ octicon_lock(16, "color-fg-muted mr-2") }}
+        {% else %}
+        {{ octicon_repo(16, "color-fg-muted mr-2") }}
+        {% endif %}
+        <span class="author flex-self-stretch">
+          <a href="#">
+            {{ repo.owner.login|escape }}
+          </a>
+        </span>
+        <span class="mx-1 flex-self-stretch color-fg-muted">/</span>
+        <strong class="mr-2 flex-self-stretch">
+          <a href="#">
+            {{ repo.name|escape }}
+          </a>
+        </strong>
+        <span class="Label Label--secondary v-align-middle mr-1">
+          {% if repo.private %}
+          Private
+          {% else %}
+          Public
+          {% endif %}
+        </span>
+      </div>
+    </div>
+    <ul class="pagehead-actions flex-shrink-0 d-none d-md-inline" style="padding: 2px 0;">
+      <li>
+        <a href="#" class="tooltipped tooltipped-s btn-sm btn">
+          {{ octicon_repo_forked(16, "mr-2") }}
+          Fork
+          <span class="Counter">{{ repo.forks_count }}</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="tooltipped tooltipped-s btn-sm btn BtnGroup-item">
+          {{ octicon_star(16, "mr-2") }}
+          Star
+          <span class="Counter">{{ repo.stargazers_count }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endmacro %}

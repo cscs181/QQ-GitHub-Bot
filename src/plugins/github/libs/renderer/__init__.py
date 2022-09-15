@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 15:57:48
+@LastEditTime   : 2022-09-15 17:41:50
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -28,11 +28,9 @@ async def _gen_image(html: str, width: int, height: int) -> bytes | None:
 
 
 async def issue_to_image(
-    owner: str,
-    repo: str,
     issue: Issue,
     width: int = 800,
     height: int = 300,
 ) -> bytes | None:
-    html = await issue_to_html(owner, repo, issue)
+    html = await issue_to_html(issue)
     return await _gen_image(html, width, height)

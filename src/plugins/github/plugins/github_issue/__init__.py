@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 15:33:40
+@LastEditTime   : 2022-09-15 17:42:10
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -100,7 +100,7 @@ async def handle(event: Event, group: dict[str, str] = RegexDict()):
 
     try:
         with context:
-            img = await issue_to_image(owner, repo, issue_)
+            img = await issue_to_image(issue_)
     except ActionTimeout:
         await issue.finish("GitHub API 超时，请稍后再试")
     except Error:
@@ -181,7 +181,7 @@ async def handle_short(
 
     try:
         with context:
-            img = await issue_to_image(owner, repo, issue_)
+            img = await issue_to_image(issue_)
     except Error:
         await issue_short.finish("生成图片出错！请尝试重试")
     except Exception as e:
