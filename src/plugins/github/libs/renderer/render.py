@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-15 17:41:27
+@LastEditTime   : 2022-09-16 12:44:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,7 +15,7 @@ from pathlib import Path
 import jinja2
 from githubkit.rest import Issue
 
-from .filters import review_state, relative_time, find_dismissed_review
+from .filters import review_state, relative_time, markdown_title, find_dismissed_review
 from .globals import (
     get_issue_repo,
     get_pull_request,
@@ -31,6 +31,7 @@ env = jinja2.Environment(
     enable_async=True,
 )
 
+env.filters["markdown_title"] = markdown_title
 env.filters["relative_time"] = relative_time
 env.filters["review_state"] = review_state
 env.filters["find_dismissed_review"] = find_dismissed_review

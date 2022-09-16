@@ -1,0 +1,17 @@
+/*
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-16 12:36:00
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-16 12:41:31
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+ */
+
+.markdown-title code {
+  padding: 2px 4px;
+  font-size: .9em;
+  line-height: 1;
+  vertical-align: middle;
+  background-color: var(--color-neutral-muted);
+  border-radius: 6px;
+}

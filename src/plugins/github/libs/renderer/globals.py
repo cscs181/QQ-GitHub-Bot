@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-16 04:09:38
+@LastEditTime   : 2022-09-16 13:14:48
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -40,10 +40,11 @@ async def get_issue_timeline(owner: str, repo: str, issue: Issue):
 
 
 @cache(ex=timedelta(minutes=5))
-async def get_pull_request(owner: str, repo: str, issue: Issue) -> PullRequest:
+async def get_pull_request(issue: Issue) -> PullRequest:
     bot = get_bot()
+    repo = await get_issue_repo(issue)
     resp = await bot.rest.pulls.async_get(
-        owner=owner, repo=repo, pull_number=issue.number
+        owner=repo.owner.login, repo=repo.name, pull_number=issue.number
     )
     return resp.parsed_data
 

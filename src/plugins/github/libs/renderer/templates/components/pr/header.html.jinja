@@ -1,0 +1,44 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-16 16:40:46
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-16 17:26:32
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "components/issue/title.html.jinja" import issue_title %}
+{% from "components/pr/state.html.jinja" import pr_state %}
+
+{% macro pr_header(issue) %}
+{% set pull_request = get_pull_request(issue) %}
+<div class="color-bg-default mb-3">
+  {{ issue_title(issue) }}
+  <div
+    class="
+      d-flex
+      flex-items-center flex-wrap
+      pb-2 mt-0 mb-4
+      border-bottom color-border-default color-fg-muted
+    "
+  >
+    {{ pr_state(pull_request) }}
+    <div class="flex-auto min-width-0 mb-2">
+      <a href="#" class="author text-bold Link--secondary">{{ pull_request.user.login|escape }}</a>
+      {% if pull_request.merged %}
+      merged
+      {% else %}
+      wants to merge
+      {% endif %}
+      {{ pull_request.commits }} commits into
+      <span class="branch-name css-truncate">
+        <a class="no-underline">{{ pull_request.base.label|escape }}</a>
+      </span>
+      from
+      <span class="branch-name css-truncate">
+        <a class="no-underline">{{ pull_request.head.label|escape }}</a>
+      </span>
+    </div>
+  </div>
+</div>
+{% endmacro %}

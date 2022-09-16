@@ -2,14 +2,27 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-15 04:08:55
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-15 04:08:55
+ * @LastEditTime   : 2022-09-16 16:46:34
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "components/header.html.jinja" import header %}
+{% from "components/issue/header.html.jinja" import issue_header %}
+{% from "components/pr/header.html.jinja" import pr_header %}
 
 {% extends "main.html.jinja" %}
 {% block main %}
 {{ header(get_issue_repo(issue)) }}
+<div class="repository-content">
+  <div class="container-xl px-3 px-md-4 px-lg-5 mt-4">
+    <div>
+      {% if issue.pull_request %}
+      {{ pr_header(issue) }}
+      {% else %}
+      {{ issue_header(issue) }}
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}

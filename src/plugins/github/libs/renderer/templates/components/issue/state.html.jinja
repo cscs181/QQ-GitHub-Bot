@@ -1,0 +1,39 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-16 16:39:09
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-16 17:15:51
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "icons/issue-opened.html.jinja" import octicon_issue_opened %}
+{% from "icons/issue-closed.html.jinja" import octicon_issue_closed %}
+{% from "icons/issue-draft.html.jinja" import octicon_issue_draft %}
+{% from "icons/issue-not-planned.html.jinja" import octicon_issue_not_planned %}
+
+{% macro issue_state(issue) %}
+<div class="flex-shrink-0 mb-2 flex-self-start flex-md-self-center">
+  {% if issue.draft %}
+  {% set state = "draft" %}
+  {% elif issue.state_reason == "not_planned" %}
+  {% set state = "draft" %}
+  {% elif issue.state == "closed" %}
+  {% set state = "merged" %}
+  {% else %}
+  {% set state = "open" %}
+  {% endif %}
+
+  <span class="State State--{{ state }} mr-2">
+    {% if issue.draft %}
+    {{ octicon_issue_draft() }} Draft
+    {% elif issue.state_reason == "not_planned" %}
+    {{ octicon_issue_not_planned() }} Closed
+    {% elif issue.state == "closed" %}
+    {{ octicon_issue_closed() }} Closed
+    {% else %}
+    {{ octicon_issue_opened() }} Open
+    {% endif %}
+  </span>
+</div>
+{% endmacro %}
