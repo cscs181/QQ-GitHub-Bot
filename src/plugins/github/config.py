@@ -22,6 +22,10 @@ class APP(BaseModel):
     client_id: str
     client_secret: str
 
+    @validator("private_key", pre=True)
+    def concat_key(cls, value: Any) -> Any:
+        return "\n".join(value) if isinstance(value, list) else value
+
 
 class Config(BaseModel, extra=Extra.ignore):
     github_app: APP

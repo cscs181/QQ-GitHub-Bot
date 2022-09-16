@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-13 14:47:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-02 11:29:52
+@LastEditTime   : 2022-09-16 05:48:50
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -44,7 +44,10 @@ def gen_signature(args, kwds, kwd_mark=(object(),)) -> int:
         key += kwd_mark
         for item in kwds.items():
             key += item
-    return hash(key)
+    try:
+        return hash(key)
+    except TypeError:
+        return id(key)
 
 
 async def get_cache(sign: str) -> Any:
@@ -71,6 +74,6 @@ def cache(
                 await save_cache(key, result, ex)
             return result
 
-        return async_wrapper  # type: ignore
+        return async_wrapper
 
     return decorator

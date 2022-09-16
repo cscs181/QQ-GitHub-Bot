@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 07:22:30
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 06:47:56
+@LastEditTime   : 2022-09-16 05:46:14
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,7 +13,7 @@ __author__ = "yanyongyu"
 from nonebot.adapters import Event
 
 from src.plugins.github.models import User
-from plugins.github.libs.platform import get_user
+from src.plugins.github.libs.platform import get_user
 
 from .event import get_user_info
 

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-15 16:07:21
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-15 16:07:21
+ * @LastEditTime   : 2022-09-16 09:12:33
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -11,6 +11,7 @@
 {% from "icons/lock.html.jinja" import octicon_lock %}
 {% from "icons/star.html.jinja" import octicon_star %}
 {% from "icons/repo-forked.html.jinja" import octicon_repo_forked %}
+{% from "icons/repo-template.html.jinja" import octicon_repo_template %}
 
 {% macro header(repo) %}
 <div class="pt-3 color-bg-subtle">
@@ -21,11 +22,14 @@
       px-3 px-md-4 px-lg-5
       mb-3
     "
+    style="gap: 1rem;"
   >
     <div class="flex-auto min-width-0 width-fit mr-3">
       <div class="d-flex flex-wrap flex-items-center wb-break-word f3 text-normal">
         {% if repo.private %}
         {{ octicon_lock(16, "color-fg-muted mr-2") }}
+        {% elif repo.is_template %}
+        {{ octicon_repo_template(16, "color-fg-muted mr-2") }}
         {% else %}
         {{ octicon_repo(16, "color-fg-muted mr-2") }}
         {% endif %}
@@ -46,18 +50,27 @@
           {% else %}
           Public
           {% endif %}
+          {% if repo.is_template %}
+          template
+          {% endif %}
         </span>
       </div>
+      {% if repo.template_repository %}
+      <span class="text-small lh-condensed-ultra no-wrap mt-1 color-fg-muted">
+        generated from
+        <a href="#">{{ repo.template_repository.full_name|escape }}</a>
+      </span>
+      {% endif %}
     </div>
-    <ul class="pagehead-actions flex-shrink-0 d-none d-md-inline" style="padding: 2px 0;">
-      <li>
+    <ul class="flex-shrink-0 d-none d-md-inline list-style-none" style="padding: 2px 0;">
+      <li class="float-left mr-2 f6 color-fg-default">
         <a href="#" class="tooltipped tooltipped-s btn-sm btn">
           {{ octicon_repo_forked(16, "mr-2") }}
           Fork
           <span class="Counter">{{ repo.forks_count }}</span>
         </a>
       </li>
-      <li>
+      <li class="float-left mr-2 f6 color-fg-default">
         <a href="#" class="tooltipped tooltipped-s btn-sm btn BtnGroup-item">
           {{ octicon_star(16, "mr-2") }}
           Star

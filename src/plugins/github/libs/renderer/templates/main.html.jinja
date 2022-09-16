@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-15 03:56:36
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-15 03:57:59
+ * @LastEditTime   : 2022-09-16 09:03:23
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -24,20 +24,33 @@
       rel="stylesheet"
       type="text/css"
     />
+    {% if theme|default("light", true) == "light" %}
     <link
       href="https://cdn.jsdelivr.net/npm/github-syntax-light@^0.5.0/lib/github-light.css"
       rel="stylesheet"
       type="text/css"
     />
+    {% else %}
+    <link
+      href="https://cdn.jsdelivr.net/npm/github-syntax-dark@^0.5.0/lib/github-dark.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    {% endif %}
     <meta name="viewport" content="width=device-width" />
   </head>
 
-  <body class="color-bg-default" style="word-wrap: break-word;">
+  <body
+    class="color-fg-default color-bg-default"
+    style="word-wrap: break-word; font-size: 14px; line-height: 1.5;"
+  >
     <div class="application-main">
-      <main>
-        {% block main %}
-        {% endblock %}
-      </main>
+      <div>
+        <main>
+          {% block main required %}
+          {% endblock %}
+        </main>
+      </div>
     </div>
   </body>
 </html>

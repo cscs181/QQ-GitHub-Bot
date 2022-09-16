@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 16:07:51
+@LastEditTime   : 2022-09-16 04:02:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -31,9 +31,8 @@ def review_state(value: str) -> str:
     return states.get(value, value)
 
 
-@jinja2.pass_context
 async def find_dismissed_review(
-    ctx: jinja2.runtime.Context, past_timeline: list[GitHubRestModel], review_id: int
+    past_timeline: list[GitHubRestModel], review_id: int
 ) -> TimelineReviewedEvent | None:
     for event in past_timeline:
         if isinstance(event, TimelineReviewedEvent) and event.id == review_id:

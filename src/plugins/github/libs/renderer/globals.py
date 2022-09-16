@@ -4,18 +4,22 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-15 17:37:50
+@LastEditTime   : 2022-09-16 04:09:38
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from datetime import timedelta
+
 from unidiff import PatchSet
 from githubkit.rest import Issue, PullRequest, FullRepository
 
+from src.plugins.redis import cache
 from src.plugins.github.utils import get_bot
 
 
+@cache(ex=timedelta(minutes=5))
 async def get_issue_repo(issue: Issue) -> FullRepository:
     bot = get_bot()
     resp = await bot.github.arequest(
@@ -24,7 +28,8 @@ async def get_issue_repo(issue: Issue) -> FullRepository:
     return resp.parsed_data
 
 
-def get_issue_timeline(owner: str, repo: str, issue: Issue):
+@cache(ex=timedelta(minutes=5))
+async def get_issue_timeline(owner: str, repo: str, issue: Issue):
     bot = get_bot()
     return bot.github.paginate(
         bot.rest.issues.async_list_events_for_timeline,
@@ -34,6 +39,7 @@ def get_issue_timeline(owner: str, repo: str, issue: Issue):
     )
 
 
+@cache(ex=timedelta(minutes=5))
 async def get_pull_request(owner: str, repo: str, issue: Issue) -> PullRequest:
     bot = get_bot()
     resp = await bot.rest.pulls.async_get(
@@ -42,6 +48,7 @@ async def get_pull_request(owner: str, repo: str, issue: Issue) -> PullRequest:
     return resp.parsed_data
 
 
+@cache(ex=timedelta(minutes=5))
 async def get_pull_request_diff(pr: PullRequest) -> PatchSet:
     bot = get_bot()
     resp = await bot.github.arequest("GET", pr.diff_url)
