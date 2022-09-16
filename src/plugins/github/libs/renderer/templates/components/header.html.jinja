@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-15 16:07:21
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-16 09:12:33
+ * @LastEditTime   : 2022-09-16 11:21:59
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -14,13 +14,12 @@
 {% from "icons/repo-template.html.jinja" import octicon_repo_template %}
 
 {% macro header(repo) %}
-<div class="pt-3 color-bg-subtle">
+<div class="pt-3 pb-3 color-bg-subtle">
   <div
     class="
       d-flex
       flex-wrap flex-justify-end
       px-3 px-md-4 px-lg-5
-      mb-3
     "
     style="gap: 1rem;"
   >
@@ -56,7 +55,7 @@
         </span>
       </div>
       {% if repo.template_repository %}
-      <span class="text-small lh-condensed-ultra no-wrap mt-1 color-fg-muted">
+      <span class="text-small no-wrap mt-1 color-fg-muted">
         generated from
         <a href="#">{{ repo.template_repository.full_name|escape }}</a>
       </span>
@@ -71,7 +70,7 @@
         </a>
       </li>
       <li class="float-left mr-2 f6 color-fg-default">
-        <a href="#" class="tooltipped tooltipped-s btn-sm btn BtnGroup-item">
+        <a href="#" class="tooltipped tooltipped-s btn-sm btn">
           {{ octicon_star(16, "mr-2") }}
           Star
           <span class="Counter">{{ repo.stargazers_count }}</span>
