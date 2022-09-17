@@ -1,0 +1,22 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-17 09:17:06
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-17 17:02:05
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "components/timeline/comment.html.jinja" import comment %}
+
+{% macro issue_timeline(issue) %}
+<div class="ml-0 pl-0 ml-md-6 pl-md-3">
+  {% set ns = namespace(issue=issue, past_event=[]) %}
+  {{ comment(issue, ns, is_first=true) }}
+  <div>
+    {% for event in get_issue_timeline(issue) %}
+      {% set _ = ns.past_event.append(event) %}
+    {% endfor %}
+  </div>
+</div>
+{% endmacro %}

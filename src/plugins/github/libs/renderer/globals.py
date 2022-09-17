@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-16 13:14:48
+@LastEditTime   : 2022-09-17 16:27:45
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -28,13 +28,13 @@ async def get_issue_repo(issue: Issue) -> FullRepository:
     return resp.parsed_data
 
 
-@cache(ex=timedelta(minutes=5))
-async def get_issue_timeline(owner: str, repo: str, issue: Issue):
+async def get_issue_timeline(issue: Issue):
     bot = get_bot()
+    repo = await get_issue_repo(issue)
     return bot.github.paginate(
         bot.rest.issues.async_list_events_for_timeline,
-        owner=owner,
-        repo=repo,
+        owner=repo.owner.login,
+        repo=repo.name,
         issue_number=issue.number,
     )
 

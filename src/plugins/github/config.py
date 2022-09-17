@@ -4,15 +4,14 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 19:05:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-06 08:00:11
+@LastEditTime   : 2022-09-17 16:00:05
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import Any, Dict
+from typing import Any, Dict, Literal
 
-from nonebot.adapters.github.config import GitHubApp
 from pydantic import Extra, BaseModel, validator, root_validator
 
 
@@ -29,8 +28,8 @@ class APP(BaseModel):
 
 class Config(BaseModel, extra=Extra.ignore):
     github_app: APP
+    github_theme: Literal["light", "dark"] = "light"
     github_command_priority: int = 5
-    xvfb_installed: bool = False
 
     @root_validator(pre=True)
     def validate_app(cls, values: Dict[str, Any]) -> Dict[str, Any]:

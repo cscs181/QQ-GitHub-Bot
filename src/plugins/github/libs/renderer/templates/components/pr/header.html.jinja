@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 16:40:46
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-16 17:26:32
+ * @LastEditTime   : 2022-09-17 11:18:04
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -18,7 +18,7 @@
     class="
       d-flex
       flex-items-center flex-wrap
-      pb-2 mt-0 mb-4
+      pb-2 mt-0 mb-3
       border-bottom color-border-default color-fg-muted
     "
   >
@@ -38,6 +38,11 @@
       <span class="branch-name css-truncate">
         <a class="no-underline">{{ pull_request.head.label|escape }}</a>
       </span>
+      {% if pull_request.merged %}
+      {{ pull_request.merged_at|relative_time }}
+      {% else %}
+      {{ pull_request.created_at|relative_time }}
+      {% endif %}
     </div>
   </div>
 </div>

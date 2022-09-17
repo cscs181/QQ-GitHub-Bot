@@ -1,0 +1,154 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-17 09:29:08
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-17 16:02:26
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% macro comment(event, ns, is_first=false, showavatar=true) %}
+<div class="TimelineItem{% if is_first %} pt-0{% endif %}">
+  {% if showavatar %}
+  <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">
+    <a href="#" class="d-inline-block">
+      <img
+        class="avatar circle"
+        src="{{ event.user.avatar_url }}"
+        height="40"
+        width="40"
+      />
+    </a>
+  </div>
+  {% endif %}
+  <div class="TimelineItem-body my-0">
+    <div
+      class="
+        position-relative
+        ml-n3
+        color-fg-default color-bg-default
+        border
+        rounded-2
+        color-border-default
+      "
+    >
+      <div
+        class="
+          d-flex
+          flex-row-reverse flex-items-center
+          px-3 py-2
+          color-fg-muted color-bg-subtle
+          border-bottom
+          color-border-default
+          rounded-top-2
+        "
+      >
+        <div class="d-none d-sm-flex">
+          {% if event.author_association != "NONE" %}
+          <span class="Label Label--primary ml-1">
+            {{ event.author_association|title|escape }}
+          </span>
+          {% endif %}
+          {% if event.user.login == ns.issue.user.login %}
+          <span class="Label Label--primary ml-1">Author</span>
+          {% endif %}
+        </div>
+        <h3 class="flex-auto text-normal f5">
+          <strong class="css-truncate">
+            <a class="Link--primary css-truncate-target text-bold">
+              {{ event.user.login|escape }}
+            </a>
+          </strong>
+          commented
+          <a class="Link--secondary">
+            {{ event.created_at|relative_time }}
+          </a>
+        </h3>
+      </div>
+      <div>
+        <table class="d-block">
+          <tbody class="d-block">
+            <tr class="d-block">
+              <td
+                class="
+                  d-block
+                  p-3
+                  width-full overflow-visible
+                  f5 color-fg-default
+                  markdown-body
+                "
+              >
+                {% if event.body_html %}
+                {{ event.body_html }}
+                {% elif event.body %}
+                {{ event.body|markdown_gfm }}
+                {% else %}
+                <p class="color-fg-muted">
+                  <em>No description provided.</em>
+                </p>
+                {% endif %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        {% if event.reactions %}
+        <div class="d-md-flex flex-row-reverse flex-justify-end ml-3 mb-3">
+          <div class="d-flex flex-items-center flex-row flex-wrap">
+            {% if event.reactions.plus_one %}
+            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
+              👍
+              <span>{{ event.reactions.plus_one }}</span>
+            </button>
+            {% endif %}
+            {% if event.reactions.minus_one %}
+            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
+              👎
+              <span>{{ event.reactions.minus_one }}</span>
+            </button>
+            {% endif %}
+            {% if event.reactions.laugh %}
+            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
+              😄
+              <span>{{ event.reactions.laugh }}</span>
+            </button>
+            {% endif %}
+            {% if event.reactions.confused %}
+            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
+              😕
+              <span>{{ event.reactions.confused }}</span>
+            </button>
+            {% endif %}
+            {% if event.reactions.hooray %}
+            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
+              🎉
+              <span>{{ event.reactions.hooray }}</span>
+            </button>
+            {% endif %}
+            {% if event.reactions.heart %}
+            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
+              ❤️
+              <span>{{ event.reactions.heart }}</span>
+            </button>
+            {% endif %}
+            {% if event.reactions.rocket %}
+            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
+              🚀
+              <span>{{ event.reactions.rocket }}</span>
+            </button>
+            {% endif %}
+            {% if event.reactions.eyes %}
+            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
+              👀
+              <span>{{ event.reactions.eyes }}</span>
+            </button>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}
