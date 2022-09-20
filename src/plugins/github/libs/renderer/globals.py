@@ -4,19 +4,31 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-17 16:27:45
+@LastEditTime   : 2022-09-20 07:27:26
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from typing import Literal
 from datetime import timedelta
 
 from unidiff import PatchSet
-from githubkit.rest import Issue, PullRequest, FullRepository
+from githubkit.rest import Issue, PullRequest, FullRepository, TimelineCommentEvent
 
 from src.plugins.redis import cache
 from src.plugins.github.utils import get_bot
+
+REACTION_EMOJIS = {
+    "plus_one": "👍",
+    "minus_one": "👎",
+    "laugh": "😄",
+    "confused": "😕",
+    "hooray": "🎉",
+    "heart": "❤️",
+    "rocket": "🚀",
+    "eyes": "👀",
+}
 
 
 @cache(ex=timedelta(minutes=5))
@@ -54,3 +66,24 @@ async def get_pull_request_diff(pr: PullRequest) -> PatchSet:
     bot = get_bot()
     resp = await bot.github.arequest("GET", pr.diff_url)
     return PatchSet.from_string(resp.text)
+
+
+async def get_comment_reactions(event: TimelineCommentEvent) -> dict[str, int]:
+    result: dict[str, int] = {}
+
+    if not event.reactions:
+        return result
+
+    for reaction in (
+        "plus_one",
+        "minus_one",
+        "laugh",
+        "confused",
+        "hooray",
+        "heart",
+        "rocket",
+        "eyes",
+    ):
+        if count := getattr(event.reactions, reaction, None):
+            result[reaction] = count
+    return result

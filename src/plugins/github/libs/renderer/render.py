@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-17 15:48:37
+@LastEditTime   : 2022-09-20 07:27:43
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,18 +16,20 @@ from typing import Literal
 import jinja2
 from githubkit.rest import Issue
 
-from .globals import (
-    get_issue_repo,
-    get_pull_request,
-    get_issue_timeline,
-    get_pull_request_diff,
-)
 from .filters import (
     markdown_gfm,
     review_state,
     relative_time,
     markdown_title,
     find_dismissed_review,
+)
+from .globals import (
+    REACTION_EMOJIS,
+    get_issue_repo,
+    get_pull_request,
+    get_issue_timeline,
+    get_comment_reactions,
+    get_pull_request_diff,
 )
 
 env = jinja2.Environment(
@@ -48,6 +50,8 @@ env.globals["get_issue_repo"] = get_issue_repo
 env.globals["get_issue_timeline"] = get_issue_timeline
 env.globals["get_pull_request"] = get_pull_request
 env.globals["get_pull_request_diff"] = get_pull_request_diff
+env.globals["get_comment_reactions"] = get_comment_reactions
+env.globals["REACTION_EMOJIS"] = REACTION_EMOJIS
 
 
 async def issue_to_html(issue: Issue, theme: Literal["light", "dark"] = "light") -> str:

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:29:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-17 16:02:26
+ * @LastEditTime   : 2022-09-20 07:45:13
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -24,6 +24,7 @@
   <div class="TimelineItem-body my-0">
     <div
       class="
+        timeline-comment  {# for css #}
         position-relative
         ml-n3
         color-fg-default color-bg-default
@@ -93,57 +94,27 @@
         </table>
       </div>
       <div>
-        {% if event.reactions %}
+        {% set _reactions = get_comment_reactions(event) %}
+        {% if _reactions %}
         <div class="d-md-flex flex-row-reverse flex-justify-end ml-3 mb-3">
           <div class="d-flex flex-items-center flex-row flex-wrap">
-            {% if event.reactions.plus_one %}
-            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
-              👍
-              <span>{{ event.reactions.plus_one }}</span>
+            {% for reaction, count in _reactions.items() %}
+            {% if count %}
+            <button
+              class="
+                comment-reaction-button  {# for css #}
+                d-flex flex-items-baseline
+                no-underline mr-2 px-1 f6
+                color-fg-muted color-bg-transparent
+                border color-border-default
+                btn-link
+              "
+            >
+              {{ REACTION_EMOJIS[reaction] }}
+              <span>{{ count }}</span>
             </button>
             {% endif %}
-            {% if event.reactions.minus_one %}
-            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
-              👎
-              <span>{{ event.reactions.minus_one }}</span>
-            </button>
-            {% endif %}
-            {% if event.reactions.laugh %}
-            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
-              😄
-              <span>{{ event.reactions.laugh }}</span>
-            </button>
-            {% endif %}
-            {% if event.reactions.confused %}
-            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
-              😕
-              <span>{{ event.reactions.confused }}</span>
-            </button>
-            {% endif %}
-            {% if event.reactions.hooray %}
-            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
-              🎉
-              <span>{{ event.reactions.hooray }}</span>
-            </button>
-            {% endif %}
-            {% if event.reactions.heart %}
-            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
-              ❤️
-              <span>{{ event.reactions.heart }}</span>
-            </button>
-            {% endif %}
-            {% if event.reactions.rocket %}
-            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
-              🚀
-              <span>{{ event.reactions.rocket }}</span>
-            </button>
-            {% endif %}
-            {% if event.reactions.eyes %}
-            <button class="d-flex no-underline mr-2 flex-items-baseline color-fg-muted btn-link">
-              👀
-              <span>{{ event.reactions.eyes }}</span>
-            </button>
-            {% endif %}
+            {% endfor %}
           </div>
         </div>
         {% endif %}

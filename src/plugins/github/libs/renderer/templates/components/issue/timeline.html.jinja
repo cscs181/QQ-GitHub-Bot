@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-17 17:02:05
+ * @LastEditTime   : 2022-09-20 07:04:52
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -16,6 +16,9 @@
   <div>
     {% for event in get_issue_timeline(issue) %}
       {% set _ = ns.past_event.append(event) %}
+      {% if event.event == "commented" %}
+      {{ comment(event, ns) }}
+      {% endif %}
     {% endfor %}
   </div>
 </div>

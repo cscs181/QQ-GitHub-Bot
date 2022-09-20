@@ -2,16 +2,52 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-16 12:41:31
+ * @LastEditTime   : 2022-09-20 07:48:13
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
 
 .markdown-title code {
   padding: 2px 4px;
-  font-size: .9em;
+  font-size: 0.9em;
   line-height: 1;
   vertical-align: middle;
   background-color: var(--color-neutral-muted);
   border-radius: 6px;
+}
+
+.timeline-comment::before,
+.timeline-comment::after {
+  display: block;
+  position: absolute;
+  top: 11px;
+  right: 100%;
+  left: -8px;
+  width: 8px;
+  height: 16px;
+  content: " ";
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+  --webkit-clip-path: polygon(0 50%, 100% 0, 100% 100%);
+}
+.timeline-comment::before {
+  background-color: var(--color-border-default);
+}
+.timeline-comment::after {
+  margin-left: 2px;
+  background-color: var(--color-canvas-default);
+  background-image: linear-gradient(
+    var(--color-canvas-subtle),
+    var(--color-canvas-subtle)
+  );
+}
+
+.comment-reaction-button {
+  height: 26px;
+  line-height: 26px;
+  border-radius: 100px;
+}
+.comment-reaction-button > span {
+  height: 24px;
+  padding: 0 4px;
+  margin-left: 2px;
 }
