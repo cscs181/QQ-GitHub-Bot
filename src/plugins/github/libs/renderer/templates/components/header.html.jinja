@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-15 16:07:21
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-16 11:21:59
+ * @LastEditTime   : 2022-09-20 16:43:20
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -29,6 +29,8 @@
         {{ octicon_lock(16, "color-fg-muted mr-2") }}
         {% elif repo.is_template %}
         {{ octicon_repo_template(16, "color-fg-muted mr-2") }}
+        {% elif repo.fork %}
+        {{ octicon_repo_forked(16, "color-fg-muted mr-2") }}
         {% else %}
         {{ octicon_repo(16, "color-fg-muted mr-2") }}
         {% endif %}

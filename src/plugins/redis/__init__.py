@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-13 14:47:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-16 05:48:50
+@LastEditTime   : 2022-09-21 11:01:39
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -38,16 +38,17 @@ redis_client: "redis.Redis[bytes]" = redis.Redis(
 )
 
 
-def gen_signature(args, kwds, kwd_mark=(object(),)) -> int:
-    key = args
+def gen_signature(
+    func: Callable[..., Any],
+    args: tuple[Any, ...],
+    kwds: dict[str, Any],
+    kwd_mark=(object(),),
+) -> int:
+    key = [func.__module__, func.__qualname__, *args]
     if kwds:
-        key += kwd_mark
-        for item in kwds.items():
-            key += item
-    try:
-        return hash(key)
-    except TypeError:
-        return id(key)
+        key.append(kwd_mark)
+        key.extend(iter(kwds.items()))
+    return hash(tuple(key))
 
 
 async def get_cache(sign: str) -> Any:
@@ -67,7 +68,7 @@ def cache(
     def decorator(func: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[R]]:
         @wraps(func)
         async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-            key = str(gen_signature(args, kwargs))
+            key = str(gen_signature(func, args, kwargs))
             result = await get_cache(key)
             if not result:
                 result = await func(*args, **kwargs)
