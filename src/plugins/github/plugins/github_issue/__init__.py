@@ -4,28 +4,28 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-15 17:42:10
+@LastEditTime   : 2022-09-21 16:44:19
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-import re
-import base64
+from typing import ContextManager
 
 from nonebot import on_regex
 from nonebot.log import logger
+from githubkit.rest import Issue
 from nonebot.rule import is_type
 from nonebot.adapters import Event
+from nonebot.matcher import Matcher
 from playwright.async_api import Error
 from nonebot.plugin import PluginMetadata
 from nonebot.params import Depends, RegexDict
+from nonebot.adapters.github import GitHubBot, ActionTimeout
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
-from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
-from src.plugins.github.models import Group
-from src.plugins.github.utils import get_bot
+from src.plugins.github.models import User, Group
 from src.plugins.github.libs.renderer import issue_to_image
 from src.plugins.github.libs.message_tag import IssueTag, create_message_tag
 from src.plugins.github.helpers import (
@@ -34,9 +34,12 @@ from src.plugins.github.helpers import (
     FULLREPO_REGEX,
     GITHUB_ISSUE_OR_PR_LINK_REGEX,
     get_platform,
+    get_current_user,
     get_message_info,
     get_current_group,
 )
+
+from .dependencies import get_issue, get_context
 
 __plugin_meta__ = PluginMetadata(
     "GitHub Issue、PR 查看",
@@ -57,43 +60,16 @@ link = on_regex(GITHUB_ISSUE_OR_PR_LINK_REGEX, priority=config.github_command_pr
 
 @issue.handle()
 @link.handle()
-async def handle(event: Event, group: dict[str, str] = RegexDict()):
-    bot = get_bot()
+async def handle(
+    event: Event,
+    group: dict[str, str] = RegexDict(),
+    issue_: Issue = Depends(get_issue),
+    context: ContextManager[GitHubBot] = Depends(get_context),
+):
     owner = group["owner"]
     repo = group["repo"]
     number = int(group["issue"])
     tag = IssueTag(owner=owner, repo=repo, issue_number=number)
-
-    try:
-        resp = await bot.rest.apps.async_get_repo_installation(owner=owner, repo=repo)
-        context = bot.as_installation(resp.parsed_data.id)
-    except ActionTimeout:
-        await issue.finish("GitHub API 超时，请稍后再试")
-    except ActionFailed as e:
-        if e.response.status_code != 404:
-            logger.opt(exception=e).error(
-                f"Failed while getting repo installation in issue: {e}"
-            )
-            await issue.finish("未知错误发生，请尝试重试或联系管理员")
-
-        # not installed, try oauth app
-        context = bot.as_oauth_app()
-
-    try:
-        with context:
-            resp = await bot.rest.issues.async_get(
-                owner=owner, repo=repo, issue_number=number
-            )
-            issue_ = resp.parsed_data
-    except ActionTimeout:
-        await issue.finish("GitHub API 超时，请稍后再试")
-    except ActionFailed as e:
-        if e.response.status_code != 404:
-            logger.opt(exception=e).error(
-                f"Failed while getting repo installation in issue: {e}"
-            )
-            await issue.finish("未知错误发生，请尝试重试或联系管理员")
-        await issue.finish(f"未找到 {owner}/{repo}#{number} 对应的 Issue 或 PR")
 
     if info := get_message_info(event):
         await create_message_tag(info, tag)
@@ -136,45 +112,19 @@ async def handle_no_bind(group: None = Depends(get_current_group)):
 @issue_short.handle()
 async def handle_short(
     event: Event,
+    matcher: Matcher,
+    user: User | None = Depends(get_current_user),
     group: Group = Depends(get_current_group),
     regex_group: dict[str, str] = RegexDict(),
 ):
-    bot = get_bot()
-    full_name = group.bind_repo
-    number = int(regex_group["number"])
-    owner, repo = full_name.split("/", maxsplit=1)
+    number = int(regex_group["issue"])
+    owner, repo = group.bind_repo.split("/", maxsplit=1)
+    info = {"owner": owner, "repo": repo, "issue": number}
+
     tag = IssueTag(owner=owner, repo=repo, issue_number=number)
 
-    try:
-        resp = await bot.rest.apps.async_get_repo_installation(owner=owner, repo=repo)
-        context = bot.as_installation(resp.parsed_data.id)
-    except ActionTimeout:
-        await issue_short.finish("GitHub API 超时，请稍后再试")
-    except ActionFailed as e:
-        if e.response.status_code != 404:
-            logger.opt(exception=e).error(
-                f"Failed while getting repo installation in issue: {e}"
-            )
-            await issue_short.finish("未知错误发生，请尝试重试或联系管理员")
-
-        # not installed, try oauth app
-        context = bot.as_oauth_app()
-
-    try:
-        with context:
-            resp = await bot.rest.issues.async_get(
-                owner=owner, repo=repo, issue_number=number
-            )
-            issue_ = resp.parsed_data
-    except ActionTimeout:
-        await issue_short.finish("GitHub API 超时，请稍后再试")
-    except ActionFailed as e:
-        if e.response.status_code != 404:
-            logger.opt(exception=e).error(
-                f"Failed while getting repo installation in issue: {e}"
-            )
-            await issue_short.finish("未知错误发生，请尝试重试或联系管理员")
-        await issue_short.finish(f"未找到 {owner}/{repo}#{number} 对应的 Issue 或 PR")
+    context = await get_context(matcher, info, user)
+    issue_ = await get_issue(matcher, info, context)
 
     if info := get_message_info(event):
         await create_message_tag(info, tag)

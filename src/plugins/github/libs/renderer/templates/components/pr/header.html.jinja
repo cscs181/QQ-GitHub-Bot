@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 16:40:46
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-20 16:36:22
+ * @LastEditTime   : 2022-09-21 17:00:50
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -37,12 +37,25 @@
       wants to merge
       {% endif %}
       {{ pull_request.commits }} commits into
+      {% set current_repo = pull_request.base.repo.fork or pull_request.base.repo.owner.login %}
       <span class="branch-name css-truncate">
-        <a class="no-underline">{{ pull_request.base.label|escape }}</a>
+        <a class="no-underline">
+          {% if pull_request.base.repo.fork %}
+          {{ pull_request.base.label|escape }}
+          {% else %}
+          {{ pull_request.base.ref|escape }}
+          {% endif %}
+        </a>
       </span>
       from
       <span class="branch-name css-truncate">
-        <a class="no-underline">{{ pull_request.head.label|escape }}</a>
+        <a class="no-underline">
+          {% if pull_request.head.repo.owner.login == current_repo %}
+          {{ pull_request.head.ref|escape }}
+          {% else %}
+          {{ pull_request.head.label|escape }}
+          {% endif %}
+        </a>
       </span>
       {% if pull_request.merged %}
       {{ pull_request.merged_at|relative_time }}

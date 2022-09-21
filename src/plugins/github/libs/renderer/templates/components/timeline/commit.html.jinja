@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-20 08:08:36
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-21 12:11:50
+ * @LastEditTime   : 2022-09-21 16:48:09
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -43,8 +43,8 @@
           #}
           <div class="pr-1 flex-auto min-width-0">
             <code>
-              <a class="Link--secondary markdown-title">
-                {{ commit_msg[0] }}
+              <a class="Link--secondary markdown-title">  {# for css #}
+                {{ commit_msg[0]|markdown_title }}
               </a>
             </code>
           </div>

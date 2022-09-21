@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-15 16:07:21
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-20 16:43:20
+ * @LastEditTime   : 2022-09-21 17:06:32
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -56,7 +56,12 @@
           {% endif %}
         </span>
       </div>
-      {% if repo.template_repository %}
+      {% if repo.parent %}
+      <span class="text-small no-wrap mt-1 color-fg-muted">
+        forked from
+        <a href="#">{{ repo.parent.full_name|escape }}</a>
+      </span>
+      {% elif repo.template_repository %}
       <span class="text-small no-wrap mt-1 color-fg-muted">
         generated from
         <a href="#">{{ repo.template_repository.full_name|escape }}</a>

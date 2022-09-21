@@ -4,15 +4,17 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-21 13:14:18
+@LastEditTime   : 2022-09-21 16:35:56
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from typing import ContextManager
+
 from nonebot.log import logger
 from nonebot.matcher import Matcher
-from nonebot.adapters.github import ActionFailed, ActionTimeout
+from nonebot.adapters.github import GitHubBot, ActionFailed, ActionTimeout
 
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_bot
@@ -37,7 +39,7 @@ GITHUB_PR_COMMIT_LINK_REGEX = rf"{GITHUB_PR_LINK_REGEX}/commits/{COMMIT_HASH_REG
 
 async def get_github_context(
     owner: str, repo: str, matcher: Matcher, user: User | None = None
-):
+) -> ContextManager[GitHubBot]:
     bot = get_bot()
     try:
         resp = await bot.rest.apps.async_get_repo_installation(owner=owner, repo=repo)

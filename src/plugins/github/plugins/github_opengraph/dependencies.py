@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 04:34:39
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-21 13:20:43
+@LastEditTime   : 2022-09-21 16:29:22
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -37,7 +37,7 @@ async def check_repo(
             resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
             return resp.parsed_data
     except ActionTimeout:
-        await matcher.finish()
+        await matcher.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
         if e.response.status_code == 404:
             await matcher.finish()
