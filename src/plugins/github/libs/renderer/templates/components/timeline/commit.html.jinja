@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-20 08:08:36
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-20 08:26:19
+ * @LastEditTime   : 2022-09-21 12:11:50
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -10,6 +10,7 @@
 {% from "icons/commit.html.jinja" import octicon_commit %}
 
 {% macro commit(event, ns) %}
+{% set commit_msg = event.message.split("\n", 1) %}
 <div class="TimelineItem TimelineItem--condensed py-3">
   <div class="TimelineItem-badge">
     {{ octicon_commit() }}
@@ -43,7 +44,7 @@
           <div class="pr-1 flex-auto min-width-0">
             <code>
               <a class="Link--secondary markdown-title">
-                {{event.message|replace("\n", "<br />"|safe)}}
+                {{ commit_msg[0] }}
               </a>
             </code>
           </div>
@@ -59,6 +60,11 @@
           </div>
         </div>
       </div>
+      {% if commit_msg|length > 1 and commit_msg[1].strip("\n") %}
+      <div class="mt-2">
+        <pre class="color-fg-muted" style="white-space: pre-wrap;">{{ commit_msg[1].strip("\n") }}</pre>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
