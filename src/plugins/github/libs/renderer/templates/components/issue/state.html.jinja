@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 16:39:09
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-16 17:15:51
+ * @LastEditTime   : 2022-09-22 03:31:26
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,8 +12,8 @@
 {% from "icons/issue-draft.html.jinja" import octicon_issue_draft %}
 {% from "icons/issue-not-planned.html.jinja" import octicon_issue_not_planned %}
 
-{% macro issue_state(issue) %}
-<div class="flex-shrink-0 mb-2 flex-self-start flex-md-self-center">
+{% macro issue_state(issue, class="") %}
+<div class="{{ class }}">
   {% if issue.draft %}
   {% set state = "draft" %}
   {% elif issue.state_reason == "not_planned" %}

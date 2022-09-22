@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 11:32:34
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-17 10:09:03
+ * @LastEditTime   : 2022-09-22 03:31:39
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -21,7 +21,7 @@
       border-bottom color-border-default color-fg-muted
     "
   >
-    {{ issue_state(issue) }}
+    {{ issue_state(issue, "flex-shrink-0 mb-2 flex-self-start flex-md-self-center") }}
     <div class="flex-auto min-width-0 mb-2">
       <a href="#" class="author text-bold Link--secondary">{{ issue.user.login|escape }}</a>
       opened this issue {{ issue.created_at|relative_time }}

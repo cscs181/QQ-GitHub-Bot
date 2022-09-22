@@ -1,0 +1,50 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-22 03:25:56
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-22 04:14:01
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "icons/cross-reference.html.jinja" import octicon_cross_reference %}
+{% from "components/issue/state.html.jinja" import issue_state %}
+
+{% macro cross_referenced(event, ns) %}
+<div class="TimelineItem">
+  <div class="TimelineItem-badge">
+    {{ octicon_cross_reference() }}
+  </div>
+  <div class="TimelineItem-body">
+    <div>
+      <a class="d-inline-block">
+        <img
+          class="avatar avatar-user"
+          height="20"
+          width="20"
+          src="{{ event.actor.avatar_url }}"
+        />
+      </a>
+      <a href="#" class="Link--primary text-bold">{{ event.actor.login|escape }}</a>
+      mentioned this
+      {% if ns.issue.pull_request %}
+      pull request
+      {% else %}
+      issue
+      {% endif %}
+      {{ event.created_at|relative_time }}
+    </div>
+    <div class="mt-2 d-flex flex-items-start flex-column flex-md-row">
+      <div class="flex-auto wb-break-word">
+        <a href="#" class="Link--primary f4 text-bold markdown-title">
+          {{ event.source.issue.title|markdown_title }}
+          <span class="color-fg-muted text-normal">
+            {{ event.source.issue.repository.full_name|escape ~ '#' ~ event.source.issue.number }}
+          </span>
+        </a>
+      </div>
+      {{ issue_state(event.source.issue, "flex-shrink-0 my-1 my-md-0 ml-md-3") }}
+    </div>
+  </div>
+</div>
+{% endmacro %}
