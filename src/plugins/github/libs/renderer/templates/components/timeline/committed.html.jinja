@@ -2,14 +2,14 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-20 08:08:36
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-21 16:48:09
+ * @LastEditTime   : 2022-09-22 05:38:35
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/commit.html.jinja" import octicon_commit %}
 
-{% macro commit(event, ns) %}
+{% macro committed(event, ns) %}
 {% set commit_msg = event.message.split("\n", 1) %}
 <div class="TimelineItem TimelineItem--condensed py-3">
   <div class="TimelineItem-badge">

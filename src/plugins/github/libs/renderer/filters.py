@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-17 11:43:20
+@LastEditTime   : 2022-09-22 06:07:40
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,6 +13,7 @@ __author__ = "yanyongyu"
 from datetime import datetime, timezone
 
 import humanize
+from nonebot.log import logger
 from markdown_it import MarkdownIt
 from mdit_py_plugins.tasklists import tasklists_plugin
 from githubkit.rest import GitHubRestModel, TimelineReviewedEvent
@@ -29,7 +30,9 @@ def markdown_gfm(text: str) -> str:
     return gfm_md.render(text)
 
 
-def relative_time(value: datetime) -> str:
+def relative_time(value: datetime | str) -> str:
+    if isinstance(value, str):
+        value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
     if not value.tzinfo:
         value = value.replace(tzinfo=timezone.utc)
     now = datetime.now(value.tzinfo)
@@ -39,6 +42,15 @@ def relative_time(value: datetime) -> str:
 
     t = "%d %b" if value.year == now.year else "%d %b %Y"
     return f"on {humanize.naturalday(value, t)}"
+
+
+def debug_event(event: GitHubRestModel) -> str:
+    logger.debug(f"Unhandled event: {event.dict()}")
+    logger.error(
+        f"Unhandled event type: {event.__class__.__name__}",
+        event=event.dict(),
+    )
+    return ""
 
 
 def review_state(value: str) -> str:

@@ -2,28 +2,33 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-22 03:25:22
+ * @LastEditTime   : 2022-09-22 06:14:18
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
-{% from "components/timeline/comment.html.jinja" import comment %}
-{% from "components/timeline/commit.html.jinja" import commit %}
+{% from "components/timeline/closed.html.jinja" import closed %}
+{% from "components/timeline/commented.html.jinja" import commented %}
+{% from "components/timeline/committed.html.jinja" import committed %}
 {% from "components/timeline/cross-referenced.html.jinja" import cross_referenced %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
   {% set ns = namespace(issue=issue, past_event=[]) %}
-  {{ comment(issue, ns, is_first=true) }}
+  {{ commented(issue, ns, is_first=true) }}
   <div>
     {% for event in get_issue_timeline(issue) %}
       {% set _ = ns.past_event.append(event) %}
-      {% if event.event == "commented" %}
-      {{ comment(event, ns) }}
+      {% if event.event == "closed" %}
+      {{ closed(event, ns) }}
+      {% elif event.event == "commented" %}
+      {{ commented(event, ns) }}
       {% elif event.event == "committed" %}
-      {{ commit(event, ns) }}
+      {{ committed(event, ns) }}
       {% elif event.event == "cross-referenced" %}
       {{ cross_referenced(event, ns) }}
+      {% else %}
+      {{ event|debug_event }}
       {% endif %}
     {% endfor %}
   </div>

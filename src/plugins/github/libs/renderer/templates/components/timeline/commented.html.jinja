@@ -2,12 +2,12 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:29:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-20 07:45:13
+ * @LastEditTime   : 2022-09-22 05:38:29
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
-{% macro comment(event, ns, is_first=false, showavatar=true) %}
+{% macro commented(event, ns, is_first=false, showavatar=true) %}
 <div class="TimelineItem{% if is_first %} pt-0{% endif %}">
   {% if showavatar %}
   <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">

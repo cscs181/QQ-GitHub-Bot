@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-20 07:27:43
+@LastEditTime   : 2022-09-22 05:18:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,6 +17,7 @@ import jinja2
 from githubkit.rest import Issue
 
 from .filters import (
+    debug_event,
     markdown_gfm,
     review_state,
     relative_time,
@@ -43,6 +44,7 @@ env = jinja2.Environment(
 env.filters["markdown_title"] = markdown_title
 env.filters["markdown_gfm"] = markdown_gfm
 env.filters["relative_time"] = relative_time
+env.filters["debug_event"] = debug_event
 env.filters["review_state"] = review_state
 env.filters["find_dismissed_review"] = find_dismissed_review
 
