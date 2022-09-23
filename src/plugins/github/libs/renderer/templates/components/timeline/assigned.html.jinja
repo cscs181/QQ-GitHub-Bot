@@ -1,0 +1,38 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-23 13:23:50
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-23 14:02:50
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "icons/person.html.jinja" import octicon_person %}
+
+{% macro assigned(event, ns) %}
+<div class="TimelineItem">
+  <div class="TimelineItem-badge">
+    {{ octicon_assigned() }}
+  </div>
+  <div class="TimelineItem-body">
+    <a class="d-inline-block">
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ event.actor.avatar_url }}"
+      />
+    </a>
+    <a class="author Link--primary text-bold">{{ event.actor.login|escape }}</a>
+    {% if event.actor.login == event.assignee.login %}
+    self-assigned this
+    {% else %}
+    assigned
+    <a class="author Link--primary text-bold">
+      {{ event.assignee.login|escape }}
+    </a>
+    {% endif %}
+    <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
+  </div>
+</div>
+{% endmacro %}

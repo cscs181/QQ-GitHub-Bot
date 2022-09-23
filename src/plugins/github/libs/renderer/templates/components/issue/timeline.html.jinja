@@ -2,15 +2,21 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-22 06:14:18
+ * @LastEditTime   : 2022-09-23 14:30:29
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
+{% from "components/timeline/added-to-project.html.jinja" import added_to_project %}
+{% from "components/timeline/assigned.html.jinja" import assigned %}
 {% from "components/timeline/closed.html.jinja" import closed %}
 {% from "components/timeline/commented.html.jinja" import commented %}
 {% from "components/timeline/committed.html.jinja" import committed %}
 {% from "components/timeline/cross-referenced.html.jinja" import cross_referenced %}
+{% from "components/timeline/demilestoned.html.jinja" import demilestoned %}
+{% from "components/timeline/deployed.html.jinja" import deployed %}
+{% from "components/timeline/head-ref-deleted.html.jinja" import head_ref_deleted %}
+{% from "components/timeline/head-ref-force-pushed.html.jinja" import head_ref_force_pushed %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
@@ -19,7 +25,11 @@
   <div>
     {% for event in get_issue_timeline(issue) %}
       {% set _ = ns.past_event.append(event) %}
-      {% if event.event == "closed" %}
+      {% if event.event == "added_to_project" %}
+      {{ added_to_project(event, ns) }}
+      {% elif event.event == "assigned" %}
+      {{ assigned(event, ns) }}
+      {% elif event.event == "closed" %}
       {{ closed(event, ns) }}
       {% elif event.event == "commented" %}
       {{ commented(event, ns) }}
@@ -27,6 +37,14 @@
       {{ committed(event, ns) }}
       {% elif event.event == "cross-referenced" %}
       {{ cross_referenced(event, ns) }}
+      {% elif event.event == "demilestoned" %}
+      {{ demilestoned(event, ns) }}
+      {% elif event.event == "deployed" %}
+      {{ deployed(event, ns) }}
+      {% elif event.event == "head_ref_deleted" %}
+      {{ head_ref_deleted(event, ns) }}
+      {% elif event.event == "head_ref_force_pushed" %}
+      {{ head_ref_force_pushed(event, ns) }}
       {% else %}
       {{ event|debug_event }}
       {% endif %}
