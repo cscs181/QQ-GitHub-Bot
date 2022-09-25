@@ -4,13 +4,14 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-20 16:31:20
+@LastEditTime   : 2022-09-25 10:08:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from datetime import timedelta
+from colorsys import rgb_to_hls
 
 from unidiff import PatchSet
 from githubkit.exception import RequestFailed, RequestTimeout
@@ -91,7 +92,7 @@ async def get_pull_request_diff(pr: PullRequest) -> PatchSet:
     return await _get_pull_request_diff(pr.diff_url)
 
 
-async def get_comment_reactions(event: TimelineCommentEvent) -> dict[str, int]:
+def get_comment_reactions(event: TimelineCommentEvent) -> dict[str, int]:
     result: dict[str, int] = {}
 
     if not event.reactions:
@@ -110,3 +111,12 @@ async def get_comment_reactions(event: TimelineCommentEvent) -> dict[str, int]:
         if count := getattr(event.reactions, reaction, None):
             result[reaction] = count
     return result
+
+
+def get_issue_label_color(color: str) -> tuple[int, int, int, int, int, int]:
+    color = color.removeprefix("#")
+    r = int(color[:2], 16)
+    g = int(color[2:4], 16)
+    b = int(color[4:6], 16)
+    h, l, s = rgb_to_hls(r / 255, g / 255, b / 255)
+    return r, g, b, int(h * 100), int(l * 100), int(s * 100)

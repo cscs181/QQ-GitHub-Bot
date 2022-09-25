@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-22 05:18:41
+@LastEditTime   : 2022-09-25 10:07:25
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -30,6 +30,7 @@ from .globals import (
     get_pull_request,
     get_issue_timeline,
     get_comment_reactions,
+    get_issue_label_color,
     get_pull_request_diff,
 )
 
@@ -54,6 +55,7 @@ env.globals["get_pull_request"] = get_pull_request
 env.globals["get_pull_request_diff"] = get_pull_request_diff
 env.globals["get_comment_reactions"] = get_comment_reactions
 env.globals["REACTION_EMOJIS"] = REACTION_EMOJIS
+env.globals["get_issue_label_color"] = get_issue_label_color
 
 
 async def issue_to_html(issue: Issue, theme: Literal["light", "dark"] = "light") -> str:

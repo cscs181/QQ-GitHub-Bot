@@ -1,0 +1,26 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-25 09:35:12
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-25 10:09:41
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% macro issue_label(name, color) %}
+{% set color_rgbhls = get_issue_label_color(color) %}
+<a
+  class="IssueLabel hx_IssueLabel d-inline-block v-align-middle"
+  style="
+    --label-r: {{ color_rgbhls[0] }};
+    --label-g: {{ color_rgbhls[1] }};
+    --label-b: {{ color_rgbhls[2] }};
+    --label-h: {{ color_rgbhls[3] }};
+    --label-l: {{ color_rgbhls[4] }};
+    --label-s: {{ color_rgbhls[5] }};
+  "
+>
+  {# FIXME: g-emoji #}
+  {{ name|escape }}
+</a>
+{% endmacro %}

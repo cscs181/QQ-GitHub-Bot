@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-22 06:07:40
+@LastEditTime   : 2022-09-25 10:00:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,6 +18,7 @@ from markdown_it import MarkdownIt
 from mdit_py_plugins.tasklists import tasklists_plugin
 from githubkit.rest import GitHubRestModel, TimelineReviewedEvent
 
+# FIXME: g-emoji in title
 title_md = MarkdownIt("zero").enable("backticks")
 gfm_md = MarkdownIt("gfm-like").use(tasklists_plugin)
 

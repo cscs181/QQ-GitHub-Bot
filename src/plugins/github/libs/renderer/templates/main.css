@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-20 07:48:13
+ * @LastEditTime   : 2022-09-25 09:44:17
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
@@ -50,4 +50,65 @@
   height: 24px;
   padding: 0 4px;
   margin-left: 2px;
+}
+
+.hx_IssueLabel {
+  --perceived-lightness: calc(
+    (
+        (var(--label-r) * 0.2126) + (var(--label-g) * 0.7152) +
+          (var(--label-b) * 0.0722)
+      ) / 255
+  );
+  --lightness-switch: max(
+    0,
+    min(
+      calc((var(--perceived-lightness) - var(--lightness-threshold)) * -1000),
+      1
+    )
+  );
+}
+:root .hx_IssueLabel,
+[data-color-mode="light"][data-light-theme*="light"] .hx_IssueLabel,
+[data-color-mode="dark"][data-dark-theme*="light"] .hx_IssueLabel {
+  --lightness-threshold: 0.453;
+  --border-threshold: 0.96;
+  --border-alpha: max(
+    0,
+    min(calc((var(--perceived-lightness) - var(--border-threshold)) * 100), 1)
+  );
+  color: hsl(0deg, 0%, calc(var(--lightness-switch) * 100%));
+  background: rgb(var(--label-r), var(--label-g), var(--label-b));
+  border-color: hsla(
+    var(--label-h),
+    calc(var(--label-s) * 1%),
+    calc((var(--label-l) - 25) * 1%),
+    var(--border-alpha)
+  );
+}
+[data-color-mode="light"][data-light-theme*="dark"] .hx_IssueLabel,
+[data-color-mode="dark"][data-dark-theme*="dark"] .hx_IssueLabel {
+  --lightness-threshold: 0.6;
+  --background-alpha: 0.18;
+  --border-alpha: 0.3;
+  --lighten-by: calc(
+    ((var(--lightness-threshold) - var(--perceived-lightness)) * 100) *
+      var(--lightness-switch)
+  );
+  color: hsl(
+    var(--label-h),
+    calc(var(--label-s) * 1%),
+    calc((var(--label-l) + var(--lighten-by)) * 1%)
+  );
+  background: rgba(
+    var(--label-r),
+    var(--label-g),
+    var(--label-b),
+    var(--background-alpha)
+  );
+  border-color: hsla(
+    var(--label-h),
+    calc(var(--label-s) * 1%),
+    calc((var(--label-l) + var(--lighten-by)) * 1%),
+    var(--border-alpha)
+  );
 }
