@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 07:15:46
+ * @LastEditTime   : 2022-09-26 07:25:56
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -25,6 +25,7 @@
 {% from "components/timeline/moved-columns-in-project.html.jinja" import moved_columns_in_project %}
 {% from "components/timeline/ready-for-review.html.jinja" import ready_for_review %}
 {% from "components/timeline/referenced.html.jinja" import referenced %}
+{% from "components/timeline/removed-from-project.html.jinja" import removed_from_project %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
@@ -69,6 +70,8 @@
       {{ ready_for_review(event, ns) }}
       {% elif event.event == "referenced" %}
       {{ referenced(event, ns) }}
+      {% elif event.event == "removed_from_project" %}
+      {{ removed_from_project(event, ns) }}
       {% else %}
       {{ event|debug_event }}
       {% endif %}
