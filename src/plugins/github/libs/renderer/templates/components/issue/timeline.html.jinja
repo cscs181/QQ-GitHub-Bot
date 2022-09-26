@@ -27,6 +27,7 @@
 {% from "components/timeline/referenced.html.jinja" import referenced %}
 {% from "components/timeline/removed-from-project.html.jinja" import removed_from_project %}
 {% from "components/timeline/renamed.html.jinja" import renamed %}
+{% from "components/timeline/reopened.html.jinja" import reopened %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
@@ -75,6 +76,8 @@
       {{ removed_from_project(event, ns) }}
       {% elif event.event == "renamed"%}
       {{ renamed(event, ns) }}
+      {% elif event.event == "reopened" %}
+      {{ reopened(event, ns) }}
       {% else %}
       {{ event|debug_event }}
       {% endif %}

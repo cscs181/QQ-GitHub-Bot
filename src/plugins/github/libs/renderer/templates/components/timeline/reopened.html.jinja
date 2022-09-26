@@ -1,18 +1,18 @@
 <!--
  * @Author         : yanyongyu
- * @Date           : 2022-09-26 04:54:02
+ * @Date           : 2022-09-26 07:46:18
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 05:25:21
+ * @LastEditTime   : 2022-09-26 07:52:00
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
-{% from "icons/lock.html.jinja" import octicon_lock %}
+{% from "icons/issue-reopened.html.jinja" import octicon_issue_reopened %}
 
-{% macro locked(event, ns) %}
+{% macro reopened(event, ns) %}
 <div class="TimelineItem">
-  <div class="TimelineItem-badge color-fg-on-emphasis color-bg-emphasis">
-    {{ octicon_lock() }}
+  <div class="TimelineItem-badge color-fg-on-emphasis color-bg-open-emphasis">
+    {{ octicon_issue_reopened() }}
   </div>
   <div class="TimelineItem-body">
     <a class="d-inline-block">
@@ -26,12 +26,7 @@
     <a class="author Link--primary text-bold">
       {{ event.actor.login|escape }}
     </a>
-    locked
-    {% if event.lock_reason %}
-    as
-    <strong>{{ event.lock_reason|escape }}</strong>
-    {% endif %}
-    and limited conversation to collaborators
+    reopened this
     <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
   </div>
 </div>
