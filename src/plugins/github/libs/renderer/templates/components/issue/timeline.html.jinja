@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 06:12:06
+ * @LastEditTime   : 2022-09-26 07:15:46
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,6 +12,7 @@
 {% from "components/timeline/closed.html.jinja" import closed %}
 {% from "components/timeline/commented.html.jinja" import commented %}
 {% from "components/timeline/committed.html.jinja" import committed %}
+{% from "components/timeline/convert-to-draft.html.jinja" import convert_to_draft %}
 {% from "components/timeline/cross-referenced.html.jinja" import cross_referenced %}
 {% from "components/timeline/demilestoned.html.jinja" import demilestoned %}
 {% from "components/timeline/deployed.html.jinja" import deployed %}
@@ -22,6 +23,8 @@
 {% from "components/timeline/merged.html.jinja" import merged %}
 {% from "components/timeline/milestoned.html.jinja" import milestoned %}
 {% from "components/timeline/moved-columns-in-project.html.jinja" import moved_columns_in_project %}
+{% from "components/timeline/ready-for-review.html.jinja" import ready_for_review %}
+{% from "components/timeline/referenced.html.jinja" import referenced %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
@@ -40,6 +43,8 @@
       {{ commented(event, ns) }}
       {% elif event.event == "committed" %}
       {{ committed(event, ns) }}
+      {% elif event.event == "convert_to_draft" %}
+      {{ convert_to_draft(event, ns) }}
       {% elif event.event == "cross-referenced" %}
       {{ cross_referenced(event, ns) }}
       {% elif event.event == "demilestoned" %}
@@ -60,6 +65,10 @@
       {{ milestoned(event, ns) }}
       {% elif event.event == "moved_columns_in_project" %}
       {{ moved_columns_in_project(event, ns) }}
+      {% elif event.event == "ready_for_review" %}
+      {{ ready_for_review(event, ns) }}
+      {% elif event.event == "referenced" %}
+      {{ referenced(event, ns) }}
       {% else %}
       {{ event|debug_event }}
       {% endif %}

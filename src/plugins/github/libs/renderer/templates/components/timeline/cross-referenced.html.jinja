@@ -2,15 +2,17 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-22 03:25:56
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-22 04:14:01
+ * @LastEditTime   : 2022-09-26 06:54:22
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/cross-reference.html.jinja" import octicon_cross_reference %}
 {% from "components/issue/state.html.jinja" import issue_state %}
+{% from "components/pr/state.html.jinja" import pr_state %}
 
 {% macro cross_referenced(event, ns) %}
+{% set repo = get_issue_repo(issue) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_cross_reference() }}
@@ -39,11 +41,19 @@
         <a href="#" class="Link--primary f4 text-bold markdown-title">
           {{ event.source.issue.title|markdown_title }}
           <span class="color-fg-muted text-normal">
+            {% if event.source.issue.repository.full_name == repo.full_name %}
+            {{ '#' ~ event.source.issue.number }}
+            {% else %}
             {{ event.source.issue.repository.full_name|escape ~ '#' ~ event.source.issue.number }}
+            {% endif %}
           </span>
         </a>
       </div>
+      {% if event.source.issue.pull_request %}
+      {{ pr_state(get_pull_request(event.source.issue), "flex-shrink-0 my-1 my-md-0 ml-md-3")}}
+      {% else %}
       {{ issue_state(event.source.issue, "flex-shrink-0 my-1 my-md-0 ml-md-3") }}
+      {% endif %}
     </div>
   </div>
 </div>
