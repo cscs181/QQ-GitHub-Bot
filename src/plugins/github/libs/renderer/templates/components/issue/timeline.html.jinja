@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 15:38:43
+ * @LastEditTime   : 2022-09-26 15:51:42
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -30,6 +30,7 @@
 {% from "components/timeline/reopened.html.jinja" import reopened %}
 {% from "components/timeline/review-dismissed.html.jinja" import review_dismissed %}
 {% from "components/timeline/review-requested.html.jinja" import review_requested %}
+{% from "components/timeline/review-request-removed.html.jinja" import review_request_removed %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
@@ -84,6 +85,8 @@
       {{ review_dismissed(event, ns) }}
       {% elif event.event == "review_requested" %}
       {{ review_requested(event, ns) }}
+      {% elif event.event == "review_request_removed" %}
+      {{ review_request_removed(event, ns) }}
       {% else %}
       {{ event|debug_event }}
       {% endif %}
