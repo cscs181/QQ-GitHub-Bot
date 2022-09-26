@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 05:28:09
+ * @LastEditTime   : 2022-09-26 05:56:04
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -19,6 +19,7 @@
 {% from "components/timeline/head-ref-force-pushed.html.jinja" import head_ref_force_pushed %}
 {% from "components/timeline/labeled.html.jinja" import labeled %}
 {% from "components/timeline/locked.html.jinja" import locked %}
+{% from "components/timeline/merged.html.jinja" import merged %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
@@ -51,6 +52,8 @@
       {{ labeled(event, ns) }}
       {% elif event.event == "locked" %}
       {{ locked(event, ns) }}
+      {% elif event.event == "merged" %}
+      {{ merged(event, ns) }}
       {% else %}
       {{ event|debug_event }}
       {% endif %}
