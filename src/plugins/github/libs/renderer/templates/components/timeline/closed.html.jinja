@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-22 05:21:01
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-22 06:15:44
+ * @LastEditTime   : 2022-09-26 14:57:57
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -11,6 +11,9 @@
 {% from "icons/issue-not-planned.html.jinja" import octicon_issue_not_planned %}
 
 {% macro closed(event, ns) %}
+{% if "merged" in ns.past_events|map(attribute="event")|list %}
+{# already merged, hide closed #}
+{% else %}
 <div class="TimelineItem">
   {% if event.state_reason == "not_planned" %}
   <div class="TimelineItem-badge">
@@ -41,4 +44,5 @@
   </div>
 </div>
 <div class="TimelineItem-break"></div>
+{% endif %}
 {% endmacro %}

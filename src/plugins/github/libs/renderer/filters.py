@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-25 10:00:34
+@LastEditTime   : 2022-09-26 15:08:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,8 +15,8 @@ from datetime import datetime, timezone
 import humanize
 from nonebot.log import logger
 from markdown_it import MarkdownIt
+from githubkit.rest import GitHubRestModel
 from mdit_py_plugins.tasklists import tasklists_plugin
-from githubkit.rest import GitHubRestModel, TimelineReviewedEvent
 
 # FIXME: g-emoji in title
 title_md = MarkdownIt("zero").enable("backticks")
@@ -62,11 +62,3 @@ def review_state(value: str) -> str:
         "dismissed": "reviewed",
     }
     return states.get(value, value)
-
-
-async def find_dismissed_review(
-    past_timeline: list[GitHubRestModel], review_id: int
-) -> TimelineReviewedEvent | None:
-    for event in past_timeline:
-        if isinstance(event, TimelineReviewedEvent) and event.id == review_id:
-            return event

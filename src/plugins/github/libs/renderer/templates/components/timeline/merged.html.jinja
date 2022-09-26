@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 05:38:30
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 05:53:29
+ * @LastEditTime   : 2022-09-26 14:49:07
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -10,6 +10,7 @@
 {% from "icons/pr-merged.html.jinja" import octicon_pr_merged %}
 
 {% macro merged(event, ns) %}
+{% set pull_request = get_pull_request(ns.issue) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge color-fg-on-emphasis color-bg-done-emphasis">
     {{ octicon_pr_merged(16, "color-fg-inherit") }}

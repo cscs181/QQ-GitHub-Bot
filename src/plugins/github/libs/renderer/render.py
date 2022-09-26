@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-25 10:07:25
+@LastEditTime   : 2022-09-26 15:10:00
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,13 +22,13 @@ from .filters import (
     review_state,
     relative_time,
     markdown_title,
-    find_dismissed_review,
 )
 from .globals import (
     REACTION_EMOJIS,
     get_issue_repo,
     get_pull_request,
     get_issue_timeline,
+    find_dismissed_review,
     get_comment_reactions,
     get_issue_label_color,
     get_pull_request_diff,
@@ -47,7 +47,6 @@ env.filters["markdown_gfm"] = markdown_gfm
 env.filters["relative_time"] = relative_time
 env.filters["debug_event"] = debug_event
 env.filters["review_state"] = review_state
-env.filters["find_dismissed_review"] = find_dismissed_review
 
 env.globals["get_issue_repo"] = get_issue_repo
 env.globals["get_issue_timeline"] = get_issue_timeline
@@ -56,6 +55,7 @@ env.globals["get_pull_request_diff"] = get_pull_request_diff
 env.globals["get_comment_reactions"] = get_comment_reactions
 env.globals["REACTION_EMOJIS"] = REACTION_EMOJIS
 env.globals["get_issue_label_color"] = get_issue_label_color
+env.globals["find_dismissed_review"] = find_dismissed_review
 
 
 async def issue_to_html(issue: Issue, theme: Literal["light", "dark"] = "light") -> str:

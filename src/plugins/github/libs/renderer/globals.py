@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-25 10:08:46
+@LastEditTime   : 2022-09-26 15:08:51
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,7 +16,14 @@ from colorsys import rgb_to_hls
 from unidiff import PatchSet
 from githubkit.exception import RequestFailed, RequestTimeout
 from nonebot.adapters.github import ActionFailed, NetworkError, ActionTimeout
-from githubkit.rest import Issue, PullRequest, FullRepository, TimelineCommentEvent
+from githubkit.rest import (
+    Issue,
+    PullRequest,
+    FullRepository,
+    GitHubRestModel,
+    TimelineCommentEvent,
+    TimelineReviewedEvent,
+)
 
 from src.plugins.redis import cache
 from src.plugins.github.utils import get_bot
@@ -120,3 +127,11 @@ def get_issue_label_color(color: str) -> tuple[int, int, int, int, int, int]:
     b = int(color[4:6], 16)
     h, l, s = rgb_to_hls(r / 255, g / 255, b / 255)
     return r, g, b, int(h * 100), int(l * 100), int(s * 100)
+
+
+def find_dismissed_review(
+    past_timeline: list[GitHubRestModel], review_id: int
+) -> TimelineReviewedEvent | None:
+    for event in past_timeline:
+        if isinstance(event, TimelineReviewedEvent) and event.id == review_id:
+            return event

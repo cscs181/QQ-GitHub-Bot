@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 07:38:55
+ * @LastEditTime   : 2022-09-26 15:13:36
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -28,14 +28,15 @@
 {% from "components/timeline/removed-from-project.html.jinja" import removed_from_project %}
 {% from "components/timeline/renamed.html.jinja" import renamed %}
 {% from "components/timeline/reopened.html.jinja" import reopened %}
+{% from "components/timeline/review-dismissed.html.jinja" import review_dismissed %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
-  {% set ns = namespace(issue=issue, past_event=[]) %}
+  {% set ns = namespace(issue=issue, past_events=[]) %}
   {{ commented(issue, ns, is_first=true) }}
   <div>
     {% for event in get_issue_timeline(issue) %}
-      {% set _ = ns.past_event.append(event) %}
+      {% set _ = ns.past_events.append(event) %}
       {% if event.event == "added_to_project" %}
       {{ added_to_project(event, ns) }}
       {% elif event.event == "assigned" %}
@@ -78,6 +79,8 @@
       {{ renamed(event, ns) }}
       {% elif event.event == "reopened" %}
       {{ reopened(event, ns) }}
+      {% elif event.event == "review_dismissed" %}
+      {{ review_dismissed(event, ns) }}
       {% else %}
       {{ event|debug_event }}
       {% endif %}
