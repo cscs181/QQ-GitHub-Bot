@@ -1,0 +1,51 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-26 15:53:30
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-26 16:14:33
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "components/timeline/commented.html.jinja" import commented %}
+{% from "icons/file-diff.html.jinja" import octicon_file_diff %}
+{% from "icons/check.html.jinja" import octicon_check %}
+{% from "icons/eye.html.jinja" import octicon_eye %}
+
+{% macro reviewed(event, ns) %}
+<div class="TimelineItem">
+  <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">
+    <a class="d-inline-block" href="#">
+      <img
+        class="avatar rounded"
+        height="40"
+        width="40"
+        src="{{ event.user.avatar_url }}"
+      />
+    </a>
+  </div>
+  {% if event.state == "changes_requested" %}
+  <div class="TimelineItem-badge color-bg-danger-emphasis color-fg-on-emphasis">
+    {{ octicon_file_diff() }}
+  </div>
+  {% elif event.state == "approved" %}
+  <div class="TimelineItem-badge color-bg-success-emphasis color-fg-on-emphasis">
+    {{ octicon_check() }}
+  </div>
+  {% else %}
+  <div class="TimelineItem-badge">
+    {{ octicon_eye() }}
+  </div>
+  {% endif %}
+  <div
+    class="TimelineItem-body"
+  >
+    <a class="author Link--primary text-bold">{{ event.actor.login|escape }}</a>
+    {{ event.state|review_state }}
+    {{ event.submitted_at|relative_time }}
+  </div>
+</div>
+{% if event.body %}
+{{ commented(event, ns, showavatar=false) }}
+{% endif %}
+{% endmacro %}

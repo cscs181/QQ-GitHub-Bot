@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-25 09:44:17
+ * @LastEditTime   : 2022-09-26 15:56:44
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
@@ -39,6 +39,14 @@
     var(--color-canvas-subtle),
     var(--color-canvas-subtle)
   );
+}
+.timeline-comment.timeline-comment-nw::before {
+  top: -12px;
+  left: 12px;
+}
+.timeline-comment.timeline-comment-nw::before,
+.timeline-comment.timeline-comment-nw::after {
+  transform: rotate(90deg);
 }
 
 .comment-reaction-button {

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-26 15:08:33
+@LastEditTime   : 2022-09-26 16:14:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,6 +17,12 @@ from nonebot.log import logger
 from markdown_it import MarkdownIt
 from githubkit.rest import GitHubRestModel
 from mdit_py_plugins.tasklists import tasklists_plugin
+
+REVIEW_STATES = {
+    "commented": "reviewed",
+    "changes_requested": "requested changes",
+    "approved": "approved these changes",
+}
 
 # FIXME: g-emoji in title
 title_md = MarkdownIt("zero").enable("backticks")
@@ -55,10 +61,4 @@ def debug_event(event: GitHubRestModel) -> str:
 
 
 def review_state(value: str) -> str:
-    states = {
-        "approved": "approved these changes",
-        "changes_requested": "requested changes",
-        "commented": "reviewed",
-        "dismissed": "reviewed",
-    }
-    return states.get(value, value)
+    return REVIEW_STATES.get(value, value)

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:29:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-22 05:38:29
+ * @LastEditTime   : 2022-09-26 16:15:58
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -25,6 +25,7 @@
     <div
       class="
         timeline-comment  {# for css #}
+        {% if not showavatar %}timeline-comment-nw{% endif %}  {# for review comment #}
         position-relative
         ml-n3
         color-fg-default color-bg-default
