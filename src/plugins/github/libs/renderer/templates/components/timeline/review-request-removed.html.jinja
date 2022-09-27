@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 15:47:32
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 15:50:34
+ * @LastEditTime   : 2022-09-27 08:16:41
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -28,7 +28,11 @@
     </a>
     removed the request for review from
     <a class="author Link--primary text-bold">
+      {% if event.requested_reviewer %}
       {{ event.requested_reviewer.login|escape }}
+      {% else %}
+      {{ event.requested_team.name|escape }}
+      {% endif %}
     </a>
     <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
   </div>

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-27 06:17:07
+ * @LastEditTime   : 2022-09-27 08:19:38
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -34,6 +34,7 @@
 {% from "components/timeline/review-request-removed.html.jinja" import review_request_removed %}
 {% from "components/timeline/reviewed.html.jinja" import reviewed %}
 {% from "components/timeline/tranferred.html.jinja" import tranferred %}
+{% from "components/timeline/unassigned.html.jinja" import unassigned %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
@@ -96,6 +97,8 @@
       {{ reviewed(event, ns) }}
       {% elif event.event == "tranferred" %}
       {{ tranferred(event, ns) }}
+      {% elif event.event == "unassigned" %}
+      {{ unassigned(event, ns) }}
       {% else %}
       {{ event|debug_event }}
       {% endif %}
