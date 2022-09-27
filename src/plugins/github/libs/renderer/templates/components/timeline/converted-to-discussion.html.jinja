@@ -1,0 +1,33 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-27 05:51:51
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-27 06:12:05
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "icons/comment-discussion.html.jinja" import octicon_comment_discussion %}
+
+{% macro converted_to_discussion(event, ns) %}
+<div class="TimelineItem">
+  <div class="TimelineItem-badge color-fg-on-emphasis color-bg-done-emphasis">
+    {{ octicon_comment_discussion() }}
+  </div>
+  <div class="TimelineItem-body">
+    <a class="d-inline-block">
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ event.actor.avatar_url }}"
+      />
+    </a>
+    <a class="author Link--primary text-bold">
+      {{ event.actor.login|escape }}
+    </a>
+    converted this issue into a discussion
+    <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
+  </div>
+</div>
+{% endmacro %}
