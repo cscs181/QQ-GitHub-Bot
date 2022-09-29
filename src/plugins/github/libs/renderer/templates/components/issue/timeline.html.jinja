@@ -2,13 +2,14 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-29 08:11:53
+ * @LastEditTime   : 2022-09-29 11:25:25
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "components/timeline/added-to-project.html.jinja" import added_to_project %}
 {% from "components/timeline/assigned.html.jinja" import assigned %}
+{% from "components/timeline/base-ref-force-pushed.html.jinja" import base_ref_force_pushed %}
 {% from "components/timeline/closed.html.jinja" import closed %}
 {% from "components/timeline/commented.html.jinja" import commented %}
 {% from "components/timeline/committed.html.jinja" import committed %}
@@ -51,6 +52,8 @@
       {{ added_to_project(event, ns) }}
       {% elif event.event == "assigned" %}
       {{ assigned(event, ns) }}
+      {% elif event.event == "base_ref_force_pushed" %}
+      {{ base_ref_force_pushed(event, ns) }}
       {% elif event.event == "closed" %}
       {{ closed(event, ns) }}
       {% elif event.event == "commented" %}
