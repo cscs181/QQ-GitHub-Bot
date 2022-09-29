@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-26 15:10:00
+@LastEditTime   : 2022-09-29 01:50:30
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,6 +15,8 @@ from typing import Literal
 
 import jinja2
 from githubkit.rest import Issue
+
+from src.plugins.github.utils import get_github
 
 from .filters import (
     debug_event,
@@ -59,12 +61,14 @@ env.globals["find_dismissed_review"] = find_dismissed_review
 
 
 async def issue_to_html(issue: Issue, theme: Literal["light", "dark"] = "light") -> str:
-    template = env.get_template("views/issue.html.jinja")
-    return await template.render_async(issue=issue, theme=theme)
+    async with get_github():
+        template = env.get_template("views/issue.html.jinja")
+        return await template.render_async(issue=issue, theme=theme)
 
 
 async def pr_diff_to_html(
     issue: Issue, theme: Literal["light", "dark"] = "light"
 ) -> str:
-    template = env.get_template("views/diff.html.jinja")
-    return await template.render_async(issue=issue, theme=theme)
+    async with get_github():
+        template = env.get_template("views/diff.html.jinja")
+        return await template.render_async(issue=issue, theme=theme)
