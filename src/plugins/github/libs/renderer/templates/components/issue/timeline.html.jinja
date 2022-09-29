@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-29 02:08:02
+ * @LastEditTime   : 2022-09-29 08:11:53
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -24,6 +24,7 @@
 {% from "components/timeline/merged.html.jinja" import merged %}
 {% from "components/timeline/milestoned.html.jinja" import milestoned %}
 {% from "components/timeline/moved-columns-in-project.html.jinja" import moved_columns_in_project %}
+{% from "components/timeline/pinned.html.jinja" import pinned %}
 {% from "components/timeline/ready-for-review.html.jinja" import ready_for_review %}
 {% from "components/timeline/referenced.html.jinja" import referenced %}
 {% from "components/timeline/removed-from-project.html.jinja" import removed_from_project %}
@@ -37,6 +38,7 @@
 {% from "components/timeline/unassigned.html.jinja" import unassigned %}
 {% from "components/timeline/unlabeled.html.jinja" import unlabeled %}
 {% from "components/timeline/unlocked.html.jinja" import unlocked %}
+{% from "components/timeline/unpinned.html.jinja" import unpinned %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
@@ -79,6 +81,8 @@
       {{ milestoned(event, ns) }}
       {% elif event.event == "moved_columns_in_project" %}
       {{ moved_columns_in_project(event, ns) }}
+      {% elif event.event == "pinned" %}
+      {{ pinned(event, ns) }}
       {% elif event.event == "ready_for_review" %}
       {{ ready_for_review(event, ns) }}
       {% elif event.event == "referenced" %}
@@ -105,6 +109,8 @@
       {{ unlabeled(event, ns) }}
       {% elif event.event == "unlocked" %}
       {{ unlocked(event, ns) }}
+      {% elif event.event == "unpinned" %}
+      {{ unpinned(event, ns) }}
       {% else %}
       {{ event|debug_event }}
       {% endif %}
