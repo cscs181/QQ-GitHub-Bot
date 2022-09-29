@@ -14,13 +14,14 @@ unidiff = "^0.7.0"
 humanize = "^4.0.0"
 sentry-sdk = "^1.0.0"
 playwright = "^1.17.2"
-markdown-it-py = { version = "^2.1.0", extras = ["linkify", "plugins"] }
+mdit-py-emoji = "^0.1.0"
 nonebot2 = "^2.0.0-beta.5"
 typing-extensions = "^4.0.0"
 nonebot-adapter-github = "^0.1.0"
 nonebot-adapter-onebot = "^2.0.0-beta.1"
 redis = { version = "^4.0.0", extras = ["hiredis"] }
 tortoise-orm = { version = "^0.19.2", extras = ["asyncpg"] }
+markdown-it-py = { version = "^2.1.0", extras = ["linkify", "plugins"] }
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.9.3"

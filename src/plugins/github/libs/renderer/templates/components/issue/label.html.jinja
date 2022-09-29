@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-25 09:35:12
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-25 10:09:41
+ * @LastEditTime   : 2022-09-29 02:20:21
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -20,7 +20,6 @@
     --label-s: {{ color_rgbhls[5] }};
   "
 >
-  {# FIXME: g-emoji #}
-  {{ name|escape }}
+  {{ name|markdown_emoji }}
 </a>
 {% endmacro %}

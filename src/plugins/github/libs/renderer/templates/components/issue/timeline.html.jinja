@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-27 08:42:15
+ * @LastEditTime   : 2022-09-29 02:08:02
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -33,7 +33,7 @@
 {% from "components/timeline/review-requested.html.jinja" import review_requested %}
 {% from "components/timeline/review-request-removed.html.jinja" import review_request_removed %}
 {% from "components/timeline/reviewed.html.jinja" import reviewed %}
-{% from "components/timeline/tranferred.html.jinja" import tranferred %}
+{% from "components/timeline/transferred.html.jinja" import transferred %}
 {% from "components/timeline/unassigned.html.jinja" import unassigned %}
 {% from "components/timeline/unlabeled.html.jinja" import unlabeled %}
 {% from "components/timeline/unlocked.html.jinja" import unlocked %}
@@ -97,8 +97,8 @@
       {{ review_request_removed(event, ns) }}
       {% elif event.event == "reviewed" %}
       {{ reviewed(event, ns) }}
-      {% elif event.event == "tranferred" %}
-      {{ tranferred(event, ns) }}
+      {% elif event.event == "transferred" %}
+      {{ transferred(event, ns) }}
       {% elif event.event == "unassigned" %}
       {{ unassigned(event, ns) }}
       {% elif event.event == "unlabeled" %}

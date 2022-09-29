@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 15:56:44
+ * @LastEditTime   : 2022-09-29 02:40:00
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
@@ -14,6 +14,17 @@
   vertical-align: middle;
   background-color: var(--color-neutral-muted);
   border-radius: 6px;
+}
+
+g-emoji {
+  display: inline-block;
+  min-width: 1ch;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 1em;
+  font-style: normal !important;
+  font-weight: 400;
+  line-height: 1;
+  vertical-align: -0.075em;
 }
 
 .timeline-comment::before,

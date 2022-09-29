@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-29 01:50:30
+@LastEditTime   : 2022-09-29 02:15:24
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -23,6 +23,7 @@ from .filters import (
     markdown_gfm,
     review_state,
     relative_time,
+    markdown_emoji,
     markdown_title,
 )
 from .globals import (
@@ -45,6 +46,7 @@ env = jinja2.Environment(
 )
 
 env.filters["markdown_title"] = markdown_title
+env.filters["markdown_emoji"] = markdown_emoji
 env.filters["markdown_gfm"] = markdown_gfm
 env.filters["relative_time"] = relative_time
 env.filters["debug_event"] = debug_event
