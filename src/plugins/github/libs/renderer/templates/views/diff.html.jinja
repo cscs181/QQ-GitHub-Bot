@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-30 10:05:36
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-30 10:08:58
+ * @LastEditTime   : 2022-09-30 11:03:12
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -11,13 +11,21 @@
 
 {% from "components/pr/header.html.jinja" import pr_header %}
 
+{% from "components/diff/file.html.jinja" import diff_file %}
+
 {% extends "main.html.jinja" %}
 {% block main %}
 {{ header(get_issue_repo(issue)) }}
-<div class="repository-content">
-  <div class="container-xl px-3 px-md-4 px-lg-5 mt-4">
-    <div>
+<div class="clearfix mt-4 px-3 px-md-4 px-lg-5">
+  <div class="position-relative">
+    <div class="mb-3">
       {{ pr_header(issue) }}
+      <div>
+        {% set diff = get_pull_request_diff(get_pull_request(issue)) %}
+        {% for file in diff %}
+        {{ diff_file(file) }}
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>
