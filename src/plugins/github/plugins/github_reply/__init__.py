@@ -4,37 +4,39 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2021-03-26 16:54:53
+@LastEditTime   : 2022-09-30 09:54:26
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from nonebot.params import Depends
 from nonebot.typing import T_State
-from nonebot.adapters import Bot, Event
+from nonebot.plugin import PluginMetadata
 from nonebot.message import event_preprocessor
-from nonebot.adapters.onebot.v11 import MessageEvent
 
-from ... import config as config
-from ...libs.redis import get_message_info
+from src.plugins.github.libs.message_tag import MessageInfo, get_message_tag
 
-KEY_GITHUB_REPLY = "github_reply"
+KEY_GITHUB_REPLY = "github:reply"
+
+from .dependencies import get_reply
+
+__plugin_meta__ = PluginMetadata(
+    "GitHub 消息快捷命令",
+    "通过回复 GitHub 消息来快速进行 Issue、PR 相关操作",
+    ("/link: 获取 Issue/PR 链接\n" "/content: 查看 Issue、PR 信息及事件\n" "/diff: 查看 PR diff"),
+)
 
 
-async def is_github_reply(bot: Bot, event: Event, state: T_State):
+async def is_github_reply(state: T_State):
     return KEY_GITHUB_REPLY in state
 
 
 @event_preprocessor
-async def check_reply(bot: Bot, event: Event, state: T_State):
-    if not isinstance(event, MessageEvent) or not event.reply:
-        return
-
-    message_id = event.reply.message_id
-    message_info = get_message_info(str(message_id))
-    if message_info:
+async def check_reply(state: T_State, info: MessageInfo = Depends(get_reply)):
+    if tag := await get_message_tag(info):
         # inject reply info into state
-        state[KEY_GITHUB_REPLY] = message_info
+        state[KEY_GITHUB_REPLY] = tag
 
 
 from . import diff, link, content

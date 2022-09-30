@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-13 15:59:44
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 10:58:30
+@LastEditTime   : 2022-09-30 10:01:28
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -34,12 +34,12 @@ class RepoTag(BaseModel):
 
 class IssueTag(RepoTag):
     type: Literal["issue"] = "issue"
-    issue_number: int
+    number: int
 
 
 class PullRequestTag(RepoTag):
     type: Literal["pull_request"] = "pull_request"
-    pull_request_number: int
+    number: int
 
 
 class CommitTag(RepoTag):

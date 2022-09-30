@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 06:56:45
+@LastEditTime   : 2022-09-30 09:12:18
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -38,7 +38,7 @@ from .dependencies import bypass_update
 
 __plugin_meta__ = PluginMetadata(
     "GitHub 群仓库绑定",
-    "群绑定 GitHub 仓库以进行快捷 Issue、PR 等操作（仅限群管理员）",
+    "群绑定 GitHub 仓库以进行快捷 Issue、PR 相关操作（仅限群管理员）",
     ("/bind [owner/repo]: 群查询或绑定 GitHub 仓库\n" "/unbind: 群解绑 GitHub 仓库"),
 )
 

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-07 11:48:48
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 10:15:08
+@LastEditTime   : 2022-09-30 09:04:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -28,6 +28,8 @@ GROUP_EVENT = QQ_GROUP_EVENT
 def get_platform(event: Event) -> PLATFORMS | None:
     if isinstance(event, QQ_EVENT):
         return "qq"
+    # elif isinstance(event, QQGUILD_EVENT):
+    #     return "qqguild"
 
 
 def get_user_id(event: Event) -> int | str | None:
@@ -63,4 +65,4 @@ def get_message_info(event: Event) -> MessageInfo | None:
     platform = get_platform(event)
     message_id = get_message_id(event)
     if platform and message_id:
-        return {"type": platform, "message_id": message_id}  # type: ignore
+        return {"type": platform, "message_id": message_id}

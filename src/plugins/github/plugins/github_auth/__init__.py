@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 10:25:49
+@LastEditTime   : 2022-09-30 09:09:20
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -25,7 +25,7 @@ from src.plugins.github.helpers import get_user_info, get_current_user
 
 __plugin_meta__ = PluginMetadata(
     "GitHub 帐号授权",
-    "绑定并授权 GitHub 帐号以进行 Issue、PR 等操作",
+    "绑定并授权 GitHub 帐号以进行 Issue、PR 相关操作",
     (
         "/auth: 创建或刷新 GitHub 帐号授权\n"
         "/auth check: 查看 GitHub 帐号授权状态\n"

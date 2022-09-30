@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-21 16:44:19
+@LastEditTime   : 2022-09-30 09:57:59
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -43,7 +43,7 @@ from .dependencies import get_issue, get_context
 
 __plugin_meta__ = PluginMetadata(
     "GitHub Issue、PR 查看",
-    "快速查看 GitHub Issue、PR 信息及事件",
+    "快速查看 GitHub Issue、PR 相关信息及事件",
     (
         "#number: 当群绑定了 GitHub 仓库时，快速查看 Issue、PR 信息及事件\n"
         "^owner/repo#number$: 快速查看 Issue、PR 信息及事件\n"
@@ -69,7 +69,7 @@ async def handle(
     owner = group["owner"]
     repo = group["repo"]
     number = int(group["issue"])
-    tag = IssueTag(owner=owner, repo=repo, issue_number=number)
+    tag = IssueTag(owner=owner, repo=repo, number=number)
 
     if info := get_message_info(event):
         await create_message_tag(info, tag)
@@ -83,7 +83,7 @@ async def handle(
         await issue.finish("生成图片出错！请稍后再试")
     except Exception as e:
         logger.opt(exception=e).error(f"Failed while generating issue image: {e}")
-        await issue_short.finish("生成图片出错！请稍后再试")
+        await issue.finish("生成图片出错！请稍后再试")
 
     if img:
         match get_platform(event):
@@ -121,7 +121,7 @@ async def handle_short(
     owner, repo = group.bind_repo.split("/", maxsplit=1)
     info = {"owner": owner, "repo": repo, "issue": number}
 
-    tag = IssueTag(owner=owner, repo=repo, issue_number=number)
+    tag = IssueTag(owner=owner, repo=repo, number=number)
 
     context = await get_context(matcher, info, user)
     issue_ = await get_issue(matcher, info, context)

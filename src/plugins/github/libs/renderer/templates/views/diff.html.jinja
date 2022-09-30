@@ -1,0 +1,24 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-09-30 10:05:36
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-09-30 10:08:58
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "components/header.html.jinja" import header %}
+
+{% from "components/pr/header.html.jinja" import pr_header %}
+
+{% extends "main.html.jinja" %}
+{% block main %}
+{{ header(get_issue_repo(issue)) }}
+<div class="repository-content">
+  <div class="container-xl px-3 px-md-4 px-lg-5 mt-4">
+    <div>
+      {{ pr_header(issue) }}
+    </div>
+  </div>
+</div>
+{% endblock %}
