@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-16 04:09:34
+@LastEditTime   : 2022-10-01 10:01:49
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,7 +17,7 @@ from githubkit.rest import Issue
 from src.plugins.redis import cache
 from src.plugins.playwright import get_new_page
 
-from .render import issue_to_html
+from .render import issue_to_html, pr_diff_to_html
 
 
 @cache(ex=timedelta(minutes=10))

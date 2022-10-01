@@ -1,0 +1,29 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-10-01 09:27:26
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-10-01 10:04:01
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "icons/chevron-down.html.jinja" import octicon_chevron_down %}
+
+{% macro diff_header(file) %}
+<div class="
+    d-flex
+    flex-md-row flex-column
+    flex-md-items-center
+    px-2 py-1
+    color-bg-subtle
+    border-bottom
+    color-border-default
+    rounded-top-2
+  ">
+  <div class="f6 flex-auto min-width-0 mb-md-0 mb-2" style="line-height: 32px">
+    <button class="btn-octicon" style="width: 22px">
+      {{ octicon_chevron_down() }}
+    </button>
+  </div>
+</div>
+{% endmacro %}

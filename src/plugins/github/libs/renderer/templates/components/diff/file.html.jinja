@@ -2,11 +2,15 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-30 11:02:04
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-30 11:02:04
+ * @LastEditTime   : 2022-10-01 09:31:30
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
+{% from "components/diff/header.html.jinja" import diff_header %}
+
 {% macro diff_file(file) %}
-<div class="position-relative mb-3 border rounded-2 color-border-default"></div>
+<div class="position-relative mb-3 border rounded-2 color-border-default">
+  {{ diff_header(file) }}
+</div>
 {% endmacro %}
