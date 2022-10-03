@@ -1,0 +1,53 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-10-03 08:50:11
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-10-03 12:03:57
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% set GRAPH_WIDTH = 5 %}
+
+{% macro diff_stat(file) %}
+<span class="diffstat tooltipped tooltipped-e">
+  {% if file.is_binary_file %}
+  BIN
+  {% else %}
+
+  {% set changed = file.added + file.removed %}
+  {{ changed }}
+
+  {# Reference: https://github.com/git/git/blob/bcd6bc478adc4951d57ec597c44b12ee74bc88fb/diff.c#L2791-L2806 #}
+  {% set added = file.added %}
+  {% set removed = file.removed %}
+  {% if GRAPH_WIDTH <= changed %}
+
+  {% set total = _scale_linear(changed, GRAPH_WIDTH, changed) %}
+  {% if total < 2 and added and removed %}
+  {% set total = 2 %}
+  {% endif %}
+
+  {% if added < removed %}
+  {% set added = _scale_linear(added, GRAPH_WIDTH, changed) %}
+  {% set removed = total - added %}
+  {% else %}
+  {% set removed = _scale_linear(removed, GRAPH_WIDTH, changed) %}
+  {% set added = total - removed %}
+  {% endif %}
+
+  {% endif %}
+
+  {% for _ in range(added) %}
+  <span class="diffstat-block-added"></span>
+  {% endfor %}
+  {% for _ in range(removed) %}
+  <span class="diffstat-block-deleted"></span>
+  {% endfor %}
+  {% for _ in range(GRAPH_WIDTH - added - removed) %}
+  <span class="diffstat-block-neutral"></span>
+  {% endfor %}
+
+  {% endif %}
+</span>
+{% endmacro %}
