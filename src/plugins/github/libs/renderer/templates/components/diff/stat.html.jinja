@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-10-03 08:50:11
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-03 12:03:57
+ * @LastEditTime   : 2022-10-03 12:10:15
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -23,16 +23,16 @@
   {% set removed = file.removed %}
   {% if GRAPH_WIDTH <= changed %}
 
-  {% set total = _scale_linear(changed, GRAPH_WIDTH, changed) %}
+  {% set total = scale_linear(changed, GRAPH_WIDTH, changed) %}
   {% if total < 2 and added and removed %}
   {% set total = 2 %}
   {% endif %}
 
   {% if added < removed %}
-  {% set added = _scale_linear(added, GRAPH_WIDTH, changed) %}
+  {% set added = scale_linear(added, GRAPH_WIDTH, changed) %}
   {% set removed = total - added %}
   {% else %}
-  {% set removed = _scale_linear(removed, GRAPH_WIDTH, changed) %}
+  {% set removed = scale_linear(removed, GRAPH_WIDTH, changed) %}
   {% set added = total - removed %}
   {% endif %}
 

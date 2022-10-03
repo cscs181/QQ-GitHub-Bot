@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-26 15:08:51
+@LastEditTime   : 2022-10-03 12:40:22
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -135,3 +135,7 @@ def find_dismissed_review(
     for event in past_timeline:
         if isinstance(event, TimelineReviewedEvent) and event.id == review_id:
             return event
+
+
+def scale_linear(value: int, width: int, changed: int) -> int:
+    return 1 + int(value * (width - 1) / changed) if value else value

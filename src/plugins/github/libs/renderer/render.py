@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-29 02:15:24
+@LastEditTime   : 2022-10-03 12:40:57
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -28,6 +28,7 @@ from .filters import (
 )
 from .globals import (
     REACTION_EMOJIS,
+    scale_linear,
     get_issue_repo,
     get_pull_request,
     get_issue_timeline,
@@ -60,6 +61,7 @@ env.globals["get_comment_reactions"] = get_comment_reactions
 env.globals["REACTION_EMOJIS"] = REACTION_EMOJIS
 env.globals["get_issue_label_color"] = get_issue_label_color
 env.globals["find_dismissed_review"] = find_dismissed_review
+env.globals["scale_linear"] = scale_linear
 
 
 async def issue_to_html(issue: Issue, theme: Literal["light", "dark"] = "light") -> str:
