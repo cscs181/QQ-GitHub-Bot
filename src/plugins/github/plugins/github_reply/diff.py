@@ -4,68 +4,61 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 15:33:26
+@LastEditTime   : 2022-10-04 10:08:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-import base64
+from typing import ContextManager
 
 from nonebot import on_command
+from nonebot.log import logger
+from githubkit.rest import Issue
+from nonebot.adapters import Event
+from nonebot.params import Depends
 from nonebot.typing import T_State
 from playwright.async_api import Error
-from httpx import HTTPStatusError, TimeoutException
-from nonebot.adapters.onebot.v11 import Bot, MessageEvent, MessageSegment
+from nonebot.adapters.github import GitHubBot, ActionTimeout
+from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 
-from ...libs.redis import MessageInfo
-from ...utils import send_github_message
-from . import KEY_GITHUB_REPLY, config, is_github_reply
-from ...libs.renderer import get_issue, issue_diff_to_image
+from src.plugins.github import config
+from src.plugins.github.helpers import get_platform
+from src.plugins.github.libs.renderer import pr_diff_to_html
+from src.plugins.github.libs.message_tag import Tag, create_message_tag
 
-# allow using api without token
-try:
-    from ...libs.auth import get_user_token
-except ImportError:
-    get_user_token = None
+from . import KEY_GITHUB_REPLY, is_github_reply
+from .dependencies import get_issue, get_context
 
-diff = on_command("diff", is_github_reply, priority=config.github_command_priority)
-diff.__doc__ = """
-/diff
-回复机器人一条github pr信息，给出pr diff
-"""
+diff = on_command("content", is_github_reply, priority=config.github_command_priority)
 
 
 @diff.handle()
-async def handle_diff(bot: Bot, event: MessageEvent, state: T_State):
-    message_info: MessageInfo = state[KEY_GITHUB_REPLY]
-    token = None
-    if get_user_token:
-        token = get_user_token(event.get_user_id())
-    try:
-        issue_ = await get_issue(
-            message_info.owner, message_info.repo, message_info.number, token
-        )
-    except TimeoutException:
-        await diff.finish(f"获取issue数据超时！请尝试重试")
-    except HTTPStatusError:
-        await diff.finish(
-            f"仓库{message_info.owner}/{message_info.repo}"
-            f"不存在issue#{message_info.number}！"
-        )
+async def handle_diff(
+    event: Event,
+    state: T_State,
+    issue_: Issue = Depends(get_issue),
+    context: ContextManager[GitHubBot] = Depends(get_context),
+):
+    tag: Tag = state[KEY_GITHUB_REPLY]
 
     try:
-        img = await issue_diff_to_image(message_info.owner, message_info.repo, issue_)
-    except TimeoutException:
-        await diff.finish(f"获取diff数据超时！请尝试重试")
+        with context:
+            img = await pr_diff_to_html(issue_)
+    except ActionTimeout:
+        await diff.finish("GitHub API 超时，请稍后再试")
     except Error:
-        await diff.finish(f"生成图片超时！请尝试重试")
-    else:
-        if img:
-            await send_github_message(
-                diff,
-                message_info.owner,
-                message_info.repo,
-                message_info.number,
-                MessageSegment.image(f"base64://{base64.b64encode(img).decode()}"),
-            )
+        await diff.finish("生成图片出错！请稍后再试")
+    except Exception as e:
+        logger.opt(exception=e).error(f"Failed while generating issue image: {e}")
+        await diff.finish("生成图片出错！请稍后再试")
+
+    match get_platform(event):
+        case "qq":
+            result = await diff.send(QQMS.image(img))
+            if isinstance(result, dict) and "message_id" in result:
+                await create_message_tag(
+                    {"type": "qq", "message_id": result["message_id"]}, tag
+                )
+        case _:
+            logger.error(f"Unprocessed event type: {type(event)}")

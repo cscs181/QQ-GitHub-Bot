@@ -4,13 +4,12 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-30 10:03:15
+@LastEditTime   : 2022-10-04 10:08:26
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-import base64
 from typing import ContextManager
 
 from nonebot import on_command
@@ -56,13 +55,12 @@ async def handle_content(
         logger.opt(exception=e).error(f"Failed while generating issue image: {e}")
         await content.finish("生成图片出错！请稍后再试")
 
-    if img:
-        match get_platform(event):
-            case "qq":
-                result = await content.send(QQMS.image(img))
-                if isinstance(result, dict) and "message_id" in result:
-                    await create_message_tag(
-                        {"type": "qq", "message_id": result["message_id"]}, tag
-                    )
-            case _:
-                logger.error(f"Unprocessed event type: {type(event)}")
+    match get_platform(event):
+        case "qq":
+            result = await content.send(QQMS.image(img))
+            if isinstance(result, dict) and "message_id" in result:
+                await create_message_tag(
+                    {"type": "qq", "message_id": result["message_id"]}, tag
+                )
+        case _:
+            logger.error(f"Unprocessed event type: {type(event)}")
