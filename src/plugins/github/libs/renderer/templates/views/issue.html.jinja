@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-15 04:08:55
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-17 15:53:07
+ * @LastEditTime   : 2022-10-04 09:08:28
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -13,7 +13,9 @@
 {% from "components/pr/header.html.jinja" import pr_header %}
 
 {% from "components/issue/timeline.html.jinja" import issue_timeline %}
+
 {% from "components/issue/action.html.jinja" import issue_action %}
+{% from "components/pr/action.html.jinja" import pr_action %}
 
 {% extends "main.html.jinja" %}
 {% block main %}
@@ -29,7 +31,11 @@
       <div id="discussion_bucket">
         <div>
           {{ issue_timeline(issue) }}
+          {% if issue.pull_request %}
+          {{ pr_action(issue) }}
+          {% else %}
           {{ issue_action(issue) }}
+          {% endif %}
         </div>
       </div>
     </div>

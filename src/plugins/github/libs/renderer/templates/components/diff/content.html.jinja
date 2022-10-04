@@ -1,0 +1,24 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-10-04 03:51:10
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-10-04 07:12:49
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "components/diff/hunk.html.jinja" import diff_hunk %}
+
+{% macro diff_content(file) %}
+<div class="position-relative">
+  <div class="data highlight overflow-x-auto">
+    <table class="width-full tab-size">
+      <tbody>
+        {% for hunk in file %}
+        {{ diff_hunk(hunk) }}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endmacro %}

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-29 02:40:00
+ * @LastEditTime   : 2022-10-04 09:02:06
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
@@ -130,4 +130,65 @@ g-emoji {
     calc((var(--label-l) + var(--lighten-by)) * 1%),
     var(--border-alpha)
   );
+}
+
+.tab-size {
+  tab-size: 8;
+}
+
+.blob-num {
+  position: relative;
+  width: 1%;
+  min-width: 50px;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    Liberation Mono, monospace;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--color-fg-subtle);
+  text-align: right;
+  white-space: nowrap;
+  vertical-align: top;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.blob-num-addition {
+  color: var(--color-fg-default);
+  background-color: var(--color-success-subtle);
+}
+.blob-num-deletion {
+  color: var(--color-fg-default);
+  background-color: var(--color-danger-subtle);
+}
+.blob-code {
+  position: relative;
+  padding-right: 10px;
+  padding-left: 10px;
+  line-height: 20px;
+  vertical-align: top;
+}
+.blob-code-inner {
+  display: table-cell;
+  overflow: visible;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+    Liberation Mono, monospace;
+  font-size: 12px;
+  color: var(--color-fg-default);
+  word-wrap: anywhere;
+  white-space: pre;
+}
+.blob-code-hunk {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 22px;
+  background-color: var(--color-accent-subtle);
+  border-width: 1px 0;
+}
+.blob-code-addition {
+  background-color: var(--color-success-subtle);
+}
+.blob-code-deletion {
+  background-color: var(--color-danger-subtle);
 }
