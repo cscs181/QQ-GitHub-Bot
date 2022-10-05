@@ -4,13 +4,13 @@
 @Author         : yanyongyu
 @Date           : 2022-09-30 08:59:36
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-30 10:02:35
+@LastEditTime   : 2022-10-05 08:30:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import ContextManager
+from typing import Callable, AsyncContextManager
 
 from nonebot.log import logger
 from githubkit.rest import Issue
@@ -49,7 +49,7 @@ async def get_context(
     matcher: Matcher,
     state: T_State,
     user: User | None = Depends(get_current_user),
-) -> ContextManager[GitHubBot]:
+) -> Callable[[], AsyncContextManager[GitHubBot]]:
     tag: Tag = state[KEY_GITHUB_REPLY]
     return await get_github_context(tag.owner, tag.repo, matcher, user)
 
@@ -57,7 +57,7 @@ async def get_context(
 async def get_issue(
     matcher: Matcher,
     state: T_State,
-    context: ContextManager[GitHubBot] = Depends(get_context),
+    context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
 ) -> Issue:
     bot = get_bot()
     tag: Tag = state[KEY_GITHUB_REPLY]
@@ -66,7 +66,7 @@ async def get_issue(
         await matcher.finish()
 
     try:
-        with context:
+        async with context():
             resp = await bot.rest.issues.async_get(
                 owner=tag.owner, repo=tag.repo, issue_number=tag.number
             )

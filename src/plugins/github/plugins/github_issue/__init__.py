@@ -4,13 +4,13 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-30 09:57:59
+@LastEditTime   : 2022-10-05 08:30:00
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import ContextManager
+from typing import Callable, AsyncContextManager
 
 from nonebot import on_regex
 from nonebot.log import logger
@@ -64,7 +64,7 @@ async def handle(
     event: Event,
     group: dict[str, str] = RegexDict(),
     issue_: Issue = Depends(get_issue),
-    context: ContextManager[GitHubBot] = Depends(get_context),
+    context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
 ):
     owner = group["owner"]
     repo = group["repo"]
@@ -75,7 +75,7 @@ async def handle(
         await create_message_tag(info, tag)
 
     try:
-        with context:
+        async with context():
             img = await issue_to_image(issue_)
     except ActionTimeout:
         await issue.finish("GitHub API 超时，请稍后再试")
@@ -85,16 +85,15 @@ async def handle(
         logger.opt(exception=e).error(f"Failed while generating issue image: {e}")
         await issue.finish("生成图片出错！请稍后再试")
 
-    if img:
-        match get_platform(event):
-            case "qq":
-                result = await issue.send(QQMS.image(img))
-                if isinstance(result, dict) and "message_id" in result:
-                    await create_message_tag(
-                        {"type": "qq", "message_id": result["message_id"]}, tag
-                    )
-            case _:
-                logger.error(f"Unprocessed event type: {type(event)}")
+    match get_platform(event):
+        case "qq":
+            result = await issue.send(QQMS.image(img))
+            if isinstance(result, dict) and "message_id" in result:
+                await create_message_tag(
+                    {"type": "qq", "message_id": result["message_id"]}, tag
+                )
+        case _:
+            logger.error(f"Unprocessed event type: {type(event)}")
 
 
 issue_short = on_regex(
@@ -130,7 +129,7 @@ async def handle_short(
         await create_message_tag(info, tag)
 
     try:
-        with context:
+        async with context():
             img = await issue_to_image(issue_)
     except Error:
         await issue_short.finish("生成图片出错！请尝试重试")
@@ -138,13 +137,12 @@ async def handle_short(
         logger.opt(exception=e).error(f"Failed while generating issue image: {e}")
         await issue_short.finish("生成图片出错！请稍后再试")
 
-    if img:
-        match get_platform(event):
-            case "qq":
-                result = await issue.send(QQMS.image(img))
-                if isinstance(result, dict) and "message_id" in result:
-                    await create_message_tag(
-                        {"type": "qq", "message_id": result["message_id"]}, tag
-                    )
-            case _:
-                logger.error(f"Unprocessed event type: {type(event)}")
+    match get_platform(event):
+        case "qq":
+            result = await issue.send(QQMS.image(img))
+            if isinstance(result, dict) and "message_id" in result:
+                await create_message_tag(
+                    {"type": "qq", "message_id": result["message_id"]}, tag
+                )
+        case _:
+            logger.error(f"Unprocessed event type: {type(event)}")

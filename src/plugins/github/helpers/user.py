@@ -4,13 +4,14 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 07:22:30
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-16 05:46:14
+@LastEditTime   : 2022-10-04 10:18:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from nonebot.adapters import Event
+from tortoise.exceptions import DoesNotExist
 
 from src.plugins.github.models import User
 from src.plugins.github.libs.platform import get_user
@@ -19,4 +20,7 @@ from .event import get_user_info
 
 
 async def get_current_user(event: Event) -> User | None:
-    return await get_user(info) if (info := get_user_info(event)) else None
+    try:
+        return await get_user(info) if (info := get_user_info(event)) else None
+    except DoesNotExist:
+        return None

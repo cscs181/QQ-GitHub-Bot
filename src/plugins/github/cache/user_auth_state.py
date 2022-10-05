@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 11:06:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-05 11:28:29
+@LastEditTime   : 2022-10-05 07:09:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,15 +22,17 @@ STATE_CACHE_EXPIRE = timedelta(minutes=10)
 async def create_state(data: str) -> str:
     state_id = uuid4().hex
     await redis_client.set(
-        STATE_CACHE_KEY.format(state_id), data.encode("UTF-8"), ex=STATE_CACHE_EXPIRE
+        STATE_CACHE_KEY.format(state_id=state_id),
+        data.encode("UTF-8"),
+        ex=STATE_CACHE_EXPIRE,
     )
     return state_id
 
 
 async def get_state(state_id: str) -> str | None:
-    data = await redis_client.get(STATE_CACHE_KEY.format(state_id))
+    data = await redis_client.get(STATE_CACHE_KEY.format(state_id=state_id))
     return data if data is None else data.decode("UTF-8")
 
 
 async def delete_state(state_id: str) -> None:
-    await redis_client.delete(STATE_CACHE_KEY.format(state_id))
+    await redis_client.delete(STATE_CACHE_KEY.format(state_id=state_id))

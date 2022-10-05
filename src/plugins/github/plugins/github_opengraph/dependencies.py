@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 04:34:39
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-21 16:29:22
+@LastEditTime   : 2022-10-05 08:30:25
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -33,7 +33,7 @@ async def check_repo(
     context = await get_github_context(owner, repo, matcher, user)
 
     try:
-        with context:
+        async with context():
             resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
             return resp.parsed_data
     except ActionTimeout:
@@ -62,7 +62,7 @@ async def check_commit(
     context = await get_github_context(owner, repo, matcher, user)
 
     try:
-        with context:
+        async with context():
             resp = await bot.rest.repos.async_get_commit(
                 owner=owner, repo=repo, ref=ref
             )

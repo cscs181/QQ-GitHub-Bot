@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-03 12:40:57
+@LastEditTime   : 2022-10-05 06:34:43
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -65,14 +65,12 @@ env.globals["scale_linear"] = scale_linear
 
 
 async def issue_to_html(issue: Issue, theme: Literal["light", "dark"] = "light") -> str:
-    async with get_github():
-        template = env.get_template("views/issue.html.jinja")
-        return await template.render_async(issue=issue, theme=theme)
+    template = env.get_template("views/issue.html.jinja")
+    return await template.render_async(issue=issue, theme=theme)
 
 
 async def pr_diff_to_html(
     issue: Issue, theme: Literal["light", "dark"] = "light"
 ) -> str:
-    async with get_github():
-        template = env.get_template("views/diff.html.jinja")
-        return await template.render_async(issue=issue, theme=theme)
+    template = env.get_template("views/diff.html.jinja")
+    return await template.render_async(issue=issue, theme=theme)

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 08:20:06
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 09:20:31
+@LastEditTime   : 2022-10-05 06:35:05
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -27,7 +27,7 @@ async def get_github_user(
     bot = get_bot()
 
     try:
-        with bot.as_user(user.access_token):
+        async with bot.as_user(user.access_token):
             resp = await bot.rest.users.async_get_authenticated()
             return resp.parsed_data
     except ActionTimeout:

@@ -4,13 +4,14 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-21 16:35:56
+@LastEditTime   : 2022-10-05 08:27:52
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import ContextManager
+from functools import partial
+from typing import Callable, AsyncContextManager
 
 from nonebot.log import logger
 from nonebot.matcher import Matcher
@@ -39,11 +40,11 @@ GITHUB_PR_COMMIT_LINK_REGEX = rf"{GITHUB_PR_LINK_REGEX}/commits/{COMMIT_HASH_REG
 
 async def get_github_context(
     owner: str, repo: str, matcher: Matcher, user: User | None = None
-) -> ContextManager[GitHubBot]:
+) -> Callable[[], AsyncContextManager[GitHubBot]]:
     bot = get_bot()
     try:
         resp = await bot.rest.apps.async_get_repo_installation(owner=owner, repo=repo)
-        return bot.as_installation(resp.parsed_data.id)
+        return partial(bot.as_installation, resp.parsed_data.id)
     except ActionTimeout:
         await matcher.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
@@ -58,4 +59,4 @@ async def get_github_context(
 
     if not user:
         await matcher.finish("你还没有绑定 GitHub 帐号，请使用 /install 进行安装")
-    return bot.as_user(user.access_token)
+    return partial(bot.as_user, user.access_token)

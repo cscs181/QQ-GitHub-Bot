@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-30 09:09:20
+@LastEditTime   : 2022-10-05 07:21:02
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -61,10 +61,10 @@ async def handle_check(user: None = Depends(get_current_user)):
 @auth_check.handle()
 async def check_user_status(user: User = Depends(get_current_user)):
     bot = get_bot()
-    with bot.as_oauth_app():
+    async with bot.as_oauth_app():
         try:
             resp = await bot.rest.apps.async_check_token(
-                client_id=config.github_app.app_id, access_token=user.access_token
+                client_id=config.github_app.client_id, access_token=user.access_token
             )
         except ActionTimeout:
             await auth_check.finish("GitHub API 超时，请稍后再试")
@@ -97,7 +97,7 @@ async def handle_revoke(user: None = Depends(get_current_user)):
 @auth_revoke.handle()
 async def revoke_user(user: User = Depends(get_current_user)):
     bot = get_bot()
-    with bot.as_oauth_app():
+    async with bot.as_oauth_app():
         try:
             await bot.rest.apps.async_delete_token(
                 client_id=config.github_app.client_id, access_token=user.access_token

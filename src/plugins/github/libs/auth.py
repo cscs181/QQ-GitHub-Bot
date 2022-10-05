@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:30:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 10:26:12
+@LastEditTime   : 2022-10-05 07:04:36
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,13 +18,7 @@ from src.plugins.github.models import User
 from src.plugins.github.utils import get_github
 from src.plugins.github.cache import get_state, create_state, delete_state
 
-from .platform import (
-    PLATFORMS,
-    USER_STRING_TYPES,
-    USER_INTEGER_TYPES,
-    UserInfo,
-    create_or_update_user,
-)
+from .platform import UserInfo, create_or_update_user
 
 
 async def create_auth_link(info: UserInfo) -> str:
