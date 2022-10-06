@@ -2,16 +2,17 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-01-13 16:07:58
+ * @LastEditTime   : 2022-10-06 09:03:37
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 # QQ-GitHub-Bot
 
-![Python Version](https://img.shields.io/badge/python-3.7+-blue.svg)
+![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![NoneBot Version](https://img.shields.io/badge/nonebot-2+-red.svg)
-![CQHTTP Version](https://img.shields.io/badge/cqhttp-11+-black.svg)
+
+![CQHTTP Version](https://img.shields.io/badge/CQHTTP%2011-Bot+-black.svg?style=social)
 
 GitHub Bot for QQ
 
@@ -27,28 +28,47 @@ GitHub Bot for QQ
 
 ## 独立部署
 
-独立部署 `QQ-GitHub-Bot` 前，需要先行部署 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 或其他 [OneBot V11 协议实现](https://11.onebot.dev/) 并配置连接。
-
-配置连接的方法参考 `nonebot2` 文档: [配置协议端](https://v2.nonebot.dev/guide/cqhttp-guide.html#%E9%85%8D%E7%BD%AE-cqhttp-%E5%8D%8F%E8%AE%AE%E7%AB%AF-%E4%BB%A5-qq-%E4%B8%BA%E4%BE%8B)
-
-1. 下载 [`docker-compose.yml`](./docker-compose.yml) 以及 [`.env`](./.env) 配置文件至任意空目录，修改 `.env` 中的如下配置项：
+1. 下载 [`docker-compose.yml`](./docker-compose.yml), [`.env`](./.env) 配置文件以及 [`bot`](./bot) 目录至任意空目录
+2. 修改 `.env` 中的如下配置项：
 
    ```dotenv
    HOST=0.0.0.0
-   PORT=8080
+   PORT=8086
    SUPERUSERS=["机器人管理号"]
 
-   # Sentry DSN 网址，如果不使用可以留空
-   SENTRY_DSN=
+   # postgres 数据库配置项
+   POSTGRES_USER=bot
+   POSTGRES_PASSWORD=postgres_password
+   POSTGRES_DB=bot
 
-   # Github OAuth App 配置，留空将功能受限
-   GITHUB_CLIENT_ID=
-   GITHUB_CLIENT_SECRET=
-   GITHUB_SELF_HOST=
+   # redis 数据库配置项
+   REDIS_PASSWORD=redis_password
+
+   # Sentry DSN 网址，如果不使用可以不修改
+   SENTRY_DSN=https://xxxxxxxx.sentry.io/123123
+
+   # Github App 配置
+   # webhook_secret 与 github app 配置中的 webhook secret 保持一致，如果没有设置则删除
+   GITHUB_APPS='
+   [
+     {
+       "app_id": "",
+       "private_key": [
+         "-----BEGIN RSA PRIVATE KEY-----",
+         "~~ YOUR PRIVATE KEY HERE ~~",
+         "-----END RSA PRIVATE KEY-----"
+       ],
+       "client_id": "",
+       "client_secret": "",
+       "webhook_secret": ""
+     }
+   ]
+   '
    ```
 
    > `docker-compose.yml` 中的配置视情况修改，**如无必要请勿修改！**
 
-2. 启动
+3. 修改 `bot/config.yml` 配置文件，参考 [go-cqhttp](https://docs.go-cqhttp.org/guide/config.html#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF) 修改帐号、密码配置项。如需修改连接配置，请保证与 `.env` 中的配置项一致。
+4. 启动
 
-   安装 `docker-compose` 并在目录下执行 `docker-compose up -d` 即可。
+   安装 `docker` 以及 `docker-compose` 并在目录下执行 `docker compose up -d` (`docker-compose up -d`) 即可。

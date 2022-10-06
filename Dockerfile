@@ -14,9 +14,6 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-ENV LANG zh_CN.UTF-8
-ENV LANGUAGE zh_CN.UTF-8
-ENV LC_ALL zh_CN.UTF-8
 ENV TZ Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -27,7 +24,7 @@ COPY ./docker/gunicorn_conf.py /gunicorn_conf.py
 
 ENV PYTHONPATH=/app
 
-EXPOSE 80
+EXPOSE 8086
 
 ENV MAX_WORKERS 1
 ENV APP_MODULE bot:app
@@ -50,4 +47,4 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 RUN playwright install chromium
 
-COPY ./ /app/
+COPY ./bot.py ./src/ ./.env ./.env* /app/

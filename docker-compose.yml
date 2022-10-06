@@ -1,39 +1,61 @@
 version: "2"
 services:
   redis:
-    image: redis:6.2
+    image: redis:7
     container_name: bot_redis
-    command: redis-server --appendonly yes
+    environment:
+      - REDIS_PASSWORD=$REDIS_PASSWORD
+    command: ["sh", "-c", "redis-server --requirepass ${REDIS_PASSWORD}"]
     volumes:
       - bot_redis_data:/data
     networks:
       - bot_net
+    restart: always
+  postgres:
+    image: postgres:14
+    container_name: bot_postgres
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
+      - POSTGRES_INITDB_ARGS="--encoding=UTF8"
+      - TZ=Asia/Shanghai
+    volumes:
+      - bot_postgres_data:/var/lib/postgresql/data
+    networks:
+      - bot_net
+    restart: always
+  go-cqhttp:
+    image: ghcr.io/mrs4s/go-cqhttp:latest
+    container_name: bot_cqhttp
+    volumes:
+      - "./bot:/data"
+    networks:
+      - bot_net
+    links:
+      - nonebot
     restart: always
   nonebot:
     image: cscs181/qq-github-bot:latest # docker hub
     # image: ghcr.io/cscs181/qq-github-bot:latest # github image mirror
     # build: . # use "build" instead of "image" if you want to build the image yourself
     container_name: bot
-    # volumes:
-    #   - "/etc/timezone:/etc/timezone:ro"
-    #   - "/etc/localtime:/etc/localtime:ro"
-    ports:
-      - "$PORT:$PORT"
-    # you can load config file by "env_file"
-    env_file:
-      - "./.env"
     environment:
       - ENVIRONMENT=prod
       - HOST=$HOST
       - PORT=$PORT
       - REDIS_HOST=bot_redis
       - REDIS_PORT=6379
+      - POSTGRES_HOST=bot_postgres
+      - POSTGRES_PORT=5432
     networks:
       - bot_net
     links:
       - redis
+      - postgres
     depends_on:
       - redis
+      - postgres
     restart: always
     mem_limit: 1024M
     mem_reservation: 512M
@@ -41,3 +63,4 @@ networks:
   bot_net: {}
 volumes:
   bot_redis_data: {}
+  bot_postgres_data: {}
