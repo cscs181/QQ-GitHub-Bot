@@ -4,13 +4,13 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-04 10:08:26
+@LastEditTime   : 2022-10-06 03:43:00
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import ContextManager
+from typing import Callable, AsyncContextManager
 
 from nonebot import on_command
 from nonebot.log import logger
@@ -31,7 +31,7 @@ from . import KEY_GITHUB_REPLY, is_github_reply
 from .dependencies import get_issue, get_context
 
 content = on_command(
-    "content", is_github_reply, priority=config.github_command_priority
+    "content", is_github_reply, priority=config.github_command_priority, block=True
 )
 
 
@@ -40,12 +40,12 @@ async def handle_content(
     event: Event,
     state: T_State,
     issue_: Issue = Depends(get_issue),
-    context: ContextManager[GitHubBot] = Depends(get_context),
+    context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
 ):
     tag: Tag = state[KEY_GITHUB_REPLY]
 
     try:
-        with context:
+        async with context():
             img = await issue_to_image(issue_)
     except ActionTimeout:
         await content.finish("GitHub API 超时，请稍后再试")

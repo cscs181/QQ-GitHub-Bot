@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 13:50:47
+@LastEditTime   : 2022-10-06 06:02:42
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -54,11 +54,12 @@ repo_link_graph = on_regex(
 @repo_graph.handle()
 @repo_link_graph.handle()
 async def handle(event: Event, repo: FullRepository = Depends(check_repo)):
-
-    tag = RepoTag(owner=repo.owner.login, repo=repo.name)
     if info := get_message_info(event):
-        await create_message_tag(info, tag)
+        await create_message_tag(
+            info, RepoTag(owner=repo.owner.login, repo=repo.name, is_receive=True)
+        )
 
+    tag = RepoTag(owner=repo.owner.login, repo=repo.name, is_receive=False)
     match get_platform(event):
         case "qq":
             result = await repo_graph.send(
@@ -91,11 +92,20 @@ async def handle_commit(
     commit: Commit = Depends(check_commit),
     group: dict[str, str] = RegexDict(),
 ):
-
-    tag = CommitTag(owner=group["owner"], repo=group["repo"], commit=commit.sha)
     if info := get_message_info(event):
-        await create_message_tag(info, tag)
+        await create_message_tag(
+            info,
+            CommitTag(
+                owner=group["owner"],
+                repo=group["repo"],
+                commit=commit.sha,
+                is_receive=True,
+            ),
+        )
 
+    tag = CommitTag(
+        owner=group["owner"], repo=group["repo"], commit=commit.sha, is_receive=False
+    )
     match get_platform(event):
         case "qq":
             result = await commit_graph.send(

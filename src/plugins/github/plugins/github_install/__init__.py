@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-30 09:12:27
+@LastEditTime   : 2022-10-06 03:42:51
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -36,7 +36,7 @@ __plugin_meta__ = PluginMetadata(
 )
 
 
-install = on_command("install", priority=config.github_command_priority)
+install = on_command("install", priority=config.github_command_priority, block=True)
 
 
 @install.handle()
@@ -54,7 +54,7 @@ async def handle_private(event: PrivateMessageEvent):
 
 
 install_check = on_command(
-    ("install", "check"), priority=config.github_command_priority
+    ("install", "check"), priority=config.github_command_priority, block=True
 )
 
 
@@ -83,7 +83,7 @@ async def check_user_installation(
 
 
 install_revoke = on_command(
-    ("install", "revoke"), priority=config.github_command_priority
+    ("install", "revoke"), priority=config.github_command_priority, block=True
 )
 
 

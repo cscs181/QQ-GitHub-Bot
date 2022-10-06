@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-21 16:26:06
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-05 08:28:50
+@LastEditTime   : 2022-10-06 03:28:48
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -52,8 +52,10 @@ async def get_issue(
     except ActionFailed as e:
         if e.response.status_code == 404:
             await matcher.finish(f"未找到 {owner}/{repo}#{number} 对应的 Issue 或 PR")
-        logger.opt(exception=e).error(f"Failed while checking repo in opengraph: {e}")
+        elif e.response.status_code == 401:
+            await matcher.finish("你的 GitHub 帐号授权已过期，请使用 /auth 进行刷新")
+        logger.opt(exception=e).error(f"Failed while checking repo in issue: {e}")
         await matcher.finish("未知错误发生，请尝试重试或联系管理员")
     except Exception as e:
-        logger.opt(exception=e).error(f"Failed while checking repo in opengraph: {e}")
+        logger.opt(exception=e).error(f"Failed while checking repo in issue: {e}")
         await matcher.finish("未知错误发生，请尝试重试或联系管理员")

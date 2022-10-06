@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:31:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-30 09:49:10
+@LastEditTime   : 2022-10-06 03:43:14
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -27,7 +27,9 @@ from src.plugins.github.libs.message_tag import (
 
 from . import KEY_GITHUB_REPLY, is_github_reply
 
-link = on_command("link", is_github_reply, priority=config.github_command_priority)
+link = on_command(
+    "link", is_github_reply, priority=config.github_command_priority, block=True
+)
 
 
 @link.handle()

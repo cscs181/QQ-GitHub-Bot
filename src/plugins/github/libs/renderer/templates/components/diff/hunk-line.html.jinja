@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-10-04 08:35:37
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-04 09:03:02
+ * @LastEditTime   : 2022-10-06 06:24:31
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -17,7 +17,7 @@
 {% endif %}
 <tr>
   <td class="blob-num blob-num-{{ type }}">{{ line.source_line_no or "" }}</td>
-  <td class="blob-num blob-num-{{ type }}">{{ line.source_line_no or "" }}</td>
+  <td class="blob-num blob-num-{{ type }}">{{ line.target_line_no or "" }}</td>
   <td class="blob-code blob-code-{{ type }}">
     <span class="blob-code-inner">{{ line|string|escape }}</span>
   </td>

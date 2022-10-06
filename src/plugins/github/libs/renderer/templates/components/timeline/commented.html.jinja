@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:29:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 16:15:58
+ * @LastEditTime   : 2022-10-06 04:02:12
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,18 +12,12 @@
   {% if showavatar %}
   <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">
     <a href="#" class="d-inline-block">
-      <img
-        class="avatar circle"
-        src="{{ event.user.avatar_url }}"
-        height="40"
-        width="40"
-      />
+      <img class="avatar circle" src="{{ event.user.avatar_url }}" height="40" width="40" />
     </a>
   </div>
   {% endif %}
   <div class="TimelineItem-body my-0">
-    <div
-      class="
+    <div class="
         timeline-comment  {# for css #}
         {% if not showavatar %}timeline-comment-nw{% endif %}  {# for review comment #}
         position-relative
@@ -32,10 +26,8 @@
         border
         rounded-2
         color-border-default
-      "
-    >
-      <div
-        class="
+      ">
+      <div class="
           d-flex
           flex-row-reverse flex-items-center
           px-3 py-2
@@ -43,8 +35,7 @@
           border-bottom
           color-border-default
           rounded-top-2
-        "
-      >
+        ">
         <div class="d-none d-sm-flex">
           {% if event.author_association != "NONE" %}
           <span class="Label Label--primary ml-1">
@@ -71,15 +62,13 @@
         <table class="d-block">
           <tbody class="d-block">
             <tr class="d-block">
-              <td
-                class="
+              <td class="
                   d-block
                   p-3
                   width-full overflow-visible
                   f5 color-fg-default
                   markdown-body
-                "
-              >
+                ">
                 {% if event.body_html %}
                 {{ event.body_html }}
                 {% elif event.body %}
@@ -101,16 +90,14 @@
           <div class="d-flex flex-items-center flex-row flex-wrap">
             {% for reaction, count in _reactions.items() %}
             {% if count %}
-            <button
-              class="
+            <button class="
                 comment-reaction-button  {# for css #}
                 d-flex flex-items-baseline
                 no-underline mr-2 px-1 f6
                 color-fg-muted color-bg-transparent
                 border color-border-default
                 btn-link
-              "
-            >
+              ">
               {{ REACTION_EMOJIS[reaction] }}
               <span>{{ count }}</span>
             </button>

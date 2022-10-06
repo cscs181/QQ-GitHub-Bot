@@ -276,7 +276,7 @@ testing = ["covdefaults (>=2.2)", "coverage (>=6.4.2)", "pytest (>=7.1.2)", "pyt
 
 [[package]]
 name = "githubkit"
-version = "0.8.1"
+version = "0.8.2"
 description = "GitHub SDK for Python"
 category = "main"
 optional = false
@@ -581,7 +581,7 @@ setuptools = "*"
 
 [[package]]
 name = "nonebot-adapter-github"
-version = "0.2.0"
+version = "0.2.1"
 description = "GitHub adapter for nonebot2"
 category = "main"
 optional = false
@@ -1437,8 +1437,8 @@ filelock = [
     {file = "filelock-3.8.0.tar.gz", hash = "sha256:55447caa666f2198c5b6b13a26d2084d26fa5b115c00d065664b2124680c4edc"},
 ]
 githubkit = [
-    {file = "GitHubKit-0.8.1.tar.gz", hash = "sha256:e9b2363e4ff82a77e2c20effa13188f25a1ad51d3452589a65e2b0a92a353f6d"},
-    {file = "githubkit-0.8.1-py3-none-any.whl", hash = "sha256:4520770148a9104f2b86d8dcf5fe43a0efd826768044ddc578976953c3e7d3e6"},
+    {file = "GitHubKit-0.8.2.tar.gz", hash = "sha256:30e55216bb3f94bbb4bf7434c06ad62ed45b241070c5071d0fd6e10de09021f4"},
+    {file = "githubkit-0.8.2-py3-none-any.whl", hash = "sha256:c6b0e41b1a4955c3a1dfff40ecead378ab788927cd393d4144f1195c524932ba"},
 ]
 greenlet = [
     {file = "greenlet-1.1.3-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:8c287ae7ac921dfde88b1c125bd9590b7ec3c900c2d3db5197f1286e144e712b"},
@@ -1812,8 +1812,8 @@ nodeenv = [
     {file = "nodeenv-1.7.0.tar.gz", hash = "sha256:e0e7f7dfb85fc5394c6fe1e8fa98131a2473e04311a45afb6508f7cf1836fa2b"},
 ]
 nonebot-adapter-github = [
-    {file = "nonebot-adapter-github-0.2.0.tar.gz", hash = "sha256:2d38abb950f839e226e55957d3c2e2451f0b832af8cfe69259f6665a081ba789"},
-    {file = "nonebot_adapter_github-0.2.0-py3-none-any.whl", hash = "sha256:29cb3d8124d354f3080967b44f117313b2397661e2cf71da1c1803d6f885a29f"},
+    {file = "nonebot-adapter-github-0.2.1.tar.gz", hash = "sha256:794dd066aebab8e51889aa101730b3cfa54cf2f13a820787d35b6bfa4050f86d"},
+    {file = "nonebot_adapter_github-0.2.1-py3-none-any.whl", hash = "sha256:d25ffa1751076956d6fc5c904fac36e44d8ea8881a5bf4b5a9b93b6cfc25999d"},
 ]
 nonebot-adapter-onebot = [
     {file = "nonebot-adapter-onebot-2.1.3.tar.gz", hash = "sha256:2090847c58d0058604077b9404be78e6bee225d4972ab59f7223685f79bd5a86"},

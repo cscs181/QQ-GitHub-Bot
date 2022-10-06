@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-05 07:21:02
+@LastEditTime   : 2022-10-06 03:41:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -33,7 +33,7 @@ __plugin_meta__ = PluginMetadata(
     ),
 )
 
-auth = on_command("auth", priority=config.github_command_priority)
+auth = on_command("auth", priority=config.github_command_priority, block=True)
 
 
 @auth.handle()
@@ -50,7 +50,9 @@ async def handle_private(event: PrivateMessageEvent):
         await auth.finish("内部错误，请尝试私聊我并使用 /auth 命令授权你的 GitHub 账号")
 
 
-auth_check = on_command(("auth", "check"), priority=config.github_command_priority)
+auth_check = on_command(
+    ("auth", "check"), priority=config.github_command_priority, block=True
+)
 
 
 @auth_check.handle()
@@ -86,7 +88,9 @@ async def check_user_status(user: User = Depends(get_current_user)):
     await auth_check.finish("你已绑定 GitHub 帐号")
 
 
-auth_revoke = on_command(("auth", "revoke"), priority=config.github_command_priority)
+auth_revoke = on_command(
+    ("auth", "revoke"), priority=config.github_command_priority, block=True
+)
 
 
 @auth_revoke.handle()

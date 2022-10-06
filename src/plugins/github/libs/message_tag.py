@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-13 15:59:44
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-30 10:01:28
+@LastEditTime   : 2022-10-06 06:01:54
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -30,6 +30,7 @@ class RepoTag(BaseModel):
     type: Literal["repo"] = "repo"
     owner: str
     repo: str
+    is_receive: bool
 
 
 class IssueTag(RepoTag):

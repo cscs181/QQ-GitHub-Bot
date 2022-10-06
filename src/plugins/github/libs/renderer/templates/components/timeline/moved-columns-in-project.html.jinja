@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 06:06:32
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 06:07:56
+ * @LastEditTime   : 2022-10-06 03:57:10
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,16 +12,11 @@
 {% macro moved_columns_in_project(event, ns) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
-  {{ octicon_project() }}
+    {{ octicon_project() }}
   </div>
   <div class="TimelineItem-body">
     <a>
-      <img
-        class="avatar avatar-user"
-        height="20"
-        width="20"
-        src="{{ event.actor.avatar_url }}"
-      />
+      <img class="avatar avatar-user" height="20" width="20" src="{{ event.actor.avatar_url }}" />
     </a>
     <a class="author Link--primary text-bold">{{ event.actor.login|escape }}</a>
     moved this from

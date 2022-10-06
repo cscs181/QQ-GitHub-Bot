@@ -4,13 +4,13 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-04 10:08:41
+@LastEditTime   : 2022-10-06 06:22:21
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import ContextManager
+from typing import Callable, AsyncContextManager
 
 from nonebot import on_command
 from nonebot.log import logger
@@ -24,13 +24,15 @@ from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 
 from src.plugins.github import config
 from src.plugins.github.helpers import get_platform
-from src.plugins.github.libs.renderer import pr_diff_to_html
+from src.plugins.github.libs.renderer import pr_diff_to_image
 from src.plugins.github.libs.message_tag import Tag, create_message_tag
 
 from . import KEY_GITHUB_REPLY, is_github_reply
 from .dependencies import get_issue, get_context
 
-diff = on_command("content", is_github_reply, priority=config.github_command_priority)
+diff = on_command(
+    "diff", is_github_reply, priority=config.github_command_priority, block=True
+)
 
 
 @diff.handle()
@@ -38,13 +40,13 @@ async def handle_diff(
     event: Event,
     state: T_State,
     issue_: Issue = Depends(get_issue),
-    context: ContextManager[GitHubBot] = Depends(get_context),
+    context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
 ):
     tag: Tag = state[KEY_GITHUB_REPLY]
 
     try:
-        with context:
-            img = await pr_diff_to_html(issue_)
+        async with context():
+            img = await pr_diff_to_image(issue_)
     except ActionTimeout:
         await diff.finish("GitHub API 超时，请稍后再试")
     except Error:

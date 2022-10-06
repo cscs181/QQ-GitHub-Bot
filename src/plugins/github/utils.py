@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-07 12:14:14
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-07 12:14:14
+@LastEditTime   : 2022-10-06 04:10:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -26,4 +26,4 @@ def get_github() -> GitHub:
 
 
 def get_user_github(access_token: str) -> GitHub[TokenAuthStrategy]:
-    return GitHub(TokenAuthStrategy(access_token), config=get_github().config)
+    return get_github().with_auth(TokenAuthStrategy(access_token))

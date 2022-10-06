@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 15:53:30
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-26 16:14:33
+ * @LastEditTime   : 2022-10-06 03:57:44
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -16,12 +16,7 @@
 <div class="TimelineItem">
   <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">
     <a class="d-inline-block" href="#">
-      <img
-        class="avatar rounded"
-        height="40"
-        width="40"
-        src="{{ event.user.avatar_url }}"
-      />
+      <img class="avatar rounded" height="40" width="40" src="{{ event.user.avatar_url }}" />
     </a>
   </div>
   {% if event.state == "changes_requested" %}
@@ -37,9 +32,7 @@
     {{ octicon_eye() }}
   </div>
   {% endif %}
-  <div
-    class="TimelineItem-body"
-  >
+  <div class="TimelineItem-body">
     <a class="author Link--primary text-bold">{{ event.actor.login|escape }}</a>
     {{ event.state|review_state }}
     {{ event.submitted_at|relative_time }}
