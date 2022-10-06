@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-06 09:03:37
+ * @LastEditTime   : 2022-10-06 09:08:31
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,7 +12,7 @@
 ![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![NoneBot Version](https://img.shields.io/badge/nonebot-2+-red.svg)
 
-![CQHTTP Version](https://img.shields.io/badge/CQHTTP%2011-Bot+-black.svg?style=social)
+![CQHTTP Version](https://img.shields.io/badge/CQHTTP%2011-Bot-black.svg?style=social)
 
 GitHub Bot for QQ
 
