@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-30 09:54:26
+@LastEditTime   : 2022-10-07 03:50:02
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -26,10 +26,6 @@ __plugin_meta__ = PluginMetadata(
     "通过回复 GitHub 消息来快速进行 Issue、PR 相关操作",
     ("/link: 获取 Issue/PR 链接\n" "/content: 查看 Issue、PR 信息及事件\n" "/diff: 查看 PR diff"),
 )
-
-
-async def is_github_reply(state: T_State):
-    return KEY_GITHUB_REPLY in state
 
 
 @event_preprocessor

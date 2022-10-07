@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-06 03:43:00
+@LastEditTime   : 2022-10-07 03:50:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -27,8 +27,8 @@ from src.plugins.github.helpers import get_platform
 from src.plugins.github.libs.renderer import issue_to_image
 from src.plugins.github.libs.message_tag import Tag, create_message_tag
 
-from . import KEY_GITHUB_REPLY, is_github_reply
-from .dependencies import get_issue, get_context
+from . import KEY_GITHUB_REPLY
+from .dependencies import get_issue, get_context, is_github_reply
 
 content = on_command(
     "content", is_github_reply, priority=config.github_command_priority, block=True

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-06 06:02:42
+@LastEditTime   : 2022-10-07 04:11:45
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -47,7 +47,7 @@ __plugin_meta__ = PluginMetadata(
 repo_graph = on_regex(f"^{FULLREPO_REGEX}$", priority=config.github_command_priority)
 # lower priority than issue link
 repo_link_graph = on_regex(
-    GITHUB_REPO_LINK_REGEX, priority=config.github_command_priority + 1
+    GITHUB_REPO_LINK_REGEX, priority=config.github_command_priority + 10
 )
 
 

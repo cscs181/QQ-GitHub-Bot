@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-06 06:22:21
+@LastEditTime   : 2022-10-07 03:50:17
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -25,13 +25,13 @@ from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from src.plugins.github import config
 from src.plugins.github.helpers import get_platform
 from src.plugins.github.libs.renderer import pr_diff_to_image
-from src.plugins.github.libs.message_tag import Tag, create_message_tag
+from src.plugins.github.libs.message_tag import PullRequestTag, create_message_tag
 
-from . import KEY_GITHUB_REPLY, is_github_reply
-from .dependencies import get_issue, get_context
+from . import KEY_GITHUB_REPLY
+from .dependencies import get_issue, get_context, is_pull_request
 
 diff = on_command(
-    "diff", is_github_reply, priority=config.github_command_priority, block=True
+    "diff", is_pull_request, priority=config.github_command_priority, block=True
 )
 
 
@@ -42,7 +42,7 @@ async def handle_diff(
     issue_: Issue = Depends(get_issue),
     context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
 ):
-    tag: Tag = state[KEY_GITHUB_REPLY]
+    tag: PullRequestTag = state[KEY_GITHUB_REPLY]
 
     try:
         async with context():
@@ -55,6 +55,9 @@ async def handle_diff(
         logger.opt(exception=e).error(f"Failed while generating issue image: {e}")
         await diff.finish("生成图片出错！请稍后再试")
 
+    tag = PullRequestTag(
+        owner=tag.owner, repo=tag.repo, number=tag.number, is_receive=False
+    )
     match get_platform(event):
         case "qq":
             result = await diff.send(QQMS.image(img))

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-30 08:59:36
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-05 08:30:55
+@LastEditTime   : 2022-10-07 03:48:58
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -31,6 +31,16 @@ from src.plugins.github.libs.message_tag import (
 )
 
 from . import KEY_GITHUB_REPLY
+
+
+async def is_github_reply(state: T_State):
+    return KEY_GITHUB_REPLY in state
+
+
+async def is_pull_request(state: T_State):
+    return KEY_GITHUB_REPLY in state and isinstance(
+        state[KEY_GITHUB_REPLY], PullRequestTag
+    )
 
 
 async def get_qq_reply(event: MessageEvent) -> MessageInfo | None:
