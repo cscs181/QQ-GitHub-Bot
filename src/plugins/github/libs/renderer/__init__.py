@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 04:44:48
+@LastEditTime   : 2022-10-07 06:22:17
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,6 +15,7 @@ from datetime import timedelta
 from githubkit.rest import Issue
 
 from src.plugins.redis import cache
+from src.plugins.github import config
 from src.plugins.playwright import get_new_page
 
 from .render import issue_to_html, pr_diff_to_html
@@ -32,7 +33,7 @@ async def issue_to_image(
     width: int = 800,
     height: int = 300,
 ) -> bytes:
-    html = await issue_to_html(issue)
+    html = await issue_to_html(issue, config.github_theme)
     return await _gen_image(html, width, height)
 
 
@@ -41,5 +42,5 @@ async def pr_diff_to_image(
     width: int = 800,
     height: int = 300,
 ) -> bytes:
-    html = await pr_diff_to_html(issue)
+    html = await pr_diff_to_html(issue, config.github_theme)
     return await _gen_image(html, width, height)

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-10-04 03:51:10
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-04 07:12:49
+ * @LastEditTime   : 2022-10-07 06:20:24
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,6 +12,9 @@
 {% macro diff_content(file) %}
 <div class="position-relative">
   <div class="data highlight overflow-x-auto">
+    {% if file.is_removed_file %}
+    <div class="px-2 py-1">This file was deleted.</div>
+    {% elif file|length %}
     <table class="width-full tab-size">
       <tbody>
         {% for hunk in file %}
@@ -19,6 +22,9 @@
         {% endfor %}
       </tbody>
     </table>
+    {% elif file.is_rename %}
+    <div class="px-2 py-1">File renamed without changes.</div>
+    {% endif %}
   </div>
 </div>
 {% endmacro %}
