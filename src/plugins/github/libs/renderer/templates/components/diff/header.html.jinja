@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-10-01 09:27:26
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-04 03:43:24
+ * @LastEditTime   : 2022-10-07 04:30:51
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -27,7 +27,13 @@
     </button>
     {{ diff_stat(file) }}
     <span class="Truncate">
+      {% if file.is_rename %}
+      {{ file.source_file.removeprefix("a/")|left_truncate(40) }}
+      →
+      {{ file.target_file.removeprefix("b/")|left_truncate(40) }}
+      {% else %}
       <a href="#" class="Link--primary Truncate-text">{{ file.path|escape }}</a>
+      {% endif %}
     </span>
   </div>
 </div>

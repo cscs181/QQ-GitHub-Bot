@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-06 03:46:38
+@LastEditTime   : 2022-10-07 04:19:36
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,12 +16,11 @@ from typing import Literal
 import jinja2
 from githubkit.rest import Issue
 
-from src.plugins.github.utils import get_github
-
 from .filters import (
     debug_event,
     markdown_gfm,
     review_state,
+    left_truncate,
     relative_time,
     markdown_emoji,
     markdown_title,
@@ -52,6 +51,7 @@ env.filters["markdown_gfm"] = markdown_gfm
 env.filters["relative_time"] = relative_time
 env.filters["debug_event"] = debug_event
 env.filters["review_state"] = review_state
+env.filters["left_truncate"] = left_truncate
 
 env.globals["get_issue_repo"] = get_issue_repo
 env.globals["get_issue_timeline"] = get_issue_timeline

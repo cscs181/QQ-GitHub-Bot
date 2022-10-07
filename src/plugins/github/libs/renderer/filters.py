@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-29 02:53:46
+@LastEditTime   : 2022-10-07 04:18:43
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -84,3 +84,7 @@ def debug_event(event: GitHubRestModel) -> str:
 
 def review_state(value: str) -> str:
     return REVIEW_STATES.get(value, value)
+
+
+def left_truncate(value: str, max_length: int) -> str:
+    return f"...{value[-max_length:]}" if len(value) > max_length else value

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 03:42:34
+@LastEditTime   : 2022-10-07 04:48:23
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,9 +18,9 @@ from githubkit.rest import Issue
 from nonebot.rule import is_type
 from nonebot.adapters import Event
 from nonebot.matcher import Matcher
-from playwright.async_api import Error
 from nonebot.plugin import PluginMetadata
 from nonebot.params import Depends, RegexDict
+from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.github import GitHubBot, ActionTimeout
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 
@@ -88,6 +88,8 @@ async def handle_issue(
             img = await issue_to_image(issue_)
     except ActionTimeout:
         await issue.finish("GitHub API 超时，请稍后再试")
+    except TimeoutError:
+        await issue.finish("生成图片超时！请稍后再试")
     except Error:
         await issue.finish("生成图片出错！请稍后再试")
     except Exception as e:
@@ -131,17 +133,19 @@ async def handle_pr_diff(
         async with context():
             img = await pr_diff_to_image(issue_)
     except ActionTimeout:
-        await issue.finish("GitHub API 超时，请稍后再试")
+        await pr_diff_link.finish("GitHub API 超时，请稍后再试")
+    except TimeoutError:
+        await pr_diff_link.finish("生成图片超时！请稍后再试")
     except Error:
-        await issue.finish("生成图片出错！请稍后再试")
+        await pr_diff_link.finish("生成图片出错！请稍后再试")
     except Exception as e:
-        logger.opt(exception=e).error(f"Failed while generating issue image: {e}")
-        await issue.finish("生成图片出错！请稍后再试")
+        logger.opt(exception=e).error(f"Failed while generating pr diff image: {e}")
+        await pr_diff_link.finish("生成图片出错！请稍后再试")
 
     tag = PullRequestTag(owner=owner, repo=repo, number=number, is_receive=False)
     match get_platform(event):
         case "qq":
-            result = await issue.send(QQMS.image(img))
+            result = await pr_diff_link.send(QQMS.image(img))
             if isinstance(result, dict) and "message_id" in result:
                 await create_message_tag(
                     {"type": "qq", "message_id": result["message_id"]}, tag
@@ -185,6 +189,8 @@ async def handle_short(
     try:
         async with context():
             img = await issue_to_image(issue_)
+    except TimeoutError:
+        await issue_short.finish("生成图片超时！请尝试重试")
     except Error:
         await issue_short.finish("生成图片出错！请尝试重试")
     except Exception as e:
@@ -194,7 +200,7 @@ async def handle_short(
     tag = IssueTag(owner=owner, repo=repo, number=number, is_receive=False)
     match get_platform(event):
         case "qq":
-            result = await issue.send(QQMS.image(img))
+            result = await issue_short.send(QQMS.image(img))
             if isinstance(result, dict) and "message_id" in result:
                 await create_message_tag(
                     {"type": "qq", "message_id": result["message_id"]}, tag

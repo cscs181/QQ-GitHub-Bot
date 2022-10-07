@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 03:50:32
+@LastEditTime   : 2022-10-07 04:43:18
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,7 +18,7 @@ from githubkit.rest import Issue
 from nonebot.adapters import Event
 from nonebot.params import Depends
 from nonebot.typing import T_State
-from playwright.async_api import Error
+from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.github import GitHubBot, ActionTimeout
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 
@@ -49,6 +49,8 @@ async def handle_content(
             img = await issue_to_image(issue_)
     except ActionTimeout:
         await content.finish("GitHub API 超时，请稍后再试")
+    except TimeoutError:
+        await content.finish("生成图片超时！请稍后再试")
     except Error:
         await content.finish("生成图片出错！请稍后再试")
     except Exception as e:

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-04 09:46:30
+@LastEditTime   : 2022-10-07 04:44:48
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -24,7 +24,7 @@ from .render import issue_to_html, pr_diff_to_html
 async def _gen_image(html: str, width: int, height: int) -> bytes:
     async with get_new_page(viewport={"width": width, "height": height}) as page:
         await page.set_content(html)
-        return await page.screenshot(full_page=True)
+        return await page.screenshot(timeout=60_000, full_page=True)
 
 
 async def issue_to_image(
