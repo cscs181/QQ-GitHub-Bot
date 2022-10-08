@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-29 11:25:25
+ * @LastEditTime   : 2022-10-08 06:24:09
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -11,6 +11,7 @@
 {% from "components/timeline/assigned.html.jinja" import assigned %}
 {% from "components/timeline/base-ref-force-pushed.html.jinja" import base_ref_force_pushed %}
 {% from "components/timeline/closed.html.jinja" import closed %}
+{% from "components/timeline/comment-deleted.html.jinja" import comment_deleted %}
 {% from "components/timeline/commented.html.jinja" import commented %}
 {% from "components/timeline/committed.html.jinja" import committed %}
 {% from "components/timeline/convert-to-draft.html.jinja" import convert_to_draft %}
@@ -32,8 +33,8 @@
 {% from "components/timeline/renamed.html.jinja" import renamed %}
 {% from "components/timeline/reopened.html.jinja" import reopened %}
 {% from "components/timeline/review-dismissed.html.jinja" import review_dismissed %}
-{% from "components/timeline/review-requested.html.jinja" import review_requested %}
 {% from "components/timeline/review-request-removed.html.jinja" import review_request_removed %}
+{% from "components/timeline/review-requested.html.jinja" import review_requested %}
 {% from "components/timeline/reviewed.html.jinja" import reviewed %}
 {% from "components/timeline/transferred.html.jinja" import transferred %}
 {% from "components/timeline/unassigned.html.jinja" import unassigned %}
@@ -47,76 +48,78 @@
   {{ commented(issue, ns, is_first=true) }}
   <div>
     {% for event in get_issue_timeline(issue) %}
-      {% set _ = ns.past_events.append(event) %}
-      {% if event.event == "added_to_project" %}
-      {{ added_to_project(event, ns) }}
-      {% elif event.event == "assigned" %}
-      {{ assigned(event, ns) }}
-      {% elif event.event == "base_ref_force_pushed" %}
-      {{ base_ref_force_pushed(event, ns) }}
-      {% elif event.event == "closed" %}
-      {{ closed(event, ns) }}
-      {% elif event.event == "commented" %}
-      {{ commented(event, ns) }}
-      {% elif event.event == "committed" %}
-      {{ committed(event, ns) }}
-      {% elif event.event == "convert_to_draft" %}
-      {{ convert_to_draft(event, ns) }}
-      {% elif event.event == "converted_to_discussion" %}
-      {{ converted_to_discussion(event, ns) }}
-      {% elif event.event == "cross-referenced" %}
-      {{ cross_referenced(event, ns) }}
-      {% elif event.event == "demilestoned" %}
-      {{ demilestoned(event, ns) }}
-      {% elif event.event == "deployed" %}
-      {{ deployed(event, ns) }}
-      {% elif event.event == "head_ref_deleted" %}
-      {{ head_ref_deleted(event, ns) }}
-      {% elif event.event == "head_ref_force_pushed" %}
-      {{ head_ref_force_pushed(event, ns) }}
-      {% elif event.event == "labeled" %}
-      {{ labeled(event, ns) }}
-      {% elif event.event == "locked" %}
-      {{ locked(event, ns) }}
-      {% elif event.event == "merged" %}
-      {{ merged(event, ns) }}
-      {% elif event.event == "milestoned" %}
-      {{ milestoned(event, ns) }}
-      {% elif event.event == "moved_columns_in_project" %}
-      {{ moved_columns_in_project(event, ns) }}
-      {% elif event.event == "pinned" %}
-      {{ pinned(event, ns) }}
-      {% elif event.event == "ready_for_review" %}
-      {{ ready_for_review(event, ns) }}
-      {% elif event.event == "referenced" %}
-      {{ referenced(event, ns) }}
-      {% elif event.event == "removed_from_project" %}
-      {{ removed_from_project(event, ns) }}
-      {% elif event.event == "renamed"%}
-      {{ renamed(event, ns) }}
-      {% elif event.event == "reopened" %}
-      {{ reopened(event, ns) }}
-      {% elif event.event == "review_dismissed" %}
-      {{ review_dismissed(event, ns) }}
-      {% elif event.event == "review_requested" %}
-      {{ review_requested(event, ns) }}
-      {% elif event.event == "review_request_removed" %}
-      {{ review_request_removed(event, ns) }}
-      {% elif event.event == "reviewed" %}
-      {{ reviewed(event, ns) }}
-      {% elif event.event == "transferred" %}
-      {{ transferred(event, ns) }}
-      {% elif event.event == "unassigned" %}
-      {{ unassigned(event, ns) }}
-      {% elif event.event == "unlabeled" %}
-      {{ unlabeled(event, ns) }}
-      {% elif event.event == "unlocked" %}
-      {{ unlocked(event, ns) }}
-      {% elif event.event == "unpinned" %}
-      {{ unpinned(event, ns) }}
-      {% else %}
-      {{ event|debug_event }}
-      {% endif %}
+    {% set _ = ns.past_events.append(event) %}
+    {% if event.event == "added_to_project" %}
+    {{ added_to_project(event, ns) }}
+    {% elif event.event == "assigned" %}
+    {{ assigned(event, ns) }}
+    {% elif event.event == "base_ref_force_pushed" %}
+    {{ base_ref_force_pushed(event, ns) }}
+    {% elif event.event == "closed" %}
+    {{ closed(event, ns) }}
+    {% elif event.event == "comment_deleted" %}
+    {{ comment_deleted(event, ns) }}
+    {% elif event.event == "commented" %}
+    {{ commented(event, ns) }}
+    {% elif event.event == "committed" %}
+    {{ committed(event, ns) }}
+    {% elif event.event == "convert_to_draft" %}
+    {{ convert_to_draft(event, ns) }}
+    {% elif event.event == "converted_to_discussion" %}
+    {{ converted_to_discussion(event, ns) }}
+    {% elif event.event == "cross-referenced" %}
+    {{ cross_referenced(event, ns) }}
+    {% elif event.event == "demilestoned" %}
+    {{ demilestoned(event, ns) }}
+    {% elif event.event == "deployed" %}
+    {{ deployed(event, ns) }}
+    {% elif event.event == "head_ref_deleted" %}
+    {{ head_ref_deleted(event, ns) }}
+    {% elif event.event == "head_ref_force_pushed" %}
+    {{ head_ref_force_pushed(event, ns) }}
+    {% elif event.event == "labeled" %}
+    {{ labeled(event, ns) }}
+    {% elif event.event == "locked" %}
+    {{ locked(event, ns) }}
+    {% elif event.event == "merged" %}
+    {{ merged(event, ns) }}
+    {% elif event.event == "milestoned" %}
+    {{ milestoned(event, ns) }}
+    {% elif event.event == "moved_columns_in_project" %}
+    {{ moved_columns_in_project(event, ns) }}
+    {% elif event.event == "pinned" %}
+    {{ pinned(event, ns) }}
+    {% elif event.event == "ready_for_review" %}
+    {{ ready_for_review(event, ns) }}
+    {% elif event.event == "referenced" %}
+    {{ referenced(event, ns) }}
+    {% elif event.event == "removed_from_project" %}
+    {{ removed_from_project(event, ns) }}
+    {% elif event.event == "renamed"%}
+    {{ renamed(event, ns) }}
+    {% elif event.event == "reopened" %}
+    {{ reopened(event, ns) }}
+    {% elif event.event == "review_dismissed" %}
+    {{ review_dismissed(event, ns) }}
+    {% elif event.event == "review_request_removed" %}
+    {{ review_request_removed(event, ns) }}
+    {% elif event.event == "review_requested" %}
+    {{ review_requested(event, ns) }}
+    {% elif event.event == "reviewed" %}
+    {{ reviewed(event, ns) }}
+    {% elif event.event == "transferred" %}
+    {{ transferred(event, ns) }}
+    {% elif event.event == "unassigned" %}
+    {{ unassigned(event, ns) }}
+    {% elif event.event == "unlabeled" %}
+    {{ unlabeled(event, ns) }}
+    {% elif event.event == "unlocked" %}
+    {{ unlocked(event, ns) }}
+    {% elif event.event == "unpinned" %}
+    {{ unpinned(event, ns) }}
+    {% else %}
+    {{ event|debug_event }}
+    {% endif %}
     {% endfor %}
   </div>
 </div>
