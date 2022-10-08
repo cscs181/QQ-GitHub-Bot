@@ -41,6 +41,7 @@ jobs:
       contents: read
       packages: write
     needs: check-version
+    if: ${{ needs.check-version.result == 'success' || needs.check-version.result == 'skipped' }}
 
     steps:
       - name: Checkout
@@ -51,14 +52,14 @@ jobs:
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Login to Github Container Registry
         uses: docker/login-action@v1
-        if: ${{ github.event_name != "pull_request" }}
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
