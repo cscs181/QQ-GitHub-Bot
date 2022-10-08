@@ -36,7 +36,8 @@ ENV APP_MODULE bot:app
 RUN apt-get update \
   && apt-get install -y fonts-noto \
   libnss3-dev libxss1 libasound2 libxrandr2 \
-  libatk1.0-0 libgtk-3-0 libgbm-dev libxshmfence1
+  libatk1.0-0 libgtk-3-0 libgbm-dev libxshmfence1 \
+  gcc
 
 # RUN python3 -m pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
 

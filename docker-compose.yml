@@ -27,9 +27,9 @@ services:
       - nonebot
     restart: always
   nonebot:
-    # image: cscs181/qq-github-bot:latest # docker hub
+    image: cscs181/qq-github-bot:latest # docker hub
     # image: ghcr.io/cscs181/qq-github-bot:latest # github image mirror
-    build: . # use "build" instead of "image" if you want to build the image yourself
+    # build: . # use "build" instead of "image" if you want to build the image yourself
     environment:
       - ENVIRONMENT=prod
       - HOST=$HOST
