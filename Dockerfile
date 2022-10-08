@@ -26,7 +26,6 @@ ENV PYTHONPATH=/app
 
 EXPOSE 8086
 
-ENV MAX_WORKERS 1
 ENV APP_MODULE bot:app
 
 # RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak &&\

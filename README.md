@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-06 09:08:31
+ * @LastEditTime   : 2022-10-08 06:00:24
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -28,13 +28,33 @@ GitHub Bot for QQ
 
 ## 独立部署
 
-1. 下载 [`docker-compose.yml`](./docker-compose.yml), [`.env`](./.env) 配置文件以及 [`bot`](./bot) 目录至任意空目录
-2. 修改 `.env` 中的如下配置项：
+1. 部署要求
+
+   - Docker & Docker Compose
+   - 1+ CPU Core
+   - 1+ GB RAM
+   - 能够访问 GitHub API 的网络环境
+
+   对于内存大小的限制，可以通过修改 `docker-compose.yml` 中的 `MAX_WORKERS`, `deploy.resources.limits.memory` 来调整，通常 worker 与内存 1:1。
+
+2. 注册 GitHub App
+   配置 GitHub App：
+   1. callback URL 为 `http://<your-domain>/github/auth`
+   2. webhook URL 为 `http://<your-domain>/github/webhooks/<app_id>`，可在 app 创建完成后添加
+   3. 权限为 `Issues`, `Pull requests` 和 `Metadata` `Read Only`
+   4. 取消勾选 `Expire user authorization tokens` 或在 app optional feature 中 `opt-out`
+   5. 勾选 `Request user authorization (OAuth) during installation`
+   6. 记录 `app_id`, `client_id`，生成并下载 `private_key`, `client_secret` 备用
+3. 下载 [`docker-compose.yml`](./docker-compose.yml), [`.env`](./.env) 配置文件以及 [`bot`](./bot) 目录至任意空目录
+4. 修改 `.env` 中的如下配置项：
 
    ```dotenv
-   HOST=0.0.0.0
-   PORT=8086
    SUPERUSERS=["机器人管理号"]
+
+   # onebot
+   ONEBOT_ACCESS_TOKEN=your_access_token
+   ONEBOT_SECRET=your_secret
+   ONEBOT_API_ROOTS={"你的QQ号": "http://go-cqhttp:15700/"}
 
    # postgres 数据库配置项
    POSTGRES_USER=bot
@@ -68,7 +88,7 @@ GitHub Bot for QQ
 
    > `docker-compose.yml` 中的配置视情况修改，**如无必要请勿修改！**
 
-3. 修改 `bot/config.yml` 配置文件，参考 [go-cqhttp](https://docs.go-cqhttp.org/guide/config.html#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF) 修改帐号、密码配置项。如需修改连接配置，请保证与 `.env` 中的配置项一致。
-4. 启动
+5. 修改 `bot/config.yml` 配置文件，参考 [go-cqhttp](https://docs.go-cqhttp.org/guide/config.html#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF) 修改 `uin`, `password`, `access-token`, `secret` 配置项。如需修改连接配置，请保证与 `.env` 中的配置项一致。
+6. 启动
 
-   安装 `docker` 以及 `docker-compose` 并在目录下执行 `docker compose up -d` (`docker-compose up -d`) 即可。
+   在目录下执行 `docker compose up -d` (`docker-compose up -d`) 即可。

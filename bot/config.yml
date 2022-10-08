@@ -24,7 +24,7 @@ heartbeat:
 message:
   # 上报数据类型
   # 可选: string,array
-  post-format: string
+  post-format: array
   # 是否忽略无效的CQ码, 如果为假将原样发送
   ignore-invalid-cqcode: false
   # 是否强制分片发送消息
@@ -57,8 +57,8 @@ output:
   debug: false # 开启调试模式
 
 # 默认中间件锚点
-default-middlewares: &default # 访问密钥, 强烈推荐在公网的服务器设置
-  access-token: ""
+default-middlewares: &default
+  access-token: "" # 访问密钥, 强烈推荐在公网的服务器设置
   # 事件过滤器文件目录
   filter: ""
   # API限速设置
@@ -90,11 +90,17 @@ servers:
   #- ws:   # 正向 Websocket
   #- ws-reverse: # 反向 Websocket
   #- pprof: #性能分析服务器
-  # 反向WS设置
-  - ws-reverse:
-      # 反向WS Universal 地址
-      universal: ws://bot:8086/onebot/v11/ws
-      # 重连间隔 单位毫秒
-      reconnect-interval: 3000
+
+  - http: # HTTP 通信设置
+      address: 0.0.0.0:15700 # HTTP监听地址
+      timeout: 5 # 反向 HTTP 超时时间, 单位秒，<5 时将被忽略
+      long-polling: # 长轮询拓展
+        enabled: false # 是否开启
+        max-queue-size: 2000 # 消息队列大小，0 表示不限制队列大小，谨慎使用
       middlewares:
         <<: *default # 引用默认中间件
+      post: # 反向HTTP POST地址列表
+        - url: "http://nonebot:8086/onebot/v11/http" # 地址
+          secret: "" # 密钥
+          max-retries: 0 # 最大重试，0 时禁用
+          retries-interval: 1500 # 重试时间，单位毫秒，0 时立即

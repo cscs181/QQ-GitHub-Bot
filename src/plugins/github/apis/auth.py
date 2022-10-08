@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 20:18:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 09:22:43
+@LastEditTime   : 2022-10-08 06:00:02
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -24,7 +24,7 @@ from src.plugins.github.libs.auth import (
 app: FastAPI = nonebot.get_app()
 
 
-@app.get("/api/github/auth")
+@app.get("/github/auth")
 async def auth(code: str, state: str):
     user_info = await get_state_data(state)
     if not user_info:
