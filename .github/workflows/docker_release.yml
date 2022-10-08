@@ -41,7 +41,11 @@ jobs:
       contents: read
       packages: write
     needs: check-version
-    if: ${{ needs.check-version.result == 'success' || needs.check-version.result == 'skipped' }}
+    if: |-
+      ${{
+        always() &&
+        (needs.check-version.result == 'success' || needs.check-version.result == 'skipped')
+      }}
 
     steps:
       - name: Checkout
