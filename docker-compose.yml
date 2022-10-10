@@ -48,6 +48,12 @@ services:
           memory: 1024M
         reservations:
           memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:$PORT/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     restart: always
 volumes:
   bot_redis_data: {}

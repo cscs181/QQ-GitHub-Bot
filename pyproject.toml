@@ -2,7 +2,7 @@
 name = "qq-github-bot"
 version = "0.2.0"
 description = "GitHub Bot for QQ"
-authors = ["yanyongyu <yanyongyu_1@126.com>"]
+authors = ["yanyongyu <yyy@yyydl.top>"]
 license = "MIT"
 
 [tool.poetry.dependencies]

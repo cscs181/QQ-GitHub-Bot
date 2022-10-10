@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 14:22:39
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 15:03:14
+@LastEditTime   : 2022-10-10 07:57:10
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -38,11 +38,19 @@ async def shutdown_browser():
         await _playwright.stop()
 
 
+def get_browser() -> Browser:
+    if not _browser:
+        raise RuntimeError("playwright is not initalized")
+    return _browser
+
+
 @asynccontextmanager
 async def get_new_page(**kwargs) -> AsyncGenerator[Page, None]:
     assert _browser, "playwright is not initalized"
-    page = await _browser.new_page(**kwargs)
+    ctx = await _browser.new_context(**kwargs)
+    page = await ctx.new_page()
     try:
         yield page
     finally:
         await page.close()
+        await ctx.close()
