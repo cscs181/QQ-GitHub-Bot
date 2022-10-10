@@ -3,7 +3,7 @@ services:
   redis:
     image: redis:7
     environment:
-      - REDIS_PASSWORD=$REDIS_PASSWORD
+      - REDIS_PASSWORD=${REDIS_PASSWORD:?err}
     command: ["sh", "-c", "redis-server --requirepass ${REDIS_PASSWORD}"]
     volumes:
       - bot_redis_data:/data
@@ -11,9 +11,9 @@ services:
   postgres:
     image: postgres:14
     environment:
-      - POSTGRES_USER=$POSTGRES_USER
-      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-      - POSTGRES_DB=$POSTGRES_DB
+      - POSTGRES_USER=${POSTGRES_USER:?err}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?err}
+      - POSTGRES_DB=${POSTGRES_DB:?err}
       - POSTGRES_INITDB_ARGS="--encoding=UTF8"
       - TZ=Asia/Shanghai
     volumes:
@@ -30,10 +30,12 @@ services:
     image: cscs181/qq-github-bot:latest # docker hub
     # image: ghcr.io/cscs181/qq-github-bot:latest # github image mirror
     # build: . # use "build" instead of "image" if you want to build the image yourself
+    env_file:
+      - .env
     environment:
       - ENVIRONMENT=prod
-      - HOST=$HOST
-      - PORT=$PORT
+      - HOST=${HOST:-0.0.0.0}
+      - PORT=${PORT:-8086}
       - MAX_WORKERS=1 # maximum workers
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -49,7 +51,7 @@ services:
         reservations:
           memory: 512M
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:$PORT/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-8086}/health"]
       interval: 30s
       timeout: 10s
       retries: 3
