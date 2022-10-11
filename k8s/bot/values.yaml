@@ -1,0 +1,68 @@
+# Default values for bot.
+
+nameOverride: ""
+fullnameOverride: ""
+
+bot:
+  replicas: 1
+  image:
+    repo: cscs181/qq-github-bot
+    tag: latest
+    pullPolicy: Always
+  config:
+    PORT: "8086"
+    LOG_LEVEL: INFO
+    SUPERUSERS: "[]"
+    POSTGRES_USER: bot
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_DB: bot
+    REDIS_PASSWORD: redis_password
+    SENTRY_DSN:
+    GITHUB_THEME: light
+    GITHUB_APPS: "[]"
+  resources:
+    limits:
+      memory: 1Gi
+    requests:
+      memory: 512Mi
+
+redis:
+  image:
+    repo: redis
+    tag: "7"
+    pullPolicy: IfNotPresent
+  persistencePath: ./redis
+  nodeHostName: ""
+
+postgres:
+  image:
+    repo: postgres
+    tag: "14"
+    pullPolicy: IfNotPresent
+  persistencePath: ./postgres
+  nodeHostName: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+service:
+  type: LoadBalancer
+  port: 8080

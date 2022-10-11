@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "bot.name" . }}-redis-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "bot.labels" . | nindent 4 }}
+    app.kubernetes.io/component: redis
+spec:
+  storageClassName: local-storage
+  volumeName: {{ include "bot.name" . }}-redis-pv
+  resources:
+    requests:
+      storage: 1Gi

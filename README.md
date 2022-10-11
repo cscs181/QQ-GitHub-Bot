@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-08 06:00:24
+ * @LastEditTime   : 2022-10-11 08:38:43
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -45,29 +45,36 @@ GitHub Bot for QQ
    4. 取消勾选 `Expire user authorization tokens` 或在 app optional feature 中 `opt-out`
    5. 勾选 `Request user authorization (OAuth) during installation`
    6. 记录 `app_id`, `client_id`，生成并下载 `private_key`, `client_secret` 备用
-3. 下载 [`docker-compose.yml`](./docker-compose.yml), [`.env`](./.env) 配置文件以及 [`bot`](./bot) 目录至任意空目录
-4. 修改 `.env` 中的如下配置项：
+3. 下载 [`docker-compose.yml`](./docker-compose.yml) 以及 [`bot`](./bot) 目录至任意空目录
+4. 在 `docker-compose.yml` 同目录下创建 `.env` 并写入如下配置项：
 
    ```dotenv
+   # 可选，参考 nonebot superuser 格式
    SUPERUSERS=["机器人管理号"]
 
    # onebot
+   # 可选
    ONEBOT_ACCESS_TOKEN=your_access_token
+   # 可选
    ONEBOT_SECRET=your_secret
+   # 修改此处的 QQ 号
    ONEBOT_API_ROOTS={"你的QQ号": "http://go-cqhttp:15700/"}
 
-   # postgres 数据库配置项
+   # 必填，postgres 数据库配置项
    POSTGRES_USER=bot
    POSTGRES_PASSWORD=postgres_password
    POSTGRES_DB=bot
 
-   # redis 数据库配置项
+   # 必填，redis 数据库配置项
    REDIS_PASSWORD=redis_password
 
-   # Sentry DSN 网址，如果不使用可以不修改
+   # 可选，Sentry DSN 网址
    SENTRY_DSN=https://xxxxxxxx.sentry.io/123123
 
    # Github App 配置
+   # 可选，图片主题，light/dark
+   GITHUB_THEME=light
+   # 必填，github app 配置
    # webhook_secret 与 github app 配置中的 webhook secret 保持一致，如果没有设置则删除
    GITHUB_APPS='
    [

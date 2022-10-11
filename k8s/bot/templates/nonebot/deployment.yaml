@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bot.name" . }}-nonebot
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "bot.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nonebot
+spec:
+  replicas: {{ .Values.bot.replicas }}
+  selector:
+    matchLabels:
+      {{- include "bot.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: nonebot
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "bot.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: nonebot
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: wait-for-redis
+          image: redis:7
+          command:
+            - "sh"
+            - "-c"
+            - |
+              until redis-cli -h {{ include "bot.name" . }}-redis-service.{{ .Release.Namespace }}.svc.cluster.local -p 6379 ping;
+              do echo waiting for redis;
+              sleep 2;
+              done;
+        - name: wait-for-postgres
+          image: postgres:14
+          command:
+            - "sh"
+            - "-c"
+            - |
+              until pg_isready \-h {{ include "bot.name" . }}-postgres-service.{{ .Release.Namespace }}.svc.cluster.local -p 5432;
+              do echo waiting for postgres;
+              sleep 2;
+              done;
+      containers:
+        - name: {{ .Chart.Name }}-nonebot
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.bot.image.repo }}:{{ .Values.bot.image.tag }}"
+          imagePullPolicy: {{ .Values.bot.image.pullPolicy }}
+          env:
+            - name: ENVIRONMENT
+              value: prod
+            - name: HOST
+              value: "0.0.0.0"
+            {{- range $key, $value := .Values.bot.config }}
+            - name: {{ $key | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+          ports:
+            - name: nonebot
+              containerPort: {{ .Values.bot.config.PORT }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: nonebot
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: nonebot
+          resources:
+            {{- toYaml .Values.bot.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
