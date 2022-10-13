@@ -36,7 +36,7 @@ spec:
             - name: POSTGRES_USER
               value: {{ required "postgres user" .Values.bot.config.POSTGRES_USER | quote }}
             - name: POSTGRES_PASSWORD
-              value: {{ required "postgres password" .Values.bot.config.POSTGRES_Password | quote }}
+              value: {{ required "postgres password" .Values.bot.config.POSTGRES_PASSWORD | quote }}
             - name: POSTGRES_DB
               value: {{ required "postgres database" .Values.bot.config.POSTGRES_DB | quote }}
             - name: POSTGRES_INITDB_ARGS
