@@ -38,7 +38,7 @@ spec:
             - "redis-server --requirepass $(REDIS_PASSWORD)"
           env:
             - name: REDIS_PASSWORD
-              value: {{ .Values.bot.config.REDIS_PASSWORD | quote }}
+              value: {{ required "redis password" .Values.bot.config.REDIS_PASSWORD | quote }}
           ports:
             - name: redis
               containerPort: 6379

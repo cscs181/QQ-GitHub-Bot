@@ -34,11 +34,11 @@ spec:
           imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
           env:
             - name: POSTGRES_USER
-              value: {{ .Values.bot.config.postgresUser | quote }}
+              value: {{ required "postgres user" .Values.bot.config.POSTGRES_USER | quote }}
             - name: POSTGRES_PASSWORD
-              value: {{ .Values.bot.config.postgresPassword | quote }}
+              value: {{ required "postgres password" .Values.bot.config.POSTGRES_Password | quote }}
             - name: POSTGRES_DB
-              value: {{ .Values.bot.config.postgresDatabase | quote }}
+              value: {{ required "postgres database" .Values.bot.config.POSTGRES_DB | quote }}
             - name: POSTGRES_INITDB_ARGS
               value: "--encoding=UTF8"
             - name: TZ

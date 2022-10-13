@@ -72,7 +72,7 @@ spec:
             {{- end }}
           ports:
             - name: nonebot
-              containerPort: {{ .Values.bot.config.PORT }}
+              containerPort: {{ required "bot port" .Values.bot.config.PORT }}
               protocol: TCP
           livenessProbe:
             httpGet:
