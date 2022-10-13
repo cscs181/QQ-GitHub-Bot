@@ -8,6 +8,8 @@ metadata:
     app.kubernetes.io/component: redis
 spec:
   storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
