@@ -41,6 +41,8 @@ accesslog = use_accesslog
 graceful_timeout = int(graceful_timeout_str)
 timeout = int(timeout_str)
 keepalive = int(keepalive_str)
+keyfile = os.getenv("KEYFILE", None)
+certfile = os.getenv("CERTFILE", None)
 
 logconfig_dict = {
     "root": {"level": "INFO", "handlers": ["default"]},

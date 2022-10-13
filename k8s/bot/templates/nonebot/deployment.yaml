@@ -56,6 +56,14 @@ spec:
           env:
             - name: ENVIRONMENT
               value: prod
+            {{- if .Values.service.keyfile }}
+            - name: KEYFILE
+              value: /ssl.key
+            {{- end }}
+            {{- if .Values.service.certfile }}
+            - name: CERTFILE
+              value: /ssl.crt
+            {{- end }}
             - name: HOST
               value: "0.0.0.0"
             {{- range $key, $value := .Values.bot.config }}
@@ -76,6 +84,28 @@ spec:
               port: nonebot
           resources:
             {{- toYaml .Values.bot.resources | nindent 12 }}
+          volumeMounts:
+            {{- if .Values.service.keyfile }}
+            - name: ssl-key
+              mountPath: /ssl.key
+              subPath: ssl.key
+            {{- end }}
+            {{- if .Values.service.certfile }}
+            - name: ssl-crt
+              mountPath: /ssl.crt
+              subPath: ssl.crt
+            {{- end }}
+      volumes:
+        {{- if .Values.service.keyfile }}
+        - name: ssl-key
+          hostPath:
+            path: {{ .Values.service.keyfile }}
+        {{- end }}
+        {{- if .Values.service.certfile }}
+        - name: ssl-crt
+          hostPath:
+            path: {{ .Values.service.certfile }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
