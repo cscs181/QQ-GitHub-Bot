@@ -63,6 +63,14 @@ spec:
               value: /app/disable
             - name: HOST
               value: "0.0.0.0"
+            - name: REDIS_HOST
+              value: {{ include "bot.name" . }}-redis-service.{{ .Release.Namespace }}.svc.cluster.local
+            - name: REDIS_PORT
+              value: "6379"
+            - name: POSTGRES_HOST
+              value: {{ include "bot.name" . }}-postgres-service.{{ .Release.Namespace }}.svc.cluster.local
+            - name: POSTGRES_PORT
+              value: "5432"
             {{- range $key, $value := .Values.bot.config }}
             - name: {{ $key | quote }}
               value: {{ $value | quote }}
