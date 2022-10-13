@@ -43,7 +43,7 @@ spec:
             - "sh"
             - "-c"
             - |
-              until pg_isready \-h {{ include "bot.name" . }}-postgres-service.{{ .Release.Namespace }}.svc.cluster.local -p 5432;
+              until pg_isready -h {{ include "bot.name" . }}-postgres-service.{{ .Release.Namespace }}.svc.cluster.local -p 5432;
               do echo waiting for postgres;
               sleep 2;
               done;
@@ -95,6 +95,7 @@ spec:
               mountPath: /ssl.crt
               subPath: ssl.crt
             {{- end }}
+      {{- if or .Values.service.keyfile .Values.service.certfile }}
       volumes:
         {{- if .Values.service.keyfile }}
         - name: ssl-key
@@ -106,6 +107,7 @@ spec:
           hostPath:
             path: {{ .Values.service.certfile }}
         {{- end }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

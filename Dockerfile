@@ -47,6 +47,6 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 RUN playwright install chromium
 
-COPY ./bot.py ./src/ ./.env ./.env* /app/
+COPY ./bot.py ./src/ ./.env ./.env* ./scripts/ ./prestart.sh ./migrations/ /app/
 
 CMD ["/start.sh"]
