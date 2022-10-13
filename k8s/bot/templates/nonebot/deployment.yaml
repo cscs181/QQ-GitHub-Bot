@@ -37,6 +37,9 @@ spec:
               do echo waiting for redis;
               sleep 2;
               done;
+          env:
+            - name: REDISCLI_AUTH
+              value: {{ .Values.bot.config.REDIS_PASSWORD }}
         - name: wait-for-postgres
           image: postgres:14
           command:
