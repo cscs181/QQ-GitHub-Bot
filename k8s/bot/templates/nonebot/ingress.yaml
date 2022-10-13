@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "bot.name" . }}-nonebot-ingress
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "bot.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nonebot
+spec:
+  {{- if and .Values.ingress.keyfile .Values.ingress.certfile }}
+  tls:
+    - hosts:
+        - {{ required "tls host" .Values.ingress.host }}
+      secretName: {{ include "bot.name" . }}-nonebot-tls
+  {{- end }}
+  rules:
+    - host: {{ default "*" .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "bot.name" . }}-nonebot-service
+                port: nonebot

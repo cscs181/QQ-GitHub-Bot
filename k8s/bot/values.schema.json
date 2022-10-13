@@ -93,11 +93,16 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 65535
-        },
-        "keyfile": {
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "key": {
           "type": ["string", "null"]
         },
-        "certfile": {
+        "cert": {
           "type": ["string", "null"]
         }
       }
