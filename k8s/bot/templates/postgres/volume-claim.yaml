@@ -7,8 +7,7 @@ metadata:
     {{- include "bot.labels" . | nindent 4 }}
     app.kubernetes.io/component: postgres
 spec:
-  storageClassName: local-storage
-  volumeName: {{ include "bot.name" . }}-postgres-pv
+  storageClassName: local-path
   resources:
     requests:
       storage: 5Gi

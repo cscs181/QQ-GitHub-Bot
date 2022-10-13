@@ -31,16 +31,12 @@ redis:
     repo: redis
     tag: "7"
     pullPolicy: IfNotPresent
-  persistencePath: ./redis
-  nodeHostName: ""
 
 postgres:
   image:
     repo: postgres
     tag: "14"
     pullPolicy: IfNotPresent
-  persistencePath: ./postgres
-  nodeHostName: ""
 
 podAnnotations: {}
 
