@@ -59,14 +59,8 @@ spec:
           env:
             - name: ENVIRONMENT
               value: prod
-            {{- if .Values.service.keyfile }}
-            - name: KEYFILE
-              value: /ssl.key
-            {{- end }}
-            {{- if .Values.service.certfile }}
-            - name: CERTFILE
-              value: /ssl.crt
-            {{- end }}
+            - name: PRE_START_PATH
+              value: /app/disable
             - name: HOST
               value: "0.0.0.0"
             {{- range $key, $value := .Values.bot.config }}
