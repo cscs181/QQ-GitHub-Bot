@@ -37,7 +37,7 @@ spec:
         containers:
           - name: {{ .Chart.Name }}-nonebot-migrate
             securityContext:
-              {{- toYaml .Values.securityContext | nindent 12 }}
+              {{- toYaml .Values.securityContext | nindent 14 }}
             image: "{{ .Values.bot.image.repo }}:{{ .Values.bot.image.tag }}"
             imagePullPolicy: {{ .Values.bot.image.pullPolicy }}
             command: ["/bin/sh", "-c", "python ./scripts/database.py upgrade"]
