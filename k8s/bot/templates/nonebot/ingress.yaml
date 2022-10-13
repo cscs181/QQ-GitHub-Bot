@@ -22,4 +22,5 @@ spec:
             backend:
               service:
                 name: {{ include "bot.name" . }}-nonebot-service
-                port: nonebot
+                port:
+                  name: nonebot
