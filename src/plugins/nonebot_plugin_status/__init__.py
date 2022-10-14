@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-02 12:11:19
+@LastEditTime   : 2022-10-14 17:05:22
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,9 +39,10 @@ async def server_status(matcher: Matcher):
     await matcher.send(message=message.strip("\n"))
 
 
-from .common import command
+if status_config.server_status_enabled:
+    from .common import command
 
-with contextlib.suppress(ImportError):
-    import nonebot.adapters.onebot.v11
+    with contextlib.suppress(ImportError):
+        import nonebot.adapters.onebot.v11
 
-    from .onebot_v11 import poke, group_poke
+        from .onebot_v11 import poke, group_poke

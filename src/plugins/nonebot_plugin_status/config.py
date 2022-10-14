@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-10-04 16:32:00
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-02 11:29:12
+@LastEditTime   : 2022-10-14 17:04:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -33,6 +33,7 @@ UPTIME_TEMPLATE = "Uptime: {{ uptime }}"
 
 
 class Config(BaseModel, extra=Extra.ignore):
+    server_status_enabled: bool = True
     server_status_only_superusers: bool = True
 
     # Deprecated: legacy settings
