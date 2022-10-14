@@ -6,6 +6,11 @@ metadata:
   labels:
     {{- include "bot.labels" . | nindent 4 }}
     app.kubernetes.io/component: nonebot
+  {{- if and .Values.ingress.key .Values.ingress.cert }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  {{- end }}
 spec:
   {{- if and .Values.ingress.key .Values.ingress.cert }}
   tls:
@@ -24,3 +29,32 @@ spec:
                 name: {{ include "bot.name" . }}-nonebot-service
                 port:
                   name: nonebot
+
+{{- /* http redirect to https */ -}}
+{{- if and .Values.ingress.key .Values.ingress.cert }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "bot.name" . }}-nonebot-redirect
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "bot.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nonebot
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: |-
+      {{ .Release.Namespace }}-{{ include "bot.name" . }}-nonebot-redirect@kubernetescrd
+spec:
+  rules:
+    - host: {{ default "*" .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "bot.name" . }}-nonebot-service
+                port:
+                  name: nonebot
+{{- end }}
