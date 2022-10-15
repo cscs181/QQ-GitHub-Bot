@@ -16,7 +16,7 @@ spec:
     type: Recreate
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.redis.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -25,11 +25,11 @@ spec:
         app.kubernetes.io/component: redis
     spec:
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.redis.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}-redis
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.redis.securityContext | nindent 12 }}
           image: "{{ .Values.redis.image.repo }}:{{ .Values.redis.image.tag }}"
           imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
           args:
@@ -48,7 +48,28 @@ spec:
               name: redis-data
       restartPolicy: Always
       volumes:
+        {{- if not .Values.redis.persistence.enabled }}
+        - name: redis-data
+          emptyDir: {}
+        {{- else if .Values.redis.persistence.existingClaim }}
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.redis.persistence.existingClaim | quote }}
+        {{- else }}
         - name: redis-data
           persistentVolumeClaim:
             claimName: {{ include "bot.name" . }}-redis-pvc
+        {{- end }}
+      {{- with .Values.redis.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.redis.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.redis.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 status: {}

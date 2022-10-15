@@ -19,7 +19,7 @@ spec:
       secretName: {{ include "bot.name" . }}-nonebot-tls
   {{- end }}
   rules:
-    - host: {{ default "*" .Values.ingress.host }}
+    - host: {{ required "ingress host must be set" .Values.ingress.host }}
       http:
         paths:
           - path: /

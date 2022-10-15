@@ -1,3 +1,4 @@
+{{- if and .Values.redis.persistence.enabled (not .Values.redis.persistence.existingClaim) }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -7,9 +8,12 @@ metadata:
     {{- include "bot.labels" . | nindent 4 }}
     app.kubernetes.io/component: redis
 spec:
-  storageClassName: local-path
+  storageClassName: {{ .Values.redis.persistence.storageClass | quote }}
   accessModes:
-    - ReadWriteOnce
+    {{- range .Values.redis.persistence.accessModes }}
+    - {{ . | quote }}
+    {{- end }}
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.redis.persistence.size | quote }}
+{{- end }}

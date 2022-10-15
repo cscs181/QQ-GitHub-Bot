@@ -16,7 +16,7 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.bot.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -25,7 +25,7 @@ spec:
         app.kubernetes.io/component: nonebot
     spec:
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.bot.podSecurityContext | nindent 8 }}
       initContainers:
         - name: wait-for-redis
           image: redis:7
@@ -53,7 +53,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-nonebot
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.bot.securityContext | nindent 12 }}
           image: "{{ .Values.bot.image.repo }}:{{ .Values.bot.image.tag }}"
           imagePullPolicy: {{ .Values.bot.image.pullPolicy }}
           env:
@@ -97,15 +97,15 @@ spec:
             periodSeconds: 30
           resources:
             {{- toYaml .Values.bot.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+      {{- with .Values.bot.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.bot.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.bot.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

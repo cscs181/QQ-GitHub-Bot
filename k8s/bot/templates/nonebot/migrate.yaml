@@ -14,7 +14,7 @@ spec:
   ttlSecondsAfterFinished: 100
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.bot.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -22,6 +22,8 @@ spec:
         {{- include "bot.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: migrate
     spec:
+      securityContext:
+        {{- toYaml .Values.bot.podSecurityContext | nindent 8 }}
       restartPolicy: Never
       initContainers:
         - name: wait-for-postgres
@@ -37,7 +39,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-migrate
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 14 }}
+            {{- toYaml .Values.bot.securityContext | nindent 14 }}
           image: "{{ .Values.bot.image.repo }}:{{ .Values.bot.image.tag }}"
           imagePullPolicy: {{ .Values.bot.image.pullPolicy }}
           command: ["/bin/sh", "-c", "python ./scripts/database.py upgrade"]
@@ -58,3 +60,15 @@ spec:
             - name: {{ $key | quote }}
               value: {{ $value | quote }}
             {{- end }}
+      {{- with .Values.bot.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bot.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.bot.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
