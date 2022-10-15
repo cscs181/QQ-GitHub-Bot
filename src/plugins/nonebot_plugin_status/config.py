@@ -4,71 +4,41 @@
 @Author         : yanyongyu
 @Date           : 2020-10-04 16:32:00
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-14 17:04:55
+@LastEditTime   : 2022-10-15 12:07:38
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-import warnings
-from typing import Any, Dict
 
-from pydantic import Extra, BaseModel, root_validator
+from pydantic import Extra, BaseModel
 
 CPU_TEMPLATE = "CPU: {{ '%02d' % cpu_usage }}%"
-PER_CPU_TEMPLATE = (
-    "CPU:\n"
-    "{%- for core in per_cpu_usage %}\n"
-    "  core{{ loop.index }}: {{ '%02d' % core }}%\n"
-    "{%- endfor %}"
+# PER_CPU_TEMPLATE = (
+#     "CPU:\n"
+#     "{%- for core in per_cpu_usage %}\n"
+#     "  core{{ loop.index }}: {{ '%02d' % core }}%\n"
+#     "{%- endfor %}"
+# )
+MEMORY_TEMPLATE = "Memory: {{ '%02d' % memory_usage.percent }}%"
+SWAP_TEMPLATE = (
+    "{% if swap_usage.total %}Swap: {{ '%02d' % swap_usage.percent }}%{% endif %}"
 )
-MEMORY_TEMPLATE = "Memory: {{ '%02d' % memory_usage }}%"
 DISK_TEMPLATE = (
     "Disk:\n"
-    "{%- for name, usage in disk_usage.items() %}\n"
+    "{% for name, usage in disk_usage.items() %}\n"
     "  {{ name }}: {{ '%02d' % usage.percent }}%\n"
-    "{%- endfor %}"
+    "{% endfor %}"
 )
-UPTIME_TEMPLATE = "Uptime: {{ uptime }}"
+UPTIME_TEMPLATE = "Uptime: {{ uptime | relative_time | humanize_delta }}"
+RUNTIME_TEMPLATE = "Runtime: {{ runtime | relative_time | humanize_delta }}"
 
 
 class Config(BaseModel, extra=Extra.ignore):
     server_status_enabled: bool = True
     server_status_only_superusers: bool = True
 
-    # Deprecated: legacy settings
-    server_status_cpu: bool = True
-    server_status_per_cpu: bool = False
-    server_status_memory: bool = True
-    server_status_disk: bool = True
-
     # template
     server_status_template: str = "\n".join(
-        (CPU_TEMPLATE, MEMORY_TEMPLATE, DISK_TEMPLATE, UPTIME_TEMPLATE)
+        (CPU_TEMPLATE, MEMORY_TEMPLATE, RUNTIME_TEMPLATE, SWAP_TEMPLATE, DISK_TEMPLATE)
     )
-
-    @root_validator(pre=True)
-    def transform_legacy_settings(cls, value: Dict[str, Any]) -> Dict[str, Any]:
-        if "server_status_template" not in value and (
-            "server_status_cpu" in value
-            or "server_status_per_cpu" in value
-            or "server_status_memory" in value
-            or "server_status_disk" in value
-        ):
-            warnings.warn(
-                "Settings for status plugin is deprecated, "
-                "please use `server_status_template` instead.",
-                DeprecationWarning,
-            )
-            templates = []
-            if value.get("server_status_cpu"):
-                templates.append(CPU_TEMPLATE)
-            if value.get("server_status_per_cpu"):
-                templates.append(PER_CPU_TEMPLATE)
-            if value.get("server_status_memory"):
-                templates.append(MEMORY_TEMPLATE)
-            if value.get("server_status_disk"):
-                templates.append(DISK_TEMPLATE)
-            value.setdefault("server_status_template", "\n".join(templates))
-
-        return value

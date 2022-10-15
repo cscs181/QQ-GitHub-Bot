@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-15 14:40:25
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-05-23 05:58:29
+ * @LastEditTime   : 2022-10-15 12:06:21
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -46,6 +46,12 @@ OneBot:
 
 配置方式：直接在 NoneBot 全局配置文件中添加以下配置项即可。
 
+### server_status_enabled
+
+- 类型：`bool`
+- 默认值：`True`
+- 说明：是否启用服务器状态查看功能
+
 ### server_status_only_superusers
 
 - 类型: `bool`
@@ -62,22 +68,30 @@ OneBot:
 
 - 类型: `str`
 - 默认: 请参考示例
-- 说明：发送的消息模板，支持的变量以及类型如下：
+- 说明：发送的消息模板，支持的方法、变量以及类型如下：
+  - relative_time (`Callable[[datetime], timedelta]`): 获取相对时间
+  - humanize_date (`Callable[[datetime], str]`): [人性化时间](https://python-humanize.readthedocs.io/en/latest/time/#humanize.time.naturaldate)
+  - humanize_delta (`Callable[[timedelta], str]`): [人性化时间差](https://python-humanize.readthedocs.io/en/latest/time/#humanize.time.precisiondelta)
   - cpu_usage (`float`): CPU 使用率
-  - memory_usage (`float`): 内存使用率
+  - per_cpu_usage (`List[float]`): 每个 CPU 核心的使用率
+  - memory_usage (`svmem`): 内存使用情况，包含 total, available, percent, used, free(, active, inactive, buffers, cached, shared) 属性
+  - swap_usage (`sswap`): 内存使用情况，包含 total, used, free, percent, sin, sout 属性
   - disk_usage (`Dict[str, psutil._common.sdiskusage]`): 磁盘使用率，包含 total, used, free, percent 属性
-  - uptime (`timedelta`): 服务器运行时间
+  - uptime (`datetime`): 服务器运行时间
+  - runtime (`datetime`): NoneBot 运行时间
+  - bot_connect_time (`Dict[str, datetime]`): 机器人连接时间
 
 配置文件示例（默认模板）
 
 ```dotenv
-SERVER_STATUS_TEMPLATE="
-CPU: {{ '%02d' % cpu_usage }}%
-Memory: {{ '%02d' % memory_usage }}%
+SERVER_STATUS_TEMPLATE='
+CPU: {{ "%02d" % cpu_usage }}%
+Memory: {{ "%02d" % memory_usage.percent }}%
+Runtime: {{ runtime | relative_time | humanize_delta }}
+{% if swap_usage.total %}Swap: {{ "%02d" % swap_usage.percent }}%{% endif %}
 Disk:
-{%- for name, usage in disk_usage.items() %}
-  {{ name }}: {{ '%02d' % usage.percent }}%
-{%- endfor %}
-Uptime: {{ uptime }}
-"
+{% for name, usage in disk_usage.items() %}
+  {{ name }}: {{ "%02d" % usage.percent }}%
+{% endfor %}
+'
 ```

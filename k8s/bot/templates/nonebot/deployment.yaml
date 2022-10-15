@@ -71,6 +71,8 @@ spec:
               value: {{ include "bot.name" . }}-postgres-service.{{ .Release.Namespace }}.svc.cluster.local
             - name: POSTGRES_PORT
               value: "5432"
+            - name: SERVER_STATUS_ENABLED
+              value: "false"
             {{- range $key, $value := .Values.bot.config }}
             - name: {{ $key | quote }}
               value: {{ $value | quote }}

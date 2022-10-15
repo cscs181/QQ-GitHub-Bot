@@ -4,21 +4,59 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:15:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-08-13 08:20:43
+@LastEditTime   : 2022-10-15 08:33:39
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import time
-from datetime import timedelta
 from typing import Dict, List, Optional
+from datetime import datetime, timezone, timedelta
 
 import psutil
+from nonebot import get_driver
 from nonebot.log import logger
+from nonebot.adapters import Bot
+
+CURRENT_TIMEZONE = datetime.now().astimezone().tzinfo
+
+driver = get_driver()
+
+# bot status
+_nonebot_run_time: datetime
+_bot_connect_time: Dict[str, datetime] = {}
 
 
-def cpu_status() -> float:
+@driver.on_startup
+async def _():
+    global _nonebot_run_time
+    _nonebot_run_time = datetime.now(CURRENT_TIMEZONE)
+
+
+@driver.on_bot_connect
+async def _(bot: Bot):
+    _bot_connect_time[bot.self_id] = datetime.now(CURRENT_TIMEZONE)
+
+
+@driver.on_bot_disconnect
+async def _(bot: Bot):
+    _bot_connect_time.pop(bot.self_id, None)
+
+
+def get_nonebot_run_time() -> datetime:
+    try:
+        return _nonebot_run_time
+    except NameError:
+        raise RuntimeError("NoneBot not running!") from None
+
+
+def get_bot_connect_time() -> Dict[str, datetime]:
+    return _bot_connect_time
+
+
+# mechine status
+def get_cpu_status() -> float:
     return psutil.cpu_percent(interval=1)  # type: ignore
 
 
@@ -26,8 +64,12 @@ def per_cpu_status() -> List[float]:
     return psutil.cpu_percent(interval=1, percpu=True)  # type: ignore
 
 
-def memory_status() -> float:
-    return psutil.virtual_memory().percent
+def get_memory_status():
+    return psutil.virtual_memory()
+
+
+def get_swap_status():
+    return psutil.swap_memory()
 
 
 def _get_disk_usage(path: str) -> Optional[psutil._common.sdiskusage]:
@@ -37,7 +79,7 @@ def _get_disk_usage(path: str) -> Optional[psutil._common.sdiskusage]:
         logger.warning(f"Could not get disk usage for {path}: {e!r}")
 
 
-def disk_usage() -> Dict[str, psutil._common.sdiskusage]:
+def get_disk_usage() -> Dict[str, psutil._common.sdiskusage]:
     disk_parts = psutil.disk_partitions()
     return {
         d.mountpoint: usage
@@ -46,12 +88,5 @@ def disk_usage() -> Dict[str, psutil._common.sdiskusage]:
     }
 
 
-def uptime() -> timedelta:
-    diff = time.time() - psutil.boot_time()
-    return timedelta(seconds=diff)
-
-
-if __name__ == "__main__":
-    print(cpu_status())
-    print(memory_status())
-    print(disk_usage())
+def get_uptime() -> datetime:
+    return datetime.fromtimestamp(psutil.boot_time(), tz=CURRENT_TIMEZONE)
