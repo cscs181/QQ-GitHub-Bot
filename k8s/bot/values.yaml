@@ -5,6 +5,7 @@ fullnameOverride: ""
 
 bot:
   replicas: 1
+  updateStrategy: RollingUpdate
   image:
     repo: cscs181/qq-github-bot
     tag: latest

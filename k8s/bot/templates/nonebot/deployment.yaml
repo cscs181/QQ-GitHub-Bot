@@ -13,7 +13,7 @@ spec:
       {{- include "bot.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: nonebot
   strategy:
-    type: RollingUpdate
+    type: {{ .Values.bot.updateStrategy }}
   template:
     metadata:
       {{- with .Values.bot.podAnnotations }}
