@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 04:48:23
+@LastEditTime   : 2022-10-15 16:19:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -155,7 +155,7 @@ async def handle_pr_diff(
 
 
 issue_short = on_regex(
-    rf"#{ISSUE_REGEX}",
+    rf"^#{ISSUE_REGEX}$",
     rule=is_type(*GROUP_EVENT),
     priority=config.github_command_priority,
 )
