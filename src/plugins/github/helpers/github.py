@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-16 15:28:09
+@LastEditTime   : 2022-10-16 16:00:14
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -47,8 +47,12 @@ async def get_github_context(
         return partial(bot.as_user, user.access_token)
 
     try:
-        resp = await bot.rest.apps.async_get_repo_installation(owner=owner, repo=repo)
-        return partial(bot.as_installation, resp.parsed_data.id)
+        resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
+        if not resp.parsed_data.private:
+            resp = await bot.rest.apps.async_get_repo_installation(
+                owner=owner, repo=repo
+            )
+            return partial(bot.as_installation, resp.parsed_data.id)
     except ActionTimeout:
         await matcher.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
