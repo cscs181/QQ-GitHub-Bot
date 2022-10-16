@@ -8,7 +8,13 @@ metadata:
     {{- include "bot.labels" . | nindent 4 }}
     app.kubernetes.io/component: redis
 spec:
-  storageClassName: {{ .Values.redis.persistence.storageClass | quote }}
+  {{- with .Values.redis.persistence.storageClass }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "bot.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: redis
   accessModes:
     {{- range .Values.redis.persistence.accessModes }}
     - {{ . | quote }}
