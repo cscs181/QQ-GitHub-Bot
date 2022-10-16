@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 16:40:46
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-21 17:00:50
+ * @LastEditTime   : 2022-10-16 15:25:19
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -14,14 +14,12 @@
 {% set pull_request = get_pull_request(issue) %}
 <div class="color-bg-default mb-3">
   {{ issue_title(issue) }}
-  <div
-    class="
+  <div class="
       d-flex
       flex-items-center flex-wrap
       pb-2 mt-0 mb-3
       border-bottom color-border-default color-fg-muted
-    "
-  >
+    ">
     {{ pr_state(pull_request) }}
     <div class="flex-auto min-width-0 mb-2">
       <a href="#" class="author text-bold Link--secondary">
@@ -50,7 +48,7 @@
       from
       <span class="branch-name css-truncate">
         <a class="no-underline">
-          {% if pull_request.head.repo.owner.login == current_repo %}
+          {% if pull_request.head.repo and (pull_request.head.repo.owner.login == current_repo) %}
           {{ pull_request.head.ref|escape }}
           {% else %}
           {{ pull_request.head.label|escape }}

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 03:35:23
+@LastEditTime   : 2022-10-16 15:28:09
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -42,6 +42,10 @@ async def get_github_context(
     owner: str, repo: str, matcher: Matcher, user: User | None = None
 ) -> Callable[[], AsyncContextManager[GitHubBot]]:
     bot = get_bot()
+
+    if user:
+        return partial(bot.as_user, user.access_token)
+
     try:
         resp = await bot.rest.apps.async_get_repo_installation(owner=owner, repo=repo)
         return partial(bot.as_installation, resp.parsed_data.id)
@@ -57,6 +61,4 @@ async def get_github_context(
         logger.opt(exception=e).error(f"Failed while checking repo in opengraph: {e}")
         await matcher.finish("未知错误发生，请尝试重试或联系管理员")
 
-    if not user:
-        await matcher.finish("你还没有绑定 GitHub 帐号，请使用 /install 进行安装")
-    return partial(bot.as_user, user.access_token)
+    await matcher.finish("你还没有绑定 GitHub 帐号，请使用 /install 进行安装")
