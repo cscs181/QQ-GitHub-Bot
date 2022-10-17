@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-11 08:38:43
+ * @LastEditTime   : 2022-10-17 11:38:08
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -31,11 +31,16 @@ GitHub Bot for QQ
 1. 部署要求
 
    - Docker & Docker Compose
+
+     ```bash
+     curl -sSL https://get.docker.com/ | sh
+     ```
+
    - 1+ CPU Core
    - 1+ GB RAM
    - 能够访问 GitHub API 的网络环境
 
-   对于内存大小的限制，可以通过修改 `docker-compose.yml` 中的 `MAX_WORKERS`, `deploy.resources.limits.memory` 来调整，通常 worker 与内存 1:1。
+   对于内存大小的限制，可以通过修改 `docker-compose.yml` 中的 `deploy.resources.limits.memory` 来调整，由于采用了 playwright(chromium) 渲染图片，不限制内存可能会导致渲染大图时直接卡死服务器。
 
 2. 注册 GitHub App
    配置 GitHub App：
@@ -98,4 +103,4 @@ GitHub Bot for QQ
 5. 修改 `bot/config.yml` 配置文件，参考 [go-cqhttp](https://docs.go-cqhttp.org/guide/config.html#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF) 修改 `uin`, `password`, `access-token`, `secret` 配置项。如需修改连接配置，请保证与 `.env` 中的配置项一致。
 6. 启动
 
-   在目录下执行 `docker compose up -d` (`docker-compose up -d`) 即可。
+   在目录下执行 `docker compose up -d` (旧版方式 `docker-compose up -d`) 即可。

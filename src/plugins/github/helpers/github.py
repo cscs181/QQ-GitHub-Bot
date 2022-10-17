@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-16 16:00:14
+@LastEditTime   : 2022-10-17 11:44:18
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -43,16 +43,18 @@ async def get_github_context(
 ) -> Callable[[], AsyncContextManager[GitHubBot]]:
     bot = get_bot()
 
+    # use user auth first
     if user:
         return partial(bot.as_user, user.access_token)
 
+    # use installation second, only public repo
     try:
-        resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
+        resp = await bot.rest.apps.async_get_repo_installation(owner=owner, repo=repo)
+        installation_id = resp.parsed_data.id
+        async with bot.as_installation(installation_id):
+            resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
         if not resp.parsed_data.private:
-            resp = await bot.rest.apps.async_get_repo_installation(
-                owner=owner, repo=repo
-            )
-            return partial(bot.as_installation, resp.parsed_data.id)
+            return partial(bot.as_installation, installation_id)
     except ActionTimeout:
         await matcher.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
