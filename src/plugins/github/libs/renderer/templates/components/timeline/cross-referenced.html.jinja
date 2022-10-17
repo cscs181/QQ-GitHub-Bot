@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-22 03:25:56
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-06 03:56:40
+ * @LastEditTime   : 2022-10-17 12:20:25
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,7 +12,7 @@
 {% from "components/pr/state.html.jinja" import pr_state %}
 
 {% macro cross_referenced(event, ns) %}
-{% set repo = get_issue_repo(issue) %}
+{% set repo = get_issue_repo(ns.issue) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_cross_reference() }}
