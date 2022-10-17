@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 15:53:30
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-15 15:18:45
+ * @LastEditTime   : 2022-10-17 12:18:02
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -39,6 +39,6 @@
   </div>
 </div>
 {% if event.body %}
-{{ commented(event, ns, showavatar=false) }}
+{{ commented(event, ns, showavatar=false, created_at=event.submitted_at) }}
 {% endif %}
 {% endmacro %}

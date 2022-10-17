@@ -2,12 +2,12 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:29:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-06 04:02:12
+ * @LastEditTime   : 2022-10-17 12:17:32
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
-{% macro commented(event, ns, is_first=false, showavatar=true) %}
+{% macro commented(event, ns, is_first=false, showavatar=true, create_at=false) %}
 <div class="TimelineItem{% if is_first %} pt-0{% endif %}">
   {% if showavatar %}
   <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">
@@ -54,7 +54,7 @@
           </strong>
           commented
           <a class="Link--secondary">
-            {{ event.created_at|relative_time }}
+            {{ (created_at or event.created_at)|relative_time }}
           </a>
         </h3>
       </div>
