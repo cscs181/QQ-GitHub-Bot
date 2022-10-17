@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-23 14:11:18
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-06 03:56:56
+ * @LastEditTime   : 2022-10-17 12:05:28
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -26,10 +26,13 @@
         {{ pull_request.head.ref|escape }}
       </a>
     </span>
-    branch to
+    branch
+    {% if event.commit_id %}
+    to
     <a class="Link--primary text-bold no-underline">
       <code>{{ event.commit_id[:7] }}</code>
     </a>
+    {% endif %}
     <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
   </div>
 </div>
