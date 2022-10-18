@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-06 03:42:51
+@LastEditTime   : 2022-10-18 02:45:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,9 +13,9 @@ __author__ = "yanyongyu"
 from nonebot import on_command
 from nonebot.log import logger
 from nonebot.params import Depends
-from githubkit.rest import Installation
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import ActionTimeout
+from githubkit.rest import SimpleUser, Installation
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
 from src.plugins.github import config
@@ -70,7 +70,10 @@ async def check_user_installation(
     # sourcery skip: merge-else-if-into-elif
     repo_selection = installation.repository_selection
     if account := installation.account:
-        gh_user = account.name
+        if isinstance(account, SimpleUser):
+            gh_user = account.name or account.login
+        else:
+            gh_user = account.name or account.slug
         if repo_selection == "selected":
             await install_check.finish(f"{gh_user} 已安装 GitHub APP 并授权了部分仓库")
         else:
