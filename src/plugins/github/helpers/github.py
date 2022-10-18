@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-17 11:44:18
+@LastEditTime   : 2022-10-18 03:35:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -59,12 +59,10 @@ async def get_github_context(
         await matcher.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
         if e.response.status_code != 404:
-            logger.opt(exception=e).error(
-                f"Failed while checking repo in opengraph: {e}"
-            )
+            logger.opt(exception=e).error(f"Failed while checking repo in context: {e}")
             await matcher.finish("未知错误发生，请尝试重试或联系管理员")
     except Exception as e:
-        logger.opt(exception=e).error(f"Failed while checking repo in opengraph: {e}")
+        logger.opt(exception=e).error(f"Failed while checking repo in context: {e}")
         await matcher.finish("未知错误发生，请尝试重试或联系管理员")
 
     await matcher.finish("你还没有绑定 GitHub 帐号，请使用 /install 进行安装")

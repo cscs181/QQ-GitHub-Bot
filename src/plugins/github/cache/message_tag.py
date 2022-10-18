@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-13 15:56:01
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-14 09:34:47
+@LastEditTime   : 2022-10-18 04:47:09
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,7 +15,7 @@ from datetime import timedelta
 from src.plugins.redis import redis_client
 
 MESSAGE_TAG_CACHE_KEY = "cache:github:message:{platform}:{message_id}:tag"
-MESSAGE_TAG_CACHE_EXPIRE = timedelta(minutes=60)
+MESSAGE_TAG_CACHE_EXPIRE = timedelta(days=1)
 
 
 async def create_message_tag(platform: str, message_id: str, data: str):

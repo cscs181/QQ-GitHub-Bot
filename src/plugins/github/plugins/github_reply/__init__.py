@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 03:50:02
+@LastEditTime   : 2022-10-18 06:11:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -24,7 +24,13 @@ from .dependencies import get_reply
 __plugin_meta__ = PluginMetadata(
     "GitHub 消息快捷命令",
     "通过回复 GitHub 消息来快速进行 Issue、PR 相关操作",
-    ("/link: 获取 Issue/PR 链接\n" "/content: 查看 Issue、PR 信息及事件\n" "/diff: 查看 PR diff"),
+    (
+        "/link: 获取 Issue/PR 链接\n"
+        "/star: star 仓库\n"
+        "/unstar: unstar 仓库\n"
+        "/content: 查看 Issue、PR 信息及事件\n"
+        "/diff: 查看 PR diff"
+    ),
 )
 
 
