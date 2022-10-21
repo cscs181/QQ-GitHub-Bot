@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-21 07:08:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 07:54:56
+@LastEditTime   : 2022-10-21 07:56:59
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -25,7 +25,7 @@ from src.plugins.github.helpers import get_platform, get_current_user
 from src.plugins.github.libs.message_tag import PullRequestTag, create_message_tag
 
 from . import KEY_GITHUB_REPLY
-from .dependencies import get_context, is_pull_request
+from .dependencies import is_pull_request
 
 approve = on_command(
     "approve", is_pull_request, priority=config.github_command_priority, block=True

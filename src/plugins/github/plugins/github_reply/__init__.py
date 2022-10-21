@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 07:21:55
+@LastEditTime   : 2022-10-21 08:31:56
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -32,6 +32,8 @@ __plugin_meta__ = PluginMetadata(
         "/content: 查看 Issue、PR 信息及事件\n"
         "/diff: 查看 PR diff\n"
         "/approve [content]: 批准 PR\n"
+        '/label [label "label with space" ...]: 批量添加标签\n'
+        "/unlabel label: 移除单个标签"
     ),
 )
 
@@ -43,4 +45,4 @@ async def check_reply(state: T_State, info: MessageInfo = Depends(get_reply)):
         state[KEY_GITHUB_REPLY] = tag
 
 
-from . import diff, link, repo, star, unstar, approve, content
+from . import diff, link, repo, star, label, unstar, approve, content, unlabel
