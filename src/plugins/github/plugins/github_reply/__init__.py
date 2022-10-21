@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 03:40:20
+@LastEditTime   : 2022-10-21 06:43:18
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -42,4 +42,4 @@ async def check_reply(state: T_State, info: MessageInfo = Depends(get_reply)):
         state[KEY_GITHUB_REPLY] = tag
 
 
-from . import diff, link, repo, content
+from . import diff, link, repo, star, unstar, content
