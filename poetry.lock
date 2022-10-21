@@ -220,7 +220,7 @@ testing = ["covdefaults (>=2.2)", "coverage (>=6.4.2)", "pytest (>=7.1.2)", "pyt
 
 [[package]]
 name = "githubkit"
-version = "0.8.3"
+version = "0.8.4"
 description = "GitHub SDK for Python"
 category = "main"
 optional = false
@@ -1310,8 +1310,8 @@ filelock = [
     {file = "filelock-3.8.0.tar.gz", hash = "sha256:55447caa666f2198c5b6b13a26d2084d26fa5b115c00d065664b2124680c4edc"},
 ]
 githubkit = [
-    {file = "githubkit-0.8.3-py3-none-any.whl", hash = "sha256:1f05f2c376c7e19bcda32bd9d6ba10dc8fa2d38e82c5e2bc45cc520ee69ccec3"},
-    {file = "githubkit-0.8.3.tar.gz", hash = "sha256:223ccd4eb07d7906fdff4a68216031c81f4f95cf99972bac8c389726fc9de306"},
+    {file = "githubkit-0.8.4-py3-none-any.whl", hash = "sha256:68da0f40577bda0a37f78489fba91fafd6a00407465d975b33f996c14ab51dae"},
+    {file = "githubkit-0.8.4.tar.gz", hash = "sha256:915eaba5d5e2137fbaac37ec8f8eee715eb942e56e870f24958cd18ead00b12f"},
 ]
 greenlet = [
     {file = "greenlet-1.1.3-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:8c287ae7ac921dfde88b1c125bd9590b7ec3c900c2d3db5197f1286e144e712b"},
