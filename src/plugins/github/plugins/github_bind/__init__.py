@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-06 03:42:21
+@LastEditTime   : 2022-10-21 03:41:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,7 +39,7 @@ from .dependencies import bypass_update
 __plugin_meta__ = PluginMetadata(
     "GitHub 群仓库绑定",
     "群绑定 GitHub 仓库以进行快捷 Issue、PR 相关操作（仅限群管理员）",
-    ("/bind [owner/repo]: 群查询或绑定 GitHub 仓库\n" "/unbind: 群解绑 GitHub 仓库"),
+    ("/bind [owner/repo]: 群查询或绑定 GitHub 仓库（仅仓库安装 APP 后有效）\n" "/unbind: 群解绑 GitHub 仓库"),
 )
 
 bind = on_command(
@@ -80,7 +80,7 @@ async def process_repo(event: Event, full_name: str = ArgPlainText()):
         await bind.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
         if e.response.status_code == 404:
-            await bind.reject(f"仓库 {owner}/{repo} 未授权！请重新发送或取消")
+            await bind.reject(f"仓库 {owner}/{repo} 未安装 APP！请重新发送或取消")
         logger.opt(exception=e).error(
             f"Failed while getting repo installation in group bind: {e}"
         )

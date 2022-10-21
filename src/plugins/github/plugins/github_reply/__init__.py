@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 01:33:36
+@LastEditTime   : 2022-10-21 03:40:20
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -27,8 +27,8 @@ __plugin_meta__ = PluginMetadata(
     (
         "/link: 获取 Issue/PR 链接\n"
         "/repo: 获取仓库链接\n"
-        # "/star: star 仓库\n"
-        # "/unstar: unstar 仓库\n"
+        "/star: star 仓库（仅仓库安装 APP 后有效）\n"
+        "/unstar: unstar 仓库（仅仓库安装 APP 后有效）\n"
         "/content: 查看 Issue、PR 信息及事件\n"
         "/diff: 查看 PR diff"
     ),
