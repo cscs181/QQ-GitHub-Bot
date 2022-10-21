@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-18 02:45:32
+@LastEditTime   : 2022-10-21 06:46:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -60,7 +60,7 @@ install_check = on_command(
 
 @install_check.handle()
 async def handle_check(user: None = Depends(get_current_user)):
-    await install_check.finish("你还没有绑定 GitHub 帐号，请使用 /install 进行安装")
+    await install_check.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
 
 
 @install_check.handle()
@@ -92,7 +92,7 @@ install_revoke = on_command(
 
 @install_revoke.handle()
 async def handle_revoke(user: None = Depends(get_current_user)):
-    await install_check.finish("你还没有绑定 GitHub 帐号，请使用 /install 进行安装")
+    await install_check.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
 
 
 @install_revoke.handle()

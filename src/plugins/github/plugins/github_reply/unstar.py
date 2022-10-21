@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-18 03:18:14
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 03:35:10
+@LastEditTime   : 2022-10-21 06:46:54
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -33,7 +33,7 @@ unstar = on_command(
 
 @unstar.handle()
 async def handle_noauth(user: None = Depends(get_current_user)):
-    await unstar.finish("你还没有绑定 GitHub 帐号，请使用 /install 进行安装")
+    await unstar.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
 
 
 @unstar.handle()

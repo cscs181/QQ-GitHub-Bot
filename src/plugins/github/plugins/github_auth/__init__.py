@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-06 03:41:32
+@LastEditTime   : 2022-10-21 06:46:08
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -57,7 +57,7 @@ auth_check = on_command(
 
 @auth_check.handle()
 async def handle_check(user: None = Depends(get_current_user)):
-    await auth_check.finish("你还没有授权 GitHub 帐号，请使用 /auth 进行授权或使用 /install 进行安装")
+    await auth_check.finish("你还没有授权 GitHub 帐号，请私聊使用 /auth 进行授权或使用 /install 进行安装")
 
 
 @auth_check.handle()
@@ -95,7 +95,7 @@ auth_revoke = on_command(
 
 @auth_revoke.handle()
 async def handle_revoke(user: None = Depends(get_current_user)):
-    await auth_check.finish("你还没有授权 GitHub 帐号，请使用 /auth 进行授权或使用 /install 进行安装")
+    await auth_check.finish("你还没有授权 GitHub 帐号，请私聊使用 /auth 进行授权或使用 /install 进行安装")
 
 
 @auth_revoke.handle()

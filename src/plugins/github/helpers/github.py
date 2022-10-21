@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-18 03:35:35
+@LastEditTime   : 2022-10-21 06:45:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -65,4 +65,4 @@ async def get_github_context(
         logger.opt(exception=e).error(f"Failed while checking repo in context: {e}")
         await matcher.finish("未知错误发生，请尝试重试或联系管理员")
 
-    await matcher.finish("你还没有绑定 GitHub 帐号，请使用 /install 进行安装")
+    await matcher.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
