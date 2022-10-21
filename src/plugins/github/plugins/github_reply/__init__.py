@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 06:43:18
+@LastEditTime   : 2022-10-21 07:21:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -30,7 +30,8 @@ __plugin_meta__ = PluginMetadata(
         "/star: star 仓库（仅仓库安装 APP 后有效）\n"
         "/unstar: unstar 仓库（仅仓库安装 APP 后有效）\n"
         "/content: 查看 Issue、PR 信息及事件\n"
-        "/diff: 查看 PR diff"
+        "/diff: 查看 PR diff\n"
+        "/approve [content]: 批准 PR\n"
     ),
 )
 
@@ -42,4 +43,4 @@ async def check_reply(state: T_State, info: MessageInfo = Depends(get_reply)):
         state[KEY_GITHUB_REPLY] = tag
 
 
-from . import diff, link, repo, star, unstar, content
+from . import diff, link, repo, star, unstar, approve, content

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-15 16:19:44
+@LastEditTime   : 2022-10-21 07:32:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -80,7 +80,10 @@ async def handle_issue(
 
     if info := get_message_info(event):
         await create_message_tag(
-            info, IssueTag(owner=owner, repo=repo, number=number, is_receive=True)
+            info,
+            PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
+            if issue_.pull_request
+            else IssueTag(owner=owner, repo=repo, number=number, is_receive=True),
         )
 
     try:
@@ -96,7 +99,11 @@ async def handle_issue(
         logger.opt(exception=e).error(f"Failed while generating issue image: {e}")
         await issue.finish("生成图片出错！请稍后再试")
 
-    tag = IssueTag(owner=owner, repo=repo, number=number, is_receive=False)
+    tag = (
+        PullRequestTag(owner=owner, repo=repo, number=number, is_receive=False)
+        if issue_.pull_request
+        else IssueTag(owner=owner, repo=repo, number=number, is_receive=False)
+    )
     match get_platform(event):
         case "qq":
             result = await issue.send(QQMS.image(img))
@@ -183,7 +190,10 @@ async def handle_short(
 
     if info := get_message_info(event):
         await create_message_tag(
-            info, IssueTag(owner=owner, repo=repo, number=number, is_receive=True)
+            info,
+            PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
+            if issue_.pull_request
+            else IssueTag(owner=owner, repo=repo, number=number, is_receive=True),
         )
 
     try:
@@ -197,7 +207,11 @@ async def handle_short(
         logger.opt(exception=e).error(f"Failed while generating issue image: {e}")
         await issue_short.finish("生成图片出错！请稍后再试")
 
-    tag = IssueTag(owner=owner, repo=repo, number=number, is_receive=False)
+    tag = (
+        PullRequestTag(owner=owner, repo=repo, number=number, is_receive=False)
+        if issue_.pull_request
+        else IssueTag(owner=owner, repo=repo, number=number, is_receive=False)
+    )
     match get_platform(event):
         case "qq":
             result = await issue_short.send(QQMS.image(img))
