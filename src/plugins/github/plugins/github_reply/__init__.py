@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-18 06:11:44
+@LastEditTime   : 2022-10-21 01:33:36
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -26,8 +26,9 @@ __plugin_meta__ = PluginMetadata(
     "通过回复 GitHub 消息来快速进行 Issue、PR 相关操作",
     (
         "/link: 获取 Issue/PR 链接\n"
-        "/star: star 仓库\n"
-        "/unstar: unstar 仓库\n"
+        "/repo: 获取仓库链接\n"
+        # "/star: star 仓库\n"
+        # "/unstar: unstar 仓库\n"
         "/content: 查看 Issue、PR 信息及事件\n"
         "/diff: 查看 PR diff"
     ),
@@ -41,4 +42,4 @@ async def check_reply(state: T_State, info: MessageInfo = Depends(get_reply)):
         state[KEY_GITHUB_REPLY] = tag
 
 
-from . import diff, link, content
+from . import diff, link, repo, content
