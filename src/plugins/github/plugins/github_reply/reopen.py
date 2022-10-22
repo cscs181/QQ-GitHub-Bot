@@ -2,19 +2,20 @@
 # -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
-@Date           : 2022-10-21 07:56:27
+@Date           : 2022-10-22 04:23:29
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-22 03:57:59
+@LastEditTime   : 2022-10-22 04:29:09
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from nonebot import on_command
 from nonebot.log import logger
+from githubkit.utils import UNSET
 from nonebot.typing import T_State
-from nonebot import on_shell_command
-from nonebot.adapters import Event, MessageSegment
-from nonebot.params import Depends, ShellCommandArgv
+from nonebot.adapters import Event, Message
+from nonebot.params import Depends, CommandArg
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
@@ -31,47 +32,53 @@ from src.plugins.github.libs.message_tag import (
 from . import KEY_GITHUB_REPLY
 from .dependencies import get_user, is_github_reply
 
-label = on_shell_command(
-    "label", is_github_reply, priority=config.github_command_priority, block=True
+reopen = on_command(
+    "reopen", is_github_reply, priority=config.github_command_priority, block=True
 )
 
 
-@label.handle()
-async def handle_label(
+@reopen.handle()
+async def handle_reopen(
     event: Event,
     state: T_State,
-    labels: list[str | MessageSegment] = ShellCommandArgv(),
     user: User = Depends(get_user),
 ):
     bot = get_bot()
     tag: Tag = state[KEY_GITHUB_REPLY]
-    labels_ = [label for label in labels if isinstance(label, str) and label]
 
     if not isinstance(tag, (IssueTag, PullRequestTag)):
-        await label.finish()
-    elif not labels_:
-        await label.finish("标签列表不能为空")
+        await reopen.finish()
 
     try:
         async with bot.as_user(user.access_token):
-            await bot.rest.issues.async_add_labels(
-                owner=tag.owner,
-                repo=tag.repo,
-                issue_number=tag.number,
-                labels=labels_,
-            )
+            if isinstance(tag, IssueTag):
+                await bot.rest.issues.async_update(
+                    owner=tag.owner,
+                    repo=tag.repo,
+                    issue_number=tag.number,
+                    state="open",
+                    state_reason="reopened",
+                )
+                message = f"已重新开启 Issue {tag.owner}/{tag.repo}#{tag.number}"
+            elif isinstance(tag, PullRequestTag):
+                await bot.rest.pulls.async_update(
+                    owner=tag.owner,
+                    repo=tag.repo,
+                    pull_number=tag.number,
+                    state="open",
+                )
+                message = f"已重新开启 PR {tag.owner}/{tag.repo}#{tag.number}"
     except ActionTimeout:
-        await label.finish("GitHub API 超时，请稍后再试")
+        await reopen.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
         if e.response.status_code == 403:
-            await label.finish("权限不足，请尝试使用 /install 安装或刷新授权")
-        logger.opt(exception=e).error(f"Failed while label issue: {e}")
-        await label.finish("未知错误发生，请尝试重试或联系管理员")
+            await reopen.finish("权限不足，请尝试使用 /install 安装或刷新授权")
+        logger.opt(exception=e).error(f"Failed while reopen pr: {e}")
+        await reopen.finish("未知错误发生，请尝试重试或联系管理员")
     except Exception as e:
-        logger.opt(exception=e).error(f"Failed while label issue: {e}")
-        await label.finish("未知错误发生，请尝试重试或联系管理员")
+        logger.opt(exception=e).error(f"Failed while reopen pr: {e}")
+        await reopen.finish("未知错误发生，请尝试重试或联系管理员")
 
-    message = f"成功为 {tag.owner}/{tag.repo}#{tag.number} 添加了标签 {', '.join(labels_)}"
     tag = (
         PullRequestTag(
             owner=tag.owner, repo=tag.repo, number=tag.number, is_receive=False
@@ -83,7 +90,7 @@ async def handle_label(
     )
     match get_platform(event):
         case "qq":
-            result = await label.send(message)
+            result = await reopen.send(message)
             if isinstance(result, dict) and "message_id" in result:
                 await create_message_tag(
                     {"type": "qq", "message_id": result["message_id"]}, tag

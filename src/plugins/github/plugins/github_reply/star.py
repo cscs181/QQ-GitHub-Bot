@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-18 03:18:14
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 06:46:46
+@LastEditTime   : 2022-10-22 03:58:22
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,11 +20,11 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_bot
-from src.plugins.github.helpers import get_platform, get_current_user
+from src.plugins.github.helpers import get_platform
 from src.plugins.github.libs.message_tag import Tag, RepoTag, create_message_tag
 
 from . import KEY_GITHUB_REPLY
-from .dependencies import is_github_reply
+from .dependencies import get_user, is_github_reply
 
 star = on_command(
     "star", is_github_reply, priority=config.github_command_priority, block=True
@@ -32,14 +32,7 @@ star = on_command(
 
 
 @star.handle()
-async def handle_noauth(user: None = Depends(get_current_user)):
-    await star.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
-
-
-@star.handle()
-async def handle_link(
-    event: Event, state: T_State, user: User = Depends(get_current_user)
-):
+async def handle_link(event: Event, state: T_State, user: User = Depends(get_user)):
     bot = get_bot()
     tag: Tag = state[KEY_GITHUB_REPLY]
 

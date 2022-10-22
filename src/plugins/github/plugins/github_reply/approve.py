@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-21 07:08:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 07:56:59
+@LastEditTime   : 2022-10-22 03:56:51
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,11 +21,11 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_bot
-from src.plugins.github.helpers import get_platform, get_current_user
+from src.plugins.github.helpers import get_platform
 from src.plugins.github.libs.message_tag import PullRequestTag, create_message_tag
 
 from . import KEY_GITHUB_REPLY
-from .dependencies import is_pull_request
+from .dependencies import get_user, is_pull_request
 
 approve = on_command(
     "approve", is_pull_request, priority=config.github_command_priority, block=True
@@ -33,16 +33,11 @@ approve = on_command(
 
 
 @approve.handle()
-async def handle_noauth(user: None = Depends(get_current_user)):
-    await approve.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
-
-
-@approve.handle()
 async def handle_approve(
     event: Event,
     state: T_State,
     content: Message = CommandArg(),
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_user),
 ):
     bot = get_bot()
     tag: PullRequestTag = state[KEY_GITHUB_REPLY]

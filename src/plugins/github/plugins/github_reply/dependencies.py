@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-30 08:59:36
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 07:33:35
+@LastEditTime   : 2022-10-22 03:56:29
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -62,6 +62,14 @@ async def get_context(
 ) -> Callable[[], AsyncContextManager[GitHubBot]]:
     tag: Tag = state[KEY_GITHUB_REPLY]
     return await get_github_context(tag.owner, tag.repo, matcher, user)
+
+
+async def get_user(
+    matcher: Matcher, user: User | None = Depends(get_current_user)
+) -> User:
+    if not user:
+        await matcher.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
+    return user
 
 
 async def get_issue(
