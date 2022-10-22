@@ -1,0 +1,28 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2022-10-22 15:14:11
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2022-10-22 15:43:30
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <meta name="viewport" content="width=device-width" />
+  </head>
+
+  <body>
+    <script>
+      Swal.fire({
+        titleText: "{{ title }}",
+        text: "{{ text or '' }}",
+        icon: "{{ icon or 'success' }}",
+      })
+    </script>
+  </body>
+
+</html>

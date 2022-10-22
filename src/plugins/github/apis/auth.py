@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 20:18:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-22 14:50:06
+@LastEditTime   : 2022-10-22 15:42:01
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,6 +12,7 @@ __author__ = "yanyongyu"
 
 import nonebot
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 
 from src.plugins.github.models import User
 from src.plugins.github.libs.auth import (
@@ -21,23 +22,34 @@ from src.plugins.github.libs.auth import (
     get_token_by_code,
 )
 
+from . import env
+
 app: FastAPI = nonebot.get_app()
+template = env.get_template("auth.html.jinja")
 
 
-@app.get("/github/auth")
+@app.get("/github/auth", response_class=HTMLResponse)
 async def auth(code: str, state: str | None = None):
     try:
         token = await get_token_by_code(code)
     except Exception:
-        return {"message": "invalid oauth code"}
+        return await template.render_async(
+            title="Oops...", text="Invalid oauth code!", icon="error"
+        )
 
     if not state:
-        return {"message": "installation completed!"}
+        return await template.render_async(title="Install Complete!", icon="success")
 
     user_info = await get_state_data(state)
     if not user_info:
-        return {"message": "oauth session expired"}
+        return await template.render_async(
+            title="Oops...", text="OAuth Session Expired!", icon="error"
+        )
 
     await delete_state_data(state)
     user: User = await create_auth_user(user_info, access_token=token)
-    return {"message": f"{user.user_id} ok!"}
+    return await template.render_async(
+        title="Install Complete!",
+        text=f"Successfully bind user {user.user_id}",
+        icon="success",
+    )

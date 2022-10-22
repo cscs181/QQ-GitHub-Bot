@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 04:19:36
+@LastEditTime   : 2022-10-22 15:11:52
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -40,7 +40,6 @@ from .globals import (
 env = jinja2.Environment(
     trim_blocks=True,
     lstrip_blocks=True,
-    extensions=["jinja2.ext.loopcontrols"],
     loader=jinja2.FileSystemLoader(Path(__file__).parent / "templates"),
     enable_async=True,
 )
