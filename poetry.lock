@@ -220,7 +220,7 @@ testing = ["covdefaults (>=2.2)", "coverage (>=6.4.2)", "pytest (>=7.1.2)", "pyt
 
 [[package]]
 name = "githubkit"
-version = "0.8.4"
+version = "0.8.5"
 description = "GitHub SDK for Python"
 category = "main"
 optional = false
@@ -563,7 +563,7 @@ setuptools = "*"
 
 [[package]]
 name = "nonebot-adapter-github"
-version = "0.2.2"
+version = "0.2.3"
 description = "GitHub adapter for nonebot2"
 category = "main"
 optional = false
@@ -848,7 +848,7 @@ idna2008 = ["idna"]
 
 [[package]]
 name = "sentry-sdk"
-version = "1.10.0"
+version = "1.10.1"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -1310,8 +1310,8 @@ filelock = [
     {file = "filelock-3.8.0.tar.gz", hash = "sha256:55447caa666f2198c5b6b13a26d2084d26fa5b115c00d065664b2124680c4edc"},
 ]
 githubkit = [
-    {file = "githubkit-0.8.4-py3-none-any.whl", hash = "sha256:68da0f40577bda0a37f78489fba91fafd6a00407465d975b33f996c14ab51dae"},
-    {file = "githubkit-0.8.4.tar.gz", hash = "sha256:915eaba5d5e2137fbaac37ec8f8eee715eb942e56e870f24958cd18ead00b12f"},
+    {file = "githubkit-0.8.5-py3-none-any.whl", hash = "sha256:2e5bdf438142c4add23719e5b4f98efc2e6eae8aa1115d6330b775662181a89a"},
+    {file = "githubkit-0.8.5.tar.gz", hash = "sha256:64c092f826054a0712bc338a67f692c9f042637437a1c467df1b8e7a33f8b527"},
 ]
 greenlet = [
     {file = "greenlet-1.1.3-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:8c287ae7ac921dfde88b1c125bd9590b7ec3c900c2d3db5197f1286e144e712b"},
@@ -1697,8 +1697,8 @@ nodeenv = [
     {file = "nodeenv-1.7.0.tar.gz", hash = "sha256:e0e7f7dfb85fc5394c6fe1e8fa98131a2473e04311a45afb6508f7cf1836fa2b"},
 ]
 nonebot-adapter-github = [
-    {file = "nonebot_adapter_github-0.2.2-py3-none-any.whl", hash = "sha256:6ed0c35891d42417d98341cdd6cd40874a6cff1242212488049eba0271dcdadc"},
-    {file = "nonebot_adapter_github-0.2.2.tar.gz", hash = "sha256:a1a79bb481f1c200a155327135944cd07490248f6da5ba681c305c69a968b25b"},
+    {file = "nonebot_adapter_github-0.2.3-py3-none-any.whl", hash = "sha256:5551233cb64511fbe007472c94806f98f18e7331a6285f15b50903d84f0a09f1"},
+    {file = "nonebot_adapter_github-0.2.3.tar.gz", hash = "sha256:4b577beee854d6e16e1f195d20c0e96419c11be6c45d850e22a4a8b9bbfa96b6"},
 ]
 nonebot-adapter-onebot = [
     {file = "nonebot_adapter_onebot-2.1.5-py3-none-any.whl", hash = "sha256:d2a46694c402d5f3c5f6951955a78bbf779e17039d282c612cc1fcff77bc6044"},
@@ -1903,8 +1903,8 @@ rfc3986 = [
     {file = "rfc3986-1.5.0.tar.gz", hash = "sha256:270aaf10d87d0d4e095063c65bf3ddbc6ee3d0b226328ce21e036f946e421835"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.10.0.tar.gz", hash = "sha256:1b965bcdbfe52321bb1307c7c93c74035afdbfceb5f585f01a963327c5befc4e"},
-    {file = "sentry_sdk-1.10.0-py2.py3-none-any.whl", hash = "sha256:8c648e96e0e2ec5e17ca75a28c442e2f523453fa7cf761ec093f4a656153490e"},
+    {file = "sentry-sdk-1.10.1.tar.gz", hash = "sha256:105faf7bd7b7fa25653404619ee261527266b14103fe1389e0ce077bd23a9691"},
+    {file = "sentry_sdk-1.10.1-py2.py3-none-any.whl", hash = "sha256:06c0fa9ccfdc80d7e3b5d2021978d6eb9351fa49db9b5847cf4d1f2a473414ad"},
 ]
 setuptools = [
     {file = "setuptools-65.5.0-py3-none-any.whl", hash = "sha256:f62ea9da9ed6289bfe868cd6845968a2c854d1427f8548d52cae02a42b4f0356"},
