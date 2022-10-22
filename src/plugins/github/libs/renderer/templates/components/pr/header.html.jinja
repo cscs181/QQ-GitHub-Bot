@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 16:40:46
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-16 15:25:19
+ * @LastEditTime   : 2022-10-22 03:44:03
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -20,7 +20,7 @@
       pb-2 mt-0 mb-3
       border-bottom color-border-default color-fg-muted
     ">
-    {{ pr_state(pull_request) }}
+    {{ pr_state(pull_request, "flex-shrink-0 mb-2 flex-self-start flex-md-self-center") }}
     <div class="flex-auto min-width-0 mb-2">
       <a href="#" class="author text-bold Link--secondary">
         {% if pull_request.merged %}

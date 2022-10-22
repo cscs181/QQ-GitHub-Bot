@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 16:42:19
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-16 17:16:05
+ * @LastEditTime   : 2022-10-22 03:44:29
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,8 +12,8 @@
 {% from "icons/pr-draft.html.jinja" import octicon_pr_draft %}
 {% from "icons/pr-merged.html.jinja" import octicon_pr_merged %}
 
-{% macro pr_state(pull_request) %}
-<div class="flex-shrink-0 mb-2 flex-self-start flex-md-self-center">
+{% macro pr_state(pull_request, class="") %}
+<div class="{{ class }}">
   {% if pull_request.merged %}
   {% set state = "merged" %}
   {% elif pull_request.draft %}
