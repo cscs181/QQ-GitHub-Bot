@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-15 14:40:25
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-15 12:06:21
+ * @LastEditTime   : 2022-10-24 02:29:44
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -43,6 +43,9 @@ OneBot:
 - 双击机器人头像戳一戳
 
 ## 配置项
+
+> **warning**
+> GitHub 仓库中的文档为最新 DEV 版本，配置方式请参考 [PyPI](https://pypi.org/project/nonebot-plugin-status/) 上的文档。
 
 配置方式：直接在 NoneBot 全局配置文件中添加以下配置项即可。
 
