@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:15:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-15 08:33:39
+@LastEditTime   : 2022-10-24 06:40:10
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -57,11 +57,11 @@ def get_bot_connect_time() -> Dict[str, datetime]:
 
 # mechine status
 def get_cpu_status() -> float:
-    return psutil.cpu_percent(interval=1)  # type: ignore
+    return psutil.cpu_percent(interval=0.3)  # type: ignore
 
 
 def per_cpu_status() -> List[float]:
-    return psutil.cpu_percent(interval=1, percpu=True)  # type: ignore
+    return psutil.cpu_percent(interval=0.3, percpu=True)  # type: ignore
 
 
 def get_memory_status():

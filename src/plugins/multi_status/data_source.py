@@ -4,14 +4,13 @@
 @Author         : yanyongyu
 @Date           : 2022-10-15 09:01:57
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-15 11:41:14
+@LastEditTime   : 2022-10-24 06:40:02
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import json
-import time
 import asyncio
 import contextlib
 from uuid import UUID, uuid4
@@ -24,7 +23,7 @@ from src.plugins.nonebot_plugin_status import render_template
 
 CHANNEL = "bot:status"
 REQUEST = b"bot:status:ping"
-DURATION = 3
+DURATION = 1
 INTERVAL = 0.5
 IDENTIFIER = uuid4()
 
