@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-15 14:40:25
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-24 02:29:44
+ * @LastEditTime   : 2022-10-25 07:33:34
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -54,6 +54,12 @@ OneBot:
 - 类型：`bool`
 - 默认值：`True`
 - 说明：是否启用服务器状态查看功能
+
+### server_status_truncate
+
+- 类型：`bool`
+- 默认值：`True`
+- 说明：是否启用模板变量按需注入功能（节约时间）
 
 ### server_status_only_superusers
 

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-24 06:36:54
+@LastEditTime   : 2022-10-25 07:35:00
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -63,7 +63,11 @@ KNOWN_VARS = {
 
 
 def _solve_required_vars() -> Dict[str, Any]:
-    return {k: v() for k, v in KNOWN_VARS.items() if k in _t_vars}
+    return (
+        {k: v() for k, v in KNOWN_VARS.items() if k in _t_vars}
+        if status_config.server_status_truncate
+        else {k: v() for k, v in KNOWN_VARS.items()}
+    )
 
 
 async def render_template() -> str:

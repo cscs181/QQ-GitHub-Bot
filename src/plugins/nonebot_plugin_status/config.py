@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-10-04 16:32:00
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-15 12:07:38
+@LastEditTime   : 2022-10-25 07:34:07
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -36,6 +36,7 @@ RUNTIME_TEMPLATE = "Runtime: {{ runtime | relative_time | humanize_delta }}"
 
 class Config(BaseModel, extra=Extra.ignore):
     server_status_enabled: bool = True
+    server_status_truncate: bool = True
     server_status_only_superusers: bool = True
 
     # template
