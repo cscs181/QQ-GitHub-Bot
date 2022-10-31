@@ -102,7 +102,8 @@ async def get_pull_request_diff(pr: PullRequest) -> PatchSet:
 def get_comment_reactions(event: TimelineCommentEvent) -> dict[str, int]:
     result: dict[str, int] = {}
 
-    if not event.reactions:
+    # review comment do not has reactions field
+    if not getattr(event, "reactions", None):
         return result
 
     for reaction in (
