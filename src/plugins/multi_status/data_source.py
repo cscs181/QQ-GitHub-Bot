@@ -4,12 +4,13 @@
 @Author         : yanyongyu
 @Date           : 2022-10-15 09:01:57
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-24 06:40:02
+@LastEditTime   : 2022-10-31 05:10:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+import os
 import json
 import asyncio
 import contextlib
@@ -25,7 +26,7 @@ CHANNEL = "bot:status"
 REQUEST = b"bot:status:ping"
 DURATION = 1
 INTERVAL = 0.5
-IDENTIFIER = uuid4()
+IDENTIFIER = os.getenv("HOSTNAME", str(uuid4()).split("-")[-1])
 
 driver = get_driver()
 pubsub = redis_client.pubsub()
@@ -71,12 +72,10 @@ async def get_all_status() -> str:
     await redis_client.publish(CHANNEL, REQUEST)
     await asyncio.sleep(DURATION)
     statuses = _responses.pop(request_id)
-    return "\n\n".join(
-        f"Pod {id.split('-')[-1]}:\n{status}" for id, status in statuses.items()
-    )
+    return "\n\n".join(f"Pod {id}:\n{status}" for id, status in statuses.items())
 
 
 async def _send_status() -> None:
     await redis_client.publish(
-        CHANNEL, json.dumps({"id": str(IDENTIFIER), "status": await render_template()})
+        CHANNEL, json.dumps({"id": IDENTIFIER, "status": await render_template()})
     )
