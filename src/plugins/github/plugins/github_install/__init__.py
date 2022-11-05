@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 06:46:35
+@LastEditTime   : 2022-10-27 08:56:00
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,16 +12,21 @@ __author__ = "yanyongyu"
 
 from nonebot import on_command
 from nonebot.log import logger
+from nonebot.adapters import Event
 from nonebot.params import Depends
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import ActionTimeout
 from githubkit.rest import SimpleUser, Installation
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
 from src.plugins.github import config
 from src.plugins.github.utils import get_bot
 from src.plugins.github.libs.install import create_install_link
-from src.plugins.github.helpers import get_user_info, get_current_user
+from src.plugins.github.helpers import (
+    get_user_info,
+    run_when_group,
+    get_current_user,
+    run_when_private,
+)
 
 from .dependencies import get_user_installation
 
@@ -39,13 +44,13 @@ __plugin_meta__ = PluginMetadata(
 install = on_command("install", priority=config.github_command_priority, block=True)
 
 
-@install.handle()
-async def handle_group(event: GroupMessageEvent):
+@install.handle(parameterless=(Depends(run_when_group),))
+async def handle_group():
     await install.finish("请私聊我并使用 /install 命令进行安装或管理")
 
 
-@install.handle()
-async def handle_private(event: PrivateMessageEvent):
+@install.handle(parameterless=(Depends(run_when_private),))
+async def handle_private(event: Event):
     if info := get_user_info(event):
         await install.finish("请前往以下链接进行安装或管理：\n" + await create_install_link(info))
     else:

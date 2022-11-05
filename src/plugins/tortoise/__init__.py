@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 13:43:00
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-13 16:48:14
+@LastEditTime   : 2022-10-31 16:17:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,7 +22,7 @@ config = Config.parse_obj(driver.config)
 
 tortoise_config = {
     "connections": {
-        "default": {
+        "bot": {
             "engine": "tortoise.backends.asyncpg",
             "credentials": {
                 "host": config.postgres_host,
@@ -33,9 +33,7 @@ tortoise_config = {
             },
         }
     },
-    "apps": {
-        "bot": {"models": [models, "aerich.models"], "default_connection": "default"}
-    },
+    "apps": {"bot": {"models": [models, "aerich.models"], "default_connection": "bot"}},
 }
 
 

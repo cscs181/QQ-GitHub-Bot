@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 07:31:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-26 15:06:02
+@LastEditTime   : 2022-10-27 08:29:26
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,3 +39,4 @@ class Group(PlatformGroup, Model):
 
     class Meta:
         table = "group"
+        unique_together = (("qq_group", "qqguild_channel"),)

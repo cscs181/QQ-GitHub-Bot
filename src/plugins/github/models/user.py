@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 09:50:07
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-26 14:58:44
+@LastEditTime   : 2022-10-27 08:28:28
 @Description    : QQ Tables
 @GitHub         : https://github.com/yanyongyu
 """
@@ -37,3 +37,4 @@ class User(PlatformUser, Model):
 
     class Meta:
         table = "user"
+        unique_together = (("qq_id", "qqguild_id"),)

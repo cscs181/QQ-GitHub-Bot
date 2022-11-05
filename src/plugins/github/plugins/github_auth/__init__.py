@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 06:46:08
+@LastEditTime   : 2022-10-27 08:55:20
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,16 +12,21 @@ __author__ = "yanyongyu"
 
 from nonebot import on_command
 from nonebot.log import logger
+from nonebot.adapters import Event
 from nonebot.params import Depends
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import ActionFailed, ActionTimeout
-from nonebot.adapters.onebot.v11 import GroupMessageEvent, PrivateMessageEvent
 
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_bot
 from src.plugins.github.libs.auth import create_auth_link
-from src.plugins.github.helpers import get_user_info, get_current_user
+from src.plugins.github.helpers import (
+    get_user_info,
+    run_when_group,
+    get_current_user,
+    run_when_private,
+)
 
 __plugin_meta__ = PluginMetadata(
     "GitHub 帐号授权",
@@ -36,13 +41,13 @@ __plugin_meta__ = PluginMetadata(
 auth = on_command("auth", priority=config.github_command_priority, block=True)
 
 
-@auth.handle()
-async def handle_group(event: GroupMessageEvent):
+@auth.handle(parameterless=(Depends(run_when_group),))
+async def handle_group():
     await auth.finish("请私聊我并使用 /auth 命令授权你的 GitHub 账号")
 
 
-@auth.handle()
-async def handle_private(event: PrivateMessageEvent):
+@auth.handle(parameterless=(Depends(run_when_private),))
+async def handle_private(event: Event):
     if info := get_user_info(event):
         await auth.finish("请前往以下链接进行授权：\n" + await create_auth_link(info))
     else:
