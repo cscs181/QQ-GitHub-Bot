@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-15 14:40:25
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-25 07:33:34
+ * @LastEditTime   : 2022-11-05 16:13:36
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -35,7 +35,7 @@ _✨ NoneBot 服务器状态（CPU, Memory, Disk Usage）查看插件 ✨_
 
 通用:
 
-- 发送 Command `状态`
+- 发送 Command `状态` 或者 `status`
 
 OneBot:
 

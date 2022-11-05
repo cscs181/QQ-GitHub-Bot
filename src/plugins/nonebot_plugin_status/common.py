@@ -16,5 +16,9 @@ from . import server_status, status_config, status_permission
 
 if status_config.server_status_enabled:
     command = on_command(
-        "状态", permission=status_permission, priority=10, handlers=[server_status]
+        "status",
+        aliases={"状态"},
+        permission=status_permission,
+        priority=10,
+        handlers=[server_status],
     )

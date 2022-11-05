@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-25 07:28:50
+ * @LastEditTime   : 2022-11-05 16:13:59
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -26,7 +26,7 @@ GitHub Bot for QQ
 
 |                   功能                   |                          描述                           |
 | :--------------------------------------: | :-----------------------------------------------------: |
-|                 `/状态`                  |  获取当前机器人及所在服务器运行状态，支持分布式多节点   |
+|           `/状态` 或 `/status`           |  获取当前机器人及所在服务器运行状态，支持分布式多节点   |
 |        `/install [check\|revoke]`        | 安装 GitHub APP 集成（将用于 Issue/PR, WebHook 等管理） |
 |         `/auth [check\|revoke]`          |               授权 APP 以进行用户快捷操作               |
 |           `/bind [owner/repo]`           |            群绑定指定仓库以进行仓库快捷操作             |
