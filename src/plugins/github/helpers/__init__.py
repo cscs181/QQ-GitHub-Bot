@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-07 12:17:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-27 04:58:38
+@LastEditTime   : 2022-11-05 15:57:57
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -45,5 +45,6 @@ from .github import GITHUB_REPO_LINK_REGEX as GITHUB_REPO_LINK_REGEX
 from .github import GITHUB_ISSUE_LINK_REGEX as GITHUB_ISSUE_LINK_REGEX
 from .github import GITHUB_COMMIT_LINK_REGEX as GITHUB_COMMIT_LINK_REGEX
 from .github import GITHUB_PR_FILE_LINK_REGEX as GITHUB_PR_FILE_LINK_REGEX
+from .github import GITHUB_RELEASE_LINK_REGEX as GITHUB_RELEASE_LINK_REGEX
 from .github import GITHUB_PR_COMMIT_LINK_REGEX as GITHUB_PR_COMMIT_LINK_REGEX
 from .github import GITHUB_ISSUE_OR_PR_LINK_REGEX as GITHUB_ISSUE_OR_PR_LINK_REGEX

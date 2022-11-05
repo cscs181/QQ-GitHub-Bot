@@ -13,7 +13,7 @@ __author__ = "yanyongyu"
 from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.params import Depends, RegexDict
-from githubkit.rest import Commit, FullRepository
+from githubkit.rest import Commit, Release, FullRepository
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github.models import User
@@ -76,4 +76,39 @@ async def check_commit(
         await matcher.finish("未知错误发生，请尝试重试或联系管理员")
     except Exception as e:
         logger.opt(exception=e).error(f"Failed while checking commit in opengraph: {e}")
+        await matcher.finish("未知错误发生，请尝试重试或联系管理员")
+
+
+async def check_release(
+    matcher: Matcher,
+    group: dict[str, str] = RegexDict(),
+    check_repo=Depends(check_repo),
+    user: User | None = Depends(get_current_user),
+) -> Release:
+    bot = get_bot()
+    owner = group["owner"]
+    repo = group["repo"]
+    tag = group["tag"]
+
+    context = await get_github_context(owner, repo, matcher, user)
+
+    try:
+        async with context():
+            resp = await bot.rest.repos.async_get_release_by_tag(
+                owner=owner, repo=repo, tag=tag
+            )
+            return resp.parsed_data
+    except ActionTimeout:
+        await matcher.finish()
+    except ActionFailed as e:
+        if e.response.status_code == 404:
+            await matcher.finish()
+        logger.opt(exception=e).error(
+            f"Failed while checking release in opengraph: {e}"
+        )
+        await matcher.finish("未知错误发生，请尝试重试或联系管理员")
+    except Exception as e:
+        logger.opt(exception=e).error(
+            f"Failed while checking release in opengraph: {e}"
+        )
         await matcher.finish("未知错误发生，请尝试重试或联系管理员")

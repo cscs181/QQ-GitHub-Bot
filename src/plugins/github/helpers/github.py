@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 06:45:55
+@LastEditTime   : 2022-11-05 15:57:42
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -36,6 +36,7 @@ GITHUB_ISSUE_OR_PR_LINK_REGEX = (
 )
 GITHUB_PR_COMMIT_LINK_REGEX = rf"{GITHUB_PR_LINK_REGEX}/commits/{COMMIT_HASH_REGEX}"
 GITHUB_PR_FILE_LINK_REGEX = rf"{GITHUB_PR_LINK_REGEX}/files"
+GITHUB_RELEASE_LINK_REGEX = rf"{GITHUB_REPO_LINK_REGEX}/releases/tag/(?P<tag>[^/]+)"
 
 
 async def get_github_context(
