@@ -33,7 +33,7 @@ spec:
             - "sh"
             - "-c"
             - |
-              until redis-cli -h {{ include "bot.name" . }}-redis-service.{{ .Release.Namespace }}.svc.cluster.local -p 6379 ping;
+              until redis-cli -h {{ include "bot.name" . }}-redis-service -p 6379 ping;
               do echo waiting for redis;
               sleep 2;
               done;
@@ -46,7 +46,7 @@ spec:
             - "sh"
             - "-c"
             - |
-              until pg_isready -h {{ include "bot.name" . }}-postgres-service.{{ .Release.Namespace }}.svc.cluster.local -p 5432;
+              until pg_isready -h {{ include "bot.name" . }}-postgres-service -p 5432;
               do echo waiting for postgres;
               sleep 2;
               done;
@@ -64,11 +64,11 @@ spec:
             - name: HOST
               value: "0.0.0.0"
             - name: REDIS_HOST
-              value: {{ include "bot.name" . }}-redis-service.{{ .Release.Namespace }}.svc.cluster.local
+              value: {{ include "bot.name" . }}-redis-service
             - name: REDIS_PORT
               value: "6379"
             - name: POSTGRES_HOST
-              value: {{ include "bot.name" . }}-postgres-service.{{ .Release.Namespace }}.svc.cluster.local
+              value: {{ include "bot.name" . }}-postgres-service
             - name: POSTGRES_PORT
               value: "5432"
             - name: SERVER_STATUS_ENABLED

@@ -1,0 +1,83 @@
+{{- if .Values.postgres.backup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "bot.name" . }}-postgres-backup
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "bot.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+spec:
+  schedule: {{ .Values.postgres.backup.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          {{- with .Values.postgres.backup.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          labels:
+            {{- include "bot.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: postgres
+        spec:
+          securityContext:
+            {{- toYaml .Values.postgres.backup.podSecurityContext | nindent 12 }}
+          containers:
+            - name: {{ .Chart.Name }}-postgres-backup
+              image: "{{ .Values.postgres.image.repo }}:{{ .Values.postgres.image.tag }}"
+              imagePullPolicy: {{ .Values.postgres.image.pullPolicy }}
+              command:
+                - "bash"
+                - "-c"
+                - |
+                  #!/bin/bash
+                  set -e
+
+                  PREFIX=bot_pg_dump
+                  DATE=$(date +%Y-%m-%d_%H-%M-%S)
+                  FILENAME=/backup/$PREFIX-$DATE.sql
+                  echo "Job started at $(date), dumping to $FILENAME.gz"
+
+                  pg_dump -h {{ include "bot.name" . }}-postgres-service -U $PGUSER -f $FILENAME $PGDATABASE
+                  gzip $FILENAME
+
+                  echo "Backup created: $FILENAME.gz"
+                  ls -lh $FILENAME.gz
+
+                  if [[ ! -z $DELETE_OLDER_THAN ]]; then
+                    echo "Deleting backups older than $DELETE_OLDER_THAN minutes..."
+                    find /backup/* -mmin "+$DELETE_OLDER_THAN" -exec rm {} \;
+                  fi
+                  echo "Job finished at $(date)."
+              env:
+                - name: PGUSER
+                  value: {{ required "postgres user" .Values.bot.config.POSTGRES_USER | quote }}
+                - name: PGPASSWORD
+                  value: {{ required "postgres password" .Values.bot.config.POSTGRES_PASSWORD | quote }}
+                - name: PGDATABASE
+                  value: {{ required "postgres database" .Values.bot.config.POSTGRES_DB | quote }}
+                - name: DELETE_OLDER_THAN
+                  value: {{ .Values.postgres.backup.deleteOlderThan | quote }}
+              volumeMounts:
+                - name: database-backups
+                  mountPath: /backup
+          volumes:
+            - name: database-backups
+              hostPath:
+                path: {{ required "postgres backup dir" .Values.postgres.backup.path }}
+                type: DirectoryOrCreate
+          restartPolicy: OnFailure
+          {{- with .Values.postgres.backup.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.postgres.backup.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.postgres.backup.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}

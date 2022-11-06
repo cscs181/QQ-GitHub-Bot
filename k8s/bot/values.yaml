@@ -64,6 +64,17 @@ postgres:
     accessModes:
       - ReadWriteOnce
     existingClaim: ""
+  backup:
+    enabled: true
+    schedule: "0 0 * * */1"
+    deleteOlderThan: 10080
+    path: /backups
+    podAnnotations: {}
+    podSecurityContext: {}
+    securityContext: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
   podAnnotations: {}
   podSecurityContext: {}
   securityContext: {}

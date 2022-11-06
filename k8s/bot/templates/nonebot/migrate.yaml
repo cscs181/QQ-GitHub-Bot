@@ -32,7 +32,7 @@ spec:
             - "sh"
             - "-c"
             - |
-              until pg_isready -h {{ include "bot.name" . }}-postgres-service.{{ .Release.Namespace }}.svc.cluster.local -p 5432;
+              until pg_isready -h {{ include "bot.name" . }}-postgres-service -p 5432;
               do echo waiting for postgres;
               sleep 2;
               done;
@@ -42,18 +42,21 @@ spec:
             {{- toYaml .Values.bot.securityContext | nindent 14 }}
           image: "{{ .Values.bot.image.repo }}:{{ .Values.bot.image.tag }}"
           imagePullPolicy: {{ .Values.bot.image.pullPolicy }}
-          command: ["/bin/sh", "-c", "python ./scripts/database.py upgrade"]
+          command:
+            - "sh"
+            - "-c"
+            - "python ./scripts/database.py upgrade"
           env:
             - name: ENVIRONMENT
               value: prod
             - name: HOST
               value: "0.0.0.0"
             - name: REDIS_HOST
-              value: {{ include "bot.name" . }}-redis-service.{{ .Release.Namespace }}.svc.cluster.local
+              value: {{ include "bot.name" . }}-redis-service
             - name: REDIS_PORT
               value: "6379"
             - name: POSTGRES_HOST
-              value: {{ include "bot.name" . }}-postgres-service.{{ .Release.Namespace }}.svc.cluster.local
+              value: {{ include "bot.name" . }}-postgres-service
             - name: POSTGRES_PORT
               value: "5432"
             {{- range $key, $value := .Values.bot.config }}
