@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-11-05 16:13:59
+ * @LastEditTime   : 2022-11-07 05:09:00
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -30,6 +30,7 @@ GitHub Bot for QQ
 |        `/install [check\|revoke]`        | 安装 GitHub APP 集成（将用于 Issue/PR, WebHook 等管理） |
 |         `/auth [check\|revoke]`          |               授权 APP 以进行用户快捷操作               |
 |           `/bind [owner/repo]`           |            群绑定指定仓库以进行仓库快捷操作             |
+|  `/subscribe owner/repo event[/action]`  |        订阅指定仓库的指定事件（支持多事件订阅）         |
 |   `owner/repo[#number]` 或 GitHub 链接   |            快捷查看仓库 Issue/PR, PR diff 等            |
 |            `/star`, `/unstar`            |                        快捷 star                        |
 |                 `/diff`                  |                      查看 PR diff                       |
