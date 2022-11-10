@@ -19,7 +19,7 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.helpers import get_platform, get_current_user
 from src.plugins.github.libs.message_tag import (
     Tag,
@@ -48,7 +48,7 @@ async def handle_label(
     label: Message = CommandArg(),
     user: User = Depends(get_current_user),
 ):
-    bot = get_bot()
+    bot = get_github_bot()
     tag: Tag = state[KEY_GITHUB_REPLY]
     label_ = label.extract_plain_text()
 

@@ -23,7 +23,7 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.models import Group
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.libs.platform import create_or_update_group
 from src.plugins.github.helpers import (
     GROUP_EVENT,
@@ -71,7 +71,7 @@ async def process_repo(event: Event, full_name: str = ArgPlainText()):
     if not (matched := re.match(f"^{FULLREPO_REGEX}$", full_name)):
         await bind.reject(f"仓库名 {full_name} 不合法！请重新发送或取消")
 
-    bot = get_bot()
+    bot = get_github_bot()
     owner: str = matched["owner"]
     repo: str = matched["repo"]
     try:

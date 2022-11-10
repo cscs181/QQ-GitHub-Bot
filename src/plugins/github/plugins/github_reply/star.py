@@ -19,8 +19,8 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_bot
 from src.plugins.github.helpers import get_platform
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.libs.message_tag import Tag, RepoTag, create_message_tag
 
 from . import KEY_GITHUB_REPLY
@@ -33,7 +33,7 @@ star = on_command(
 
 @star.handle()
 async def handle_link(event: Event, state: T_State, user: User = Depends(get_user)):
-    bot = get_bot()
+    bot = get_github_bot()
     tag: Tag = state[KEY_GITHUB_REPLY]
 
     async with bot.as_user(user.access_token):

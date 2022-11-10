@@ -19,7 +19,7 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.libs.auth import create_auth_link
 from src.plugins.github.helpers import (
     get_user_info,
@@ -67,7 +67,7 @@ async def handle_check(user: None = Depends(get_current_user)):
 
 @auth_check.handle()
 async def check_user_status(user: User = Depends(get_current_user)):
-    bot = get_bot()
+    bot = get_github_bot()
     async with bot.as_oauth_app():
         try:
             resp = await bot.rest.apps.async_check_token(
@@ -105,7 +105,7 @@ async def handle_revoke(user: None = Depends(get_current_user)):
 
 @auth_revoke.handle()
 async def revoke_user(user: User = Depends(get_current_user)):
-    bot = get_bot()
+    bot = get_github_bot()
     async with bot.as_oauth_app():
         try:
             await bot.rest.apps.async_delete_token(

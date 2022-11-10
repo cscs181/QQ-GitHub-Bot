@@ -19,7 +19,7 @@ from nonebot.adapters.github import ActionTimeout
 from githubkit.rest import SimpleUser, Installation
 
 from src.plugins.github import config
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.libs.install import create_install_link
 from src.plugins.github.helpers import (
     get_user_info,
@@ -102,7 +102,7 @@ async def handle_revoke(user: None = Depends(get_current_user)):
 
 @install_revoke.handle()
 async def revoke_user(installation: Installation = Depends(get_user_installation)):
-    bot = get_bot()
+    bot = get_github_bot()
 
     try:
         await bot.rest.apps.async_delete_installation(installation.id)

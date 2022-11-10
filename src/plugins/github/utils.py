@@ -4,26 +4,31 @@
 @Author         : yanyongyu
 @Date           : 2022-09-07 12:14:14
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-06 04:10:35
+@LastEditTime   : 2022-11-07 05:50:50
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import nonebot
+from githubkit import GitHub
 from nonebot.adapters.github import GitHubBot
-from githubkit import GitHub, TokenAuthStrategy
+from nonebot.adapters.onebot.v11 import Bot as QQBot
 
 from . import config
 
 
-def get_bot() -> GitHubBot:
+def get_github_bot() -> GitHubBot:
     return nonebot.get_bot(config.github_app.app_id)  # type: ignore
 
 
 def get_github() -> GitHub:
-    return get_bot().github
+    return get_github_bot().github
 
 
-def get_user_github(access_token: str) -> GitHub[TokenAuthStrategy]:
-    return get_github().with_auth(TokenAuthStrategy(access_token))
+def get_qq_bot() -> QQBot:
+    return next(bot for bot in nonebot.get_bots().values() if isinstance(bot, QQBot))
+
+
+def get_qqguild_bot():
+    ...

@@ -24,7 +24,7 @@ from nonebot.params import Depends, CommandArg, ArgPlainText
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.models import UserSubscription, GroupSubscription
 from src.plugins.github.helpers import (
     GROUP_EVENT,
@@ -128,7 +128,7 @@ async def process_subscribe_repo(state: T_State, full_name: str = ArgPlainText()
     if not (matched := re.match(f"^{FULLREPO_REGEX}$", full_name)):
         await subscribe.reject(f"仓库名 {full_name} 不合法！请重新发送或取消")
 
-    bot = get_bot()
+    bot = get_github_bot()
     owner: str
     repo: str
     owner = state["owner"] = matched["owner"]

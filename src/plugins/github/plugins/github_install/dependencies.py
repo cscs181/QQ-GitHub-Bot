@@ -17,14 +17,14 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 from githubkit.rest import PublicUser, PrivateUser, Installation
 
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.helpers import get_current_user
 
 
 async def get_github_user(
     matcher: Matcher, user: User = Depends(get_current_user)
 ) -> PrivateUser | PublicUser:
-    bot = get_bot()
+    bot = get_github_bot()
 
     try:
         async with bot.as_user(user.access_token):
@@ -49,7 +49,7 @@ async def get_github_user(
 async def get_user_installation(
     matcher: Matcher, user: PrivateUser | PublicUser = Depends(get_github_user)
 ) -> Installation:
-    bot = get_bot()
+    bot = get_github_bot()
 
     try:
         resp = await bot.rest.apps.async_get_user_installation(username=user.login)

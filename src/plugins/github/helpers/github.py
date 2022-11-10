@@ -18,7 +18,7 @@ from nonebot.matcher import Matcher
 from nonebot.adapters.github import GitHubBot, ActionFailed, ActionTimeout
 
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 
 OWNER_REGEX = r"(?P<owner>[a-zA-Z0-9](?:[a-zA-Z0-9\-]*[a-zA-Z0-9])?)"
 REPO_REGEX = r"(?P<repo>[a-zA-Z0-9_\-\.]+)"
@@ -42,7 +42,7 @@ GITHUB_RELEASE_LINK_REGEX = rf"{GITHUB_REPO_LINK_REGEX}/releases/tag/(?P<tag>[^/
 async def get_github_context(
     owner: str, repo: str, matcher: Matcher, user: User | None = None
 ) -> Callable[[], AsyncContextManager[GitHubBot]]:
-    bot = get_bot()
+    bot = get_github_bot()
 
     # use user auth first
     if user:

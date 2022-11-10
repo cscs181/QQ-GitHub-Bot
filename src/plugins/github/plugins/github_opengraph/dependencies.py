@@ -17,7 +17,7 @@ from githubkit.rest import Commit, Release, FullRepository
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.helpers import get_current_user, get_github_context
 
 
@@ -26,7 +26,7 @@ async def check_repo(
     group: dict[str, str] = RegexDict(),
     user: User | None = Depends(get_current_user),
 ) -> FullRepository:
-    bot = get_bot()
+    bot = get_github_bot()
     owner = group["owner"]
     repo = group["repo"]
 
@@ -54,7 +54,7 @@ async def check_commit(
     check_repo=Depends(check_repo),
     user: User | None = Depends(get_current_user),
 ) -> Commit:
-    bot = get_bot()
+    bot = get_github_bot()
     owner = group["owner"]
     repo = group["repo"]
     ref = group["commit"]
@@ -85,7 +85,7 @@ async def check_release(
     check_repo=Depends(check_repo),
     user: User | None = Depends(get_current_user),
 ) -> Release:
-    bot = get_bot()
+    bot = get_github_bot()
     owner = group["owner"]
     repo = group["repo"]
     tag = group["tag"]

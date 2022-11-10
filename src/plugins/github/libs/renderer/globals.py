@@ -26,7 +26,7 @@ from githubkit.rest import (
 )
 
 from src.plugins.redis import cache
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 
 REACTION_EMOJIS = {
     "plus_one": "👍",
@@ -42,7 +42,7 @@ REACTION_EMOJIS = {
 
 @cache(ex=timedelta(minutes=5))
 async def _get_issue_repo(repo_url: str) -> FullRepository:
-    bot = get_bot()
+    bot = get_github_bot()
     try:
         resp = await bot.github.arequest("GET", repo_url, response_model=FullRepository)
     except RequestFailed as e:
@@ -59,7 +59,7 @@ async def get_issue_repo(issue: Issue) -> FullRepository:
 
 
 async def get_issue_timeline(issue: Issue):
-    bot = get_bot()
+    bot = get_github_bot()
     repo = await get_issue_repo(issue)
     return bot.github.paginate(
         bot.rest.issues.async_list_events_for_timeline,
@@ -71,7 +71,7 @@ async def get_issue_timeline(issue: Issue):
 
 @cache(ex=timedelta(minutes=5))
 async def _get_pull_request(owner: str, repo: str, number: int) -> PullRequest:
-    bot = get_bot()
+    bot = get_github_bot()
     resp = await bot.rest.pulls.async_get(owner=owner, repo=repo, pull_number=number)
     return resp.parsed_data
 
@@ -83,7 +83,7 @@ async def get_pull_request(issue: Issue) -> PullRequest:
 
 @cache(ex=timedelta(minutes=5))
 async def _get_pull_request_diff(diff_url: str) -> PatchSet:
-    bot = get_bot()
+    bot = get_github_bot()
     try:
         resp = await bot.github.arequest("GET", diff_url)
     except RequestFailed as e:

@@ -19,7 +19,7 @@ from nonebot.params import Depends, RegexDict
 from nonebot.adapters.github import GitHubBot, ActionFailed, ActionTimeout
 
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.helpers import get_current_user, get_github_context
 
 
@@ -36,7 +36,7 @@ async def get_issue(
     group: dict[str, str] = RegexDict(),
     context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
 ) -> Issue:
-    bot = get_bot()
+    bot = get_github_bot()
     owner = group["owner"]
     repo = group["repo"]
     number = int(group["issue"])

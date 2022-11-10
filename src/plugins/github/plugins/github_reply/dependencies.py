@@ -21,7 +21,7 @@ from nonebot.adapters.onebot.v11 import MessageEvent
 from nonebot.adapters.github import GitHubBot, ActionFailed, ActionTimeout
 
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_bot
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.helpers import get_current_user, get_github_context
 from src.plugins.github.libs.message_tag import (
     Tag,
@@ -77,7 +77,7 @@ async def get_issue(
     state: T_State,
     context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
 ) -> Issue:
-    bot = get_bot()
+    bot = get_github_bot()
     tag: Tag = state[KEY_GITHUB_REPLY]
 
     if not isinstance(tag, (IssueTag, PullRequestTag)):
