@@ -4,14 +4,13 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-05 15:39:33
+@LastEditTime   : 2022-11-16 00:13:53
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import re
-from typing import Literal
 
 from nonebot import on_command
 from nonebot.log import logger
@@ -25,7 +24,15 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.models import UserSubscription, GroupSubscription
+from src.plugins.github.models import User, UserSubscription, GroupSubscription
+from src.plugins.github.libs.platform import (
+    delete_user_subscription,
+    delete_group_subscription,
+    delete_all_user_subscriptions,
+    delete_all_group_subscriptions,
+    create_or_update_user_subscriptions,
+    create_or_update_group_subscriptions,
+)
 from src.plugins.github.helpers import (
     GROUP_EVENT,
     PRIVATE_PERM,
@@ -35,16 +42,9 @@ from src.plugins.github.helpers import (
     get_user_info,
     get_group_info,
     run_when_group,
+    get_current_user,
     run_when_private,
     allow_cancellation,
-)
-from src.plugins.github.libs.platform import (
-    delete_user_subscription,
-    delete_group_subscription,
-    delete_all_user_subscriptions,
-    delete_all_group_subscriptions,
-    create_or_update_user_subscriptions,
-    create_or_update_group_subscriptions,
 )
 
 from .dependencies import list_user, list_group, bypass_create
@@ -119,12 +119,21 @@ async def list_group_subscription(
         await subscribe.finish("当前已订阅：\n" + subsciption_to_message(subsciptions))
 
 
+@subscribe.handle()
+async def handle_check(user: None = Depends(get_current_user)):
+    await subscribe.finish("你还没有授权 GitHub 帐号，请私聊使用 /install 进行安装")
+
+
 @subscribe.got(
     "full_name",
     prompt="订阅仓库的全名？(e.g. owner/repo)",
     parameterless=(allow_cancellation("已取消"),),
 )
-async def process_subscribe_repo(state: T_State, full_name: str = ArgPlainText()):
+async def process_subscribe_repo(
+    state: T_State,
+    full_name: str = ArgPlainText(),
+    user: User = Depends(get_current_user),
+):
     if not (matched := re.match(f"^{FULLREPO_REGEX}$", full_name)):
         await subscribe.reject(f"仓库名 {full_name} 不合法！请重新发送或取消")
 
@@ -134,7 +143,9 @@ async def process_subscribe_repo(state: T_State, full_name: str = ArgPlainText()
     owner = state["owner"] = matched["owner"]
     repo = state["repo"] = matched["repo"]
     try:
-        await bot.rest.apps.async_get_repo_installation(owner=owner, repo=repo)
+        repo_installation = await bot.rest.apps.async_get_repo_installation(
+            owner=owner, repo=repo
+        )
     except ActionTimeout:
         await subscribe.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
@@ -147,6 +158,38 @@ async def process_subscribe_repo(state: T_State, full_name: str = ArgPlainText()
     except Exception as e:
         logger.opt(exception=e).error(
             f"Failed while getting repo installation in group subscribe: {e}"
+        )
+        await subscribe.finish("未知错误发生，请尝试重试或联系管理员")
+
+    try:
+        remain: bool = True
+        page: int = 1
+        while remain:
+            accessible_repos = await bot.rest.apps.async_list_installation_repos_for_authenticated_user(
+                installation_id=repo_installation.parsed_data.id, page=page
+            )
+            if not accessible_repos.parsed_data.repositories:
+                remain = False
+            for accessible_repo in accessible_repos.parsed_data.repositories:
+                if accessible_repo.full_name == full_name:
+                    break
+            page += 1
+        else:
+            await subscribe.reject(f"你没有权限访问仓库 {owner}/{repo} ！请重新发送或取消")
+    except ActionTimeout:
+        await subscribe.finish("GitHub API 超时，请稍后再试")
+    except ActionFailed as e:
+        if e.response.status_code == 404:
+            await subscribe.reject(f"仓库 {owner}/{repo} 未安装 APP！请重新发送或取消")
+        elif e.response.status_code == 403:
+            await subscribe.reject(f"你没有权限访问仓库 {owner}/{repo} ！请重新发送或取消")
+        logger.opt(exception=e).error(
+            f"Failed while checking user permission in group subscribe: {e}"
+        )
+        await subscribe.finish("未知错误发生，请尝试重试或联系管理员")
+    except Exception as e:
+        logger.opt(exception=e).error(
+            f"Failed while checking user permission in group subscribe: {e}"
         )
         await subscribe.finish("未知错误发生，请尝试重试或联系管理员")
 
