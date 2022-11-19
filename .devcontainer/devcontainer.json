@@ -1,10 +1,20 @@
 {
   "name": "Default Linux Universal",
-  "image": "mcr.microsoft.com/devcontainers/universal:2-linux",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
   "features": {
     "ghcr.io/devcontainers-contrib/features/poetry:1": {}
   },
+
+  // postgres port
+  "forwardPorts": [5432, 6379],
+
+  // install dependencies
   "postCreateCommand": "poetry config virtualenvs.in-project true && poetry install && poetry run pre-commit install && poetry run playwright install chromium",
+
+  // vscode settings
   "customizations": {
     "vscode": {
       "settings": {
