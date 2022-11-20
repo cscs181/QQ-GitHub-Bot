@@ -20,10 +20,14 @@ SUPERUSERS=[]
 
 ONEBOT_API_ROOTS={}
 
+POSTGRES_HOST=127.0.0.1
+POSTGRES_PORT=5432
 POSTGRES_USER=bot
 POSTGRES_PASSWORD=bot_postgres
 POSTGRES_DB=bot
 
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
 REDIS_PASSWORD=bot_redis
 
 # Github App 配置
@@ -44,3 +48,5 @@ GITHUB_APPS='
 ]
 '
 EOF
+
+poetry run python ./scripts/database.py upgrade
