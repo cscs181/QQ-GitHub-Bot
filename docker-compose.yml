@@ -1,15 +1,16 @@
 version: "3"
 services:
   redis:
-    image: redis:7
+    image: redis:7-alpine
     environment:
+      - TZ=Asia/Shanghai
       - REDIS_PASSWORD=${REDIS_PASSWORD:?err}
     command: ["sh", "-c", "redis-server --requirepass $$REDIS_PASSWORD"]
     volumes:
       - bot_redis_data:/data
     restart: always
   postgres:
-    image: postgres:14
+    image: postgres:15-alpine
     environment:
       - POSTGRES_USER=${POSTGRES_USER:?err}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?err}
