@@ -34,7 +34,7 @@ ENV APP_MODULE bot:app
 #   && echo "deb http://mirrors.aliyun.com/debian-security/ buster/updates main" >> /etc/apt/sources.list
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends gcc curl p7zip-full fontconfig fonts-noto-color-emoji
+  && apt-get install -y --no-install-recommends gcc linux-libc-dev curl p7zip-full fontconfig fonts-noto-color-emoji
 
 RUN curl -sSL https://github.com/be5invis/Sarasa-Gothic/releases/download/v0.37.4/sarasa-gothic-ttf-0.37.4.7z -o /tmp/sarasa.7z \
   && 7z x /tmp/sarasa.7z -o/tmp/sarasa \
@@ -50,7 +50,7 @@ COPY --from=requirements-stage /tmp/requirements.txt /app/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-RUN apt-get purge -y --auto-remove gcc curl p7zip-full
+RUN apt-get purge -y --auto-remove gcc linux-libc-dev curl p7zip-full
 
 RUN playwright install --with-deps chromium
 
