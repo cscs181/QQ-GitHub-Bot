@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-26 15:04:56
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-31 17:10:05
+@LastEditTime   : 2022-11-20 12:59:45
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,13 +15,11 @@ from tortoise.models import Model
 
 
 class QQGroupMixin:
-    qq_group = fields.BigIntField(null=True, unique=True, index=True)
+    qq_group = fields.BigIntField(null=True, index=True)
 
 
 class QQGuildChannelMixin:
-    qqguild_channel = fields.CharField(
-        max_length=255, null=True, unique=True, index=True
-    )
+    qqguild_channel = fields.CharField(max_length=255, null=True, index=True)
 
 
 class PlatformGroup(QQGroupMixin, QQGuildChannelMixin, Model):

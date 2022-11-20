@@ -1,7 +1,7 @@
 -- upgrade --
 CREATE TABLE IF NOT EXISTS "group_subscription" (
-    "qq_group" BIGINT  UNIQUE,
-    "qqguild_channel" VARCHAR(255)  UNIQUE,
+    "qq_group" BIGINT,
+    "qqguild_channel" VARCHAR(255),
     "id" BIGSERIAL NOT NULL PRIMARY KEY,
     "owner" VARCHAR(255) NOT NULL,
     "repo" VARCHAR(255) NOT NULL,
