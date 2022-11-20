@@ -55,7 +55,7 @@ RUN apt-get update \
 
 COPY --from=build-stage /wheel /wheel
 
-RUN pip install --no-cache-dir --no-index --find-links=/wheel -r /wheel/requirements.txt
+RUN pip install --no-cache-dir --no-index --find-links=/wheel -r /wheel/requirements.txt && rm -r /wheel
 
 RUN playwright install --with-deps chromium
 
