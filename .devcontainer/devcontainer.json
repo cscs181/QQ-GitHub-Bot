@@ -1,5 +1,5 @@
 {
-  "name": "Default Linux Universal",
+  "name": "Bot (Postgres, Redis)",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
@@ -12,7 +12,7 @@
   "forwardPorts": [5432, 6379],
 
   // install dependencies
-  "postCreateCommand": "poetry config virtualenvs.in-project true && poetry install && poetry run pre-commit install && poetry run playwright install chromium",
+  "postCreateCommand": "./scripts/setup_devcontainer.sh",
 
   // vscode settings
   "customizations": {

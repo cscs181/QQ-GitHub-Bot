@@ -34,14 +34,14 @@ ENV APP_MODULE bot:app
 #   && echo "deb http://mirrors.aliyun.com/debian-security/ buster/updates main" >> /etc/apt/sources.list
 
 RUN apt-get update \
-  && apt-get install curl p7zip-full fonts-noto-color-emoji \
+  && apt-get install -y curl p7zip-full fonts-noto-color-emoji \
   && curl -sSL https://github.com/be5invis/Sarasa-Gothic/releases/download/v0.37.4/sarasa-gothic-ttf-0.37.4.7z -o /tmp/sarasa.7z \
   && 7z x /tmp/sarasa.7z -o/tmp/sarasa \
   && install -d /usr/share/fonts/sarasa-gothic \
   && install -m644 /tmp/sarasa/sarasa-ui-*.ttf /usr/share/fonts/sarasa-gothic \
   && install -m644 /tmp/sarasa/sarasa-mono-*.ttf /usr/share/fonts/sarasa-gothic \
   && fc-cache -fv \
-  && apt-get remove curl p7zip-full \
+  && apt-get remove -y curl p7zip-full \
   && rm -rf /tmp/sarasa/ /tmp/sarasa.7z
 
 # RUN python3 -m pip config set global.index-url https://mirrors.aliyun.com/pypi/simple

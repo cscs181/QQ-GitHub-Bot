@@ -7,6 +7,9 @@ services:
     volumes:
       - ../..:/workspaces:cached
 
+    environment:
+      TZ: Asia/Shanghai
+
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
@@ -20,7 +23,7 @@ services:
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
   db:
-    image: postgres:latest
+    image: postgres:alpine
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -28,16 +31,21 @@ services:
       POSTGRES_USER: bot
       POSTGRES_DB: bot
       POSTGRES_PASSWORD: bot_postgres
+      TZ: Asia/Shanghai
 
     # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
   redis:
-    image: redis:latest
+    image: redis:alpine
     restart: unless-stopped
     environment:
-      - REDIS_PASSWORD=bot_redis
-    command: ["sh", "-c", "redis-server --requirepass ${REDIS_PASSWORD}"]
+      REDIS_PASSWORD: bot_redis
+      TZ: Asia/Shanghai
+    command: ["sh", "-c", "redis-server --requirepass $$REDIS_PASSWORD"]
+
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:db
 
     # Add "forwardPorts": ["6379"] to **devcontainer.json** to forward PostgreSQL locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
