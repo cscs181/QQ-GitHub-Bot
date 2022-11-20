@@ -34,14 +34,14 @@ ENV APP_MODULE bot:app
 #   && echo "deb http://mirrors.aliyun.com/debian-security/ buster/updates main" >> /etc/apt/sources.list
 
 RUN apt-get update \
-  && apt-get install -y curl p7zip-full fontconfig fonts-noto-color-emoji \
-  && curl -sSL https://github.com/be5invis/Sarasa-Gothic/releases/download/v0.37.4/sarasa-gothic-ttf-0.37.4.7z -o /tmp/sarasa.7z \
+  && apt-get install -y --no-install-recommends gcc curl p7zip-full fontconfig fonts-noto-color-emoji
+
+RUN curl -sSL https://github.com/be5invis/Sarasa-Gothic/releases/download/v0.37.4/sarasa-gothic-ttf-0.37.4.7z -o /tmp/sarasa.7z \
   && 7z x /tmp/sarasa.7z -o/tmp/sarasa \
   && install -d /usr/share/fonts/sarasa-gothic \
   && install -m644 /tmp/sarasa/sarasa-ui-*.ttf /usr/share/fonts/sarasa-gothic \
   && install -m644 /tmp/sarasa/sarasa-mono-*.ttf /usr/share/fonts/sarasa-gothic \
   && fc-cache -fv \
-  && apt-get remove -y curl p7zip-full \
   && rm -rf /tmp/sarasa/ /tmp/sarasa.7z
 
 # RUN python3 -m pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
@@ -49,6 +49,8 @@ RUN apt-get update \
 COPY --from=requirements-stage /tmp/requirements.txt /app/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
+RUN apt-get purge -y --auto-remove gcc curl p7zip-full
 
 RUN playwright install --with-deps chromium
 
