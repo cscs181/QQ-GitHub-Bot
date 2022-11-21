@@ -127,7 +127,7 @@ def get_issue_label_color(color: str) -> tuple[int, int, int, int, int, int]:
     g = int(color[2:4], 16)
     b = int(color[4:6], 16)
     h, l, s = rgb_to_hls(r / 255, g / 255, b / 255)
-    return r, g, b, int(h * 100), int(l * 100), int(s * 100)
+    return r, g, b, int(h * 360), int(l * 100), int(s * 100)
 
 
 def find_dismissed_review(
