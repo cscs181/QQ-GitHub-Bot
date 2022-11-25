@@ -2,32 +2,13 @@
  * @Author         : yanyongyu
  * @Date           : 2022-10-20 14:05:11
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-20 14:06:13
+ * @LastEditTime   : 2022-11-25 11:51:35
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/cross-reference.html.jinja" import octicon_cross_reference %}
 
+{# mentioned event is triggered by @user. no display #}
 {% macro mentioned(event, ns) %}
-<div class="TimelineItem">
-  <div class="TimelineItem-badge">
-    {{ octicon_cross_reference() }}
-  </div>
-  <div class="TimelineItem-body">
-    <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ event.actor.avatar_url }}" />
-    </a>
-    <a class="author Link--primary text-bold">
-      {{ event.actor.login|escape }}
-    </a>
-    mentioned this
-    {% if ns.issue.pull_request %}
-    pull request
-    {% else %}
-    issue
-    {% endif %}
-    <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
-  </div>
-</div>
 {% endmacro %}
