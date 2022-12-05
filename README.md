@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-11-07 05:09:00
+ * @LastEditTime   : 2022-12-05 12:37:24
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -127,10 +127,10 @@ GitHub Bot for QQ
 
 ## 开发
 
-配置项参考 [.env 文件](./.env)，部分选项为可选。在项目目录下创建 `.env.dev` 文件以覆盖默认 `.env` 配置，配置项留空将会从环境变量寻找。
+使用 Codespaces (Dev Container) 一键配置开发环境 (Python、Redis、Postgres)：
 
-启动项目：
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=master&repo=294357266)
 
-```bash
-python bot.py
-```
+修改 `.env.dev` 文件中的部分配置项，然后执行 `python bot.py` 即可。
+
+如需连接到 Redis 或 Postgres 数据库调试，请确保 VSCode 已正确映射端口 (必要时可以重新映射 6379、5432 端口)，使用本地工具远程连接即可。
