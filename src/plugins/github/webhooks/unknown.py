@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 05:14:32
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-05 13:02:08
+@LastEditTime   : 2022-12-05 23:14:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -33,7 +33,7 @@ unknown = on_type(Event, priority=config.github_command_priority + 10)
 
 @unknown.handle()
 async def handle_unknown_event(event: Event):
-    username: str = get_attr_or_item(get_attr_or_item(event, "sender"), "login")
+    username: str = get_attr_or_item(get_attr_or_item(event.payload, "sender"), "login")
     action: str | None = get_attr_or_item(event.payload, "action")
     repository = get_attr_or_item(event.payload, "repository")
     if repository is None:
