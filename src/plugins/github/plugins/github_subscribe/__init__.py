@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-16 00:13:53
+@LastEditTime   : 2022-12-05 12:53:20
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -162,20 +162,17 @@ async def process_subscribe_repo(
         await subscribe.finish("未知错误发生，请尝试重试或联系管理员")
 
     try:
-        remain: bool = True
-        page: int = 1
-        while remain:
-            accessible_repos = await bot.rest.apps.async_list_installation_repos_for_authenticated_user(
-                installation_id=repo_installation.parsed_data.id, page=page
-            )
-            if not accessible_repos.parsed_data.repositories:
-                remain = False
-            for accessible_repo in accessible_repos.parsed_data.repositories:
+        async with bot.as_user(user.access_token):
+            async for accessible_repo in bot.github.paginate(
+                bot.rest.apps.async_list_installation_repos_for_authenticated_user,
+                map_func=lambda r: r.parsed_data.repositories,
+                installation_id=repo_installation.parsed_data.id,
+            ):
+                print(accessible_repo.full_name)
                 if accessible_repo.full_name == full_name:
                     break
-            page += 1
-        else:
-            await subscribe.reject(f"你没有权限访问仓库 {owner}/{repo} ！请重新发送或取消")
+            else:
+                await subscribe.reject(f"你没有权限访问仓库 {owner}/{repo} ！请重新发送或取消")
     except ActionTimeout:
         await subscribe.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:

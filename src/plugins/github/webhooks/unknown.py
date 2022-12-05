@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 05:14:32
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-10 12:19:51
+@LastEditTime   : 2022-12-05 13:02:08
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -36,6 +36,8 @@ async def handle_unknown_event(event: Event):
     username: str = get_attr_or_item(get_attr_or_item(event, "sender"), "login")
     action: str | None = get_attr_or_item(event.payload, "action")
     repository = get_attr_or_item(event.payload, "repository")
+    if repository is None:
+        return
     repo_name: str = get_attr_or_item(repository, "full_name")
     message = f"用户 {username} 触发了仓库 {repo_name} 的事件 {event.name}" + (
         f"/{action}" if action else ""
