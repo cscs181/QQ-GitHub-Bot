@@ -4,20 +4,22 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:15:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-24 06:40:10
+@LastEditTime   : 2022-12-17 16:45:10
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-import time
-from typing import Dict, List, Optional
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 import psutil
 from nonebot import get_driver
 from nonebot.log import logger
 from nonebot.adapters import Bot
+
+if TYPE_CHECKING:
+    from psutil._common import sdiskusage
 
 CURRENT_TIMEZONE = datetime.now().astimezone().tzinfo
 
@@ -72,14 +74,14 @@ def get_swap_status():
     return psutil.swap_memory()
 
 
-def _get_disk_usage(path: str) -> Optional[psutil._common.sdiskusage]:
+def _get_disk_usage(path: str) -> Optional["sdiskusage"]:
     try:
         return psutil.disk_usage(path)
     except Exception as e:
         logger.warning(f"Could not get disk usage for {path}: {e!r}")
 
 
-def get_disk_usage() -> Dict[str, psutil._common.sdiskusage]:
+def get_disk_usage() -> Dict[str, "sdiskusage"]:
     disk_parts = psutil.disk_partitions()
     return {
         d.mountpoint: usage
