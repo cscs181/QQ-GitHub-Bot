@@ -11,10 +11,10 @@ spec:
   {{- with .Values.postgres.persistence.storageClass }}
   storageClassName: {{ . | quote }}
   {{- end }}
-  selector:
-    matchLabels:
-      {{- include "bot.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: postgres
+  # selector:
+  #   matchLabels:
+  #     {{- include "bot.selectorLabels" . | nindent 6 }}
+  #     app.kubernetes.io/component: postgres
   accessModes:
     {{- range .Values.postgres.persistence.accessModes }}
     - {{ . | quote }}
