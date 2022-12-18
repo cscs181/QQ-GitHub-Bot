@@ -2,14 +2,14 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-23 14:11:18
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-06 03:56:13
+ * @LastEditTime   : 2022-12-18 14:18:04
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/repo-push.html.jinja" import octicon_repo_push %}
 
-{% macro head_ref_force_pushed(event, ns) %}
+{% macro base_ref_force_pushed(event, ns) %}
 {% set pull_request = get_pull_request(ns.issue) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
