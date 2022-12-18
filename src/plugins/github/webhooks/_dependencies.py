@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 08:35:10
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-18 12:49:31
+@LastEditTime   : 2022-12-18 14:14:47
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -34,7 +34,6 @@ T = TypeVar("T", bound=Event)
 
 SEND_INTERVAL = 0.5
 THROTTLE_KEY = "cache:github:webhooks:throttle:{identity}"
-THROTTLE_EXPIRE = timedelta(seconds=10)
 
 
 async def get_subscribed_users(event: Event) -> list[UserSubscription]:
@@ -109,10 +108,14 @@ async def send_group_image(group: GroupSubscription, bot: Bot, image: bytes, tag
 
 class Throttle(Generic[T]):
     def __init__(
-        self, event_type: tuple[type[T], ...], identity_func: Callable[[T], str | None]
+        self,
+        event_type: tuple[type[T], ...],
+        identity_func: Callable[[T], str | None],
+        expire: timedelta,
     ):
         self.event_type = event_type
         self.identity_func = identity_func
+        self.expire = expire
 
     async def __call__(self, event: Event, matcher: Matcher):
         # do nothing to other event
@@ -136,5 +139,5 @@ class Throttle(Generic[T]):
             matcher.skip()
         else:
             await redis_client.set(
-                THROTTLE_KEY.format(identity=identity), 1, ex=THROTTLE_EXPIRE
+                THROTTLE_KEY.format(identity=identity), 1, ex=self.expire
             )
