@@ -4,20 +4,25 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 08:35:10
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-10 12:16:38
+@LastEditTime   : 2022-12-18 12:49:31
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from datetime import timedelta
+from typing import Generic, TypeVar, Callable, Awaitable
+
 from nonebot.log import logger
 from nonebot.adapters import Bot
+from nonebot.matcher import Matcher
 from nonebot.adapters.github import Event
 from nonebot.adapters.onebot.v11 import Bot as QQBot
 from nonebot.adapters.github.utils import get_attr_or_item
 from nonebot.adapters.onebot.v11 import Message as QQMessage
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 
+from src.plugins.redis import redis_client
 from src.plugins.github.models import UserSubscription, GroupSubscription
 from src.plugins.github.libs.message_tag import Tag, MessageInfo, create_message_tag
 from src.plugins.github.libs.platform import (
@@ -25,7 +30,11 @@ from src.plugins.github.libs.platform import (
     list_subscribed_groups,
 )
 
+T = TypeVar("T", bound=Event)
+
 SEND_INTERVAL = 0.5
+THROTTLE_KEY = "cache:github:webhooks:throttle:{identity}"
+THROTTLE_EXPIRE = timedelta(seconds=10)
 
 
 async def get_subscribed_users(event: Event) -> list[UserSubscription]:
@@ -96,3 +105,36 @@ async def send_group_image(group: GroupSubscription, bot: Bot, image: bytes, tag
             )
     else:
         logger.error(f"Unprocessed bot type: {type(bot)}")
+
+
+class Throttle(Generic[T]):
+    def __init__(
+        self, event_type: tuple[type[T], ...], identity_func: Callable[[T], str | None]
+    ):
+        self.event_type = event_type
+        self.identity_func = identity_func
+
+    async def __call__(self, event: Event, matcher: Matcher):
+        # do nothing to other event
+        if not isinstance(event, self.event_type):
+            return
+
+        # get event identity
+        try:
+            identity = self.identity_func(event)
+        except Exception as e:
+            logger.warning(f"Error when getting identity: {e}")
+            return
+
+        # do nothing to event without identity
+        if identity is None:
+            return
+
+        # check exists identity
+        exists = await redis_client.get(THROTTLE_KEY.format(identity=identity))
+        if exists is not None:
+            matcher.skip()
+        else:
+            await redis_client.set(
+                THROTTLE_KEY.format(identity=identity), 1, ex=THROTTLE_EXPIRE
+            )

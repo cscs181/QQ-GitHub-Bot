@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 06:22:17
+@LastEditTime   : 2022-12-18 12:37:57
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,7 +21,7 @@ from src.plugins.playwright import get_new_page
 from .render import issue_to_html, pr_diff_to_html
 
 
-@cache(ex=timedelta(minutes=10))
+@cache(ex=timedelta(minutes=30))
 async def _gen_image(html: str, width: int, height: int) -> bytes:
     async with get_new_page(viewport={"width": width, "height": height}) as page:
         await page.set_content(html)
