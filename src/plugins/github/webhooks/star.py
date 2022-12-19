@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-12-18 13:44:11
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-18 14:15:47
+@LastEditTime   : 2022-12-19 12:17:23
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -32,46 +32,25 @@ from ._dependencies import (
     get_subscribed_groups,
 )
 
-THROTTLE_EXPIRE = timedelta(seconds=30)
+THROTTLE_EXPIRE = timedelta(seconds=120)
 
 star = on_type(
     (StarCreated, StarDeleted), priority=config.github_command_priority, block=True
 )
 
 
-class EventInfo(NamedTuple):
-    username: str
-    repo_name: str
-    action: str
-    star_count: int
-
-
-def get_event_info(event: StarCreated | StarDeleted) -> EventInfo:
+@star.handle(
+    parameterless=(Depends(Throttle((StarCreated, StarDeleted), THROTTLE_EXPIRE)),)
+)
+async def handle_unknown_event(event: StarCreated | StarDeleted):
     username = event.payload.sender.login
     repo_name = event.payload.repository.full_name
     action = event.payload.action
     star_count: int = event.payload.repository.stargazers_count
-    return EventInfo(username, repo_name, action, star_count)
+    action_name = "starred" if action == "created" else "unstarred"
+    message = f"用户 {username} {action_name} 仓库 {repo_name} (共计 {star_count} 个 star)"
 
-
-def throttle_id(event: StarCreated | StarDeleted) -> str | None:
-    info = get_event_info(event)
-    return f"star_event:{info.username}:{info.repo_name}:{info.action}"
-
-
-@star.handle(
-    parameterless=(
-        Depends(Throttle((StarCreated, StarDeleted), throttle_id, THROTTLE_EXPIRE)),
-    )
-)
-async def handle_unknown_event(event: StarCreated | StarDeleted):
-    info = get_event_info(event)
-    action = "starred" if info.action == "created" else "unstarred"
-    message = (
-        f"用户 {info.username} {action} 仓库 {info.repo_name} (共计 {info.star_count} 个 star)"
-    )
-
-    owner, repo = info.repo_name.split("/", 1)
+    owner, repo = repo_name.split("/", 1)
     tag = RepoTag(owner=owner, repo=repo, is_receive=False)
 
     for user in await get_subscribed_users(event):

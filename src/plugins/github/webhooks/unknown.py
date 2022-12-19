@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 05:14:32
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-18 14:15:10
+@LastEditTime   : 2022-12-19 12:18:11
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -33,7 +33,7 @@ from ._dependencies import (
     get_subscribed_groups,
 )
 
-THROTTLE_EXPIRE = timedelta(seconds=30)
+THROTTLE_EXPIRE = timedelta(seconds=60)
 
 unknown = on_type(Event, priority=config.github_command_priority + 10, block=True)
 
@@ -55,25 +55,20 @@ def get_event_info(event: Event) -> EventInfo:
     return EventInfo(username, repo_name, event.name, action)
 
 
-def throttle_id(event: Event) -> str | None:
-    info = get_event_info(event)
-    if info.repo_name is None:
-        return
-    return f"unknown_event:{info.username}:{info.repo_name}:{info.event_name}:{info.action}"
-
-
-@unknown.handle(
-    parameterless=(Depends(Throttle((Event,), throttle_id, THROTTLE_EXPIRE)),)
-)
+@unknown.handle(parameterless=(Depends(Throttle((Event,), THROTTLE_EXPIRE)),))
 async def handle_unknown_event(event: Event):
-    info = get_event_info(event)
-    if info.repo_name is None:
+    repository = get_attr_or_item(event.payload, "repository")
+    if repository is None:
         return
-    message = f"用户 {info.username} 触发了仓库 {info.repo_name} 的事件 {info.event_name}" + (
-        f"/{info.action}" if info.action else ""
+
+    username: str = get_attr_or_item(get_attr_or_item(event.payload, "sender"), "login")
+    repo_name: str = get_attr_or_item(repository, "full_name")
+    action: str | None = get_attr_or_item(event.payload, "action")
+    message = f"用户 {username} 触发了仓库 {repo_name} 的事件 {event.name}" + (
+        f"/{action}" if action else ""
     )
 
-    owner, repo = info.repo_name.split("/", 1)
+    owner, repo = repo_name.split("/", 1)
     tag = RepoTag(owner=owner, repo=repo, is_receive=False)
 
     for user in await get_subscribed_users(event):
