@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-12-05 12:37:24
+ * @LastEditTime   : 2022-12-19 13:03:07
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -40,6 +40,20 @@ GitHub Bot for QQ
 |                  sentry                  |                   日志监控，上报错误                    |
 |               health check               |           访问路由地址 `/health` 即可进行自检           |
 
+### 事件订阅
+
+支持的事件根据 GitHub APP 配置的 Webhook 事件列表而定，可以自行选择和更改，推荐选择的事件有：
+
+|      事件类型       |               事件描述                |
+| :-----------------: | :-----------------------------------: |
+|       Issues        | 任何开启、关闭、修改等 Issue 相关操作 |
+|    Issue Comment    |   创建、修改、删除 Issue/PR 的评论    |
+|    Pull Request     |  任何开启、关闭、修改等 PR 相关操作   |
+| Pull Request Review |          PR Review 相关操作           |
+|        Star         |           star、unstar 仓库           |
+|        Push         |          push commit 到仓库           |
+|       Release       |  创建、修改、发布等 Release 相关操作  |
+
 ## 部署
 
 ### Docker
@@ -62,10 +76,11 @@ GitHub Bot for QQ
    配置 GitHub App：
    1. callback URL 为 `http://<your-domain>/github/auth`
    2. webhook URL 为 `http://<your-domain>/github/webhooks/<app_id>`，可在 app 创建完成后添加
-   3. 权限为 `Issues (Read and Write)`, `Pull requests (Read and Write)`, `Metadata (Read Only)` 和 `Starring (Read and Write)`
-   4. 取消勾选 `Expire user authorization tokens` 或在 app optional feature 中 `opt-out`
-   5. 勾选 `Request user authorization (OAuth) during installation`
-   6. 记录 `app_id`, `client_id`，生成并下载 `private_key`, `client_secret` 备用
+   3. 权限为 `Issues (Read and Write)`, `Pull requests (Read and Write)`, `Metadata (Read Only)`, `Content (Read Only)` 和 `Starring (Read and Write)`
+   4. Webhook 事件参考 [事件订阅](#事件订阅) 自行选择需要的事件
+   5. 取消勾选 `Expire user authorization tokens` 或在 app optional feature 中 `opt-out`
+   6. 勾选 `Request user authorization (OAuth) during installation`
+   7. 记录 `app_id`, `client_id`，生成并下载 `private_key`, `client_secret` 备用
 3. 下载 [`docker-compose.yml`](./docker-compose.yml) 以及 [`bot`](./bot) 目录至任意空目录
 4. 在 `docker-compose.yml` 同目录下创建 `.env` 并写入如下配置项：
 
