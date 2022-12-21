@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 04:23:29
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-22 04:29:09
+@LastEditTime   : 2022-12-21 19:55:52
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,16 +12,15 @@ __author__ = "yanyongyu"
 
 from nonebot import on_command
 from nonebot.log import logger
-from githubkit.utils import UNSET
+from nonebot.adapters import Event
+from nonebot.params import Depends
 from nonebot.typing import T_State
-from nonebot.adapters import Event, Message
-from nonebot.params import Depends, CommandArg
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.models import User
-from src.plugins.github.helpers import get_platform
 from src.plugins.github.utils import get_github_bot
+from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
 from src.plugins.github.libs.message_tag import (
     Tag,
     IssueTag,
@@ -33,7 +32,10 @@ from . import KEY_GITHUB_REPLY
 from .dependencies import get_user, is_github_reply
 
 reopen = on_command(
-    "reopen", is_github_reply, priority=config.github_command_priority, block=True
+    "reopen",
+    rule=NO_GITHUB_EVENT & is_github_reply,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 

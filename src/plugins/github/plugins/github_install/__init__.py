@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-27 08:56:00
+@LastEditTime   : 2022-12-21 19:50:10
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,6 +22,7 @@ from src.plugins.github import config
 from src.plugins.github.utils import get_github_bot
 from src.plugins.github.libs.install import create_install_link
 from src.plugins.github.helpers import (
+    NO_GITHUB_EVENT,
     get_user_info,
     run_when_group,
     get_current_user,
@@ -41,7 +42,9 @@ __plugin_meta__ = PluginMetadata(
 )
 
 
-install = on_command("install", priority=config.github_command_priority, block=True)
+install = on_command(
+    "install", rule=NO_GITHUB_EVENT, priority=config.github_command_priority, block=True
+)
 
 
 @install.handle(parameterless=(Depends(run_when_group),))
@@ -59,7 +62,10 @@ async def handle_private(event: Event):
 
 
 install_check = on_command(
-    ("install", "check"), priority=config.github_command_priority, block=True
+    ("install", "check"),
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 
@@ -91,7 +97,10 @@ async def check_user_installation(
 
 
 install_revoke = on_command(
-    ("install", "revoke"), priority=config.github_command_priority, block=True
+    ("install", "revoke"),
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 

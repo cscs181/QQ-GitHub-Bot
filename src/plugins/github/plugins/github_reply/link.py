@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:31:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 03:50:49
+@LastEditTime   : 2022-12-21 19:55:24
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,7 +16,7 @@ from nonebot.adapters import Event
 from nonebot.typing import T_State
 
 from src.plugins.github import config
-from src.plugins.github.helpers import get_platform
+from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
 from src.plugins.github.libs.message_tag import (
     Tag,
     IssueTag,
@@ -29,7 +29,10 @@ from . import KEY_GITHUB_REPLY
 from .dependencies import is_github_reply
 
 link = on_command(
-    "link", is_github_reply, priority=config.github_command_priority, block=True
+    "link",
+    rule=NO_GITHUB_EVENT & is_github_reply,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 

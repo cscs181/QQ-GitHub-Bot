@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 03:41:34
+@LastEditTime   : 2022-12-21 19:49:55
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,6 +29,7 @@ from src.plugins.github.helpers import (
     GROUP_EVENT,
     FULLREPO_REGEX,
     GROUP_SUPERPERM,
+    NO_GITHUB_EVENT,
     get_group_info,
     get_current_group,
     allow_cancellation,
@@ -44,7 +45,7 @@ __plugin_meta__ = PluginMetadata(
 
 bind = on_command(
     "bind",
-    is_type(*GROUP_EVENT),
+    is_type(*GROUP_EVENT) & NO_GITHUB_EVENT,
     permission=GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,
@@ -102,7 +103,7 @@ async def process_repo(event: Event, full_name: str = ArgPlainText()):
 
 unbind = on_command(
     "unbind",
-    is_type(*GROUP_EVENT),
+    is_type(*GROUP_EVENT) & NO_GITHUB_EVENT,
     permission=GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,

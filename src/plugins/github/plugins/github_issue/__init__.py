@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 07:32:32
+@LastEditTime   : 2022-12-21 19:51:16
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -36,6 +36,7 @@ from src.plugins.github.helpers import (
     GROUP_EVENT,
     ISSUE_REGEX,
     FULLREPO_REGEX,
+    NO_GITHUB_EVENT,
     GITHUB_PR_FILE_LINK_REGEX,
     GITHUB_ISSUE_OR_PR_LINK_REGEX,
     get_platform,
@@ -59,10 +60,14 @@ __plugin_meta__ = PluginMetadata(
 
 
 issue = on_regex(
-    rf"^{FULLREPO_REGEX}#{ISSUE_REGEX}$", priority=config.github_command_priority
+    rf"^{FULLREPO_REGEX}#{ISSUE_REGEX}$",
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
 )
 issue_link = on_regex(
-    GITHUB_ISSUE_OR_PR_LINK_REGEX, priority=config.github_command_priority + 1
+    GITHUB_ISSUE_OR_PR_LINK_REGEX,
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority + 1,
 )
 
 
@@ -116,7 +121,9 @@ async def handle_issue(
 
 
 pr_diff_link = on_regex(
-    GITHUB_PR_FILE_LINK_REGEX, priority=config.github_command_priority
+    GITHUB_PR_FILE_LINK_REGEX,
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
 )
 
 
@@ -163,7 +170,7 @@ async def handle_pr_diff(
 
 issue_short = on_regex(
     rf"^#{ISSUE_REGEX}$",
-    rule=is_type(*GROUP_EVENT),
+    rule=is_type(*GROUP_EVENT) & NO_GITHUB_EVENT,
     priority=config.github_command_priority,
 )
 

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 05:14:32
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-19 12:18:11
+@LastEditTime   : 2022-12-21 20:02:47
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -35,7 +35,7 @@ from ._dependencies import (
 
 THROTTLE_EXPIRE = timedelta(seconds=60)
 
-unknown = on_type(Event, priority=config.github_command_priority + 10, block=True)
+unknown = on_type(Event, priority=config.github_webhook_priority + 1, block=True)
 
 
 class EventInfo(NamedTuple):

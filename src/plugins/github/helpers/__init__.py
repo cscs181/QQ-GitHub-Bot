@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-07 12:17:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-05 15:57:57
+@LastEditTime   : 2022-12-21 19:46:58
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,6 +29,7 @@ from .event import get_group_info as get_group_info
 from .event import get_message_id as get_message_id
 from .github import FULLREPO_REGEX as FULLREPO_REGEX
 from .permission import PRIVATE_PERM as PRIVATE_PERM
+from .rule import NO_GITHUB_EVENT as NO_GITHUB_EVENT
 from .rule import is_private_event as is_private_event
 from .rule import run_when_private as run_when_private
 from .user import get_current_user as get_current_user

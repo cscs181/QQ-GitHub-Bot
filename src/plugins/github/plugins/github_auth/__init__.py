@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-27 08:55:20
+@LastEditTime   : 2022-12-21 19:48:28
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -22,6 +22,7 @@ from src.plugins.github.models import User
 from src.plugins.github.utils import get_github_bot
 from src.plugins.github.libs.auth import create_auth_link
 from src.plugins.github.helpers import (
+    NO_GITHUB_EVENT,
     get_user_info,
     run_when_group,
     get_current_user,
@@ -38,7 +39,12 @@ __plugin_meta__ = PluginMetadata(
     ),
 )
 
-auth = on_command("auth", priority=config.github_command_priority, block=True)
+auth = on_command(
+    "auth",
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
+    block=True,
+)
 
 
 @auth.handle(parameterless=(Depends(run_when_group),))
@@ -56,7 +62,10 @@ async def handle_private(event: Event):
 
 
 auth_check = on_command(
-    ("auth", "check"), priority=config.github_command_priority, block=True
+    ("auth", "check"),
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 
@@ -94,7 +103,10 @@ async def check_user_status(user: User = Depends(get_current_user)):
 
 
 auth_revoke = on_command(
-    ("auth", "revoke"), priority=config.github_command_priority, block=True
+    ("auth", "revoke"),
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 

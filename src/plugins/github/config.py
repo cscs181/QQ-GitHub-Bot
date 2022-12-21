@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 19:05:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-17 16:00:05
+@LastEditTime   : 2022-12-21 20:02:59
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,7 +29,8 @@ class APP(BaseModel):
 class Config(BaseModel, extra=Extra.ignore):
     github_app: APP
     github_theme: Literal["light", "dark"] = "light"
-    github_command_priority: int = 5
+    github_webhook_priority: int = 1
+    github_command_priority: int = 50
 
     @root_validator(pre=True)
     def validate_app(cls, values: Dict[str, Any]) -> Dict[str, Any]:
@@ -41,8 +42,8 @@ class Config(BaseModel, extra=Extra.ignore):
         values.setdefault("github_app", apps[0])
         return values
 
-    @validator("github_command_priority")
+    @validator("github_webhook_priority", "github_command_priority")
     def validate_priority(cls, v: int):
         if v < 1:
-            raise ValueError("`github_command_priority` must be greater than 0")
+            raise ValueError("`_priority` must be greater than 0")
         return v

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-05 12:53:20
+@LastEditTime   : 2022-12-21 19:57:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,6 +39,7 @@ from src.plugins.github.helpers import (
     PRIVATE_EVENT,
     FULLREPO_REGEX,
     GROUP_SUPERPERM,
+    NO_GITHUB_EVENT,
     get_user_info,
     get_group_info,
     run_when_group,
@@ -86,7 +87,7 @@ def subsciption_to_message(
 
 subscribe = on_command(
     "subscribe",
-    is_type(*PRIVATE_EVENT, *GROUP_EVENT),
+    is_type(*PRIVATE_EVENT, *GROUP_EVENT) & NO_GITHUB_EVENT,
     permission=PRIVATE_PERM | GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,
@@ -274,7 +275,7 @@ async def create_group(event: Event, state: T_State):
 
 unsubscribe = on_command(
     "unsubscribe",
-    is_type(*PRIVATE_EVENT, *GROUP_EVENT),
+    is_type(*PRIVATE_EVENT, *GROUP_EVENT) & NO_GITHUB_EVENT,
     permission=PRIVATE_PERM | GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,

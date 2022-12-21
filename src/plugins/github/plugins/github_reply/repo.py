@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-21 01:30:44
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 01:32:29
+@LastEditTime   : 2022-12-21 19:56:17
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,12 +15,16 @@ from nonebot.typing import T_State
 
 from src.plugins.github import config
 from src.plugins.github.libs.message_tag import Tag
+from src.plugins.github.helpers import NO_GITHUB_EVENT
 
 from . import KEY_GITHUB_REPLY
 from .dependencies import is_github_reply
 
 repo = on_command(
-    "repo", is_github_reply, priority=config.github_command_priority, block=True
+    "repo",
+    rule=NO_GITHUB_EVENT & is_github_reply,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 

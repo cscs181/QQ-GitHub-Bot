@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-21 08:13:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-21 08:30:44
+@LastEditTime   : 2022-12-21 19:56:49
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,7 +20,7 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.helpers import get_platform, get_current_user
+from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform, get_current_user
 from src.plugins.github.libs.message_tag import (
     Tag,
     IssueTag,
@@ -32,7 +32,10 @@ from . import KEY_GITHUB_REPLY
 from .dependencies import is_github_reply
 
 unlabel = on_command(
-    "unlabel", is_github_reply, priority=config.github_command_priority, block=True
+    "unlabel",
+    rule=NO_GITHUB_EVENT & is_github_reply,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 

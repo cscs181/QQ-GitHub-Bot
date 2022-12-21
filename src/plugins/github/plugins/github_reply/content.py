@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 04:43:18
+@LastEditTime   : 2022-12-21 19:54:15
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -23,15 +23,18 @@ from nonebot.adapters.github import GitHubBot, ActionTimeout
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 
 from src.plugins.github import config
-from src.plugins.github.helpers import get_platform
 from src.plugins.github.libs.renderer import issue_to_image
+from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
 from src.plugins.github.libs.message_tag import Tag, create_message_tag
 
 from . import KEY_GITHUB_REPLY
 from .dependencies import get_issue, get_context, is_github_reply
 
 content = on_command(
-    "content", is_github_reply, priority=config.github_command_priority, block=True
+    "content",
+    rule=NO_GITHUB_EVENT & is_github_reply,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 

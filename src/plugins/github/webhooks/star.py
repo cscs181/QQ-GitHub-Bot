@@ -4,14 +4,13 @@
 @Author         : yanyongyu
 @Date           : 2022-12-18 13:44:11
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-19 12:17:23
+@LastEditTime   : 2022-12-21 20:02:36
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import asyncio
-from typing import NamedTuple
 from datetime import timedelta
 
 from nonebot import on_type
@@ -35,7 +34,7 @@ from ._dependencies import (
 THROTTLE_EXPIRE = timedelta(seconds=120)
 
 star = on_type(
-    (StarCreated, StarDeleted), priority=config.github_command_priority, block=True
+    (StarCreated, StarDeleted), priority=config.github_webhook_priority, block=True
 )
 
 

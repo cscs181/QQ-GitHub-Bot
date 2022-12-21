@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 03:59:07
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-22 04:26:46
+@LastEditTime   : 2022-12-21 19:53:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,8 +20,8 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.models import User
-from src.plugins.github.helpers import get_platform
 from src.plugins.github.utils import get_github_bot
+from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
 from src.plugins.github.libs.message_tag import (
     Tag,
     IssueTag,
@@ -35,7 +35,10 @@ from .dependencies import get_user, is_github_reply
 ISSUE_CLOSE_REASON = {"completed", "not_planned", ""}
 
 close = on_command(
-    "close", is_github_reply, priority=config.github_command_priority, block=True
+    "close",
+    rule=NO_GITHUB_EVENT & is_github_reply,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 

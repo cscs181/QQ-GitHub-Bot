@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-05 15:58:08
+@LastEditTime   : 2022-12-21 19:51:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -24,6 +24,7 @@ from src.plugins.github import config
 from src.plugins.github.libs.message_tag import RepoTag, CommitTag, create_message_tag
 from src.plugins.github.helpers import (
     FULLREPO_REGEX,
+    NO_GITHUB_EVENT,
     GITHUB_REPO_LINK_REGEX,
     GITHUB_COMMIT_LINK_REGEX,
     GITHUB_RELEASE_LINK_REGEX,
@@ -46,10 +47,14 @@ __plugin_meta__ = PluginMetadata(
     ),
 )
 
-repo_graph = on_regex(f"^{FULLREPO_REGEX}$", priority=config.github_command_priority)
+repo_graph = on_regex(
+    f"^{FULLREPO_REGEX}$", rule=NO_GITHUB_EVENT, priority=config.github_command_priority
+)
 # lower priority than issue link
 repo_link_graph = on_regex(
-    GITHUB_REPO_LINK_REGEX, priority=config.github_command_priority + 10
+    GITHUB_REPO_LINK_REGEX,
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority + 10,
 )
 
 
@@ -80,10 +85,14 @@ async def handle(event: Event, repo: FullRepository = Depends(check_repo)):
 
 
 commit_graph = on_regex(
-    GITHUB_COMMIT_LINK_REGEX, priority=config.github_command_priority
+    GITHUB_COMMIT_LINK_REGEX,
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
 )
 pr_commit_graph = on_regex(
-    GITHUB_PR_COMMIT_LINK_REGEX, priority=config.github_command_priority
+    GITHUB_PR_COMMIT_LINK_REGEX,
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
 )
 
 
@@ -125,7 +134,9 @@ async def handle_commit(
 
 
 release_graph = on_regex(
-    GITHUB_RELEASE_LINK_REGEX, priority=config.github_command_priority
+    GITHUB_RELEASE_LINK_REGEX,
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
 )
 
 

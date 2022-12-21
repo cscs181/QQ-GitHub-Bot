@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-18 03:18:14
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-22 03:58:22
+@LastEditTime   : 2022-12-21 19:56:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,15 +19,18 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.models import User
-from src.plugins.github.helpers import get_platform
 from src.plugins.github.utils import get_github_bot
+from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
 from src.plugins.github.libs.message_tag import Tag, RepoTag, create_message_tag
 
 from . import KEY_GITHUB_REPLY
 from .dependencies import get_user, is_github_reply
 
 star = on_command(
-    "star", is_github_reply, priority=config.github_command_priority, block=True
+    "star",
+    rule=NO_GITHUB_EVENT & is_github_reply,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 
