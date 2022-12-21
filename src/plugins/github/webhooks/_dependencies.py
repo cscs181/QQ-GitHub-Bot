@@ -22,7 +22,7 @@ from nonebot.adapters.github.utils import get_attr_or_item
 from nonebot.adapters.onebot.v11 import Message as QQMessage
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 
-from src.plugins.redis import redis_client
+from src.providers.redis import redis_client
 from src.plugins.github.models import UserSubscription, GroupSubscription
 from src.plugins.github.libs.message_tag import Tag, MessageInfo, create_message_tag
 from src.plugins.github.libs.platform import (

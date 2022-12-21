@@ -25,7 +25,7 @@ from githubkit.rest import (
     TimelineReviewedEvent,
 )
 
-from src.plugins.redis import cache
+from src.providers.redis import cache
 from src.plugins.github.utils import get_github_bot
 
 REACTION_EMOJIS = {

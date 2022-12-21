@@ -13,7 +13,7 @@ __author__ = "yanyongyu"
 from uuid import uuid4
 from datetime import timedelta
 
-from src.plugins.redis import redis_client
+from src.providers.redis import redis_client
 
 STATE_CACHE_KEY = "cache:github:auth:state:{state_id}"
 STATE_CACHE_EXPIRE = timedelta(minutes=10)

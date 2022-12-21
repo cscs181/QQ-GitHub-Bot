@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-18 12:37:57
+@LastEditTime   : 2022-12-21 20:17:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,9 +14,9 @@ from datetime import timedelta
 
 from githubkit.rest import Issue
 
-from src.plugins.redis import cache
 from src.plugins.github import config
-from src.plugins.playwright import get_new_page
+from src.providers.redis import cache
+from src.providers.playwright import get_new_page
 
 from .render import issue_to_html, pr_diff_to_html
 

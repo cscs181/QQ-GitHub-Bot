@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 13:43:00
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-31 16:17:34
+@LastEditTime   : 2022-12-21 20:11:49
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,8 +12,6 @@ __author__ = "yanyongyu"
 
 from tortoise import Tortoise
 from nonebot import get_driver
-
-from src.plugins.github import models
 
 from .config import Config
 
@@ -33,7 +31,12 @@ tortoise_config = {
             },
         }
     },
-    "apps": {"bot": {"models": [models, "aerich.models"], "default_connection": "bot"}},
+    "apps": {
+        "bot": {
+            "models": ["src.plugins.github.models", "aerich.models"],
+            "default_connection": "bot",
+        }
+    },
 }
 
 

@@ -16,9 +16,9 @@ from nonebot.log import logger
 from fastapi.responses import JSONResponse
 from tortoise.connection import connections
 
-from src.plugins.redis import redis_client
-from src.plugins.playwright import get_browser
-from src.plugins.tortoise import tortoise_config
+from src.providers.redis import redis_client
+from src.providers.playwright import get_browser
+from src.providers.tortoise import tortoise_config
 
 app: FastAPI = nonebot.get_app()
 

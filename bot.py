@@ -22,6 +22,7 @@ driver.register_adapter(GitHubAdapter)
 driver.register_adapter(ONEBOT_V11_Adapter)
 
 config = driver.config
+nonebot.load_plugins("src/providers")
 nonebot.load_all_plugins(set(config.plugins), set(config.plugin_dirs))
 
 if __name__ == "__main__":

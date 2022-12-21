@@ -13,7 +13,7 @@ root = Path(__file__).parent.parent
 sys.path.append(str(root))
 
 import bot
-from src.plugins.tortoise import tortoise_config
+from src.providers.tortoise import tortoise_config
 
 cmd = Command(tortoise_config, app="bot", location=str(root / "migrations"))
 
