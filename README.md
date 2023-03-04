@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-03-04 16:30:21
+ * @LastEditTime   : 2023-03-04 18:12:05
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -34,6 +34,7 @@ GitHub Bot for QQ
 |   `owner/repo[#number]` 或 GitHub 链接   |            快捷查看仓库 Issue/PR, PR diff 等            |
 |            `/star`, `/unstar`            |                        快捷 star                        |
 |                 `/diff`                  |                      查看 PR diff                       |
+|                `/comment`                |                      评论 Issue/PR                      |
 |       `/close [reason]`, `/reopen`       |                    关闭或重新开启 PR                    |
 |           `/approve [message]`           |                         批准 PR                         |
 | `/label [label ...]`, `/unlabel [label]` |                      添加删除标签                       |
