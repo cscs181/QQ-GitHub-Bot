@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-30 08:59:36
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-22 03:56:29
+@LastEditTime   : 2023-03-04 15:32:18
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,10 +18,9 @@ from nonebot.params import Depends
 from nonebot.typing import T_State
 from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import MessageEvent
-from nonebot.adapters.github import GitHubBot, ActionFailed, ActionTimeout
+from nonebot.adapters.github import OAuthBot, GitHubBot, ActionFailed, ActionTimeout
 
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_github_bot
 from src.plugins.github.helpers import get_current_user, get_github_context
 from src.plugins.github.libs.message_tag import (
     Tag,
@@ -59,7 +58,7 @@ async def get_context(
     matcher: Matcher,
     state: T_State,
     user: User | None = Depends(get_current_user),
-) -> Callable[[], AsyncContextManager[GitHubBot]]:
+) -> Callable[[], AsyncContextManager[GitHubBot | OAuthBot]]:
     tag: Tag = state[KEY_GITHUB_REPLY]
     return await get_github_context(tag.owner, tag.repo, matcher, user)
 
@@ -75,16 +74,17 @@ async def get_user(
 async def get_issue(
     matcher: Matcher,
     state: T_State,
-    context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
+    context: Callable[[], AsyncContextManager[GitHubBot | OAuthBot]] = Depends(
+        get_context
+    ),
 ) -> Issue:
-    bot = get_github_bot()
     tag: Tag = state[KEY_GITHUB_REPLY]
 
     if not isinstance(tag, (IssueTag, PullRequestTag)):
         await matcher.finish()
 
     try:
-        async with context():
+        async with context() as bot:
             resp = await bot.rest.issues.async_get(
                 owner=tag.owner, repo=tag.repo, issue_number=tag.number
             )

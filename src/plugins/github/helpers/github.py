@@ -4,21 +4,23 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-05 15:57:42
+@LastEditTime   : 2023-03-04 15:28:08
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from functools import partial
+from contextlib import nullcontext
 from typing import Callable, AsyncContextManager
 
 from nonebot.log import logger
 from nonebot.matcher import Matcher
-from nonebot.adapters.github import GitHubBot, ActionFailed, ActionTimeout
+from nonebot.adapters.github import OAuthBot, GitHubBot, ActionFailed, ActionTimeout
 
+from src.plugins.github import config
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_github_bot
+from src.plugins.github.utils import get_oauth_bot, get_github_bot
 
 OWNER_REGEX = r"(?P<owner>[a-zA-Z0-9](?:[a-zA-Z0-9\-]*[a-zA-Z0-9])?)"
 REPO_REGEX = r"(?P<repo>[a-zA-Z0-9_\-\.]+)"
@@ -41,7 +43,7 @@ GITHUB_RELEASE_LINK_REGEX = rf"{GITHUB_REPO_LINK_REGEX}/releases/tag/(?P<tag>[^/
 
 async def get_github_context(
     owner: str, repo: str, matcher: Matcher, user: User | None = None
-) -> Callable[[], AsyncContextManager[GitHubBot]]:
+) -> Callable[[], AsyncContextManager[GitHubBot | OAuthBot]]:
     bot = get_github_bot()
 
     # use user auth first
@@ -65,5 +67,8 @@ async def get_github_context(
     except Exception as e:
         logger.opt(exception=e).error(f"Failed while checking repo in context: {e}")
         await matcher.finish("未知错误发生，请尝试重试或联系管理员")
+
+    if config.oauth_app:
+        return lambda *args, **kwargs: nullcontext(get_oauth_bot())
 
     await matcher.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")

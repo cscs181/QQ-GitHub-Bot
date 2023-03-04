@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 04:34:39
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-05 08:30:25
+@LastEditTime   : 2023-03-04 15:30:25
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,7 +17,6 @@ from githubkit.rest import Commit, Release, FullRepository
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_github_bot
 from src.plugins.github.helpers import get_current_user, get_github_context
 
 
@@ -26,14 +25,13 @@ async def check_repo(
     group: dict[str, str] = RegexDict(),
     user: User | None = Depends(get_current_user),
 ) -> FullRepository:
-    bot = get_github_bot()
     owner = group["owner"]
     repo = group["repo"]
 
     context = await get_github_context(owner, repo, matcher, user)
 
     try:
-        async with context():
+        async with context() as bot:
             resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
             return resp.parsed_data
     except ActionTimeout:
@@ -54,7 +52,6 @@ async def check_commit(
     check_repo=Depends(check_repo),
     user: User | None = Depends(get_current_user),
 ) -> Commit:
-    bot = get_github_bot()
     owner = group["owner"]
     repo = group["repo"]
     ref = group["commit"]
@@ -62,7 +59,7 @@ async def check_commit(
     context = await get_github_context(owner, repo, matcher, user)
 
     try:
-        async with context():
+        async with context() as bot:
             resp = await bot.rest.repos.async_get_commit(
                 owner=owner, repo=repo, ref=ref
             )
@@ -85,7 +82,6 @@ async def check_release(
     check_repo=Depends(check_repo),
     user: User | None = Depends(get_current_user),
 ) -> Release:
-    bot = get_github_bot()
     owner = group["owner"]
     repo = group["repo"]
     tag = group["tag"]
@@ -93,7 +89,7 @@ async def check_release(
     context = await get_github_context(owner, repo, matcher, user)
 
     try:
-        async with context():
+        async with context() as bot:
             resp = await bot.rest.repos.async_get_release_by_tag(
                 owner=owner, repo=repo, tag=tag
             )

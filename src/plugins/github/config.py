@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 19:05:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 20:02:59
+@LastEditTime   : 2023-03-04 15:56:07
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,22 +12,18 @@ __author__ = "yanyongyu"
 
 from typing import Any, Dict, Literal
 
-from pydantic import Extra, BaseModel, validator, root_validator
+from nonebot.adapters.github.config import OAuthApp, GitHubApp
+from pydantic import Extra, BaseModel, validator, parse_obj_as, root_validator
 
 
-class APP(BaseModel):
-    app_id: str
-    private_key: str
+class GitHubAPP(GitHubApp):
     client_id: str
     client_secret: str
 
-    @validator("private_key", pre=True)
-    def concat_key(cls, value: Any) -> Any:
-        return "\n".join(value) if isinstance(value, list) else value
-
 
 class Config(BaseModel, extra=Extra.ignore):
-    github_app: APP
+    github_app: GitHubAPP
+    oauth_app: OAuthApp | None = None
     github_theme: Literal["light", "dark"] = "light"
     github_webhook_priority: int = 1
     github_command_priority: int = 50
@@ -39,11 +35,23 @@ class Config(BaseModel, extra=Extra.ignore):
                 "A GitHub App must be provided to use the bot. "
                 "See https://github.com/nonebot/adapter-github for more information."
             )
-        values.setdefault("github_app", apps[0])
+        apps = parse_obj_as(list[GitHubApp | OAuthApp], apps)
+        if not (
+            github_app := next(
+                (app for app in apps if isinstance(app, GitHubApp)), None
+            )
+        ):
+            raise ValueError(
+                "A GitHub App must be provided to use the bot. "
+                "See https://github.com/nonebot/adapter-github for more information."
+            )
+        values.setdefault("github_app", github_app)
+        if oauth_app := next((app for app in apps if isinstance(app, OAuthApp)), None):
+            values.setdefault("oauth_app", oauth_app)
         return values
 
     @validator("github_webhook_priority", "github_command_priority")
     def validate_priority(cls, v: int):
         if v < 1:
-            raise ValueError("`_priority` must be greater than 0")
+            raise ValueError("`priority` must be greater than 0")
         return v

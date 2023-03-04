@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-21 16:26:06
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-06 03:28:48
+@LastEditTime   : 2023-03-04 15:31:02
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,10 +16,9 @@ from nonebot.log import logger
 from githubkit.rest import Issue
 from nonebot.matcher import Matcher
 from nonebot.params import Depends, RegexDict
-from nonebot.adapters.github import GitHubBot, ActionFailed, ActionTimeout
+from nonebot.adapters.github import OAuthBot, GitHubBot, ActionFailed, ActionTimeout
 
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_github_bot
 from src.plugins.github.helpers import get_current_user, get_github_context
 
 
@@ -27,22 +26,23 @@ async def get_context(
     matcher: Matcher,
     group: dict[str, str] = RegexDict(),
     user: User | None = Depends(get_current_user),
-) -> Callable[[], AsyncContextManager[GitHubBot]]:
+) -> Callable[[], AsyncContextManager[GitHubBot | OAuthBot]]:
     return await get_github_context(group["owner"], group["repo"], matcher, user)
 
 
 async def get_issue(
     matcher: Matcher,
     group: dict[str, str] = RegexDict(),
-    context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
+    context: Callable[[], AsyncContextManager[GitHubBot | OAuthBot]] = Depends(
+        get_context
+    ),
 ) -> Issue:
-    bot = get_github_bot()
     owner = group["owner"]
     repo = group["repo"]
     number = int(group["issue"])
 
     try:
-        async with context():
+        async with context() as bot:
             resp = await bot.rest.issues.async_get(
                 owner=owner, repo=repo, issue_number=number
             )
