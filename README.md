@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-12-19 13:03:07
+ * @LastEditTime   : 2023-03-04 16:30:21
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -111,6 +111,7 @@ GitHub Bot for QQ
    # 可选，图片主题，light/dark
    GITHUB_THEME=light
    # 必填，github app 配置
+   # 可选，oauth app 配置，用于没有权限时的 fallback
    # webhook_secret 与 github app 配置中的 webhook secret 保持一致，如果没有设置则删除
    GITHUB_APPS='
    [
@@ -124,6 +125,10 @@ GitHub Bot for QQ
        "client_id": "",
        "client_secret": "",
        "webhook_secret": ""
+     },
+     {
+       "client_id": "",
+       "client_secret": ""
      }
    ]
    '

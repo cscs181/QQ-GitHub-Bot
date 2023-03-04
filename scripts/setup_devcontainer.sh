@@ -3,7 +3,7 @@
 # @Author         : yanyongyu
 # @Date           : 2022-11-20 03:46:14
 # @LastEditors    : yanyongyu
-# @LastEditTime   : 2022-11-20 04:01:23
+# @LastEditTime   : 2023-03-04 16:29:28
 # @Description    : None
 # @GitHub         : https://github.com/yanyongyu
 ###
@@ -44,6 +44,10 @@ GITHUB_APPS='
     "client_id": "",
     "client_secret": "",
     "webhook_secret": ""
+  },
+  {
+    "client_id": "",
+    "client_secret": ""
   }
 ]
 '
