@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-22 14:55:57
+@LastEditTime   : 2023-03-04 18:11:08
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -30,6 +30,7 @@ __plugin_meta__ = PluginMetadata(
         "/star: star 仓库（仅仓库安装 APP 后有效）\n"
         "/unstar: unstar 仓库（仅仓库安装 APP 后有效）\n"
         "/content: 查看 Issue、PR 信息及事件\n"
+        "/comment content: 评论 Issue/PR\n"
         "/diff: 查看 PR diff\n"
         "/close [reason]: 关闭 Issue/PR，可选 reason 有 completed、not_planned\n"
         "/reopen: 重新开启 Issue/PR\n"
@@ -57,6 +58,7 @@ from . import (
     reopen,
     unstar,
     approve,
+    comment,
     content,
     unlabel,
 )
