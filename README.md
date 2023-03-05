@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-03-04 18:12:05
+ * @LastEditTime   : 2023-03-05 11:35:27
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -10,7 +10,8 @@
 # QQ-GitHub-Bot
 
 ![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)
-![NoneBot Version](https://img.shields.io/badge/nonebot-2+-red.svg)
+[![NoneBot Version](https://img.shields.io/badge/nonebot-2+-red.svg)](https://v2.nonebot.dev/)
+[![Release](https://github.com/cscs181/QQ-GitHub-Bot/actions/workflows/release.yml/badge.svg?branch=master)](https://hub.docker.com/r/cscs181/qq-github-bot)
 
 ![CQHTTP Version](https://img.shields.io/badge/CQHTTP%2011-Bot-black.svg?style=social)
 

@@ -35,12 +35,12 @@ jobs:
         if: ${{ steps.version.outputs.VERSION != steps.version.outputs.TAG }}
         run: exit 1
 
-  docker:
+  build:
     runs-on: ubuntu-latest
+    needs: check-version
     permissions:
       contents: read
       packages: write
-    needs: check-version
     if: |-
       ${{
         always() &&
@@ -100,3 +100,43 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           short-description: ${{ github.event.repository.description }}
+  deploy:
+    runs-on: ubuntu-latest
+    environment: official-bot
+    needs: build
+    permissions:
+      deployments: write
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+
+    steps:
+      - name: Start Deployment
+        uses: bobheadxi/deployments@v1
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: official-bot
+
+      - name: Run Remote SSH Command
+        uses: appleboy/ssh-action@master
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          envs: DEPLOY_PATH
+          script: |
+            cd $DEPLOY_PATH
+            git pull
+            helm upgrade -n caibot -f values.yaml cai k8s/bot/
+
+      - name: update deployment status
+        uses: bobheadxi/deployments@v0.6.2
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          env: ${{ steps.deployment.outputs.env }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
