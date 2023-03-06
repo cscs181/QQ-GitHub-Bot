@@ -138,7 +138,7 @@ jobs:
             helm upgrade -n caibot -f values.yaml --set-string bot.image.tag=$VERSION cai k8s/bot/
 
       - name: update deployment status
-        uses: bobheadxi/deployments@v0.6.2
+        uses: bobheadxi/deployments@v1
         if: always()
         with:
           step: finish
