@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 14:22:39
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-10 07:57:10
+@LastEditTime   : 2023-03-08 00:24:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -35,7 +35,7 @@ async def shutdown_browser():
     if _browser:
         await _browser.close()
     if _playwright:
-        await _playwright.stop()
+        await _playwright.stop()  # type: ignore
 
 
 def get_browser() -> Browser:
