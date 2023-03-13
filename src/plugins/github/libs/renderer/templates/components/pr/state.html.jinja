@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 16:42:19
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-22 03:44:29
+ * @LastEditTime   : 2023-03-13 20:18:22
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -16,10 +16,10 @@
 <div class="{{ class }}">
   {% if pull_request.merged %}
   {% set state = "merged" %}
-  {% elif pull_request.draft %}
-  {% set state = "draft" %}
   {% elif pull_request.state == "closed" %}
   {% set state = "closed" %}
+  {% elif pull_request.draft %}
+  {% set state = "draft" %}
   {% else %}
   {% set state = "open" %}
   {% endif %}
@@ -27,10 +27,10 @@
   <span class="State State--{{ state }} mr-2">
     {% if pull_request.merged %}
     {{ octicon_pr_merged() }} Merged
-    {% elif pull_request.draft %}
-    {{ octicon_pr_draft() }} Draft
     {% elif pull_request.state == "closed" %}
     {{ octicon_pr_closed() }} Closed
+    {% elif pull_request.draft %}
+    {{ octicon_pr_draft() }} Draft
     {% else %}
     {{ octicon_pr() }} Open
     {% endif %}
