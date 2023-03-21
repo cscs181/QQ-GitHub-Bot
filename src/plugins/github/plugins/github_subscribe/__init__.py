@@ -169,7 +169,6 @@ async def process_subscribe_repo(
                 map_func=lambda r: r.parsed_data.repositories,
                 installation_id=repo_installation.parsed_data.id,
             ):
-                print(accessible_repo.full_name)
                 if accessible_repo.full_name == full_name:
                     break
             else:
