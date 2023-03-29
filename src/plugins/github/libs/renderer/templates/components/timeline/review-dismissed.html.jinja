@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 15:01:05
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-06 03:57:35
+ * @LastEditTime   : 2023-03-30 00:04:39
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -21,7 +21,7 @@
     <a class="author Link--primary text-bold">
       {{ event.actor.login|escape }}
     </a>
-    {% set dismissed_review = find_dismissed_review(event.dismissed_review.review_id) %}
+    {% set dismissed_review = find_dismissed_review(ns.past_events, event.dismissed_review.review_id) %}
     dismissed
     {% if dismissed_review %}
     <a class="d-inline-block">
