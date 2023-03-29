@@ -25,9 +25,9 @@ markdown-it-py = { version = "^2.1.0", extras = ["linkify", "plugins"] }
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.9.3"
-black = "^22.1.0"
+black = "^23.1.0"
 nonemoji = "^0.1.2"
-pre-commit = "^2.20.0"
+pre-commit = "^3.1.0"
 
 [tool.poetry.group.deploy.dependencies]
 gunicorn = "^20.1.0"
