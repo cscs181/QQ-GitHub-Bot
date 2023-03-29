@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2023-03-04 17:55:56
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-04 18:10:51
+@LastEditTime   : 2023-03-30 00:08:52
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -53,13 +53,16 @@ async def handle_comment(
     if not isinstance(tag, (IssueTag, PullRequestTag)):
         await comment.finish()
 
+    if not (body := content.extract_plain_text()):
+        await comment.finish("评论内容不能为空")
+
     try:
         async with bot.as_user(user.access_token):
             await bot.rest.issues.async_create_comment(
                 owner=tag.owner,
                 repo=tag.repo,
                 issue_number=tag.number,
-                body=content.extract_plain_text(),
+                body=body,
             )
     except ActionTimeout:
         await comment.finish("GitHub API 超时，请稍后再试")
