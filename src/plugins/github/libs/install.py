@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 08:45:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-05 07:04:20
-@Description    : None
+@LastEditTime   : 2023-03-31 00:00:00
+@Description    : GitHub app installation lib
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -20,6 +20,7 @@ from .platform import UserInfo
 
 
 async def create_install_link(info: UserInfo) -> str:
+    """Create github app installation link"""
     query = {"state": await create_state(json.dumps(info))}
     return (
         f"https://github.com/apps/{get_github_bot()._app_slug}/"
@@ -28,4 +29,5 @@ async def create_install_link(info: UserInfo) -> str:
 
 
 async def config_install_link(installation_id: int) -> str:
+    """Create github app installation config link"""
     return f"https://github.com/apps/{get_github_bot()._app_slug}/installations/{installation_id}"

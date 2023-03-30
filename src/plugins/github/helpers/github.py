@@ -4,15 +4,16 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-04 15:28:08
-@Description    : None
+@LastEditTime   : 2023-03-30 23:17:41
+@Description    : GitHub helpers
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from functools import partial
-from contextlib import nullcontext
-from typing import Callable, AsyncContextManager
+from contextvars import ContextVar
+from contextlib import nullcontext, asynccontextmanager
+from typing import Callable, AsyncGenerator, AsyncContextManager
 
 from nonebot.log import logger
 from nonebot.matcher import Matcher
@@ -41,9 +42,52 @@ GITHUB_PR_FILE_LINK_REGEX = rf"{GITHUB_PR_LINK_REGEX}/files"
 GITHUB_RELEASE_LINK_REGEX = rf"{GITHUB_REPO_LINK_REGEX}/releases/tag/(?P<tag>[^/]+)"
 
 
+_context_bot: ContextVar[GitHubBot | OAuthBot] = ContextVar("bot")
+
+
+@asynccontextmanager
+async def github_context(
+    bot_factory: Callable[[], AsyncContextManager[GitHubBot | OAuthBot]]
+) -> AsyncGenerator[GitHubBot | OAuthBot, None]:
+    """Get the context for the specified bot
+
+    Args:
+        bot_factory: bot factory
+    """
+    async with bot_factory() as bot:
+        t = _context_bot.set(bot)
+        try:
+            yield bot
+        finally:
+            _context_bot.reset(t)
+
+
+def get_context_bot() -> GitHubBot | OAuthBot:
+    """Get the context bot.
+
+    Defaults to oauth bot for compatibility.
+    """
+    return bot if (bot := _context_bot.get(None)) else get_oauth_bot()
+
+
 async def get_github_context(
     owner: str, repo: str, matcher: Matcher, user: User | None = None
 ) -> Callable[[], AsyncContextManager[GitHubBot | OAuthBot]]:
+    """Get the readonly context for the specified repo
+
+    Due to the reusable problem, return a factory instead of a context manager.
+    See https://docs.python.org/3/library/contextlib.html#single-use-reusable-and-reentrant-context-managers.
+
+    Args:
+        owner: repo owner
+        repo: repo name
+        matcher: matcher
+        user: optional user
+
+    Returns:
+        context manager factory
+    """
+
     bot = get_github_bot()
 
     # use user auth first
@@ -57,7 +101,7 @@ async def get_github_context(
         async with bot.as_installation(installation_id):
             resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
         if not resp.parsed_data.private:
-            return partial(bot.as_installation, installation_id)
+            return lambda: github_context(partial(bot.as_installation, installation_id))
     except ActionTimeout:
         await matcher.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
@@ -68,7 +112,9 @@ async def get_github_context(
         logger.opt(exception=e).error(f"Failed while checking repo in context: {e}")
         await matcher.finish("未知错误发生，请尝试重试或联系管理员")
 
+    # use oauth bot last
     if config.oauth_app:
-        return lambda *args, **kwargs: nullcontext(get_oauth_bot())
+        return lambda: github_context(lambda: nullcontext(get_oauth_bot()))
 
+    # no bot available, prompt user to install
     await matcher.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")

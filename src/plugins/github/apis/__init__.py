@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 20:18:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-22 15:10:03
-@Description    : None
+@LastEditTime   : 2023-03-30 20:42:10
+@Description    : External APIs for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"

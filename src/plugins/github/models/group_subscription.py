@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-10-26 15:04:56
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-20 12:59:45
-@Description    : None
+@LastEditTime   : 2023-03-31 00:02:56
+@Description    : Group subscription model
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -15,14 +15,20 @@ from tortoise.models import Model
 
 
 class QQGroupMixin:
+    """QQ Group mixin"""
+
     qq_group = fields.BigIntField(null=True, index=True)
 
 
 class QQGuildChannelMixin:
+    """QQ Guild Channel mixin"""
+
     qqguild_channel = fields.CharField(max_length=255, null=True, index=True)
 
 
 class PlatformGroup(QQGroupMixin, QQGuildChannelMixin, Model):
+    """Platform Group Abstract Model"""
+
     @property
     def group_id(self) -> int | str:
         return self.qq_group or self.qqguild_channel
@@ -32,6 +38,8 @@ class PlatformGroup(QQGroupMixin, QQGuildChannelMixin, Model):
 
 
 class GroupSubscription(PlatformGroup, Model):
+    """Group subscription model"""
+
     id = fields.BigIntField(pk=True)
     owner = fields.CharField(max_length=255, null=False)
     repo = fields.CharField(max_length=255, null=False)

@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-22 15:11:52
-@Description    : None
+@LastEditTime   : 2023-03-30 23:56:03
+@Description    : GitHub html renderer
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -43,6 +43,7 @@ env = jinja2.Environment(
     loader=jinja2.FileSystemLoader(Path(__file__).parent / "templates"),
     enable_async=True,
 )
+"""Jinja environment for rendering"""
 
 env.filters["markdown_title"] = markdown_title
 env.filters["markdown_emoji"] = markdown_emoji
@@ -64,6 +65,12 @@ env.globals["scale_linear"] = scale_linear
 
 
 async def issue_to_html(issue: Issue, theme: Literal["light", "dark"] = "light") -> str:
+    """Render issue to html
+
+    Args:
+        issue: the issue object
+        theme: the theme of the html
+    """
     template = env.get_template("views/issue.html.jinja")
     return await template.render_async(issue=issue, theme=theme)
 
@@ -71,5 +78,11 @@ async def issue_to_html(issue: Issue, theme: Literal["light", "dark"] = "light")
 async def pr_diff_to_html(
     issue: Issue, theme: Literal["light", "dark"] = "light"
 ) -> str:
+    """Render pr diff to html
+
+    Args:
+        issue: the issue object of the pr
+        theme: the theme of the html
+    """
     template = env.get_template("views/diff.html.jinja")
     return await template.render_async(issue=issue, theme=theme)

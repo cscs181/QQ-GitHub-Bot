@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-07 04:18:43
-@Description    : None
+@LastEditTime   : 2023-03-30 23:49:10
+@Description    : Jinja filters for renderer
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -27,10 +27,14 @@ REVIEW_STATES = {
     "changes_requested": "requested changes",
     "approved": "approved these changes",
 }
+"""Review state / render text mapping"""
 
 title_md = MarkdownIt("zero").enable("backticks").use(emoji_plugin, shortcuts={})
+"""Markdown parser for issue/pr title"""
 emoji_md = MarkdownIt("zero").use(emoji_plugin, shortcuts={})
+"""Markdown parser for emoji"""
 gfm_md = MarkdownIt("gfm-like").use(tasklists_plugin).use(emoji_plugin, shortcuts={})
+"""Markdown parser for gfm-like markdown"""
 
 
 def emoji_format(
@@ -40,6 +44,7 @@ def emoji_format(
     options: OptionsDict,
     env: dict,
 ) -> str:
+    """Render emoji token to html"""
     return f'<g-emoji class="g-emoji" alias="{tokens[idx].markup}">{tokens[idx].content}</g-emoji>'
 
 
@@ -48,18 +53,22 @@ emoji_md.add_render_rule("emoji", emoji_format)
 
 
 def markdown_title(text: str) -> str:
+    """Render issue/pr title"""
     return title_md.renderInline(text)
 
 
 def markdown_emoji(text: str) -> str:
+    """Render emoji text"""
     return emoji_md.renderInline(text)
 
 
 def markdown_gfm(text: str) -> str:
+    """Render gfm-like markdown"""
     return gfm_md.render(text)
 
 
 def relative_time(value: datetime | str) -> str:
+    """Humanize relative datetime"""
     if isinstance(value, str):
         value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
     if not value.tzinfo:
@@ -74,6 +83,7 @@ def relative_time(value: datetime | str) -> str:
 
 
 def debug_event(event: GitHubRestModel) -> str:
+    """Log unhandled event using error level to report on sentry"""
     logger.debug(f"Unhandled event: {event.dict()}")
     logger.error(
         f"Unhandled event type: {event.__class__.__name__}",
@@ -83,8 +93,10 @@ def debug_event(event: GitHubRestModel) -> str:
 
 
 def review_state(value: str) -> str:
+    """Render review state to text"""
     return REVIEW_STATES.get(value, value)
 
 
 def left_truncate(value: str, max_length: int) -> str:
+    """Truncate string from left"""
     return f"...{value[-max_length:]}" if len(value) > max_length else value

@@ -5,7 +5,7 @@
 @Date           : 2022-11-07 06:26:15
 @LastEditors    : yanyongyu
 @LastEditTime   : 2022-11-07 08:03:33
-@Description    : None
+@Description    : Platform user subscription crud
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -23,12 +23,14 @@ from .user_crud import _get_field_name
 
 
 async def list_user_subscriptions(info: UserInfo) -> list[UserSubscription]:
+    """List user subscriptions from user info"""
     return await UserSubscription.filter(**{_get_field_name(info): info["user_id"]})
 
 
 async def list_subscribed_users(
     owner: str, repo: str, event: str, action: str | None = None
 ) -> list[UserSubscription]:
+    """List subscribed users from repo webhook event name"""
     if action is None:
         return await UserSubscription.filter(
             owner=owner, repo=repo, event=event, action__isnull=True
@@ -41,6 +43,7 @@ async def list_subscribed_users(
 async def create_or_update_user_subscriptions(
     info: UserInfo, *subsciptions: dict[str, Any]
 ) -> None:
+    """Create or update user subscriptions from user info"""
     field = _get_field_name(info)
 
     for subscription in subsciptions:
@@ -74,6 +77,7 @@ async def create_or_update_user_subscriptions(
 
 
 async def delete_all_user_subscriptions(info: UserInfo, owner: str, repo: str) -> None:
+    """Delete all user subscriptions of the repo from user info"""
     await UserSubscription.filter(
         **{_get_field_name(info): info["user_id"], "owner": owner, "repo": repo}
     ).delete()
@@ -82,6 +86,7 @@ async def delete_all_user_subscriptions(info: UserInfo, owner: str, repo: str) -
 async def delete_user_subscription(
     info: UserInfo, *unsubsciptions: dict[str, Any]
 ) -> None:
+    """Delete user subscription from user info"""
     field = _get_field_name(info)
 
     for unsubscription in unsubsciptions:

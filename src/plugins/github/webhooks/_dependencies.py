@@ -5,13 +5,13 @@
 @Date           : 2022-11-07 08:35:10
 @LastEditors    : yanyongyu
 @LastEditTime   : 2022-12-19 12:13:09
-@Description    : None
+@Description    : Webhook dependencies
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from datetime import timedelta
-from typing import Generic, TypeVar, Callable
+from typing import Generic, TypeVar
 
 from nonebot.log import logger
 from nonebot.adapters import Bot

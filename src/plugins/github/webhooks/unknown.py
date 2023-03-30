@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 05:14:32
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 20:02:47
-@Description    : None
+@LastEditTime   : 2023-03-31 00:13:09
+@Description    : Webhook unknown event broadcast
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -18,6 +18,7 @@ from nonebot import on_type
 from nonebot.log import logger
 from nonebot.params import Depends
 from nonebot.adapters.github import Event
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github.utils import get_attr_or_item
 
 from src.plugins.github import config
@@ -31,6 +32,16 @@ from ._dependencies import (
     send_group_text,
     get_subscribed_users,
     get_subscribed_groups,
+)
+
+__plugin_meta__ = PluginMetadata(
+    "GitHub 事件通知",
+    "订阅 GitHub 事件来接收通知",
+    (
+        "此插件为 fallback 通知\n"
+        "通知示例：\n"
+        "用户 yanyongyu 触发了仓库 cscs181/QQ-GitHub-Bot 的事件 star"
+    ),
 )
 
 THROTTLE_EXPIRE = timedelta(seconds=60)

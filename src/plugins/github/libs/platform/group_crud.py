@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 06:23:46
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-07 06:39:13
-@Description    : None
+@LastEditTime   : 2023-03-30 23:32:54
+@Description    : Platform group crud
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -21,6 +21,7 @@ GROUP_FIELD_MAPPINGS: dict[PLATFORMS, str] = {
     "qq": "qq_group",
     "qqguild": "qqguild_channel",
 }
+"""Platform / group field name mapping"""
 
 
 def _get_field_name(info: GroupInfo) -> str:
@@ -30,10 +31,12 @@ def _get_field_name(info: GroupInfo) -> str:
 
 
 async def get_group(info: GroupInfo) -> Group:
+    """Get group model from group info"""
     return await Group.get(**{_get_field_name(info): info["group_id"]})
 
 
 async def create_or_update_group(info: GroupInfo | Group, **data: Any) -> Group:
+    """Create or update group model from group info"""
     if isinstance(info, Group):
         await info.update_from_dict(data).save()
         return info
@@ -45,5 +48,6 @@ async def create_or_update_group(info: GroupInfo | Group, **data: Any) -> Group:
 
 
 async def delete_group(info: GroupInfo) -> None:
+    """Delete group model from group info"""
     group = await get_group(info)
     await group.delete()

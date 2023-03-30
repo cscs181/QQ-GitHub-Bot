@@ -5,7 +5,7 @@
 @Date           : 2022-12-18 13:44:11
 @LastEditors    : yanyongyu
 @LastEditTime   : 2022-12-21 20:02:36
-@Description    : None
+@Description    : Webhook star event broadcast
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -16,6 +16,7 @@ from datetime import timedelta
 from nonebot import on_type
 from nonebot.log import logger
 from nonebot.params import Depends
+from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import StarCreated, StarDeleted
 
 from src.plugins.github import config
@@ -29,6 +30,12 @@ from ._dependencies import (
     send_group_text,
     get_subscribed_users,
     get_subscribed_groups,
+)
+
+__plugin_meta__ = PluginMetadata(
+    "GitHub Star 事件通知",
+    "订阅 GitHub Star 事件来接收通知",
+    "通知示例：\n用户 yanyongyu starred 仓库 cscs181/QQ-GitHub-Bot (共计 6666 个 star)",
 )
 
 THROTTLE_EXPIRE = timedelta(seconds=120)

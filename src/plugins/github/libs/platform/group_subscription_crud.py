@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 06:38:22
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-07 08:05:53
-@Description    : None
+@LastEditTime   : 2023-03-30 23:39:19
+@Description    : Platform group subscription crud
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -23,12 +23,14 @@ from .group_crud import _get_field_name
 
 
 async def list_group_subscriptions(info: GroupInfo) -> list[GroupSubscription]:
+    """List group subscriptions from group info"""
     return await GroupSubscription.filter(**{_get_field_name(info): info["group_id"]})
 
 
 async def list_subscribed_groups(
     owner: str, repo: str, event: str, action: str | None = None
 ) -> list[GroupSubscription]:
+    """List subscribed groups from repo webhook event name"""
     if action is None:
         return await GroupSubscription.filter(
             owner=owner, repo=repo, event=event, action__isnull=True
@@ -41,6 +43,7 @@ async def list_subscribed_groups(
 async def create_or_update_group_subscriptions(
     info: GroupInfo, *subsciptions: dict[str, Any]
 ) -> None:
+    """Create or update group subscriptions from group info"""
     field = _get_field_name(info)
 
     for subscription in subsciptions:
@@ -76,6 +79,7 @@ async def create_or_update_group_subscriptions(
 async def delete_all_group_subscriptions(
     info: GroupInfo, owner: str, repo: str
 ) -> None:
+    """Delete group all subscriptions of the repo from group info"""
     await GroupSubscription.filter(
         **{_get_field_name(info): info["group_id"], "owner": owner, "repo": repo}
     ).delete()
@@ -84,6 +88,7 @@ async def delete_all_group_subscriptions(
 async def delete_group_subscription(
     info: GroupInfo, *unsubsciptions: dict[str, Any]
 ) -> None:
+    """Delete group subscription from group info"""
     field = _get_field_name(info)
 
     for unsubscription in unsubsciptions:

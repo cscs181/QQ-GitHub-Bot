@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-09-07 12:17:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:46:58
-@Description    : None
+@LastEditTime   : 2023-03-30 21:05:35
+@Description    : Helpers for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"

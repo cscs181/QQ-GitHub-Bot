@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 19:05:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-04 15:56:07
-@Description    : None
+@LastEditTime   : 2023-03-30 20:36:55
+@Description    : Config for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -17,6 +17,8 @@ from pydantic import Extra, BaseModel, validator, parse_obj_as, root_validator
 
 
 class GitHubAPP(GitHubApp):
+    """GitHub App config for github plugin"""
+
     client_id: str
     client_secret: str
 
@@ -30,6 +32,8 @@ class Config(BaseModel, extra=Extra.ignore):
 
     @root_validator(pre=True)
     def validate_app(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """Auto get app from github adapter config"""
+
         if not (apps := values.get("github_apps")):
             raise ValueError(
                 "A GitHub App must be provided to use the bot. "
@@ -51,7 +55,7 @@ class Config(BaseModel, extra=Extra.ignore):
         return values
 
     @validator("github_webhook_priority", "github_command_priority")
-    def validate_priority(cls, v: int):
+    def validate_priority(cls, v: int) -> int:
         if v < 1:
             raise ValueError("`priority` must be greater than 0")
         return v

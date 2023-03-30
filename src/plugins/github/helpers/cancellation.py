@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-09-07 12:14:01
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-07 12:15:50
-@Description    : None
+@LastEditTime   : 2023-03-30 21:15:27
+@Description    : Cancellation helpers
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -22,6 +22,8 @@ CHINESE_CANCELLATION_REGEX_2 = re.compile(r"^那?(?:[给帮]我)?取消了?吧?$
 
 
 def is_cancellation(message: Message | str) -> bool:
+    """Check if the given message or plain text is a cancellation message."""
+
     text = message.extract_plain_text() if isinstance(message, Message) else message
     return any(kw in text for kw in CHINESE_CANCELLATION_WORDS) and bool(
         CHINESE_CANCELLATION_REGEX_1.match(text)
@@ -30,6 +32,13 @@ def is_cancellation(message: Message | str) -> bool:
 
 
 def allow_cancellation(cancel_prompt: str | None = None) -> bool:
+    """Simple dependency to check if the message is a cancellation message
+    and finish the session if so.
+
+    Args:
+        cancel_prompt: Prompt to send when finishing the session.
+    """
+
     async def dependency(matcher: Matcher, message: Message = EventMessage()) -> bool:
         if (cancelled := is_cancellation(message)) and cancel_prompt:
             await matcher.finish(cancel_prompt)

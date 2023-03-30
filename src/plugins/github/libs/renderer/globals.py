@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-03 12:40:22
-@Description    : None
+@LastEditTime   : 2023-03-30 23:54:11
+@Description    : Jinjia globals for renderer
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -38,6 +38,7 @@ REACTION_EMOJIS = {
     "rocket": "🚀",
     "eyes": "👀",
 }
+"""Issue comment reaction emoji mapping"""
 
 
 @cache(ex=timedelta(minutes=5))
@@ -55,10 +56,12 @@ async def _get_issue_repo(repo_url: str) -> FullRepository:
 
 
 async def get_issue_repo(issue: Issue) -> FullRepository:
+    """Get the repository of the issue"""
     return await _get_issue_repo(issue.repository_url)
 
 
 async def get_issue_timeline(issue: Issue):
+    """Get the timeline of the issue"""
     bot = get_github_bot()
     repo = await get_issue_repo(issue)
     return bot.github.paginate(
@@ -77,6 +80,7 @@ async def _get_pull_request(owner: str, repo: str, number: int) -> PullRequest:
 
 
 async def get_pull_request(issue: Issue) -> PullRequest:
+    """Get the pull request of the issue"""
     repo = await get_issue_repo(issue)
     return await _get_pull_request(repo.owner.login, repo.name, issue.number)
 
@@ -96,10 +100,12 @@ async def _get_pull_request_diff(diff_url: str) -> PatchSet:
 
 
 async def get_pull_request_diff(pr: PullRequest) -> PatchSet:
+    """Get the diff of the pull request"""
     return await _get_pull_request_diff(pr.diff_url)
 
 
 def get_comment_reactions(event: TimelineCommentEvent) -> dict[str, int]:
+    """Get the reactions of the issue comment"""
     result: dict[str, int] = {}
 
     # review comment do not has reactions field
@@ -122,6 +128,7 @@ def get_comment_reactions(event: TimelineCommentEvent) -> dict[str, int]:
 
 
 def get_issue_label_color(color: str) -> tuple[int, int, int, int, int, int]:
+    """Get the color of the issue label in RGB and HLS"""
     color = color.removeprefix("#")
     r = int(color[:2], 16)
     g = int(color[2:4], 16)
@@ -133,10 +140,15 @@ def get_issue_label_color(color: str) -> tuple[int, int, int, int, int, int]:
 def find_dismissed_review(
     past_timeline: list[GitHubRestModel], review_id: int
 ) -> TimelineReviewedEvent | None:
+    """Find the dismissed review event in the timeline"""
     for event in past_timeline:
         if isinstance(event, TimelineReviewedEvent) and event.id == review_id:
             return event
 
 
 def scale_linear(value: int, width: int, changed: int) -> int:
+    """Scale linear calculation of the diff stat
+
+    See https://github.com/git/git/blob/bcd6bc478adc4951d57ec597c44b12ee74bc88fb/diff.c#L2500-L2511.
+    """
     return 1 + int(value * (width - 1) / changed) if value else value

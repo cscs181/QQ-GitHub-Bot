@@ -5,7 +5,7 @@
 @Date           : 2022-09-05 11:32:25
 @LastEditors    : yanyongyu
 @LastEditTime   : 2022-11-07 08:34:04
-@Description    : None
+@Description    : Platform lib
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"

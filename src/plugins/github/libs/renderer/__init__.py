@@ -5,7 +5,7 @@
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
 @LastEditTime   : 2022-12-21 20:17:44
-@Description    : None
+@Description    : GitHub image renderer
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -33,6 +33,7 @@ async def issue_to_image(
     width: int = 800,
     height: int = 300,
 ) -> bytes:
+    """Render a github issue/pr timeline to image"""
     html = await issue_to_html(issue, config.github_theme)
     return await _gen_image(html, width, height)
 
@@ -42,5 +43,6 @@ async def pr_diff_to_image(
     width: int = 800,
     height: int = 300,
 ) -> bytes:
+    """Render a github pr diff to image"""
     html = await pr_diff_to_html(issue, config.github_theme)
     return await _gen_image(html, width, height)

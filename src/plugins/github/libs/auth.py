@@ -5,7 +5,7 @@
 @Date           : 2021-03-09 16:30:16
 @LastEditors    : yanyongyu
 @LastEditTime   : 2022-10-05 07:04:36
-@Description    : None
+@Description    : OAuth lib
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -22,6 +22,7 @@ from .platform import UserInfo, create_or_update_user
 
 
 async def create_auth_link(info: UserInfo) -> str:
+    """Create oauth link"""
     query = {
         "client_id": config.github_app.client_id,
         "state": await create_state(json.dumps(info)),
@@ -30,18 +31,22 @@ async def create_auth_link(info: UserInfo) -> str:
 
 
 async def get_state_data(state_id: str) -> UserInfo | None:
+    """Get oauth state data"""
     return json.loads(data) if (data := await get_state(state_id)) is not None else None
 
 
 async def delete_state_data(state_id: str) -> None:
+    """Delete oauth state data"""
     return await delete_state(state_id)
 
 
 async def create_auth_user(info: UserInfo, access_token: str) -> User:
+    """Create oauth user model"""
     return await create_or_update_user(info, access_token=access_token)
 
 
 async def get_token_by_code(code: str) -> str:
+    """Get oauth token by oauth code"""
     github = get_github()
     data = {
         "client_id": config.github_app.client_id,

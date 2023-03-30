@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 07:32:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-07 06:02:25
-@Description    : None
+@LastEditTime   : 2023-03-30 23:21:49
+@Description    : Group helpers
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -20,6 +20,8 @@ from .event import get_group_info
 
 
 async def get_current_group(event: Event) -> Group | None:
+    """Get current group model from event"""
+
     try:
         return await get_group(info) if (info := get_group_info(event)) else None
     except DoesNotExist:

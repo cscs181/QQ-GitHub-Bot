@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 09:50:07
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-27 08:28:28
-@Description    : QQ Tables
+@LastEditTime   : 2023-03-31 00:04:50
+@Description    : User model
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -15,14 +15,20 @@ from tortoise.models import Model
 
 
 class QQUserMixin:
+    """QQ mixin"""
+
     qq_id = fields.BigIntField(null=True, unique=True, index=True)
 
 
 class QQGuildMixin:
+    """QQ Guild mixin"""
+
     qqguild_id = fields.CharField(max_length=255, null=True, unique=True, index=True)
 
 
 class PlatformUser(QQUserMixin, QQGuildMixin, Model):
+    """Platform User Abstract Model"""
+
     @property
     def user_id(self) -> int | str:
         return self.qq_id or self.qqguild_id
@@ -32,6 +38,8 @@ class PlatformUser(QQUserMixin, QQGuildMixin, Model):
 
 
 class User(PlatformUser, Model):
+    """User model"""
+
     id = fields.BigIntField(pk=True)
     access_token = fields.CharField(max_length=255, null=False)
 

@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 20:18:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-22 15:42:01
-@Description    : None
+@LastEditTime   : 2023-03-30 21:01:11
+@Description    : OAuth API for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -30,6 +30,8 @@ template = env.get_template("auth.html.jinja")
 
 @app.get("/github/auth", response_class=HTMLResponse)
 async def auth(code: str, state: str | None = None):
+    """OAuth callback endpoint"""
+
     try:
         token = await get_token_by_code(code)
     except Exception:
