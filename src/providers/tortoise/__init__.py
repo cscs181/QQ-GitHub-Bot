@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 13:43:00
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 20:11:49
-@Description    : None
+@LastEditTime   : 2023-03-30 19:17:11
+@Description    : Tortoise ORM provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -33,11 +33,13 @@ tortoise_config = {
     },
     "apps": {
         "bot": {
+            # use module path to delay model import
             "models": ["src.plugins.github.models", "aerich.models"],
             "default_connection": "bot",
         }
     },
 }
+"""Tortoise ORM config for bot models."""
 
 
 @driver.on_startup

@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2021-03-13 14:45:54
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 14:22:48
-@Description    : None
+@LastEditTime   : 2023-03-30 18:55:43
+@Description    : Config for Redis provider
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"

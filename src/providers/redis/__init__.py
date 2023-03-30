@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2021-03-13 14:47:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-21 11:01:39
-@Description    : None
+@LastEditTime   : 2023-03-30 18:54:56
+@Description    : Redis provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -36,6 +36,7 @@ redis_client: "redis.Redis[bytes]" = redis.Redis(
     password=redis_config.redis_password,
     encoding="utf-8",
 )
+"""Redis client"""
 
 
 def gen_signature(
@@ -44,6 +45,7 @@ def gen_signature(
     kwds: dict[str, Any],
     kwd_mark=(object(),),
 ) -> int:
+    """Generate a signature for a function call."""
     key = [func.__module__, func.__qualname__, *args]
     if kwds:
         key.append(kwd_mark)
@@ -52,11 +54,13 @@ def gen_signature(
 
 
 async def get_cache(sign: str) -> Any:
+    """Get function call cache."""
     cache = await redis_client.get(CACHE_KEY_FORMAT.format(signature=sign))
     return pickle.loads(cache) if cache else cache
 
 
 async def save_cache(sign: str, cache: Any, ex: timedelta | None = None) -> None:
+    """Save function call cache."""
     await redis_client.set(
         CACHE_KEY_FORMAT.format(signature=sign), pickle.dumps(cache), ex
     )
@@ -65,6 +69,8 @@ async def save_cache(sign: str, cache: Any, ex: timedelta | None = None) -> None
 def cache(
     ex: timedelta | None = None,
 ) -> Callable[[Callable[P, Awaitable[R]]], Callable[P, Awaitable[R]]]:
+    """A decorator to auto cache function call result."""
+
     def decorator(func: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[R]]:
         @wraps(func)
         async def async_wrapper(*args: P.args, **kwargs: P.kwargs) -> R:

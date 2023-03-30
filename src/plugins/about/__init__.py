@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2023-03-08 00:11:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-08 00:24:10
-@Description    : None
+@LastEditTime   : 2023-03-30 20:03:23
+@Description    : About plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -24,6 +24,7 @@ OWNER = "cscs181"
 REPO = "QQ-GitHub-Bot"
 
 about = on_command("about", rule=NO_GITHUB_EVENT, priority=10, block=True)
+"""`about` command matcher"""
 
 
 @about.handle()

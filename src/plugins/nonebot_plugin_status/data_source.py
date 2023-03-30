@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:15:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-17 16:45:10
-@Description    : None
+@LastEditTime   : 2023-03-30 18:23:38
+@Description    : Getting status of the bot and the mechine
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -47,6 +47,7 @@ async def _(bot: Bot):
 
 
 def get_nonebot_run_time() -> datetime:
+    """Get the time when NoneBot started running."""
     try:
         return _nonebot_run_time
     except NameError:
@@ -54,23 +55,27 @@ def get_nonebot_run_time() -> datetime:
 
 
 def get_bot_connect_time() -> Dict[str, datetime]:
+    """Get the time when the bot connected to the server."""
     return _bot_connect_time
 
 
-# mechine status
 def get_cpu_status() -> float:
+    """Get the CPU usage status."""
     return psutil.cpu_percent(interval=0.3)  # type: ignore
 
 
 def per_cpu_status() -> List[float]:
+    """Get the CPU usage status of each core."""
     return psutil.cpu_percent(interval=0.3, percpu=True)  # type: ignore
 
 
 def get_memory_status():
+    """Get the memory usage status."""
     return psutil.virtual_memory()
 
 
 def get_swap_status():
+    """Get the swap usage status."""
     return psutil.swap_memory()
 
 
@@ -82,6 +87,7 @@ def _get_disk_usage(path: str) -> Optional["sdiskusage"]:
 
 
 def get_disk_usage() -> Dict[str, "sdiskusage"]:
+    """Get the disk usage status."""
     disk_parts = psutil.disk_partitions()
     return {
         d.mountpoint: usage
@@ -91,4 +97,5 @@ def get_disk_usage() -> Dict[str, "sdiskusage"]:
 
 
 def get_uptime() -> datetime:
+    """Get the uptime of the mechine."""
     return datetime.fromtimestamp(psutil.boot_time(), tz=CURRENT_TIMEZONE)

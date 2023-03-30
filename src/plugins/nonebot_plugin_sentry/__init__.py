@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-05 08:24:11
-@Description    : None
+@LastEditTime   : 2023-03-30 19:58:06
+@Description    : Sentry plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -25,13 +25,10 @@ config = Config(**global_config.dict())
 def init_sentry(config: Config):
     sentry_config = {
         key[7:]: value
-        for key, value in config.dict().items()
-        if key != "sentry_environment"
+        for key, value in config.dict(exclude={"sentry_environment"}).items()
     }
     sentry_sdk.init(
-        **sentry_config,
-        environment=config.sentry_environment or driver.env,
-        default_integrations=False
+        **sentry_config, environment=config.sentry_environment or driver.env
     )
 
     logger.add(

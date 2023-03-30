@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-10-15 09:01:57
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-31 05:10:34
-@Description    : None
+@LastEditTime   : 2023-03-30 19:59:32
+@Description    : Getting status of multi pods
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"

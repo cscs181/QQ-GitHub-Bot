@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-09-02 11:35:48
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-15 09:39:39
-@Description    : None
+@LastEditTime   : 2023-03-30 18:25:12
+@Description    : OneBot v11 matchers for status plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -25,6 +25,10 @@ if status_config.server_status_enabled:
         block=True,
         handlers=[server_status],
     )
+    """Poke notify matcher.
+
+    双击头像拍一拍
+    """
 
 
 async def _poke(event: PrivateMessageEvent) -> bool:
@@ -39,3 +43,7 @@ if status_config.server_status_enabled:
         block=True,
         handlers=[server_status],
     )
+    """Poke message matcher.
+
+    私聊发送戳一戳
+    """

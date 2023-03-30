@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-10-15 08:58:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-17 16:40:53
-@Description    : None
+@LastEditTime   : 2023-03-30 19:59:10
+@Description    : Common text matcher for multi pod status plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"

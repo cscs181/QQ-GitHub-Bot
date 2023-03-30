@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-10-15 09:00:09
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-15 09:01:24
-@Description    : None
+@LastEditTime   : 2023-03-30 20:00:04
+@Description    : OneBot v11 matchers for multi pod status plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"

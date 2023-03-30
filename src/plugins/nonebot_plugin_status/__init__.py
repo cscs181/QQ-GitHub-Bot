@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-25 07:35:00
-@Description    : None
+@LastEditTime   : 2023-03-30 19:58:02
+@Description    : Status plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -60,9 +60,11 @@ KNOWN_VARS = {
     "runtime": get_nonebot_run_time,
     "bot_connect_time": get_bot_connect_time,
 }
+"""Available variables for template rendering."""
 
 
 def _solve_required_vars() -> Dict[str, Any]:
+    """Solve required variables for template rendering."""
     return (
         {k: v() for k, v in KNOWN_VARS.items() if k in _t_vars}
         if status_config.server_status_truncate
@@ -71,11 +73,13 @@ def _solve_required_vars() -> Dict[str, Any]:
 
 
 async def render_template() -> str:
+    """Render status template with required variables."""
     message = await _t.render_async(**_solve_required_vars())
     return message.strip("\n")
 
 
 async def server_status(matcher: Matcher):
+    """Server status matcher handler."""
     await matcher.send(message=await render_template())
 
 

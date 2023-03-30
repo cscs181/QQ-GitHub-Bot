@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-15 09:39:14
-@Description    : None
+@LastEditTime   : 2023-03-30 18:26:14
+@Description    : Common text matcher for status plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -22,3 +22,4 @@ if status_config.server_status_enabled:
         priority=10,
         handlers=[server_status],
     )
+    """`status`/`状态` command matcher"""

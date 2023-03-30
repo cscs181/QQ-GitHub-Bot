@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-10-10 06:57:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-10 07:44:05
-@Description    : None
+@LastEditTime   : 2023-03-30 20:00:43
+@Description    : Health check plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
@@ -25,6 +25,8 @@ app: FastAPI = nonebot.get_app()
 
 @app.get("/health")
 async def health_check():
+    """Health check endpoint."""
+
     # check postgres connection
     try:
         for conn_name in tortoise_config["connections"]:

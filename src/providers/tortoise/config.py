@@ -4,8 +4,8 @@
 @Author         : yanyongyu
 @Date           : 2022-09-12 13:43:32
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-09-12 13:46:48
-@Description    : None
+@LastEditTime   : 2023-03-30 19:17:59
+@Description    : Config for Tortoise provider
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
