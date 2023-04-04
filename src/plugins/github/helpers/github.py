@@ -21,7 +21,7 @@ from nonebot.adapters.github import OAuthBot, GitHubBot, ActionFailed, ActionTim
 
 from src.plugins.github import config
 from src.plugins.github.models import User
-from src.plugins.github.utils import get_oauth_bot, get_github_bot
+from src.plugins.github.utils import get_oauth_bot, get_github_bot, set_context_bot
 
 OWNER_REGEX = r"(?P<owner>[a-zA-Z0-9](?:[a-zA-Z0-9\-]*[a-zA-Z0-9])?)"
 REPO_REGEX = r"(?P<repo>[a-zA-Z0-9_\-\.]+)"
@@ -42,32 +42,18 @@ GITHUB_PR_FILE_LINK_REGEX = rf"{GITHUB_PR_LINK_REGEX}/files"
 GITHUB_RELEASE_LINK_REGEX = rf"{GITHUB_REPO_LINK_REGEX}/releases/tag/(?P<tag>[^/]+)"
 
 
-_context_bot: ContextVar[GitHubBot | OAuthBot] = ContextVar("bot")
-
-
 @asynccontextmanager
 async def github_context(
-    bot_factory: Callable[[], AsyncContextManager[GitHubBot | OAuthBot]]
+    bot_context: AsyncContextManager[GitHubBot | OAuthBot],
 ) -> AsyncGenerator[GitHubBot | OAuthBot, None]:
     """Get the context for the specified bot
 
     Args:
         bot_factory: bot factory
     """
-    async with bot_factory() as bot:
-        t = _context_bot.set(bot)
-        try:
+    async with bot_context as bot:
+        with set_context_bot(bot):
             yield bot
-        finally:
-            _context_bot.reset(t)
-
-
-def get_context_bot() -> GitHubBot | OAuthBot:
-    """Get the context bot.
-
-    Defaults to oauth bot for compatibility.
-    """
-    return bot if (bot := _context_bot.get(None)) else get_oauth_bot()
 
 
 async def get_github_context(
@@ -92,7 +78,7 @@ async def get_github_context(
 
     # use user auth first
     if user:
-        return partial(bot.as_user, user.access_token)
+        return lambda: github_context(bot.as_user(user.access_token))
 
     # use installation second, only public repo
     try:
@@ -101,7 +87,7 @@ async def get_github_context(
         async with bot.as_installation(installation_id):
             resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
         if not resp.parsed_data.private:
-            return lambda: github_context(partial(bot.as_installation, installation_id))
+            return lambda: github_context(bot.as_installation(installation_id))
     except ActionTimeout:
         await matcher.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
@@ -114,7 +100,7 @@ async def get_github_context(
 
     # use oauth bot last
     if config.oauth_app:
-        return lambda: github_context(lambda: nullcontext(get_oauth_bot()))
+        return lambda: github_context(nullcontext(get_oauth_bot()))
 
     # no bot available, prompt user to install
     await matcher.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")

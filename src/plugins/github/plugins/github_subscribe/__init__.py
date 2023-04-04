@@ -176,9 +176,7 @@ async def process_subscribe_repo(
     except ActionTimeout:
         await subscribe.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
-        if e.response.status_code == 404:
-            await subscribe.reject(f"仓库 {owner}/{repo} 未安装 APP！请重新发送或取消")
-        elif e.response.status_code == 403:
+        if e.response.status_code in {403, 404}:
             await subscribe.reject(f"你没有权限访问仓库 {owner}/{repo} ！请重新发送或取消")
         logger.opt(exception=e).error(
             f"Failed while checking user permission in group subscribe: {e}"

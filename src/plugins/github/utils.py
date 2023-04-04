@@ -10,12 +10,18 @@
 """
 __author__ = "yanyongyu"
 
+from typing import Generator
+from contextlib import contextmanager
+from contextvars import Token, ContextVar
+
 import nonebot
 from githubkit import GitHub
 from nonebot.adapters.onebot.v11 import Bot as QQBot
 from nonebot.adapters.github import OAuthBot, GitHubBot
 
 from . import config
+
+_context_bot: ContextVar[GitHubBot | OAuthBot] = ContextVar("bot")
 
 
 def get_github_bot() -> GitHubBot:
@@ -28,6 +34,24 @@ def get_oauth_bot() -> OAuthBot:
     if not config.oauth_app:
         raise ValueError("No OAuth app configured")
     return nonebot.get_bot(config.oauth_app.client_id)  # type: ignore
+
+
+def get_context_bot() -> GitHubBot | OAuthBot:
+    """Get the context bot instance.
+
+    Defaults to OAuth bot for compatibility.
+    """
+    return _context_bot.get(get_oauth_bot())
+
+
+@contextmanager
+def set_context_bot(bot: GitHubBot | OAuthBot) -> Generator[Token, None, None]:
+    """Set the context bot instance"""
+    t = _context_bot.set(bot)
+    try:
+        yield t
+    finally:
+        _context_bot.reset(t)
 
 
 def get_github() -> GitHub:
