@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-20 14:07:50
+ * @LastEditTime   : 2023-04-05 00:57:43
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -43,10 +43,11 @@
 {% from "components/timeline/unlocked.html.jinja" import unlocked %}
 {% from "components/timeline/unpinned.html.jinja" import unpinned %}
 
-{% macro issue_timeline(issue) %}
+{% macro issue_timeline(issue, fetch_events=true) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
   {% set ns = namespace(issue=issue, past_events=[]) %}
   {{ commented(issue, ns, is_first=true) }}
+  {% if fetch_events %}
   <div>
     {% for event in get_issue_timeline(issue) %}
     {% set _ = ns.past_events.append(event) %}
@@ -125,5 +126,6 @@
     {% endif %}
     {% endfor %}
   </div>
+  {% endif %}
 </div>
 {% endmacro %}

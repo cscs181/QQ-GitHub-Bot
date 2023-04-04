@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 23:56:03
+@LastEditTime   : 2023-04-05 01:02:54
 @Description    : GitHub html renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Literal
 
 import jinja2
-from githubkit.rest import Issue
+from githubkit import rest, webhooks
 
 from .filters import (
     debug_event,
@@ -64,8 +64,10 @@ env.globals["find_dismissed_review"] = find_dismissed_review
 env.globals["scale_linear"] = scale_linear
 
 
-async def issue_to_html(issue: Issue, theme: Literal["light", "dark"] = "light") -> str:
-    """Render issue to html
+async def issue_to_html(
+    issue: rest.Issue, theme: Literal["light", "dark"] = "light"
+) -> str:
+    """Render issue or pr with timeline to html
 
     Args:
         issue: the issue object
@@ -76,7 +78,7 @@ async def issue_to_html(issue: Issue, theme: Literal["light", "dark"] = "light")
 
 
 async def pr_diff_to_html(
-    issue: Issue, theme: Literal["light", "dark"] = "light"
+    issue: rest.Issue, theme: Literal["light", "dark"] = "light"
 ) -> str:
     """Render pr diff to html
 
@@ -86,3 +88,19 @@ async def pr_diff_to_html(
     """
     template = env.get_template("views/diff.html.jinja")
     return await template.render_async(issue=issue, theme=theme)
+
+
+async def issue_opened_to_html(
+    repo: webhooks.Repository,
+    issue: webhooks.IssuesOpenedPropIssue,
+    theme: Literal["light", "dark"] = "light",
+) -> str:
+    """Render issue or pr with timeline to html
+
+    Args:
+        repo: the webhook repository object
+        issue: the webhook issue object
+        theme: the theme of the html
+    """
+    template = env.get_template("views/issue-opened.html.jinja")
+    return await template.render_async(repo=repo, issue=issue, theme=theme)

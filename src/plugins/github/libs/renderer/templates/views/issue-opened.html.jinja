@@ -1,0 +1,45 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2023-04-05 00:44:01
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2023-04-05 00:59:02
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "components/header.html.jinja" import header %}
+
+{% from "components/issue/header.html.jinja" import issue_header %}
+{% from "components/pr/header.html.jinja" import pr_header %}
+
+{% from "components/issue/timeline.html.jinja" import issue_timeline %}
+
+{% from "components/issue/action.html.jinja" import issue_action %}
+{% from "components/pr/action.html.jinja" import pr_action %}
+
+{% extends "main.html.jinja" %}
+{% block main %}
+{{ header(repo) }}
+<div class="repository-content">
+  <div class="container-xl px-3 px-md-4 px-lg-5 mt-4">
+    <div>
+      {% if issue.pull_request %}
+      {{ pr_header(issue) }}
+      {% else %}
+      {{ issue_header(issue) }}
+      {% endif %}
+      <div id="discussion_bucket">
+        <div>
+          {# do not fetch timeline events for performance #}
+          {{ issue_timeline(issue, fetch_events=false) }}
+          {% if issue.pull_request %}
+          {{ pr_action(issue) }}
+          {% else %}
+          {{ issue_action(issue) }}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
