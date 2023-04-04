@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:57:44
+@LastEditTime   : 2023-04-04 19:13:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,6 +19,7 @@ from nonebot.typing import T_State
 from nonebot.matcher import Matcher
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters import Event, Message
+from nonebot.exception import MatcherException
 from nonebot.params import Depends, CommandArg, ArgPlainText
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
@@ -173,6 +174,8 @@ async def process_subscribe_repo(
                     break
             else:
                 await subscribe.reject(f"你没有权限访问仓库 {owner}/{repo} ！请重新发送或取消")
+    except MatcherException:
+        raise
     except ActionTimeout:
         await subscribe.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:

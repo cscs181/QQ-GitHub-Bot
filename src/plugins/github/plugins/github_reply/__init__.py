@@ -30,13 +30,16 @@ __plugin_meta__ = PluginMetadata(
         "/star: star 仓库（仅仓库安装 APP 后有效）\n"
         "/unstar: unstar 仓库（仅仓库安装 APP 后有效）\n"
         "/content: 查看 Issue、PR 信息及事件\n"
-        "/comment content: 评论 Issue/PR\n"
         "/diff: 查看 PR diff\n"
+        "/comment content: 评论 Issue/PR\n"
+        '/label [label "label with space" ...]: 批量添加标签\n'
+        "/unlabel label: 移除单个标签\n"
         "/close [reason]: 关闭 Issue/PR，可选 reason 有 completed、not_planned\n"
         "/reopen: 重新开启 Issue/PR\n"
         "/approve [content]: 批准 PR\n"
-        '/label [label "label with space" ...]: 批量添加标签\n'
-        "/unlabel label: 移除单个标签"
+        "/merge [commit title]: Merge PR\n"
+        "/squash [commit title]: Squash PR\n"
+        "/rebase: Rebase PR"
     ),
 )
 
@@ -55,6 +58,7 @@ from . import (
     star,
     close,
     label,
+    merge,
     reopen,
     unstar,
     approve,

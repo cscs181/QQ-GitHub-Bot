@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-03-05 11:35:27
+ * @LastEditTime   : 2023-04-04 19:38:15
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -25,22 +25,23 @@ GitHub Bot for QQ
 
 主要功能有 (持续更新中)：
 
-|                   功能                   |                          描述                           |
-| :--------------------------------------: | :-----------------------------------------------------: |
-|           `/状态` 或 `/status`           |  获取当前机器人及所在服务器运行状态，支持分布式多节点   |
-|        `/install [check\|revoke]`        | 安装 GitHub APP 集成（将用于 Issue/PR, WebHook 等管理） |
-|         `/auth [check\|revoke]`          |               授权 APP 以进行用户快捷操作               |
-|           `/bind [owner/repo]`           |            群绑定指定仓库以进行仓库快捷操作             |
-|  `/subscribe owner/repo event[/action]`  |        订阅指定仓库的指定事件（支持多事件订阅）         |
-|   `owner/repo[#number]` 或 GitHub 链接   |            快捷查看仓库 Issue/PR, PR diff 等            |
-|            `/star`, `/unstar`            |                        快捷 star                        |
-|                 `/diff`                  |                      查看 PR diff                       |
-|                `/comment`                |                      评论 Issue/PR                      |
-|       `/close [reason]`, `/reopen`       |                    关闭或重新开启 PR                    |
-|           `/approve [message]`           |                         批准 PR                         |
-| `/label [label ...]`, `/unlabel [label]` |                      添加删除标签                       |
-|                  sentry                  |                   日志监控，上报错误                    |
-|               health check               |           访问路由地址 `/health` 即可进行自检           |
+|                       功能                       |                          描述                           |
+| :----------------------------------------------: | :-----------------------------------------------------: |
+|               `/状态` 或 `/status`               |  获取当前机器人及所在服务器运行状态，支持分布式多节点   |
+|            `/install [check\|revoke]`            | 安装 GitHub APP 集成（将用于 Issue/PR, WebHook 等管理） |
+|             `/auth [check\|revoke]`              |               授权 APP 以进行用户快捷操作               |
+|               `/bind [owner/repo]`               |            群绑定指定仓库以进行仓库快捷操作             |
+|      `/subscribe owner/repo event[/action]`      |        订阅指定仓库的指定事件（支持多事件订阅）         |
+|       `owner/repo[#number]` 或 GitHub 链接       |            快捷查看仓库 Issue/PR, PR diff 等            |
+|                `/star`, `/unstar`                |                        快捷 star                        |
+|                     `/diff`                      |                      查看 PR diff                       |
+|                    `/comment`                    |                      评论 Issue/PR                      |
+|     `/label [label ...]`, `/unlabel [label]`     |                      添加删除标签                       |
+|           `/close [reason]`, `/reopen`           |                    关闭或重新开启 PR                    |
+|               `/approve [message]`               |                         批准 PR                         |
+| `/merge [commit]`, `/squash [commit]`, `/rebase` |                         合并 PR                         |
+|                      sentry                      |                   日志监控，上报错误                    |
+|                   health check                   |           访问路由地址 `/health` 即可进行自检           |
 
 ### 事件订阅
 
