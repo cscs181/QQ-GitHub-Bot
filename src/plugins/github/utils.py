@@ -41,7 +41,9 @@ def get_context_bot() -> GitHubBot | OAuthBot:
 
     Defaults to OAuth bot for compatibility.
     """
-    return _context_bot.get(get_oauth_bot())
+    if config.oauth_app:
+        return _context_bot.get(get_oauth_bot())
+    return _context_bot.get()
 
 
 @contextmanager
