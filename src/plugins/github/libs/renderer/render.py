@@ -92,7 +92,7 @@ async def pr_diff_to_html(
 
 async def issue_opened_to_html(
     repo: webhooks.Repository,
-    issue: webhooks.IssuesOpenedPropIssue,
+    issue: webhooks.IssuesOpenedPropIssue | webhooks.PullRequestOpenedPropPullRequest,
     theme: Literal["light", "dark"] = "light",
 ) -> str:
     """Render issue or pr with timeline to html

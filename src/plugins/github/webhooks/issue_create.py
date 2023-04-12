@@ -18,12 +18,12 @@ from nonebot.log import logger
 from nonebot.plugin import PluginMetadata
 from githubkit.webhooks import InstallationLite
 from playwright.async_api import Error, TimeoutError
-from nonebot.adapters.github import IssuesOpened, ActionTimeout
+from nonebot.adapters.github import IssuesOpened, ActionTimeout, PullRequestOpened
 
 from src.plugins.github import config
-from src.plugins.github.libs.message_tag import IssueTag
 from src.plugins.github.libs.renderer import issue_opened_to_image
 from src.plugins.github.utils import get_github_bot, set_context_bot
+from src.plugins.github.libs.message_tag import IssueTag, PullRequestTag
 from src.plugins.github.libs.platform import get_user_bot, get_group_bot
 
 from ._dependencies import (
@@ -37,34 +37,48 @@ from ._dependencies import (
 )
 
 __plugin_meta__ = PluginMetadata(
-    "GitHub Issue 创建事件通知",
-    "订阅 GitHub issue/opened 事件来接收通知",
+    "GitHub Issue/PullRequest 创建事件通知",
+    "订阅 GitHub issue/opened pull_request/opened 事件来接收通知",
     "通知以图片形式发送",
 )
 
-issues = on_type(IssuesOpened, priority=config.github_webhook_priority, block=True)
+issue = on_type(
+    (IssuesOpened, PullRequestOpened),
+    priority=config.github_webhook_priority,
+    block=True,
+)
 
 
-@issues.handle()
-async def handle_issues_opened_event(event: IssuesOpened):
+@issue.handle()
+async def handle_issue_opened_event(event: IssuesOpened | PullRequestOpened):
     repo_name = event.payload.repository.full_name
     owner, repo = repo_name.split("/", 1)
-    tag = IssueTag(
-        owner=owner, repo=repo, number=event.payload.issue.number, is_receive=False
-    )
+
+    if isinstance(event, IssuesOpened):
+        tag = IssueTag(
+            owner=owner, repo=repo, number=event.payload.issue.number, is_receive=False
+        )
+        fallback_message = f"用户 {event.payload.sender.login} 创建了 Issue {repo_name}#{event.payload.issue.number}: {event.payload.issue.title}"
+        issue = event.payload.issue
+    else:
+        tag = PullRequestTag(
+            owner=owner,
+            repo=repo,
+            number=event.payload.pull_request.number,
+            is_receive=False,
+        )
+        fallback_message = f"用户 {event.payload.sender.login} 创建了 Pull Request {repo_name}#{event.payload.pull_request.number}: {event.payload.pull_request.title}"
+        issue = event.payload.pull_request
 
     bot = get_github_bot()
 
     image = None
-    fallback_message = f"用户 {event.payload.sender.login} 创建了 Issue {repo_name}#{event.payload.issue.number}: {event.payload.issue.title}"
 
     try:
         installation = cast(InstallationLite, event.payload.installation)
         async with bot.as_installation(installation.id):
             with set_context_bot(bot):
-                image = await issue_opened_to_image(
-                    event.payload.repository, event.payload.issue
-                )
+                image = await issue_opened_to_image(event.payload.repository, issue)
     except (ActionTimeout, TimeoutError, Error):
         pass
     except Exception as e:

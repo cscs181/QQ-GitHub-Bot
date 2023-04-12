@@ -50,7 +50,7 @@ async def pr_diff_to_image(
 
 async def issue_opened_to_image(
     repo: webhooks.Repository,
-    issue: webhooks.IssuesOpenedPropIssue,
+    issue: webhooks.IssuesOpenedPropIssue | webhooks.PullRequestOpenedPropPullRequest,
     width: int = 800,
     height: int = 300,
 ) -> bytes:
