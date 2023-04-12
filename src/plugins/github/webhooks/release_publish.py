@@ -31,8 +31,8 @@ release = on_type(ReleasePublished, priority=config.github_webhook_priority, blo
 
 @release.handle()
 async def handle_release_published_event(event: ReleasePublished):
-    repo_name = event.payload.repository.full_name
-    owner, repo = repo_name.split("/", 1)
+    owner = event.payload.repository.owner.login
+    repo = event.payload.repository.name
     tag = RepoTag(owner=owner, repo=repo, is_receive=False)
 
     image_url = (
