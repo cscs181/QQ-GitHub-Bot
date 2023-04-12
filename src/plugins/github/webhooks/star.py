@@ -48,7 +48,7 @@ star = on_type(
 @star.handle(
     parameterless=(Depends(Throttle((StarCreated, StarDeleted), THROTTLE_EXPIRE)),)
 )
-async def handle_unknown_event(event: StarCreated | StarDeleted):
+async def handle_star_event(event: StarCreated | StarDeleted):
     username = event.payload.sender.login
     repo_name = event.payload.repository.full_name
     action = event.payload.action

@@ -42,11 +42,11 @@ __plugin_meta__ = PluginMetadata(
     "通知以图片形式发送",
 )
 
-star = on_type(IssuesOpened, priority=config.github_webhook_priority, block=True)
+issues = on_type(IssuesOpened, priority=config.github_webhook_priority, block=True)
 
 
-@star.handle()
-async def handle_unknown_event(event: IssuesOpened):
+@issues.handle()
+async def handle_issues_opened_event(event: IssuesOpened):
     repo_name = event.payload.repository.full_name
     owner, repo = repo_name.split("/", 1)
     tag = IssueTag(
