@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+@Author         : yanyongyu
+@Date           : 2023-04-04 20:02:19
+@LastEditors    : he0119
+@LastEditTime   : 2023-04-12 21:49:17
+@Description    : Webhook release publish broadcast
+@GitHub         : https://github.com/yanyongyu
+"""
+__author__ = "yanyongyu"
+
 import asyncio
 import secrets
 
