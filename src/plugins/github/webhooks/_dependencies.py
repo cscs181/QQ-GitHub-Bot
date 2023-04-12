@@ -82,6 +82,19 @@ async def send_user_image(user: UserSubscription, bot: Bot, image: bytes, tag: T
         logger.error(f"Unprocessed bot type: {type(bot)}")
 
 
+async def send_user_image_url(user: UserSubscription, bot: Bot, image: str, tag: Tag):
+    if isinstance(bot, QQBot):
+        result = await bot.send_private_msg(
+            user_id=user.qq_id, message=QQMessage(QQMS.image(image))
+        )
+        if isinstance(result, dict) and "message_id" in result:
+            await create_message_tag(
+                MessageInfo(type="qq", message_id=result["message_id"]), tag
+            )
+    else:
+        logger.error(f"Unprocessed bot type: {type(bot)}")
+
+
 async def send_group_text(group: GroupSubscription, bot: Bot, text: str, tag: Tag):
     if isinstance(bot, QQBot):
         result = await bot.send_group_msg(group_id=group.qq_group, message=text)
@@ -94,6 +107,21 @@ async def send_group_text(group: GroupSubscription, bot: Bot, text: str, tag: Ta
 
 
 async def send_group_image(group: GroupSubscription, bot: Bot, image: bytes, tag: Tag):
+    if isinstance(bot, QQBot):
+        result = await bot.send_group_msg(
+            group_id=group.qq_group, message=QQMessage(QQMS.image(image))
+        )
+        if isinstance(result, dict) and "message_id" in result:
+            await create_message_tag(
+                MessageInfo(type="qq", message_id=result["message_id"]), tag
+            )
+    else:
+        logger.error(f"Unprocessed bot type: {type(bot)}")
+
+
+async def send_group_image_url(
+    group: GroupSubscription, bot: Bot, image: str, tag: Tag
+):
     if isinstance(bot, QQBot):
         result = await bot.send_group_msg(
             group_id=group.qq_group, message=QQMessage(QQMS.image(image))
