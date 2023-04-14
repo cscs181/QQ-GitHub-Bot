@@ -1,0 +1,20 @@
+name: Release Sentry Plugin
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release-sentry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Build and Publish Package
+        run: |
+          cd src/plugins/nonebot_plugin_sentry
+          poetry build
+          poetry publish -u ${{ secrets.SENTRY_PYPI_USERNAME }} -p ${{ secrets.SENTRY_PYPI_PASSWORD }}
