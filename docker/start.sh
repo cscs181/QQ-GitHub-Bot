@@ -1,6 +1,11 @@
 #! /usr/bin/env sh
 set -e
 
+if [ -f /app/VERSION ]; then
+  echo "Version: $(cat /app/VERSION)"
+  export SENTRY_RELEASE=$(cat /app/VERSION)
+fi
+
 if [ -f /app/app/main.py ]; then
   DEFAULT_MODULE_NAME=app.main
 elif [ -f /app/main.py ]; then

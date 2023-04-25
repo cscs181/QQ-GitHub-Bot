@@ -1,4 +1,4 @@
-FROM python:3.10 as requirements-stage
+FROM python:3.11 as requirements-stage
 
 WORKDIR /tmp
 
@@ -10,7 +10,7 @@ COPY ./pyproject.toml ./poetry.lock* /tmp/
 
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --with deploy
 
-FROM python:3.10 as build-stage
+FROM python:3.11 as build-stage
 
 WORKDIR /wheel
 
@@ -18,7 +18,16 @@ COPY --from=requirements-stage /tmp/requirements.txt /wheel/requirements.txt
 
 RUN pip wheel --wheel-dir=/wheel --no-cache-dir --requirement /wheel/requirements.txt
 
-FROM python:3.10-slim
+FROM python:3.11 as metadata-stage
+
+WORKDIR /tmp
+
+COPY ./.git/ /tmp/
+
+RUN git describe --tags --exact-match 2>/dev/null || git rev-parse --short HEAD > /tmp/VERSION \
+  && echo "Building version: $(cat /tmp/VERSION)"
+
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -58,6 +67,8 @@ COPY --from=build-stage /wheel /wheel
 RUN pip install --no-cache-dir --no-index --find-links=/wheel -r /wheel/requirements.txt && rm -rf /wheel
 
 RUN playwright install --with-deps chromium
+
+COPY --from=metadata-stage /tmp/VERSION /app/VERSION
 
 COPY . /app/
 
