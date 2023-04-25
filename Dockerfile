@@ -2,13 +2,10 @@ FROM python:3.11 as requirements-stage
 
 WORKDIR /tmp
 
-RUN curl -sSL https://install.python-poetry.org | python -
-
-ENV PATH="${PATH}:/root/.local/bin"
-
 COPY ./pyproject.toml ./poetry.lock* /tmp/
 
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --with deploy
+RUN pip install --user pipx \
+  && python -m pipx run --no-cache poetry export -f requirements.txt --output requirements.txt --without-hashes --with deploy
 
 FROM python:3.11 as build-stage
 
