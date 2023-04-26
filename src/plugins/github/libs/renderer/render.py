@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-04-05 01:02:54
+@LastEditTime   : 2023-04-26 18:25:32
 @Description    : GitHub html renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -95,7 +95,7 @@ async def issue_opened_to_html(
     issue: webhooks.IssuesOpenedPropIssue | webhooks.PullRequestOpenedPropPullRequest,
     theme: Literal["light", "dark"] = "light",
 ) -> str:
-    """Render issue or pr with timeline to html
+    """Render issue or pr opened webhook event to html
 
     Args:
         repo: the webhook repository object
@@ -104,3 +104,23 @@ async def issue_opened_to_html(
     """
     template = env.get_template("views/issue-opened.html.jinja")
     return await template.render_async(repo=repo, issue=issue, theme=theme)
+
+
+async def issue_commented_to_html(
+    repo: webhooks.Repository,
+    issue: webhooks.IssueCommentCreatedPropIssue,
+    comment: webhooks.IssueComment,
+    theme: Literal["light", "dark"] = "light",
+) -> str:
+    """Render issue commented webhook event to html
+
+    Args:
+        repo: the webhook repository object
+        issue: the webhook issue object
+        comment: the webhook issue comment object
+        theme: the theme of the html
+    """
+    template = env.get_template("views/issue-commented.html.jinja")
+    return await template.render_async(
+        repo=repo, issue=issue, comment=comment, theme=theme
+    )

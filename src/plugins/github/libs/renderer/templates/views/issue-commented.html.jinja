@@ -1,8 +1,8 @@
 <!--
  * @Author         : yanyongyu
- * @Date           : 2023-04-05 00:44:01
+ * @Date           : 2023-04-26 18:22:24
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-04-26 18:21:09
+ * @LastEditTime   : 2023-04-26 18:34:49
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -17,6 +17,7 @@
 
 {% from "components/timeline/commented.html.jinja" import commented %}
 {% from "components/timeline/labeled.html.jinja" import labeled %}
+{% from "components/timeline/hidden-item.html.jinja" import hidden_item %}
 
 {% extends "main.html.jinja" %}
 {% block main %}
@@ -24,7 +25,7 @@
 <div class="repository-content">
   <div class="container-xl px-3 px-md-4 px-lg-5 mt-4">
     <div>
-      {% if issue.diff_url %}
+      {% if issue.pull_request %}
       {{ pr_header(issue) }}
       {% else %}
       {{ issue_header(issue) }}
@@ -40,9 +41,11 @@
               {{ labeled(event) }}
               {% endfor %}
               {% endif %}
+              {{ hidden_item() }}
+              {{ commented(comment) }}
             </div>
           </div>
-          {% if issue.diff_url %}
+          {% if issue.pull_request %}
           {{ pr_action(issue) }}
           {% else %}
           {{ issue_action(issue) }}

@@ -63,12 +63,14 @@ async def handle_star_event(event: StarCreated | StarDeleted):
         try:
             await send_user_text(user, get_user_bot(user), message, tag)
         except Exception as e:
-            logger.warning(f"Send message to user {user} failed: {e}")
+            logger.opt(exception=e).warning(f"Send message to user {user} failed: {e}")
         await asyncio.sleep(SEND_INTERVAL)
 
     for group in await get_subscribed_groups(event):
         try:
             await send_group_text(group, get_group_bot(group), message, tag)
         except Exception as e:
-            logger.warning(f"Send message to group {group} failed: {e}")
+            logger.opt(exception=e).warning(
+                f"Send message to group {group} failed: {e}"
+            )
         await asyncio.sleep(SEND_INTERVAL)

@@ -3,8 +3,8 @@
 """
 @Author         : yanyongyu
 @Date           : 2023-04-04 20:02:19
-@LastEditors    : he0119
-@LastEditTime   : 2023-04-12 21:49:17
+@LastEditors    : yanyongyu
+@LastEditTime   : 2023-04-26 18:44:51
 @Description    : Webhook release publish broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -54,12 +54,14 @@ async def handle_release_published_event(event: ReleasePublished):
         try:
             await send_user_image_url(user, get_user_bot(user), image_url, tag)
         except Exception as e:
-            logger.warning(f"Send message to user {user} failed: {e}")
+            logger.opt(exception=e).warning(f"Send message to user {user} failed: {e}")
         await asyncio.sleep(SEND_INTERVAL)
 
     for group in await get_subscribed_groups(event):
         try:
             await send_group_image_url(group, get_group_bot(group), image_url, tag)
         except Exception as e:
-            logger.warning(f"Send message to group {group} failed: {e}")
+            logger.opt(exception=e).warning(
+                f"Send message to group {group} failed: {e}"
+            )
         await asyncio.sleep(SEND_INTERVAL)

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-04 09:02:06
+ * @LastEditTime   : 2023-04-26 17:48:54
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
@@ -136,6 +136,36 @@ g-emoji {
   tab-size: 8;
 }
 
+/* primer css 21 removed diffstat */
+.diffstat {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-fg-muted);
+  white-space: nowrap;
+  cursor: default;
+}
+.diffstat-block-deleted,
+.diffstat-block-added,
+.diffstat-block-neutral {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 1px;
+  outline-offset: -1px;
+}
+.diffstat-block-deleted {
+  background-color: var(--color-danger-emphasis);
+  outline: 1px solid var(--color-border-subtle);
+}
+.diffstat-block-added {
+  background-color: var(--color-success-emphasis);
+  outline: 1px solid var(--color-border-subtle);
+}
+.diffstat-block-neutral {
+  background-color: var(--color-neutral-muted);
+  outline: 1px solid var(--color-border-subtle);
+}
+
 .blob-num {
   position: relative;
   width: 1%;
@@ -191,4 +221,21 @@ g-emoji {
 }
 .blob-code-deletion {
   background-color: var(--color-danger-subtle);
+}
+
+.pagination-loader-container {
+  background-color: var(--color-canvas-default);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M0 11L8 5L16 11' stroke='%23e1e4e8' stroke-linecap='square' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: center;
+  background-size: 16px;
+}
+[data-color-mode="light"][data-light-theme*="dark"]
+  .pagination-loader-container,
+[data-color-mode="dark"][data-dark-theme*="dark"] .pagination-loader-container {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M0 11L8 5L16 11' stroke='%2330363d' stroke-linecap='square' stroke-width='1.5'/%3E%3C/svg%3E");
+}
+.discussion-item-header {
+  color: var(--color-fg-muted);
+  word-wrap: break-word;
 }

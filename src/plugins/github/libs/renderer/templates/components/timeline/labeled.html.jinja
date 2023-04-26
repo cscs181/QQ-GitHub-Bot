@@ -10,7 +10,7 @@
 {% from "icons/tag.html.jinja" import octicon_tag %}
 {% from "components/issue/label.html.jinja" import issue_label %}
 
-{% macro labeled(event, ns) %}
+{% macro labeled(event, ns=none) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_tag() }}

@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 05:14:32
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-31 00:13:09
+@LastEditTime   : 2023-04-26 18:45:11
 @Description    : Webhook unknown event broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -86,12 +86,14 @@ async def handle_unknown_event(event: Event):
         try:
             await send_user_text(user, get_user_bot(user), message, tag)
         except Exception as e:
-            logger.warning(f"Send message to user {user} failed: {e}")
+            logger.opt(exception=e).warning(f"Send message to user {user} failed: {e}")
         await asyncio.sleep(SEND_INTERVAL)
 
     for group in await get_subscribed_groups(event):
         try:
             await send_group_text(group, get_group_bot(group), message, tag)
         except Exception as e:
-            logger.warning(f"Send message to group {group} failed: {e}")
+            logger.opt(exception=e).warning(
+                f"Send message to group {group} failed: {e}"
+            )
         await asyncio.sleep(SEND_INTERVAL)
