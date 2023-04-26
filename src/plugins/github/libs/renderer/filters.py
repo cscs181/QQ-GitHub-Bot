@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 23:49:10
+@LastEditTime   : 2023-04-27 00:42:24
 @Description    : Jinja filters for renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -86,7 +86,8 @@ def debug_event(event: GitHubRestModel) -> str:
     """Log unhandled event using error level to report on sentry"""
     logger.debug(f"Unhandled event: {event.dict()}")
     logger.error(
-        f"Unhandled event type: {event.__class__.__name__}",
+        f"Unhandled event type: {event.__class__.__name__}"
+        + (f" {event_name}" if (event_name := getattr(event, "event", None)) else ""),
         event=event.dict(),
     )
     return ""

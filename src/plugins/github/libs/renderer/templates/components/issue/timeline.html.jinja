@@ -2,13 +2,15 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-04-26 18:13:36
+ * @LastEditTime   : 2023-04-27 01:06:18
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "components/timeline/added-to-project.html.jinja" import added_to_project %}
 {% from "components/timeline/assigned.html.jinja" import assigned %}
+{% from "components/timeline/auto-merge-disabled.html.jinja" import auto_merge_disabled %}
+{% from "components/timeline/auto-squash-enabled.html.jinja" import auto_squash_enabled %}
 {% from "components/timeline/base-ref-force-pushed.html.jinja" import base_ref_force_pushed %}
 {% from "components/timeline/closed.html.jinja" import closed %}
 {% from "components/timeline/comment-deleted.html.jinja" import comment_deleted %}
@@ -23,6 +25,7 @@
 {% from "components/timeline/head-ref-force-pushed.html.jinja" import head_ref_force_pushed %}
 {% from "components/timeline/labeled.html.jinja" import labeled %}
 {% from "components/timeline/locked.html.jinja" import locked %}
+{% from "components/timeline/marked-as-duplicate.html.jinja" import marked_as_duplicate %}
 {% from "components/timeline/mentioned.html.jinja" import mentioned %}
 {% from "components/timeline/merged.html.jinja" import merged %}
 {% from "components/timeline/milestoned.html.jinja" import milestoned %}
@@ -41,7 +44,9 @@
 {% from "components/timeline/unassigned.html.jinja" import unassigned %}
 {% from "components/timeline/unlabeled.html.jinja" import unlabeled %}
 {% from "components/timeline/unlocked.html.jinja" import unlocked %}
+{% from "components/timeline/unmarked-as-duplicate.html.jinja" import unmarked_as_duplicate %}
 {% from "components/timeline/unpinned.html.jinja" import unpinned %}
+{% from "components/timeline/user-blocked.html.jinja" import user_blocked %}
 
 {% macro issue_timeline(issue) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
@@ -54,6 +59,10 @@
     {{ added_to_project(event, ns) }}
     {% elif event.event == "assigned" %}
     {{ assigned(event, ns) }}
+    {% elif event.event == "auto_merge_disabled" %}
+    {{ auto_merge_disabled(event, ns) }}
+    {% elif event.event == "auto_squash_enabled" %}
+    {{ auto_squash_enabled(event, ns) }}
     {% elif event.event == "base_ref_force_pushed" %}
     {{ base_ref_force_pushed(event, ns) }}
     {% elif event.event == "closed" %}
@@ -82,6 +91,8 @@
     {{ labeled(event, ns) }}
     {% elif event.event == "locked" %}
     {{ locked(event, ns) }}
+    {% elif event.event == "marked_as_duplicate" %}
+    {{ marked_as_duplicate(event, ns)}}
     {% elif event.event == "mentioned" %}
     {{ mentioned(event, ns) }}
     {% elif event.event == "merged" %}
@@ -110,6 +121,8 @@
     {{ review_requested(event, ns) }}
     {% elif event.event == "reviewed" %}
     {{ reviewed(event, ns) }}
+    {% elif event.event == "subscribed" %}
+    {# subscribed event ignored #}
     {% elif event.event == "transferred" %}
     {{ transferred(event, ns) }}
     {% elif event.event == "unassigned" %}
@@ -118,8 +131,14 @@
     {{ unlabeled(event, ns) }}
     {% elif event.event == "unlocked" %}
     {{ unlocked(event, ns) }}
+    {% elif event.event == "unmarked_as_duplicate" %}
+    {{ unmarked_as_duplicate(event, ns) }}
     {% elif event.event == "unpinned" %}
     {{ unpinned(event, ns) }}
+    {% elif event.event == "unsubscribed" %}
+    {# unsubscribed event ignored #}
+    {% elif event.event == "user-blocked" %}
+    {{ user_blocked(event, ns) }}
     {% else %}
     {{ event|debug_event }}
     {% endif %}
