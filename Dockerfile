@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM python:3.11 as requirements-stage
 
 WORKDIR /tmp
@@ -22,9 +23,8 @@ FROM python:3.11 as metadata-stage
 
 WORKDIR /tmp
 
-COPY ./.git/ /tmp/
-
-RUN git describe --tags --exact-match 2>/dev/null || git rev-parse --short HEAD > /tmp/VERSION \
+RUN --mount=type=bind,source=./.git/,target=/tmp/.git/ \
+  git describe --tags --exact-match 2>/dev/null || git rev-parse --short HEAD > /tmp/VERSION \
   && echo "Building version: $(cat /tmp/VERSION)"
 
 FROM python:3.11-slim
