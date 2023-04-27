@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2023-04-05 00:44:01
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-04-26 18:21:09
+ * @LastEditTime   : 2023-04-27 19:48:21
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -30,13 +30,14 @@
       {{ issue_header(issue) }}
       {% endif %}
       <div id="discussion_bucket">
+        {% set ns = namespace(issue=issue) %}
         <div>
           <div class="ml-0 pl-0 ml-md-6 pl-md-3">
-            {{ commented(issue, is_first=true) }}
+            {{ commented(issue, ns, is_first=true) }}
             <div>
               {% if issue.labels %}
               {% for label in issue.labels %}
-              {% set event = {"actor": issue.user, "label": label, "created_at": issue.created_at} %}
+              {% set event = namespace(actor=issue.user, label=label, created_at=issue.created_at) %}
               {{ labeled(event) }}
               {% endfor %}
               {% endif %}
