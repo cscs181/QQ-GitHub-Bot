@@ -24,7 +24,8 @@ FROM python:3.11 as metadata-stage
 WORKDIR /tmp
 
 RUN --mount=type=bind,source=./.git/,target=/tmp/.git/ \
-  { git describe --tags --exact-match 2>/dev/null || git rev-parse --short HEAD } > /tmp/VERSION \
+  git describe --tags --exact-match > /tmp/VERSION 2>/dev/null \
+  || git rev-parse --short HEAD > /tmp/VERSION \
   && echo "Building version: $(cat /tmp/VERSION)"
 
 FROM python:3.11-slim
