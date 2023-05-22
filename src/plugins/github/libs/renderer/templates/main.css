@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-04-26 17:48:54
+ * @LastEditTime   : 2023-05-22 16:06:11
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
@@ -54,6 +54,10 @@ g-emoji {
 .timeline-comment.timeline-comment-nw::before {
   top: -12px;
   left: 12px;
+}
+.timeline-comment.timeline-comment-nw::after {
+  top: -10px;
+  left: 11px;
 }
 .timeline-comment.timeline-comment-nw::before,
 .timeline-comment.timeline-comment-nw::after {
