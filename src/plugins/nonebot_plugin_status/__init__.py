@@ -17,6 +17,7 @@ from jinja2 import Environment
 from nonebot import get_driver
 from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
+from nonebot.plugin import PluginMetadata
 from jinja2.meta import find_undeclared_variables
 
 from .config import Config
@@ -30,6 +31,20 @@ from .data_source import (
     get_memory_status,
     get_bot_connect_time,
     get_nonebot_run_time,
+)
+
+__plugin_meta__ = PluginMetadata(
+    name="服务器状态查看",
+    description="通过戳一戳获取服务器状态",
+    usage=(
+        "通过QQ私聊戳一戳或拍一拍头像获取机器人服务器状态\n"
+        "或者通过发送指令 `status/状态` 获取机器人服务器状态\n"
+        "可以通过配置文件修改服务器状态模板"
+    ),
+    type="application",
+    homepage="https://github.com/cscs181/QQ-GitHub-Bot/tree/master/src/plugins/nonebot_plugin_status",
+    config=Config,
+    supported_adapters=None,
 )
 
 global_config = get_driver().config
