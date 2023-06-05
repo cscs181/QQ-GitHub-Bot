@@ -4,17 +4,20 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 19:58:02
+@LastEditTime   : 2023-06-05 16:43:31
 @Description    : Status plugin
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
+import inspect
 import contextlib
 from typing import Any, Dict
 
 from jinja2 import Environment
 from nonebot import get_driver
+from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata
@@ -78,18 +81,31 @@ KNOWN_VARS = {
 """Available variables for template rendering."""
 
 
-def _solve_required_vars() -> Dict[str, Any]:
+if not set(_t_vars).issubset(KNOWN_VARS):
+    raise ValueError(
+        f'Unknown variables in status template: {", ".join(set(_t_vars) - set(KNOWN_VARS))}'
+    )
+
+
+async def _solve_required_vars() -> Dict[str, Any]:
     """Solve required variables for template rendering."""
     return (
-        {k: v() for k, v in KNOWN_VARS.items() if k in _t_vars}
+        {
+            k: await v() if inspect.iscoroutinefunction(v) else v()
+            for k, v in KNOWN_VARS.items()
+            if k in _t_vars
+        }
         if status_config.server_status_truncate
-        else {k: v() for k, v in KNOWN_VARS.items()}
+        else {
+            k: await v() if inspect.iscoroutinefunction(v) else v()
+            for k, v in KNOWN_VARS.items()
+        }
     )
 
 
 async def render_template() -> str:
     """Render status template with required variables."""
-    message = await _t.render_async(**_solve_required_vars())
+    message = await _t.render_async(**(await _solve_required_vars()))
     return message.strip("\n")
 
 

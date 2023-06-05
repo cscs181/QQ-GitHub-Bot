@@ -4,12 +4,13 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:15:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 18:23:38
+@LastEditTime   : 2023-06-05 16:40:35
 @Description    : Getting status of the bot and the mechine
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+import asyncio
 from datetime import datetime
 from typing import TYPE_CHECKING, Dict, List, Optional
 
@@ -59,14 +60,18 @@ def get_bot_connect_time() -> Dict[str, datetime]:
     return _bot_connect_time
 
 
-def get_cpu_status() -> float:
+async def get_cpu_status() -> float:
     """Get the CPU usage status."""
-    return psutil.cpu_percent(interval=0.3)  # type: ignore
+    psutil.cpu_percent()
+    await asyncio.sleep(0.5)
+    return psutil.cpu_percent()
 
 
-def per_cpu_status() -> List[float]:
+async def per_cpu_status() -> List[float]:
     """Get the CPU usage status of each core."""
-    return psutil.cpu_percent(interval=0.3, percpu=True)  # type: ignore
+    psutil.cpu_percent(percpu=True)
+    await asyncio.sleep(0.5)
+    return psutil.cpu_percent(percpu=True)  # type: ignore
 
 
 def get_memory_status():
