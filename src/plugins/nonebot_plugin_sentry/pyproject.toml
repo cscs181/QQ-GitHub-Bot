@@ -16,9 +16,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.7"
 sentry-sdk = "^1.0.0"
-nonebot2 = "^2.0.0-alpha.6"
-
-[tool.poetry.dev-dependencies]
+nonebot2 = "^2.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

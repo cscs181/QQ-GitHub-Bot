@@ -4,7 +4,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 19:58:06
+@LastEditTime   : 2023-06-05 16:07:18
 @Description    : Sentry plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,9 +13,20 @@ __author__ = "yanyongyu"
 import sentry_sdk
 from nonebot import get_driver
 from nonebot.log import logger
+from nonebot.plugin import PluginMetadata
 from sentry_sdk.integrations.logging import EventHandler, BreadcrumbHandler
 
 from .config import Config
+
+__plugin_meta__ = PluginMetadata(
+    name="Sentry日志监控",
+    description="使用Sentry监控机器人日志并处理报错",
+    usage="在配置文件中填写Sentry DSN即可启用",
+    type="application",
+    homepage="https://github.com/cscs181/QQ-GitHub-Bot/tree/master/src/plugins/nonebot_plugin_sentry",
+    config=Config,
+    supported_adapters=None,
+)
 
 driver = get_driver()
 global_config = driver.config
