@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-05-22 16:06:11
+ * @LastEditTime   : 2023-06-05 17:01:23
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
@@ -211,7 +211,7 @@ g-emoji {
   font-size: 12px;
   color: var(--color-fg-default);
   word-wrap: anywhere;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 .blob-code-hunk {
   padding-top: 4px;
