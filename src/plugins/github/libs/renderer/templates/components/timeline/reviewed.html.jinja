@@ -15,8 +15,8 @@
 {% macro reviewed(event, ns) %}
 <div class="TimelineItem">
   <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">
-    <a class="d-inline-block" href="#">
-      <img class="avatar rounded" height="40" width="40" src="{{ event.user.avatar_url }}" />
+    <a href="#" class="d-inline-block">
+      <img class="avatar circle" src="{{ event.user.avatar_url }}" height="40" width="40" />
     </a>
   </div>
   {% if event.state == "changes_requested" %}
