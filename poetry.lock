@@ -1199,17 +1199,17 @@ setuptools = "*"
 
 [[package]]
 name = "nonebot-adapter-github"
-version = "0.2.5"
+version = "0.3.0"
 description = "GitHub adapter for nonebot2"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "nonebot_adapter_github-0.2.5-py3-none-any.whl", hash = "sha256:29b10396fb2c3ad0424e5c6d263d98b88276e9199fb432e03e54fed008a0cd2a"},
-    {file = "nonebot_adapter_github-0.2.5.tar.gz", hash = "sha256:7f16f78d22da3d2bc01afa8c50d410bcb4f3bafe2956d004b04dad074e339e0a"},
+    {file = "nonebot_adapter_github-0.3.0-py3-none-any.whl", hash = "sha256:b042191c7fa225b202907502d1dd8c4d2167fd8126cc07221b5b29542fea4ab6"},
+    {file = "nonebot_adapter_github-0.3.0.tar.gz", hash = "sha256:7b10141cf0c5706c38f00a8f48c0c93ffc01d9830600c65a238432e13a5c692d"},
 ]
 
 [package.dependencies]
-githubkit = {version = ">=0.7.0,<1.0.0", extras = ["auth-app"]}
+githubkit = {version = ">=0.10.5,<1.0.0", extras = ["auth-app"]}
 nonebot2 = ">=2.0.0-beta.5,<3.0.0"
 
 [[package]]
@@ -2117,4 +2117,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "bd2c0c45e504a54aa89f0831839d58d5e8dc2850628eb4ae22c85aa404792cc3"
+content-hash = "bef8d9ff914f8fecc88ca3c185cd028708eb6c57b6402040e798e85c05af4ad7"
