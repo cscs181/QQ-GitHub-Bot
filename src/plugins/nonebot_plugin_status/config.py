@@ -27,7 +27,7 @@ MEMORY_TEMPLATE = r"Memory: {{ '%02d' % memory_usage.percent }}%"
 """Default memory status template."""
 
 SWAP_TEMPLATE = (
-    r"{% if swap_usage.total %}Swap: {{ '%02d' % swap_usage.percent }}%{% endif %}"
+    "{% if swap_usage.total %}Swap: {{ '%02d' % swap_usage.percent }}%\n{% endif %}"
 )
 """Default swap status template."""
 
