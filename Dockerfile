@@ -53,7 +53,7 @@ ENV APP_MODULE bot:app
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends curl p7zip-full fontconfig fonts-noto-color-emoji \
-  && curl -sSL https://github.com/be5invis/Sarasa-Gothic/releases/download/v0.37.4/sarasa-gothic-ttc-0.37.4.7z -o /tmp/sarasa.7z \
+  && curl -sSL https://github.com/be5invis/Sarasa-Gothic/releases/download/v0.41.3/sarasa-gothic-ttc-0.41.3.7z -o /tmp/sarasa.7z \
   && 7z x /tmp/sarasa.7z -o/tmp/sarasa \
   && install -d /usr/share/fonts/sarasa-gothic \
   && install -m644 /tmp/sarasa/*.ttc /usr/share/fonts/sarasa-gothic \
