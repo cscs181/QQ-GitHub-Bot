@@ -23,6 +23,7 @@ from .render import (
     pr_diff_to_html,
     issue_opened_to_html,
     issue_commented_to_html,
+    issue_closed_to_html,
 )
 
 
@@ -73,4 +74,14 @@ async def issue_commented_to_image(
 ) -> bytes:
     """Render webhook event issue_comment/created to image"""
     html = await issue_commented_to_html(repo, issue, comment, config.github_theme)
+    return await _gen_image(html, width, height)
+
+async def issue_closed_to_image(
+    repo: webhooks.Repository,
+    issue: webhooks.IssuesClosedPropIssue | webhooks.PullRequestClosedPropPullRequest,
+    width: int = 800,
+    height: int = 300,
+) -> bytes:
+    """Render webhook event issue/closed to image"""
+    html = await issue_closed_to_html(repo, issue, config.github_theme)
     return await _gen_image(html, width, height)
