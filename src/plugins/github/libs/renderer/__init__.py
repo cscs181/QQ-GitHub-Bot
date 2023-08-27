@@ -21,9 +21,9 @@ from src.providers.playwright import get_new_page
 from .render import (
     issue_to_html,
     pr_diff_to_html,
+    issue_closed_to_html,
     issue_opened_to_html,
     issue_commented_to_html,
-    issue_closed_to_html,
 )
 
 
@@ -75,6 +75,7 @@ async def issue_commented_to_image(
     """Render webhook event issue_comment/created to image"""
     html = await issue_commented_to_html(repo, issue, comment, config.github_theme)
     return await _gen_image(html, width, height)
+
 
 async def issue_closed_to_image(
     repo: webhooks.Repository,

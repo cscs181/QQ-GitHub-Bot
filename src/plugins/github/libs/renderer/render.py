@@ -125,6 +125,7 @@ async def issue_commented_to_html(
         repo=repo, issue=issue, comment=comment, theme=theme
     )
 
+
 async def issue_closed_to_html(
     repo: webhooks.Repository,
     issue: webhooks.IssuesClosedPropIssue | webhooks.PullRequestClosedPropPullRequest,
@@ -139,6 +140,4 @@ async def issue_closed_to_html(
     """
     # 直接用issue-opened.html.jinja感觉就行
     template = env.get_template("views/issue-opened.html.jinja")
-    return await template.render_async(
-        repo=repo, issue=issue, theme=theme
-    )
+    return await template.render_async(repo=repo, issue=issue, theme=theme)
