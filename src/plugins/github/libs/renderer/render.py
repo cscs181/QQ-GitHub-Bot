@@ -131,7 +131,7 @@ async def issue_closed_to_html(
     issue: webhooks.IssuesClosedPropIssue | webhooks.PullRequestClosedPropPullRequest,
     theme: Literal["light", "dark"] = "light",
 ) -> str:
-    """Render issue closed webhook event to html
+    """Render issue or pr closed webhook event to html
 
     Args:
         repo: the webhook repository object
