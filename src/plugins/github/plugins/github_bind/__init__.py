@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
@@ -40,7 +38,8 @@ from .dependencies import bypass_update
 __plugin_meta__ = PluginMetadata(
     "GitHub 群仓库绑定",
     "群绑定 GitHub 仓库以进行快捷 Issue、PR 相关操作（仅限群管理员）",
-    ("/bind [owner/repo]: 群查询或绑定 GitHub 仓库（仅仓库安装 APP 后有效）\n" "/unbind: 群解绑 GitHub 仓库"),
+    "/bind [owner/repo]: 群查询或绑定 GitHub 仓库（仅仓库安装 APP 后有效）\n"
+    "/unbind: 群解绑 GitHub 仓库",
 )
 
 bind = on_command(

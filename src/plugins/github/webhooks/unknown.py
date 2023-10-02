@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2022-11-07 05:14:32
@@ -37,11 +35,9 @@ from ._dependencies import (
 __plugin_meta__ = PluginMetadata(
     "GitHub 事件通知",
     "订阅 GitHub 事件来接收通知",
-    (
-        "此插件为 fallback 通知\n"
-        "通知示例：\n"
-        "用户 yanyongyu 触发了仓库 cscs181/QQ-GitHub-Bot 的事件 star"
-    ),
+    "此插件为 fallback 通知\n"
+    "通知示例：\n"
+    "用户 yanyongyu 触发了仓库 cscs181/QQ-GitHub-Bot 的事件 star",
 )
 
 THROTTLE_EXPIRE = timedelta(seconds=60)

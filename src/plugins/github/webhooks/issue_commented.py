@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2023-04-26 18:39:12
@@ -61,12 +59,18 @@ async def handle_issue_opened_event(event: IssueCommentCreated):
             number=event.payload.issue.number,
             is_receive=False,
         )
-        fallback_message = f"用户 {event.payload.sender.login} 评论了 Pull Request {repo_name}#{event.payload.issue.number}: {event.payload.issue.title}"
+        fallback_message = (
+            f"用户 {event.payload.sender.login} 评论了 Pull Request"
+            f" {repo_name}#{event.payload.issue.number}: {event.payload.issue.title}"
+        )
     else:
         tag = IssueTag(
             owner=owner, repo=repo, number=event.payload.issue.number, is_receive=False
         )
-        fallback_message = f"用户 {event.payload.sender.login} 评论了 Issue {repo_name}#{event.payload.issue.number}: {event.payload.issue.title}"
+        fallback_message = (
+            f"用户 {event.payload.sender.login} 评论了 Issue"
+            f" {repo_name}#{event.payload.issue.number}: {event.payload.issue.title}"
+        )
 
     bot = get_github_bot()
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
@@ -17,7 +15,6 @@ from typing import Any, Dict
 
 from jinja2 import Environment
 from nonebot import get_driver
-from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata
@@ -83,7 +80,8 @@ KNOWN_VARS = {
 
 if not set(_t_vars).issubset(KNOWN_VARS):
     raise ValueError(
-        f'Unknown variables in status template: {", ".join(set(_t_vars) - set(KNOWN_VARS))}'
+        "Unknown variables in status template:"
+        f" {', '.join(set(_t_vars) - set(KNOWN_VARS))}"
     )
 
 
@@ -114,9 +112,5 @@ async def server_status(matcher: Matcher):
     await matcher.send(message=await render_template())
 
 
-from . import common
-
 with contextlib.suppress(ImportError):
-    import nonebot.adapters.onebot.v11
-
-    from . import onebot_v11
+    pass

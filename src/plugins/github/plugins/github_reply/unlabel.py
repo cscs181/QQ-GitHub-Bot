@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2022-10-21 08:13:17
@@ -74,7 +72,9 @@ async def handle_label(
         if e.response.status_code == 403:
             await unlabel.finish("权限不足，请尝试使用 /install 安装或刷新授权")
         elif e.response.status_code == 404:
-            await unlabel.finish(f"{tag.owner}/{tag.repo}#{tag.number} 不存在标签 {label_}")
+            await unlabel.finish(
+                f"{tag.owner}/{tag.repo}#{tag.number} 不存在标签 {label_}"
+            )
         logger.opt(exception=e).error(f"Failed while unlabel issue: {e}")
         await unlabel.finish("未知错误发生，请尝试重试或联系管理员")
     except Exception as e:

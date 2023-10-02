@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-04-27 00:42:24
+@LastEditTime   : 2023-10-02 16:12:52
 @Description    : Jinja filters for renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -45,7 +43,11 @@ def emoji_format(
     env: dict,
 ) -> str:
     """Render emoji token to html"""
-    return f'<g-emoji class="g-emoji" alias="{tokens[idx].markup}">{tokens[idx].content}</g-emoji>'
+    return (
+        f'<g-emoji class="g-emoji" alias="{tokens[idx].markup}">'
+        f"{tokens[idx].content}"
+        "</g-emoji>"
+    )
 
 
 title_md.add_render_rule("emoji", emoji_format)

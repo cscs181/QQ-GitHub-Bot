@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2023-04-04 18:54:22
@@ -61,16 +59,18 @@ async def handle_merge(
             await merge.finish("GitHub API 超时，请稍后再试")
         except ActionFailed as e:
             if e.response.status_code == 404:
-                await merge.finish(f"未找到 {tag.owner}/{tag.repo}#{tag.number} 对应的 PR")
+                await merge.finish(
+                    f"未找到 {tag.owner}/{tag.repo}#{tag.number} 对应的 PR"
+                )
             logger.opt(exception=e).error(f"Failed while merge pr: {e}")
             await merge.finish("未知错误发生，请尝试重试或联系管理员")
         except Exception as e:
             logger.opt(exception=e).error(f"Failed while merge pr: {e}")
             await merge.finish("未知错误发生，请尝试重试或联系管理员")
 
-        if mergeable == None:
+        if mergeable is None:
             await merge.finish("GitHub 正在检查 PR 是否可合并，请稍后再试")
-        elif mergeable != True:
+        elif mergeable is not True:
             await merge.finish("PR 当前无法合并")
 
         try:
@@ -104,9 +104,13 @@ async def handle_merge(
             if e.response.status_code == 403:
                 await merge.finish("权限不足，请尝试使用 /install 安装或刷新授权")
             elif e.response.status_code == 404:
-                await merge.finish(f"未找到 {tag.owner}/{tag.repo}#{tag.number} 对应的 PR")
+                await merge.finish(
+                    f"未找到 {tag.owner}/{tag.repo}#{tag.number} 对应的 PR"
+                )
             elif e.response.status_code == 405:
-                await merge.finish(f"合并 {tag.owner}/{tag.repo}#{tag.number} 请求不允许")
+                await merge.finish(
+                    f"合并 {tag.owner}/{tag.repo}#{tag.number} 请求不允许"
+                )
             # status code 409 not processed
             logger.opt(exception=e).error(f"Failed while merge pr: {e}")
             await merge.finish("未知错误发生，请尝试重试或联系管理员")

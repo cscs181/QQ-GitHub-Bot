@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2022-10-21 07:56:27
@@ -74,7 +72,9 @@ async def handle_label(
         logger.opt(exception=e).error(f"Failed while label issue: {e}")
         await label.finish("未知错误发生，请尝试重试或联系管理员")
 
-    message = f"成功为 {tag.owner}/{tag.repo}#{tag.number} 添加了标签 {', '.join(labels_)}"
+    message = (
+        f"成功为 {tag.owner}/{tag.repo}#{tag.number} 添加了标签 {', '.join(labels_)}"
+    )
     tag = (
         PullRequestTag(
             owner=tag.owner, repo=tag.repo, number=tag.number, is_receive=False

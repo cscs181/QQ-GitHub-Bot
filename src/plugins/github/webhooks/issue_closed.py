@@ -46,7 +46,10 @@ async def handle_issue_closed_event(event: IssuesClosed | PullRequestClosed):
         tag = IssueTag(
             owner=owner, repo=repo, number=event.payload.issue.number, is_receive=False
         )
-        fallback_message = f"用户 {event.payload.sender.login} 关闭了 Issue {repo_name}#{event.payload.issue.number}: {event.payload.issue.title}"
+        fallback_message = (
+            f"用户 {event.payload.sender.login} 关闭了 Issue"
+            f" {repo_name}#{event.payload.issue.number}: {event.payload.issue.title}"
+        )
         issue = event.payload.issue
     else:
         tag = PullRequestTag(
@@ -55,7 +58,11 @@ async def handle_issue_closed_event(event: IssuesClosed | PullRequestClosed):
             number=event.payload.pull_request.number,
             is_receive=False,
         )
-        fallback_message = f"用户 {event.payload.sender.login} 关闭了 Pull Request {repo_name}#{event.payload.pull_request.number}: {event.payload.pull_request.title}"
+        fallback_message = (
+            f"用户 {event.payload.sender.login} 关闭了 Pull Request"
+            f" {repo_name}#{event.payload.pull_request.number}:"
+            f" {event.payload.pull_request.title}"
+        )
         issue = event.payload.pull_request
 
     bot = get_github_bot()

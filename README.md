@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-04-04 19:38:15
+ * @LastEditTime   : 2023-10-02 16:01:50
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -10,10 +10,10 @@
 # QQ-GitHub-Bot
 
 ![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)
-[![NoneBot Version](https://img.shields.io/badge/nonebot-2+-red.svg)](https://v2.nonebot.dev/)
+[![NoneBot Version](https://img.shields.io/badge/nonebot-2+-red.svg)](https://nonebot.dev/)
 [![Release](https://github.com/cscs181/QQ-GitHub-Bot/actions/workflows/release.yml/badge.svg?branch=master)](https://hub.docker.com/r/cscs181/qq-github-bot)
 
-![CQHTTP Version](https://img.shields.io/badge/CQHTTP%2011-Bot-black.svg?style=social)
+![OneBot Version](https://img.shields.io/badge/OneBot%20v11-Bot-black.svg?style=social)
 
 GitHub Bot for QQ
 
@@ -41,7 +41,7 @@ GitHub Bot for QQ
 |               `/approve [message]`               |                         批准 PR                         |
 | `/merge [commit]`, `/squash [commit]`, `/rebase` |                         合并 PR                         |
 |                      sentry                      |                   日志监控，上报错误                    |
-|                   health check                   |           访问路由地址 `/health` 即可进行自检           |
+|                   health check                   |       访问路由地址 `/health` 即可进行服务状态自检       |
 
 ### 事件订阅
 
@@ -84,8 +84,9 @@ GitHub Bot for QQ
    5. 取消勾选 `Expire user authorization tokens` 或在 app optional feature 中 `opt-out`
    6. 勾选 `Request user authorization (OAuth) during installation`
    7. 记录 `app_id`, `client_id`，生成并下载 `private_key`, `client_secret` 备用
-3. 下载 [`docker-compose.yml`](./docker-compose.yml) 以及 [`bot`](./bot) 目录至任意空目录
-4. 在 `docker-compose.yml` 同目录下创建 `.env` 并写入如下配置项：
+3. 下载 [`docker-compose.yml`](./docker-compose.yml) 至任意空目录
+4. 如果使用 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)，请下载 [`bot`](./bot) 目录至 `docker-compose.yml` 同目录下
+5. 在 `docker-compose.yml` 同目录下创建 `.env` 并写入如下配置项：
 
    ```dotenv
    # 可选，参考 nonebot superuser 格式
@@ -139,10 +140,11 @@ GitHub Bot for QQ
 
    > `docker-compose.yml` 中的配置视情况修改，**如无必要请勿修改！**
 
-5. 修改 `bot/config.yml` 配置文件，参考 [go-cqhttp](https://docs.go-cqhttp.org/guide/config.html#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF) 修改 `uin`, `password`, `access-token`, `secret` 配置项。如需修改连接配置，请保证与 `.env` 中的配置项一致。
-6. 启动
+6. 如果使用 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)，修改 `bot/config.yml` 配置文件，参考 [go-cqhttp 配置](https://docs.go-cqhttp.org/guide/config.html#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF) 修改 `uin`, `password`, `access-token`, `secret` 配置项。如需修改连接配置，请保证与 `.env` 中的配置项一致。
+7. 启动
 
    在目录下执行 `docker compose up -d` (旧版方式 `docker-compose up -d`) 即可。
+   如果使用 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 则执行 `docker compose --profile go-cqhttp up -d`。
 
 ### Kubernetes
 

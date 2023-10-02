@@ -2,8 +2,8 @@ import re
 import sys
 import asyncio
 from pathlib import Path
+from typing import Optional
 from argparse import ArgumentParser
-from typing import Literal, Optional
 
 from nonebot.log import logger
 from nonebot import get_adapter
@@ -14,7 +14,6 @@ root = Path(__file__).parent.parent
 
 sys.path.append(str(root))
 
-import bot
 from src.plugins.github import config
 from src.plugins.github.utils import get_oauth_github
 from src.plugins.github.helpers import ISSUE_REGEX, FULLREPO_REGEX

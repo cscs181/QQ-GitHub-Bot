@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 23:54:11
+@LastEditTime   : 2023-10-02 16:13:42
 @Description    : Jinjia globals for renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -133,7 +131,7 @@ def get_issue_label_color(color: str) -> tuple[int, int, int, int, int, int]:
     r = int(color[:2], 16)
     g = int(color[2:4], 16)
     b = int(color[4:6], 16)
-    h, l, s = rgb_to_hls(r / 255, g / 255, b / 255)
+    h, l, s = rgb_to_hls(r / 255, g / 255, b / 255)  # noqa: E741
     return r, g, b, int(h * 360), int(l * 100), int(s * 100)
 
 

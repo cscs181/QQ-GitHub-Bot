@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2020-09-20 23:59:20
@@ -27,5 +25,3 @@ _webhook_plugins = set()
 _webhook_plugins |= nonebot.load_plugins(
     str((Path(__file__).parent / "webhooks").resolve())
 )
-
-from . import apis

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
@@ -34,11 +32,9 @@ from .dependencies import get_user_installation
 __plugin_meta__ = PluginMetadata(
     "GitHub APP 集成",
     "集成 GitHub APP 以进行 Issue、PR 相关事件提醒",
-    (
-        "/install: 安装或管理 GitHub APP 集成\n"
-        "/install check: 查看 GitHub APP 集成状态\n"
-        "/install revoke: 撤销 GitHub APP 集成授权"
-    ),
+    "/install: 安装或管理 GitHub APP 集成\n"
+    "/install check: 查看 GitHub APP 集成状态\n"
+    "/install revoke: 撤销 GitHub APP 集成授权",
 )
 
 
@@ -55,7 +51,9 @@ async def handle_group():
 @install.handle(parameterless=(Depends(run_when_private),))
 async def handle_private(event: Event):
     if info := get_user_info(event):
-        await install.finish("请前往以下链接进行安装或管理：\n" + await create_install_link(info))
+        await install.finish(
+            "请前往以下链接进行安装或管理：\n" + await create_install_link(info)
+        )
     else:
         logger.error(f"Unprocessed event type: {type(event)}")
         await install.finish("内部错误，请尝试私聊我并使用 /install 命令进行安装或管理")

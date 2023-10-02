@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:48:28
+@LastEditTime   : 2023-10-02 16:14:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -32,11 +30,9 @@ from src.plugins.github.helpers import (
 __plugin_meta__ = PluginMetadata(
     "GitHub 帐号授权",
     "绑定并授权 GitHub 帐号以进行 Issue、PR 相关操作",
-    (
-        "/auth: 创建或刷新 GitHub 帐号授权\n"
-        "/auth check: 查看 GitHub 帐号授权状态\n"
-        "/auth revoke: 撤销 GitHub 帐号授权"
-    ),
+    "/auth: 创建或刷新 GitHub 帐号授权\n"
+    "/auth check: 查看 GitHub 帐号授权状态\n"
+    "/auth revoke: 撤销 GitHub 帐号授权",
 )
 
 auth = on_command(
@@ -71,7 +67,9 @@ auth_check = on_command(
 
 @auth_check.handle()
 async def handle_check(user: None = Depends(get_current_user)):
-    await auth_check.finish("你还没有授权 GitHub 帐号，请私聊使用 /auth 进行授权或使用 /install 进行安装")
+    await auth_check.finish(
+        "你还没有授权 GitHub 帐号，请私聊使用 /auth 进行授权或使用 /install 进行安装"
+    )
 
 
 @auth_check.handle()
@@ -86,7 +84,9 @@ async def check_user_status(user: User = Depends(get_current_user)):
             await auth_check.finish("GitHub API 超时，请稍后再试")
         except ActionFailed as e:
             if e.response.status_code == 404:
-                await auth_check.finish("你的 GitHub 帐号授权已过期，请使用 /auth 进行刷新")
+                await auth_check.finish(
+                    "你的 GitHub 帐号授权已过期，请使用 /auth 进行刷新"
+                )
             logger.opt(exception=e).error(
                 f"Failed while checking token in auth check: {e}"
             )
@@ -112,7 +112,9 @@ auth_revoke = on_command(
 
 @auth_revoke.handle()
 async def handle_revoke(user: None = Depends(get_current_user)):
-    await auth_check.finish("你还没有授权 GitHub 帐号，请私聊使用 /auth 进行授权或使用 /install 进行安装")
+    await auth_check.finish(
+        "你还没有授权 GitHub 帐号，请私聊使用 /auth 进行授权或使用 /install 进行安装"
+    )
 
 
 @auth_revoke.handle()

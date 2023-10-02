@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2022-10-14 17:04:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 19:59:39
+@LastEditTime   : 2023-10-02 16:10:56
 @Description    : Multi pod status plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -25,9 +23,9 @@ async def server_status(matcher: Matcher):
 
 
 if not status_config.server_status_enabled:
-    from . import common
+    from . import common as common
 
     with contextlib.suppress(ImportError):
-        import nonebot.adapters.onebot.v11
+        import nonebot.adapters.onebot.v11  # noqa: F401
 
-        from . import onebot_v11
+        from . import onebot_v11 as onebot_v11

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2022-12-18 13:44:11
@@ -54,7 +52,9 @@ async def handle_star_event(event: StarCreated | StarDeleted):
     action = event.payload.action
     star_count: int = event.payload.repository.stargazers_count
     action_name = "starred" if action == "created" else "unstarred"
-    message = f"用户 {username} {action_name} 仓库 {repo_name} (共计 {star_count} 个 star)"
+    message = (
+        f"用户 {username} {action_name} 仓库 {repo_name} (共计 {star_count} 个 star)"
+    )
 
     owner, repo = repo_name.split("/", 1)
     tag = RepoTag(owner=owner, repo=repo, is_receive=False)

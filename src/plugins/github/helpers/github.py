@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
@@ -10,8 +8,6 @@
 """
 __author__ = "yanyongyu"
 
-from functools import partial
-from contextvars import ContextVar
 from contextlib import nullcontext, asynccontextmanager
 from typing import Callable, AsyncGenerator, AsyncContextManager
 

@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:51:16
+@LastEditTime   : 2023-10-02 16:23:04
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -50,12 +48,11 @@ from .dependencies import get_issue, get_context
 __plugin_meta__ = PluginMetadata(
     "GitHub Issue、PR 查看",
     "快速查看 GitHub Issue、PR 相关信息及事件",
-    (
-        "#number: 当群绑定了 GitHub 仓库时，快速查看 Issue、PR 信息及事件\n"
-        "^owner/repo#number$: 快速查看 Issue、PR 信息及事件\n"
-        "github.com/owner/repo/(issues|pull)/number: 通过链接快速查看 Issue、PR 信息及事件\n"
-        "github.com/owner/repo/pull/number/files: 通过链接快速查看 PR diff 信息"
-    ),
+    "#number: 当群绑定了 GitHub 仓库时，快速查看 Issue、PR 信息及事件\n"
+    "^owner/repo#number$: 快速查看 Issue、PR 信息及事件\n"
+    "github.com/owner/repo/(issues|pull)/number: "
+    "通过链接快速查看 Issue、PR 信息及事件\n"
+    "github.com/owner/repo/pull/number/files: 通过链接快速查看 PR diff 信息",
 )
 
 
@@ -86,9 +83,11 @@ async def handle_issue(
     if info := get_message_info(event):
         await create_message_tag(
             info,
-            PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
-            if issue_.pull_request
-            else IssueTag(owner=owner, repo=repo, number=number, is_receive=True),
+            (
+                PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
+                if issue_.pull_request
+                else IssueTag(owner=owner, repo=repo, number=number, is_receive=True)
+            ),
         )
 
     try:
@@ -198,9 +197,11 @@ async def handle_short(
     if info := get_message_info(event):
         await create_message_tag(
             info,
-            PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
-            if issue_.pull_request
-            else IssueTag(owner=owner, repo=repo, number=number, is_receive=True),
+            (
+                PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
+                if issue_.pull_request
+                else IssueTag(owner=owner, repo=repo, number=number, is_receive=True)
+            ),
         )
 
     try:

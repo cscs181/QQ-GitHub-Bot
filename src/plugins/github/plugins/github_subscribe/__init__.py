@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
@@ -54,11 +52,9 @@ from .dependencies import list_user, list_group, bypass_create
 __plugin_meta__ = PluginMetadata(
     "GitHub 事件订阅",
     "订阅 GitHub 仓库事件",
-    (
-        "/subscribe: 查看当前已有订阅\n"
-        "/subscribe owner/repo [event/action ...]: 订阅指定仓库的某类事件\n"
-        "/unsubscribe owner/repo [event/action ...]: 取消订阅指定仓库的某类事件"
-    ),
+    "/subscribe: 查看当前已有订阅\n"
+    "/subscribe owner/repo [event/action ...]: 订阅指定仓库的某类事件\n"
+    "/unsubscribe owner/repo [event/action ...]: 取消订阅指定仓库的某类事件",
 )
 
 SUBSCRIBE_DEFAULT_MESSAGE = "默认"
@@ -173,14 +169,18 @@ async def process_subscribe_repo(
                 if accessible_repo.full_name == full_name:
                     break
             else:
-                await subscribe.reject(f"你没有权限访问仓库 {owner}/{repo} ！请重新发送或取消")
+                await subscribe.reject(
+                    f"你没有权限访问仓库 {owner}/{repo} ！请重新发送或取消"
+                )
     except MatcherException:
         raise
     except ActionTimeout:
         await subscribe.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
         if e.response.status_code in {403, 404}:
-            await subscribe.reject(f"你没有权限访问仓库 {owner}/{repo} ！请重新发送或取消")
+            await subscribe.reject(
+                f"你没有权限访问仓库 {owner}/{repo} ！请重新发送或取消"
+            )
         logger.opt(exception=e).error(
             f"Failed while checking user permission in group subscribe: {e}"
         )

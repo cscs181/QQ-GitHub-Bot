@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
@@ -38,13 +36,11 @@ from .dependencies import check_repo, check_commit, check_release
 __plugin_meta__ = PluginMetadata(
     "GitHub OpenGraph 查看",
     "查看 GitHub 仓库，提交或发布的 OpenGraph",
-    (
-        "^owner/repo$: 通过仓库缩写查看 OpenGraph\n"
-        "github.com/owner/repo: 通过 GitHub 仓库链接查看 OpenGraph\n"
-        "github.com/owner/repo/commit/<hash>: 通过 GitHub 提交链接查看 OpenGraph\n"
-        "github.com/owner/repo/pull/<number>/commits/<hash>: 通过 GitHub PR 提交链接查看 OpenGraph\n"
-        "github.com/owner/repo/releases/tag/<tag>: 通过 GitHub 发布链接查看 OpenGraph\n"
-    ),
+    "^owner/repo$: 通过仓库缩写查看 OpenGraph\ngithub.com/owner/repo: 通过 GitHub"
+    " 仓库链接查看 OpenGraph\ngithub.com/owner/repo/commit/<hash>: 通过 GitHub"
+    " 提交链接查看 OpenGraph\ngithub.com/owner/repo/pull/<number>/commits/<hash>: 通过"
+    " GitHub PR 提交链接查看 OpenGraph\ngithub.com/owner/repo/releases/tag/<tag>: 通过"
+    " GitHub 发布链接查看 OpenGraph\n",
 )
 
 repo_graph = on_regex(
