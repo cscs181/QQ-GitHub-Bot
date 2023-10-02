@@ -2,15 +2,14 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-06-05 16:07:18
+@LastEditTime   : 2023-10-02 17:07:39
 @Description    : Sentry plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import sentry_sdk
-from nonebot import get_driver
-from nonebot.log import logger
+from nonebot import logger, get_driver
 from nonebot.plugin import PluginMetadata
 from sentry_sdk.integrations.logging import EventHandler, BreadcrumbHandler
 
@@ -32,13 +31,8 @@ config = Config(**global_config.dict())
 
 
 def init_sentry(config: Config):
-    sentry_config = {
-        key[7:]: value
-        for key, value in config.dict(exclude={"sentry_environment"}).items()
-    }
-    sentry_sdk.init(
-        **sentry_config, environment=config.sentry_environment or driver.env
-    )
+    sentry_config = {key[7:]: value for key, value in config.dict().items()}
+    sentry_sdk.init(**sentry_config)
 
     logger.add(
         EventHandler("ERROR"),

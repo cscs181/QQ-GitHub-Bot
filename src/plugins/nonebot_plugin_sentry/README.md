@@ -2,14 +2,14 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-23 20:23:12
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-04-14 17:04:28
+ * @LastEditTime   : 2023-10-02 16:44:50
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 <p align="center">
-  <a href="https://v2.nonebot.dev/">
-    <img src="https://v2.nonebot.dev/logo.png" height="100" alt="nonebot">
+  <a href="https://nonebot.dev/">
+    <img src="https://nonebot.dev/logo.png" height="100" alt="nonebot">
   </a>
   <a href="https://sentry.io">
     <img src="https://sentry-brand.storage.googleapis.com/sentry-logo-black.png" height="100" alt="sentry">
