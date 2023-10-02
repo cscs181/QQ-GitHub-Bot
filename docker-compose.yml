@@ -9,6 +9,7 @@ services:
     volumes:
       - bot_redis_data:/data
     restart: always
+
   postgres:
     image: postgres:15-alpine
     environment:
@@ -20,13 +21,7 @@ services:
     volumes:
       - bot_postgres_data:/var/lib/postgresql/data
     restart: always
-  go-cqhttp:
-    image: ghcr.io/mrs4s/go-cqhttp:latest
-    volumes:
-      - "./bot:/data"
-    depends_on:
-      - nonebot
-    restart: always
+
   nonebot:
     image: cscs181/qq-github-bot:latest # docker hub
     # image: ghcr.io/cscs181/qq-github-bot:latest # github image mirror
@@ -58,6 +53,16 @@ services:
       retries: 3
       start_period: 30s
     restart: always
+
+  go-cqhttp:
+    image: ghcr.io/mrs4s/go-cqhttp:latest
+    volumes:
+      - "./bot:/data"
+    depends_on:
+      - nonebot
+    restart: always
+    profiles:
+      - go-cqhttp
 volumes:
   bot_redis_data: {}
   bot_postgres_data: {}
