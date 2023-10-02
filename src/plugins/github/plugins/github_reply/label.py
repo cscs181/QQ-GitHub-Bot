@@ -8,9 +8,8 @@
 """
 __author__ = "yanyongyu"
 
-from nonebot.log import logger
 from nonebot.typing import T_State
-from nonebot import on_shell_command
+from nonebot import logger, on_shell_command
 from nonebot.adapters import Event, MessageSegment
 from nonebot.params import Depends, ShellCommandArgv
 from nonebot.adapters.github import ActionFailed, ActionTimeout

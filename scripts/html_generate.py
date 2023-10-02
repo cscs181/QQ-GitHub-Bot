@@ -5,8 +5,7 @@ from pathlib import Path
 from typing import Optional
 from argparse import ArgumentParser
 
-from nonebot.log import logger
-from nonebot import get_adapter
+from nonebot import logger, get_adapter
 from nonebot.adapters.github import Adapter
 
 logger.remove()

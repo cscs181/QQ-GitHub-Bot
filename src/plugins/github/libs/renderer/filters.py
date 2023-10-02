@@ -11,7 +11,7 @@ __author__ = "yanyongyu"
 from datetime import datetime, timezone
 
 import humanize
-from nonebot.log import logger
+from nonebot import logger
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
 from mdit_py_emoji import emoji_plugin

@@ -10,12 +10,11 @@ __author__ = "yanyongyu"
 
 from typing import Callable, AsyncContextManager
 
-from nonebot import on_regex
-from nonebot.log import logger
 from githubkit.rest import Issue
 from nonebot.rule import is_type
 from nonebot.adapters import Event
 from nonebot.matcher import Matcher
+from nonebot import logger, on_regex
 from nonebot.plugin import PluginMetadata
 from nonebot.params import Depends, RegexDict
 from playwright.async_api import Error, TimeoutError

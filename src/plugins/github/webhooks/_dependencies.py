@@ -11,7 +11,7 @@ __author__ = "yanyongyu"
 from datetime import timedelta
 from typing import Generic, TypeVar
 
-from nonebot.log import logger
+from nonebot import logger
 from nonebot.adapters import Bot
 from nonebot.matcher import Matcher
 from nonebot.adapters.github import Event

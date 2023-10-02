@@ -8,7 +8,7 @@
 """
 __author__ = "yanyongyu"
 
-from nonebot.log import logger
+from nonebot import logger
 from nonebot.params import Depends
 from nonebot.matcher import Matcher
 from nonebot.adapters.github import ActionFailed, ActionTimeout

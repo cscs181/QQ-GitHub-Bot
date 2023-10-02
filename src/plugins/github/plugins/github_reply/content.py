@@ -10,12 +10,11 @@ __author__ = "yanyongyu"
 
 from typing import Callable, AsyncContextManager
 
-from nonebot import on_command
-from nonebot.log import logger
 from githubkit.rest import Issue
 from nonebot.adapters import Event
 from nonebot.params import Depends
 from nonebot.typing import T_State
+from nonebot import logger, on_command
 from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.github import GitHubBot, ActionTimeout
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS

@@ -10,7 +10,7 @@ __author__ = "yanyongyu"
 
 from typing import Callable, AsyncContextManager
 
-from nonebot.log import logger
+from nonebot import logger
 from githubkit.rest import Issue
 from nonebot.params import Depends
 from nonebot.typing import T_State

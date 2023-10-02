@@ -11,8 +11,7 @@ __author__ = "yanyongyu"
 import asyncio
 from typing import cast
 
-from nonebot import on_type
-from nonebot.log import logger
+from nonebot import logger, on_type
 from nonebot.plugin import PluginMetadata
 from githubkit.webhooks import InstallationLite
 from playwright.async_api import Error, TimeoutError

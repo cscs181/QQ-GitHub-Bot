@@ -8,7 +8,7 @@
 """
 __author__ = "yanyongyu"
 
-from nonebot.log import logger
+from nonebot import logger
 from nonebot.matcher import Matcher
 from nonebot.params import Depends, RegexDict
 from githubkit.rest import Commit, Release, FullRepository

@@ -11,8 +11,7 @@ __author__ = "yanyongyu"
 import asyncio
 import secrets
 
-from nonebot import on_type
-from nonebot.log import logger
+from nonebot import logger, on_type
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import ReleasePublished
 

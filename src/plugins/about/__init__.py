@@ -10,9 +10,8 @@ __author__ = "yanyongyu"
 
 import secrets
 
-from nonebot import on_command
-from nonebot.log import logger
 from nonebot.adapters import Event
+from nonebot import logger, on_command
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 
 from src.plugins.github.libs.message_tag import RepoTag, create_message_tag

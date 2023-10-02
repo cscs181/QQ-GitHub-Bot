@@ -1659,6 +1659,7 @@ files = [
 
 [package.dependencies]
 certifi = "*"
+loguru = {version = ">=0.5", optional = true, markers = "extra == \"loguru\""}
 urllib3 = {version = ">=1.26.11", markers = "python_version >= \"3.6\""}
 
 [package.extras]
@@ -2154,4 +2155,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6f6333c7cbe914bba529b7f5361069e5f1ca3e997e837d329e1b0b75bea704b3"
+content-hash = "54e3bb9e0440e29c35dcc3230fd2aaf2c97f859a97ae6fc0ff0bdc33e01d2a5b"

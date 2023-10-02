@@ -10,9 +10,8 @@ __author__ = "yanyongyu"
 
 import secrets
 
-from nonebot import on_regex
-from nonebot.log import logger
 from nonebot.adapters import Event
+from nonebot import logger, on_regex
 from nonebot.plugin import PluginMetadata
 from nonebot.params import Depends, RegexDict
 from githubkit.rest import Commit, Release, FullRepository

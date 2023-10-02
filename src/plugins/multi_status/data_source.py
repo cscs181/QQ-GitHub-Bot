@@ -14,8 +14,7 @@ import asyncio
 import contextlib
 from uuid import UUID, uuid4
 
-from nonebot import get_driver
-from nonebot.log import logger
+from nonebot import logger, get_driver
 
 from src.providers.redis import redis_client
 from src.plugins.nonebot_plugin_status import render_template

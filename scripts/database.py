@@ -5,7 +5,7 @@ from functools import partial
 from argparse import ArgumentParser
 
 from aerich import Command
-from nonebot.log import logger
+from nonebot import logger
 
 logger.remove()
 root = Path(__file__).parent.parent

@@ -10,7 +10,7 @@ __author__ = "yanyongyu"
 
 from typing import Any
 
-from nonebot.log import logger
+from nonebot import logger
 from tortoise.expressions import Q
 from tortoise.transactions import in_transaction
 

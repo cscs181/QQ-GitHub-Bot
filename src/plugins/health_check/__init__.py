@@ -9,8 +9,8 @@
 __author__ = "yanyongyu"
 
 import nonebot
+from nonebot import logger
 from fastapi import FastAPI
-from nonebot.log import logger
 from fastapi.responses import JSONResponse
 from tortoise.connection import connections
 

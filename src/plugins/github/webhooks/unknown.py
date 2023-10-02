@@ -12,9 +12,8 @@ import asyncio
 from typing import NamedTuple
 from datetime import timedelta
 
-from nonebot import on_type
-from nonebot.log import logger
 from nonebot.params import Depends
+from nonebot import logger, on_type
 from nonebot.adapters.github import Event
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github.utils import get_attr_or_item

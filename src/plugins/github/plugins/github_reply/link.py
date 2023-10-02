@@ -8,10 +8,9 @@
 """
 __author__ = "yanyongyu"
 
-from nonebot import on_command
-from nonebot.log import logger
 from nonebot.adapters import Event
 from nonebot.typing import T_State
+from nonebot import logger, on_command
 
 from src.plugins.github import config
 from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform

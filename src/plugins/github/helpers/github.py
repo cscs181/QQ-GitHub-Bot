@@ -11,7 +11,7 @@ __author__ = "yanyongyu"
 from contextlib import nullcontext, asynccontextmanager
 from typing import Callable, AsyncGenerator, AsyncContextManager
 
-from nonebot.log import logger
+from nonebot import logger
 from nonebot.matcher import Matcher
 from nonebot.adapters.github import OAuthBot, GitHubBot, ActionFailed, ActionTimeout
 
