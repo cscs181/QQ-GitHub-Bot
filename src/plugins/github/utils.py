@@ -69,5 +69,4 @@ def get_qq_bot() -> QQBot:
     return next(bot for bot in nonebot.get_bots().values() if isinstance(bot, QQBot))
 
 
-def get_qqguild_bot():
-    ...
+def get_qqguild_bot(): ...
