@@ -18,6 +18,8 @@
   "customizations": {
     "vscode": {
       "settings": {
+        // disable dotenv auto activate
+        "python.envFile": "",
         "python.analysis.diagnosticMode": "workspace",
         "python.analysis.typeCheckingMode": "basic",
         "[python]": {
