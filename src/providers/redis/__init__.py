@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-13 14:47:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 18:54:56
+@LastEditTime   : 2023-10-05 14:46:40
 @Description    : Redis provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -26,13 +26,14 @@ CACHE_KEY_FORMAT = "cache:{signature}"
 
 redis_config = Config.parse_obj(get_driver().config)
 
-redis_client: "redis.Redis[bytes]" = redis.Redis(
+redis_client = redis.Redis(
     host=redis_config.redis_host,
     port=redis_config.redis_port,
     db=redis_config.redis_db,
     username=redis_config.redis_username,
     password=redis_config.redis_password,
     encoding="utf-8",
+    decode_responses=False,
 )
 """Redis client"""
 

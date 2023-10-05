@@ -2,43 +2,40 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:30:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-10-05 07:04:36
+@LastEditTime   : 2023-10-05 15:28:06
 @Description    : OAuth lib
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-import json
 import urllib.parse
 
 from src.plugins.github import config
-from src.plugins.github.models import User
+from src.providers.platform import User
 from src.plugins.github.utils import get_github
+from src.plugins.github.models import User as UserModel
 from src.plugins.github.cache import get_state, create_state, delete_state
 
-from .platform import UserInfo, create_or_update_user
+from .platform import create_or_update_user
 
 
-async def create_auth_link(info: UserInfo) -> str:
+async def create_auth_link(info: User) -> str:
     """Create oauth link"""
     query = {
         "client_id": config.github_app.client_id,
-        "state": await create_state(json.dumps(info)),
+        "state": await create_state(info),
     }
     return f"https://github.com/login/oauth/authorize?{urllib.parse.urlencode(query)}"
 
 
-async def get_state_data(state_id: str) -> UserInfo | None:
+async def consume_state(state_id: str) -> User | None:
     """Get oauth state data"""
-    return json.loads(data) if (data := await get_state(state_id)) is not None else None
+    if user := await get_state(state_id):
+        await delete_state(state_id)
+        return user
 
 
-async def delete_state_data(state_id: str) -> None:
-    """Delete oauth state data"""
-    return await delete_state(state_id)
-
-
-async def create_auth_user(info: UserInfo, access_token: str) -> User:
+async def create_auth_user(info: User, access_token: str) -> UserModel:
     """Create oauth user model"""
     return await create_or_update_user(info, access_token=access_token)
 

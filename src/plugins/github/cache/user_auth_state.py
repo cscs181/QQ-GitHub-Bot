@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 11:06:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 21:03:15
+@LastEditTime   : 2023-10-05 15:20:24
 @Description    : OAuth state cache
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,12 +12,13 @@ from uuid import uuid4
 from datetime import timedelta
 
 from src.providers.redis import redis_client
+from src.providers.platform import User, BaseUser
 
 STATE_CACHE_KEY = "cache:github:auth:state:{state_id}"
 STATE_CACHE_EXPIRE = timedelta(minutes=10)
 
 
-async def create_state(data: str) -> str:
+async def create_state(user: User) -> str:
     """Create state cache
 
     Args:
@@ -29,13 +30,13 @@ async def create_state(data: str) -> str:
     state_id = uuid4().hex
     await redis_client.set(
         STATE_CACHE_KEY.format(state_id=state_id),
-        data.encode("UTF-8"),
+        user.json(),
         ex=STATE_CACHE_EXPIRE,
     )
     return state_id
 
 
-async def get_state(state_id: str) -> str | None:
+async def get_state(state_id: str) -> User | None:
     """Get state cache
 
     Args:
@@ -44,8 +45,8 @@ async def get_state(state_id: str) -> str | None:
     Returns:
         Existing state data
     """
-    data = await redis_client.get(STATE_CACHE_KEY.format(state_id=state_id))
-    return data if data is None else data.decode("UTF-8")
+    if data := await redis_client.get(STATE_CACHE_KEY.format(state_id=state_id)):
+        return BaseUser.from_json(data)
 
 
 async def delete_state(state_id: str) -> None:
