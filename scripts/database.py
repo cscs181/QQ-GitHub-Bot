@@ -12,6 +12,7 @@ root = Path(__file__).parent.parent
 
 sys.path.append(str(root))
 
+import bot  # noqa: F401
 from src.providers.tortoise import tortoise_config
 
 cmd = Command(tortoise_config, app="bot", location=str(root / "migrations"))
