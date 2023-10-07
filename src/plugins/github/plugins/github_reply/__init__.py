@@ -13,7 +13,7 @@ from nonebot.typing import T_State
 from nonebot.plugin import PluginMetadata
 from nonebot.message import event_preprocessor
 
-from src.plugins.github.libs.message_tag import MessageInfo, get_message_tag
+from src.plugins.github.cache.message_tag import MessageInfo, get_message_tag
 
 KEY_GITHUB_REPLY = "github:reply"
 

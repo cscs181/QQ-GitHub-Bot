@@ -19,7 +19,7 @@ from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github.utils import get_attr_or_item
 
 from src.plugins.github import config
-from src.plugins.github.libs.message_tag import RepoTag
+from src.plugins.github.cache.message_tag import RepoTag
 from src.plugins.github.libs.platform import get_user_bot, get_group_bot
 
 from ._dependencies import (

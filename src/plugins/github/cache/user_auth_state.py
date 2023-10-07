@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 11:06:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-05 15:20:24
+@LastEditTime   : 2023-10-06 16:02:47
 @Description    : OAuth state cache
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,14 +11,16 @@ __author__ = "yanyongyu"
 from uuid import uuid4
 from datetime import timedelta
 
+from pydantic import parse_raw_as
+
+from src.providers.platform import UserInfo
 from src.providers.redis import redis_client
-from src.providers.platform import User, BaseUser
 
 STATE_CACHE_KEY = "cache:github:auth:state:{state_id}"
 STATE_CACHE_EXPIRE = timedelta(minutes=10)
 
 
-async def create_state(user: User) -> str:
+async def create_state(user: UserInfo) -> str:
     """Create state cache
 
     Args:
@@ -36,7 +38,7 @@ async def create_state(user: User) -> str:
     return state_id
 
 
-async def get_state(state_id: str) -> User | None:
+async def get_state(state_id: str) -> UserInfo | None:
     """Get state cache
 
     Args:
@@ -46,7 +48,7 @@ async def get_state(state_id: str) -> User | None:
         Existing state data
     """
     if data := await redis_client.get(STATE_CACHE_KEY.format(state_id=state_id)):
-        return BaseUser.from_json(data)
+        return parse_raw_as(UserInfo, data)
 
 
 async def delete_state(state_id: str) -> None:

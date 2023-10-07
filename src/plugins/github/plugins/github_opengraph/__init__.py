@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:51:32
+@LastEditTime   : 2023-10-07 17:34:02
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -10,15 +10,26 @@ __author__ = "yanyongyu"
 
 import secrets
 
-from nonebot.adapters import Event
-from nonebot import logger, on_regex
+from nonebot import on_regex
+from nonebot.typing import T_State
 from nonebot.plugin import PluginMetadata
-from nonebot.params import Depends, RegexDict
-from githubkit.rest import Commit, Release, FullRepository
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
+from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
 from src.plugins.github import config
-from src.plugins.github.libs.message_tag import RepoTag, CommitTag, create_message_tag
+from src.plugins.github.cache.message_tag import RepoTag, CommitTag, create_message_tag
+from src.plugins.github.dependencies import (
+    COMMIT,
+    RELEASE,
+    REPOSITORY,
+    STORE_REGEX_VARS,
+)
+from src.providers.platform import (
+    TARGET_INFO,
+    MESSAGE_INFO,
+    TargetType,
+    extract_sent_message,
+)
 from src.plugins.github.helpers import (
     FULLREPO_REGEX,
     NO_GITHUB_EVENT,
@@ -26,11 +37,7 @@ from src.plugins.github.helpers import (
     GITHUB_COMMIT_LINK_REGEX,
     GITHUB_RELEASE_LINK_REGEX,
     GITHUB_PR_COMMIT_LINK_REGEX,
-    get_platform,
-    get_message_info,
 )
-
-from .dependencies import check_repo, check_commit, check_release
 
 __plugin_meta__ = PluginMetadata(
     "GitHub OpenGraph 查看",
@@ -53,30 +60,34 @@ repo_link_graph = on_regex(
 )
 
 
-@repo_graph.handle()
-@repo_link_graph.handle()
-async def handle(event: Event, repo: FullRepository = Depends(check_repo)):
-    if info := get_message_info(event):
-        await create_message_tag(
-            info, RepoTag(owner=repo.owner.login, repo=repo.name, is_receive=True)
-        )
+@repo_graph.handle(parameterless=(STORE_REGEX_VARS,))
+@repo_link_graph.handle(parameterless=(STORE_REGEX_VARS,))
+async def handle(
+    target_info: TARGET_INFO, message_info: MESSAGE_INFO, repo: REPOSITORY
+):
+    await create_message_tag(
+        message_info,
+        RepoTag(owner=repo.owner.login, repo=repo.name, is_receive=True),
+    )
+
+    image_url = (
+        f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/"
+        f"{repo.owner.login}/{repo.name}"
+    )
+    match target_info.type:
+        case TargetType.QQ_USER | TargetType.QQ_GROUP:
+            result = await repo_graph.send(QQMS.image(image_url))
+        case (
+            TargetType.QQ_OFFICIAL_USER
+            | TargetType.QQGUILD_USER
+            | TargetType.QQ_OFFICIAL_GROUP
+            | TargetType.QQGUILD_CHANNEL
+        ):
+            result = await repo_graph.send(QQOfficialMS.image(image_url))
 
     tag = RepoTag(owner=repo.owner.login, repo=repo.name, is_receive=False)
-    match get_platform(event):
-        case "qq":
-            result = await repo_graph.send(
-                QQMS.image(
-                    f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/"
-                    f"{repo.owner.login}/{repo.name}"
-                )
-            )
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]},
-                    tag,
-                )
-        case _:
-            logger.error(f"Unprocessed event type: {type(event)}")
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)
 
 
 commit_graph = on_regex(
@@ -91,41 +102,45 @@ pr_commit_graph = on_regex(
 )
 
 
-@commit_graph.handle()
-@pr_commit_graph.handle()
+@commit_graph.handle(parameterless=(STORE_REGEX_VARS,))
+@pr_commit_graph.handle(parameterless=(STORE_REGEX_VARS,))
 async def handle_commit(
-    event: Event,
-    commit: Commit = Depends(check_commit),
-    group: dict[str, str] = RegexDict(),
+    state: T_State,
+    target_info: TARGET_INFO,
+    message_info: MESSAGE_INFO,
+    commit: COMMIT,
 ):
-    if info := get_message_info(event):
-        await create_message_tag(
-            info,
-            CommitTag(
-                owner=group["owner"],
-                repo=group["repo"],
-                commit=commit.sha,
-                is_receive=True,
-            ),
-        )
+    owner = state["owner"]
+    repo = state["repo"]
 
-    tag = CommitTag(
-        owner=group["owner"], repo=group["repo"], commit=commit.sha, is_receive=False
+    await create_message_tag(
+        message_info,
+        CommitTag(
+            owner=owner,
+            repo=repo,
+            commit=commit.sha,
+            is_receive=True,
+        ),
     )
-    match get_platform(event):
-        case "qq":
-            result = await commit_graph.send(
-                QQMS.image(
-                    f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/"
-                    f"{group['owner']}/{group['repo']}/commit/{commit.sha}"
-                )
-            )
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
-        case _:
-            logger.error(f"Unprocessed event type: {type(event)}")
+
+    image_url = (
+        f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/"
+        f"{owner}/{repo}/commit/{commit.sha}"
+    )
+    match target_info.type:
+        case TargetType.QQ_USER | TargetType.QQ_GROUP:
+            result = await commit_graph.send(QQMS.image(image_url))
+        case (
+            TargetType.QQ_OFFICIAL_USER
+            | TargetType.QQGUILD_USER
+            | TargetType.QQ_OFFICIAL_GROUP
+            | TargetType.QQGUILD_CHANNEL
+        ):
+            result = await commit_graph.send(QQOfficialMS.image(image_url))
+
+    tag = CommitTag(owner=owner, repo=repo, commit=commit.sha, is_receive=False)
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)
 
 
 release_graph = on_regex(
@@ -137,32 +152,38 @@ release_graph = on_regex(
 
 @release_graph.handle()
 async def handle_release(
-    event: Event,
-    release: Release = Depends(check_release),
-    group: dict[str, str] = RegexDict(),
+    state: T_State,
+    target_info: TARGET_INFO,
+    message_info: MESSAGE_INFO,
+    release: RELEASE,
 ):
-    if info := get_message_info(event):
-        await create_message_tag(
-            info,
-            RepoTag(
-                owner=group["owner"],
-                repo=group["repo"],
-                is_receive=True,
-            ),
-        )
+    owner = state["owner"]
+    repo = state["repo"]
 
-    tag = RepoTag(owner=group["owner"], repo=group["repo"], is_receive=False)
-    match get_platform(event):
-        case "qq":
-            result = await commit_graph.send(
-                QQMS.image(
-                    f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/"
-                    f"{group['owner']}/{group['repo']}/releases/tag/{release.tag_name}"
-                )
-            )
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
-        case _:
-            logger.error(f"Unprocessed event type: {type(event)}")
+    await create_message_tag(
+        message_info,
+        RepoTag(
+            owner=owner,
+            repo=repo,
+            is_receive=True,
+        ),
+    )
+
+    image_url = (
+        f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/"
+        f"{owner}/{repo}/releases/tag/{release.tag_name}"
+    )
+    match target_info.type:
+        case TargetType.QQ_USER | TargetType.QQ_GROUP:
+            result = await commit_graph.send(QQMS.image(image_url))
+        case (
+            TargetType.QQ_OFFICIAL_USER
+            | TargetType.QQGUILD_USER
+            | TargetType.QQ_OFFICIAL_GROUP
+            | TargetType.QQGUILD_CHANNEL
+        ):
+            result = await commit_graph.send(QQOfficialMS.image(image_url))
+
+    tag = RepoTag(owner=owner, repo=repo, is_receive=False)
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)

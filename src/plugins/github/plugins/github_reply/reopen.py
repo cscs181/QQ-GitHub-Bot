@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 04:23:29
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:55:52
+@LastEditTime   : 2023-10-05 20:16:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,8 +17,9 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
-from src.plugins.github.libs.message_tag import (
+from src.plugins.github.helpers import NO_GITHUB_EVENT
+from src.providers.platform import PLATFORM, MESSAGE_INFO, extract_sent_message
+from src.plugins.github.cache.message_tag import (
     Tag,
     IssueTag,
     PullRequestTag,
@@ -40,6 +41,8 @@ reopen = on_command(
 async def handle_reopen(
     event: Event,
     state: T_State,
+    platform: PLATFORM,
+    message_info: MESSAGE_INFO,
     user: User = Depends(get_user),
 ):
     bot = get_github_bot()
@@ -47,6 +50,12 @@ async def handle_reopen(
 
     if not isinstance(tag, (IssueTag, PullRequestTag)):
         await reopen.finish()
+
+    if message_info:
+        await create_message_tag(
+            message_info,
+            tag.copy(update={"is_receive": True}),
+        )
 
     try:
         async with bot.as_user(user.access_token):
@@ -78,21 +87,13 @@ async def handle_reopen(
         logger.opt(exception=e).error(f"Failed while reopen pr: {e}")
         await reopen.finish("未知错误发生，请尝试重试或联系管理员")
 
-    tag = (
-        PullRequestTag(
-            owner=tag.owner, repo=tag.repo, number=tag.number, is_receive=False
-        )
-        if isinstance(tag, PullRequestTag)
-        else IssueTag(
-            owner=tag.owner, repo=tag.repo, number=tag.number, is_receive=False
-        )
-    )
-    match get_platform(event):
+    match platform:
         case "qq":
             result = await reopen.send(message)
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
         case _:
             logger.error(f"Unprocessed event type: {type(event)}")
+            return
+
+    tag = tag.copy(update={"is_receive": False})
+    if sent_message_info := extract_sent_message(platform, result):
+        await create_message_tag(sent_message_info, tag)

@@ -10,8 +10,8 @@ from nonebot.adapters.github import IssuesClosed, ActionTimeout, PullRequestClos
 from src.plugins.github import config
 from src.plugins.github.libs.renderer import issue_closed_to_image
 from src.plugins.github.utils import get_github_bot, set_context_bot
-from src.plugins.github.libs.message_tag import IssueTag, PullRequestTag
 from src.plugins.github.libs.platform import get_user_bot, get_group_bot
+from src.plugins.github.cache.message_tag import IssueTag, PullRequestTag
 
 from ._dependencies import (
     SEND_INTERVAL,

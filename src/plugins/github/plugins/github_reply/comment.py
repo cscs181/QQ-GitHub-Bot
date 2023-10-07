@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-03-04 17:55:56
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 00:08:52
+@LastEditTime   : 2023-10-05 20:01:47
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,8 +17,9 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
-from src.plugins.github.libs.message_tag import (
+from src.plugins.github.helpers import NO_GITHUB_EVENT
+from src.providers.platform import PLATFORM, MESSAGE_INFO, extract_sent_message
+from src.plugins.github.cache.message_tag import (
     Tag,
     IssueTag,
     PullRequestTag,
@@ -41,6 +42,8 @@ comment = on_command(
 async def handle_comment(
     event: Event,
     state: T_State,
+    platform: PLATFORM,
+    message_info: MESSAGE_INFO,
     content: Message = CommandArg(),
     user: User = Depends(get_user),
 ):
@@ -49,6 +52,12 @@ async def handle_comment(
 
     if not isinstance(tag, (IssueTag, PullRequestTag)):
         await comment.finish()
+
+    if message_info:
+        await create_message_tag(
+            message_info,
+            tag.copy(update={"is_receive": True}),
+        )
 
     if not (body := content.extract_plain_text()):
         await comment.finish("评论内容不能为空")
@@ -73,21 +82,13 @@ async def handle_comment(
         await comment.finish("未知错误发生，请尝试重试或联系管理员")
 
     message = f"成功评论 {tag.owner}/{tag.repo}#{tag.number}"
-    tag = (
-        PullRequestTag(
-            owner=tag.owner, repo=tag.repo, number=tag.number, is_receive=False
-        )
-        if isinstance(tag, PullRequestTag)
-        else IssueTag(
-            owner=tag.owner, repo=tag.repo, number=tag.number, is_receive=False
-        )
-    )
-    match get_platform(event):
+    match platform:
         case "qq":
             result = await comment.send(message)
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
         case _:
             logger.error(f"Unprocessed event type: {type(event)}")
+            return
+
+    tag = tag.copy(update={"is_receive": False})
+    if sent_message_info := extract_sent_message(platform, result):
+        await create_message_tag(sent_message_info, tag)

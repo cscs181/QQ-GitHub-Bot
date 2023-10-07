@@ -2,23 +2,24 @@
 @Author         : yanyongyu
 @Date           : 2022-10-21 08:13:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:56:49
+@LastEditTime   : 2023-10-05 20:28:01
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from nonebot.typing import T_State
+from nonebot.params import CommandArg
 from nonebot import logger, on_command
 from nonebot.adapters import Event, Message
-from nonebot.params import Depends, CommandArg
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
-from src.plugins.github.models import User
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform, get_current_user
-from src.plugins.github.libs.message_tag import (
+from src.plugins.github.helpers import NO_GITHUB_EVENT
+from src.plugins.github.dependencies import AUTHORIZED_USER
+from src.providers.platform import PLATFORM, MESSAGE_INFO, extract_sent_message
+from src.plugins.github.cache.message_tag import (
     Tag,
     IssueTag,
     PullRequestTag,
@@ -37,16 +38,13 @@ unlabel = on_command(
 
 
 @unlabel.handle()
-async def handle_noauth(user: None = Depends(get_current_user)):
-    await unlabel.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
-
-
-@unlabel.handle()
-async def handle_label(
+async def handle_unlabel(
     event: Event,
     state: T_State,
+    user: AUTHORIZED_USER,
+    platform: PLATFORM,
+    message_info: MESSAGE_INFO,
     label: Message = CommandArg(),
-    user: User = Depends(get_current_user),
 ):
     bot = get_github_bot()
     tag: Tag = state[KEY_GITHUB_REPLY]
@@ -54,7 +52,14 @@ async def handle_label(
 
     if not isinstance(tag, (IssueTag, PullRequestTag)):
         await unlabel.finish()
-    elif not label_:
+
+    if message_info:
+        await create_message_tag(
+            message_info,
+            tag.copy(update={"is_receive": True}),
+        )
+
+    if not label_:
         await unlabel.finish("标签名不能为空")
 
     try:
@@ -90,12 +95,13 @@ async def handle_label(
             owner=tag.owner, repo=tag.repo, number=tag.number, is_receive=False
         )
     )
-    match get_platform(event):
+    match platform:
         case "qq":
             result = await unlabel.send(message)
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
         case _:
             logger.error(f"Unprocessed event type: {type(event)}")
+            return
+
+    tag = tag.copy(update={"is_receive": False})
+    if sent_message_info := extract_sent_message(platform, result):
+        await create_message_tag(sent_message_info, tag)

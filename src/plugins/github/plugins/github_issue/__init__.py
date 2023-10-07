@@ -2,47 +2,49 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-02 16:23:04
+@LastEditTime   : 2023-10-07 17:14:28
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import Callable, AsyncContextManager
 
-from githubkit.rest import Issue
 from nonebot.rule import is_type
-from nonebot.adapters import Event
-from nonebot.matcher import Matcher
+from nonebot.typing import T_State
 from nonebot import logger, on_regex
 from nonebot.plugin import PluginMetadata
-from nonebot.params import Depends, RegexDict
+from nonebot.adapters.github import ActionTimeout
 from playwright.async_api import Error, TimeoutError
-from nonebot.adapters.github import GitHubBot, ActionTimeout
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
+from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
 from src.plugins.github import config
-from src.plugins.github.models import User, Group
 from src.plugins.github.libs.renderer import issue_to_image, pr_diff_to_image
-from src.plugins.github.libs.message_tag import (
+from src.plugins.github.cache.message_tag import (
     IssueTag,
     PullRequestTag,
     create_message_tag,
 )
+from src.plugins.github.dependencies import (
+    ISSUE,
+    BINDED_GROUP,
+    STORE_REGEX_VARS,
+    GITHUB_PUBLIC_CONTEXT,
+)
+from src.providers.platform import (
+    TARGET_INFO,
+    GROUP_EVENTS,
+    MESSAGE_INFO,
+    TargetType,
+    extract_sent_message,
+)
 from src.plugins.github.helpers import (
-    GROUP_EVENT,
     ISSUE_REGEX,
     FULLREPO_REGEX,
     NO_GITHUB_EVENT,
     GITHUB_PR_FILE_LINK_REGEX,
     GITHUB_ISSUE_OR_PR_LINK_REGEX,
-    get_platform,
-    get_current_user,
-    get_message_info,
-    get_current_group,
 )
-
-from .dependencies import get_issue, get_context
 
 __plugin_meta__ = PluginMetadata(
     "GitHub Issue、PR 查看",
@@ -67,30 +69,30 @@ issue_link = on_regex(
 )
 
 
-@issue.handle()
+@issue.handle(parameterless=(STORE_REGEX_VARS,))
 @issue_link.handle()
 async def handle_issue(
-    event: Event,
-    group: dict[str, str] = RegexDict(),
-    issue_: Issue = Depends(get_issue),
-    context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
+    state: T_State,
+    target_info: TARGET_INFO,
+    message_info: MESSAGE_INFO,
+    issue_: ISSUE,
+    context: GITHUB_PUBLIC_CONTEXT,
 ):
-    owner = group["owner"]
-    repo = group["repo"]
-    number = int(group["issue"])
+    owner = state["owner"]
+    repo = state["repo"]
+    number = int(state["issue"])
 
-    if info := get_message_info(event):
-        await create_message_tag(
-            info,
-            (
-                PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
-                if issue_.pull_request
-                else IssueTag(owner=owner, repo=repo, number=number, is_receive=True)
-            ),
-        )
+    await create_message_tag(
+        message_info,
+        (
+            PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
+            if issue_.pull_request
+            else IssueTag(owner=owner, repo=repo, number=number, is_receive=True)
+        ),
+    )
 
     try:
-        async with context():
+        async with context:
             img = await issue_to_image(issue_)
     except ActionTimeout:
         await issue.finish("GitHub API 超时，请稍后再试")
@@ -107,15 +109,19 @@ async def handle_issue(
         if issue_.pull_request
         else IssueTag(owner=owner, repo=repo, number=number, is_receive=False)
     )
-    match get_platform(event):
-        case "qq":
+    match target_info.type:
+        case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await issue.send(QQMS.image(img))
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
-        case _:
-            logger.error(f"Unprocessed event type: {type(event)}")
+        case (
+            TargetType.QQ_OFFICIAL_USER
+            | TargetType.QQGUILD_USER
+            | TargetType.QQ_OFFICIAL_GROUP
+            | TargetType.QQGUILD_CHANNEL
+        ):
+            result = await issue.send(QQOfficialMS.file_image(img))
+
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)
 
 
 pr_diff_link = on_regex(
@@ -125,24 +131,25 @@ pr_diff_link = on_regex(
 )
 
 
-@pr_diff_link.handle()
+@pr_diff_link.handle(parameterless=(STORE_REGEX_VARS,))
 async def handle_pr_diff(
-    event: Event,
-    group: dict[str, str] = RegexDict(),
-    issue_: Issue = Depends(get_issue),
-    context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
+    state: T_State,
+    target_info: TARGET_INFO,
+    message_info: MESSAGE_INFO,
+    issue_: ISSUE,
+    context: GITHUB_PUBLIC_CONTEXT,
 ):
-    owner = group["owner"]
-    repo = group["repo"]
-    number = int(group["issue"])
+    owner = state["owner"]
+    repo = state["repo"]
+    number = int(state["issue"])
 
-    if info := get_message_info(event):
-        await create_message_tag(
-            info, PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
-        )
+    await create_message_tag(
+        message_info,
+        PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True),
+    )
 
     try:
-        async with context():
+        async with context:
             img = await pr_diff_to_image(issue_)
     except ActionTimeout:
         await pr_diff_link.finish("GitHub API 超时，请稍后再试")
@@ -155,56 +162,56 @@ async def handle_pr_diff(
         await pr_diff_link.finish("生成图片出错！请稍后再试")
 
     tag = PullRequestTag(owner=owner, repo=repo, number=number, is_receive=False)
-    match get_platform(event):
-        case "qq":
+    match target_info.type:
+        case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await pr_diff_link.send(QQMS.image(img))
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
-        case _:
-            logger.error(f"Unprocessed event type: {type(event)}")
+        case (
+            TargetType.QQ_OFFICIAL_USER
+            | TargetType.QQGUILD_USER
+            | TargetType.QQ_OFFICIAL_GROUP
+            | TargetType.QQGUILD_CHANNEL
+        ):
+            result = await pr_diff_link.send(QQOfficialMS.file_image(img))
+
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)
 
 
 issue_short = on_regex(
     rf"^#{ISSUE_REGEX}$",
-    rule=is_type(*GROUP_EVENT) & NO_GITHUB_EVENT,
+    rule=is_type(*GROUP_EVENTS) & NO_GITHUB_EVENT,
     priority=config.github_command_priority,
 )
 
 
-@issue_short.handle()
-async def handle_no_bind(group: None = Depends(get_current_group)):
-    await issue_short.finish("此群未绑定 GitHub 仓库！")
+@issue_short.handle(parameterless=(STORE_REGEX_VARS,))
+async def check_bind(state: T_State, group: BINDED_GROUP):
+    state["owner"], state["repo"] = group.bind_repo.split("/", maxsplit=1)
 
 
 @issue_short.handle()
 async def handle_short(
-    event: Event,
-    matcher: Matcher,
-    user: User | None = Depends(get_current_user),
-    group: Group = Depends(get_current_group),
-    regex_group: dict[str, str] = RegexDict(),
+    state: T_State,
+    target_info: TARGET_INFO,
+    message_info: MESSAGE_INFO,
+    issue_: ISSUE,
+    context: GITHUB_PUBLIC_CONTEXT,
 ):
-    number = int(regex_group["issue"])
-    owner, repo = group.bind_repo.split("/", maxsplit=1)
-    info = {"owner": owner, "repo": repo, "issue": number}
+    owner = state["owner"]
+    repo = state["repo"]
+    number = int(state["issue"])
 
-    context = await get_context(matcher, info, user)
-    issue_ = await get_issue(matcher, info, context)
-
-    if info := get_message_info(event):
-        await create_message_tag(
-            info,
-            (
-                PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
-                if issue_.pull_request
-                else IssueTag(owner=owner, repo=repo, number=number, is_receive=True)
-            ),
-        )
+    await create_message_tag(
+        message_info,
+        (
+            PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
+            if issue_.pull_request
+            else IssueTag(owner=owner, repo=repo, number=number, is_receive=True)
+        ),
+    )
 
     try:
-        async with context():
+        async with context:
             img = await issue_to_image(issue_)
     except TimeoutError:
         await issue_short.finish("生成图片超时！请尝试重试")
@@ -219,12 +226,16 @@ async def handle_short(
         if issue_.pull_request
         else IssueTag(owner=owner, repo=repo, number=number, is_receive=False)
     )
-    match get_platform(event):
-        case "qq":
+    match target_info.type:
+        case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await issue_short.send(QQMS.image(img))
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
-        case _:
-            logger.error(f"Unprocessed event type: {type(event)}")
+        case (
+            TargetType.QQ_OFFICIAL_USER
+            | TargetType.QQGUILD_USER
+            | TargetType.QQ_OFFICIAL_GROUP
+            | TargetType.QQGUILD_CHANNEL
+        ):
+            result = await issue_short.send(QQOfficialMS.file_image(img))
+
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)

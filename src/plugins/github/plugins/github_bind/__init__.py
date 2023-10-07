@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:49:55
+@LastEditTime   : 2023-10-06 17:53:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,23 +12,21 @@ import re
 
 from nonebot.rule import is_type
 from nonebot.matcher import Matcher
+from nonebot.adapters import Message
 from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
-from nonebot.adapters import Event, Message
 from nonebot.params import Depends, CommandArg, ArgPlainText
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.models import Group
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.libs.platform import create_or_update_group
+from src.providers.platform import GROUP_INFO, GROUP_EVENTS
+from src.plugins.github.dependencies import GROUP, BINDED_GROUP
 from src.plugins.github.helpers import (
-    GROUP_EVENT,
     FULLREPO_REGEX,
     GROUP_SUPERPERM,
     NO_GITHUB_EVENT,
-    get_group_info,
-    get_current_group,
     allow_cancellation,
 )
 
@@ -43,7 +41,7 @@ __plugin_meta__ = PluginMetadata(
 
 bind = on_command(
     "bind",
-    is_type(*GROUP_EVENT) & NO_GITHUB_EVENT,
+    is_type(*GROUP_EVENTS) & NO_GITHUB_EVENT,
     permission=GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,
@@ -57,8 +55,9 @@ async def process_arg(matcher: Matcher, arg: Message = CommandArg()):
 
 
 @bind.handle(parameterless=(Depends(bypass_update),))
-async def check_group_exists(group: Group = Depends(get_current_group)):
-    await bind.finish(f"当前已绑定仓库：{group.bind_repo}")
+async def check_group_exists(group: GROUP):
+    if group and group.bind_repo is not None:
+        await bind.finish(f"当前已绑定仓库：{group.bind_repo}")
 
 
 @bind.got(
@@ -66,7 +65,7 @@ async def check_group_exists(group: Group = Depends(get_current_group)):
     prompt="绑定仓库的全名？(e.g. owner/repo)",
     parameterless=(allow_cancellation("已取消"),),
 )
-async def process_repo(event: Event, full_name: str = ArgPlainText()):
+async def process_repo(group_info: GROUP_INFO, full_name: str = ArgPlainText()):
     if not (matched := re.match(f"^{FULLREPO_REGEX}$", full_name)):
         await bind.reject(f"仓库名 {full_name} 不合法！请重新发送或取消")
 
@@ -90,18 +89,18 @@ async def process_repo(event: Event, full_name: str = ArgPlainText()):
         )
         await bind.finish("未知错误发生，请尝试重试或联系管理员")
 
-    if info := get_group_info(event):
-        await create_or_update_group(info, bind_repo=f"{owner}/{repo}")
-    else:
-        logger.error(f"Unprocessed event type: {type(event)}")
-        await bind.finish("内部错误，请联系管理员")
+    try:
+        await Group.create_or_update_by_info(group_info, bind_repo=f"{owner}/{repo}")
+    except Exception as e:
+        logger.opt(exception=e).error(f"Failed while binding group: {e}")
+        await bind.finish("未知错误发生，请尝试重试或联系管理员")
 
     await bind.finish(f"本群成功绑定仓库 {owner}/{repo} ！")
 
 
 unbind = on_command(
     "unbind",
-    is_type(*GROUP_EVENT) & NO_GITHUB_EVENT,
+    is_type(*GROUP_EVENTS) & NO_GITHUB_EVENT,
     permission=GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,
@@ -109,13 +108,11 @@ unbind = on_command(
 
 
 @unbind.handle()
-async def process_unbind(group: Group | None = Depends(get_current_group)):
-    if group:
-        try:
-            await group.delete()
-        except Exception as e:
-            logger.opt(exception=e).error(f"Failed while deleting group: {e}")
-            await unbind.finish("未知错误发生，请尝试重试或联系管理员")
-        await unbind.finish("成功解绑仓库！")
-    else:
-        await unbind.finish("尚未绑定仓库！")
+async def process_unbind(group: BINDED_GROUP):
+    try:
+        await group.unbind()
+    except Exception as e:
+        logger.opt(exception=e).error(f"Failed while unbind group: {e}")
+        await unbind.finish("未知错误发生，请尝试重试或联系管理员")
+
+    await unbind.finish("成功解绑仓库！")

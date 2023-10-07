@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-21 07:56:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:55:01
+@LastEditTime   : 2023-10-05 20:12:20
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,8 +17,9 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
-from src.plugins.github.libs.message_tag import (
+from src.plugins.github.helpers import NO_GITHUB_EVENT
+from src.providers.platform import PLATFORM, MESSAGE_INFO, extract_sent_message
+from src.plugins.github.cache.message_tag import (
     Tag,
     IssueTag,
     PullRequestTag,
@@ -40,6 +41,8 @@ label = on_shell_command(
 async def handle_label(
     event: Event,
     state: T_State,
+    platform: PLATFORM,
+    message_info: MESSAGE_INFO,
     labels: list[str | MessageSegment] = ShellCommandArgv(),
     user: User = Depends(get_user),
 ):
@@ -49,7 +52,14 @@ async def handle_label(
 
     if not isinstance(tag, (IssueTag, PullRequestTag)):
         await label.finish()
-    elif not labels_:
+
+    if message_info:
+        await create_message_tag(
+            message_info,
+            tag.copy(update={"is_receive": True}),
+        )
+
+    if not labels_:
         await label.finish("标签列表不能为空")
 
     try:
@@ -74,21 +84,13 @@ async def handle_label(
     message = (
         f"成功为 {tag.owner}/{tag.repo}#{tag.number} 添加了标签 {', '.join(labels_)}"
     )
-    tag = (
-        PullRequestTag(
-            owner=tag.owner, repo=tag.repo, number=tag.number, is_receive=False
-        )
-        if isinstance(tag, PullRequestTag)
-        else IssueTag(
-            owner=tag.owner, repo=tag.repo, number=tag.number, is_receive=False
-        )
-    )
-    match get_platform(event):
+    match platform:
         case "qq":
             result = await label.send(message)
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
         case _:
             logger.error(f"Unprocessed event type: {type(event)}")
+            return
+
+    tag = tag.copy(update={"is_receive": False})
+    if sent_message_info := extract_sent_message(platform, result):
+        await create_message_tag(sent_message_info, tag)

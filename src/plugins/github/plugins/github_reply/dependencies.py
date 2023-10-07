@@ -20,7 +20,7 @@ from nonebot.adapters.github import OAuthBot, GitHubBot, ActionFailed, ActionTim
 
 from src.plugins.github.models import User
 from src.plugins.github.helpers import get_current_user, get_github_context
-from src.plugins.github.libs.message_tag import (
+from src.plugins.github.cache.message_tag import (
     Tag,
     IssueTag,
     MessageInfo,

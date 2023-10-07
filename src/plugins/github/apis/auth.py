@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 20:18:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-05 15:39:07
+@LastEditTime   : 2023-10-06 16:11:40
 @Description    : OAuth API for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,7 +13,6 @@ from nonebot import logger
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-from src.plugins.github.models import User
 from src.plugins.github.libs.auth import (
     consume_state,
     create_auth_user,
@@ -48,7 +47,7 @@ async def auth(code: str, state: str | None = None):
         )
 
     try:
-        user: User = await create_auth_user(user_info, access_token=token)
+        user = await create_auth_user(user_info, access_token=token)
     except Exception as e:
         logger.opt(exception=e).error(
             "Failed to update access_token for user!", user=user_info.dict()
@@ -59,6 +58,6 @@ async def auth(code: str, state: str | None = None):
 
     return await template.render_async(
         title="Install Complete!",
-        text=f"Successfully bind user {user.user_id}",
+        text=f"Successfully bind user {user.to_user_info().user_id}",
         icon="success",
     )

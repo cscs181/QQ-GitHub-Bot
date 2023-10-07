@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-13 15:56:01
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-05 14:53:40
+@LastEditTime   : 2023-10-06 16:01:09
 @Description    : Message tag cache
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,10 +13,10 @@ from typing import Literal, Annotated
 
 from pydantic import Field, BaseModel, parse_raw_as
 
-from src.providers.platform import Message
 from src.providers.redis import redis_client
+from src.providers.platform import MessageInfo
 
-MESSAGE_TAG_CACHE_KEY = "cache:github:message:{platform}:{message_id}:tag"
+MESSAGE_TAG_CACHE_KEY = "cache:github:message:{type}:{message_id}:tag"
 MESSAGE_TAG_CACHE_EXPIRE = timedelta(days=1)
 
 
@@ -56,7 +56,7 @@ Tag = Annotated[
 """Tag types"""
 
 
-async def create_message_tag(message: Message, tag: Tag) -> None:
+async def create_message_tag(message: MessageInfo, tag: Tag) -> None:
     """Create message tag cache
 
     Args:
@@ -66,14 +66,14 @@ async def create_message_tag(message: Message, tag: Tag) -> None:
 
     await redis_client.set(
         MESSAGE_TAG_CACHE_KEY.format(
-            platform=message.platform, message_id=str(message.id)
+            type=message.type.value, message_id=str(message.id)
         ),
         tag.json(),
         ex=MESSAGE_TAG_CACHE_EXPIRE,
     )
 
 
-async def get_message_tag(message: Message) -> Tag | None:
+async def get_message_tag(message: MessageInfo) -> Tag | None:
     """Get message tag cache
 
     Args:
@@ -87,7 +87,7 @@ async def get_message_tag(message: Message) -> Tag | None:
     if (
         data := await redis_client.get(
             MESSAGE_TAG_CACHE_KEY.format(
-                platform=message.platform, message_id=str(message.id)
+                type=message.type.value, message_id=str(message.id)
             )
         )
     ) is not None:

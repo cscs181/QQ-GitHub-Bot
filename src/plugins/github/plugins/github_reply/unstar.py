@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-18 03:18:14
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:57:03
+@LastEditTime   : 2023-10-05 20:30:28
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,8 +17,9 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 from src.plugins.github import config
 from src.plugins.github.models import User
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
-from src.plugins.github.libs.message_tag import Tag, RepoTag, create_message_tag
+from src.plugins.github.helpers import NO_GITHUB_EVENT
+from src.providers.platform import PLATFORM, MESSAGE_INFO, extract_sent_message
+from src.plugins.github.cache.message_tag import Tag, RepoTag, create_message_tag
 
 from . import KEY_GITHUB_REPLY
 from .dependencies import get_user, is_github_reply
@@ -32,9 +33,21 @@ unstar = on_command(
 
 
 @unstar.handle()
-async def handle_link(event: Event, state: T_State, user: User = Depends(get_user)):
+async def handle_unstar(
+    event: Event,
+    state: T_State,
+    platform: PLATFORM,
+    message_info: MESSAGE_INFO,
+    user: User = Depends(get_user),
+):
     bot = get_github_bot()
     tag: Tag = state[KEY_GITHUB_REPLY]
+
+    if message_info:
+        await create_message_tag(
+            message_info,
+            tag.copy(update={"is_receive": True}),
+        )
 
     async with bot.as_user(user.access_token):
         # check starred
@@ -83,14 +96,13 @@ async def handle_link(event: Event, state: T_State, user: User = Depends(get_use
                 )
                 await unstar.finish("未知错误发生，请尝试重试或联系管理员")
 
-    result = await unstar.send(message)
-
-    tag = RepoTag(owner=tag.owner, repo=tag.repo, is_receive=False)
-    match get_platform(event):
+    match platform:
         case "qq":
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
+            result = await unstar.send(message)
         case _:
             logger.error(f"Unprocessed event type: {type(event)}")
+            return
+
+    tag = RepoTag(owner=tag.owner, repo=tag.repo, is_receive=False)
+    if sent_message_info := extract_sent_message(platform, result):
+        await create_message_tag(sent_message_info, tag)
