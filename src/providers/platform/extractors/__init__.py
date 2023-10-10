@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:19:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:19:50
+@LastEditTime   : 2023-10-08 14:01:43
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -25,6 +25,7 @@ GROUP_EVENTS = cast(tuple[type[Event], ...], tuple(e.GROUP_EVENTS for e in EXTRA
 MESSAGE_EVENTS = cast(
     tuple[type[Event], ...], tuple(e.MESSAGE_EVENTS for e in EXTRACTORS)
 )
+REPLY_EVENTS = cast(tuple[type[Event], ...], tuple(e.REPLY_EVENTS for e in EXTRACTORS))
 
 
 def extract_user(event: Event) -> UserInfo | None:
@@ -55,6 +56,12 @@ def extract_message(event: Event) -> MessageInfo | None:
     for extractor in EXTRACTORS:
         if isinstance(event, extractor.MESSAGE_EVENTS):
             return extractor.extract_message(event)
+
+
+def extract_reply_message(event: Event) -> MessageInfo | None:
+    for extractor in EXTRACTORS:
+        if isinstance(event, extractor.REPLY_EVENTS):
+            return extractor.extract_reply_message(event)
 
 
 def get_target_bot(target: TargetInfo) -> Bot | None:

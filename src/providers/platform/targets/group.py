@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:19:14
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:19:14
+@LastEditTime   : 2023-10-08 17:06:04
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,6 +19,10 @@ from ._base import BaseTargetInfo
 
 class BaseGroupInfo(BaseTargetInfo):
     """Group entity."""
+
+    type: Literal[
+        TargetType.QQ_GROUP, TargetType.QQ_OFFICIAL_GROUP, TargetType.QQGUILD_CHANNEL
+    ]
 
 
 class QQGroupInfo(BaseGroupInfo):

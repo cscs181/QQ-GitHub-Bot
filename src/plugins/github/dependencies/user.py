@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:17:06
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:17:06
+@LastEditTime   : 2023-10-08 16:17:48
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,8 +13,8 @@ from typing import TYPE_CHECKING, Annotated, TypeAlias
 from nonebot import logger
 from nonebot.params import Depends
 from nonebot.matcher import Matcher
+from githubkit.rest import PublicUser, PrivateUser
 from nonebot.adapters.github import ActionFailed, ActionTimeout
-from githubkit.rest import PublicUser, PrivateUser, Installation
 
 from src.plugins.github.models import User
 from src.providers.platform import USER_INFO
@@ -81,34 +81,3 @@ async def get_github_user(
 
 GITHUB_USER: TypeAlias = Annotated[PrivateUser | PublicUser, Depends(get_github_user)]
 """Current GitHub user from event. Finish the session if not authenticated."""
-
-
-async def get_user_installation(matcher: Matcher, user: GITHUB_USER) -> Installation:
-    """Get current GitHub user installation from event.
-
-    Finish the session if user has not installed the app or API error occurs.
-    """
-
-    bot = get_github_bot()
-
-    try:
-        resp = await bot.rest.apps.async_get_user_installation(username=user.login)
-        return resp.parsed_data
-    except ActionTimeout:
-        await matcher.finish("GitHub API 超时，请稍后再试")
-    except ActionFailed as e:
-        if e.response.status_code == 404:
-            await matcher.finish(f"{user.login} 没有安装 GitHub APP 集成")
-        logger.opt(exception=e).error(
-            f"Failed while getting installation in installation check: {e}"
-        )
-        await matcher.finish("未知错误发生，请尝试重试或联系管理员")
-    except Exception as e:
-        logger.opt(exception=e).error(
-            f"Failed while getting installation in installation check: {e}"
-        )
-        await matcher.finish("未知错误发生，请尝试重试或联系管理员")
-
-
-GITHUB_INSTALLATION: TypeAlias = Annotated[Installation, Depends(get_user_installation)]
-"""Current GitHub user installation from event. Finish the session if not installed."""

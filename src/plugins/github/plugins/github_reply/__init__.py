@@ -2,22 +2,13 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-04 18:11:08
+@LastEditTime   : 2023-10-08 14:16:02
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from nonebot.params import Depends
-from nonebot.typing import T_State
 from nonebot.plugin import PluginMetadata
-from nonebot.message import event_preprocessor
-
-from src.plugins.github.cache.message_tag import MessageInfo, get_message_tag
-
-KEY_GITHUB_REPLY = "github:reply"
-
-from .dependencies import get_reply
 
 __plugin_meta__ = PluginMetadata(
     "GitHub 消息快捷命令",
@@ -40,8 +31,16 @@ __plugin_meta__ = PluginMetadata(
 )
 
 
-@event_preprocessor
-async def check_reply(state: T_State, info: MessageInfo = Depends(get_reply)):
-    if tag := await get_message_tag(info):
-        # inject reply info into state
-        state[KEY_GITHUB_REPLY] = tag
+from . import diff as diff
+from . import link as link
+from . import repo as repo
+from . import star as star
+from . import close as close
+from . import label as label
+from . import merge as merge
+from . import reopen as reopen
+from . import unstar as unstar
+from . import approve as approve
+from . import comment as comment
+from . import content as content
+from . import unlabel as unlabel

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:20:11
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:20:20
+@LastEditTime   : 2023-10-08 14:00:40
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,7 +21,11 @@ from nonebot.adapters.onebot.v11 import (
 
 from src.providers.platform.typing import TargetType
 from src.providers.platform.targets import QQUserInfo, TargetInfo, QQGroupInfo
-from src.providers.platform.messages import QQUserMessageInfo, QQGroupMessageInfo
+from src.providers.platform.messages import (
+    MessageInfo,
+    QQUserMessageInfo,
+    QQGroupMessageInfo,
+)
 
 from ._base import Extractor
 
@@ -30,6 +34,7 @@ class OneBotExtractor(
     Extractor[
         MessageEvent,
         GroupMessageEvent,
+        MessageEvent,
         MessageEvent,
     ]
 ):
@@ -70,6 +75,18 @@ class OneBotExtractor(
             return QQUserMessageInfo(type=TargetType.QQ_USER, id=event.message_id)
         else:
             return QQGroupMessageInfo(type=TargetType.QQ_GROUP, id=event.message_id)
+
+    @classmethod
+    @override
+    def extract_reply_message(cls, event) -> MessageInfo | None:
+        if event.reply:
+            return (
+                QQGroupMessageInfo(type=TargetType.QQ_GROUP, id=event.reply.message_id)
+                if isinstance(event, GroupMessageEvent)
+                else QQUserMessageInfo(
+                    type=TargetType.QQ_USER, id=event.reply.message_id
+                )
+            )
 
     @classmethod
     @override

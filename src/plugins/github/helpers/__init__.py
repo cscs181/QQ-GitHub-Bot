@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-07 12:17:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-06 17:11:59
+@LastEditTime   : 2023-10-08 14:54:23
 @Description    : Helpers for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -30,7 +30,10 @@ from .github import GITHUB_ISSUE_OR_PR_LINK_REGEX as GITHUB_ISSUE_OR_PR_LINK_REG
 
 # isort: split
 
+from .rule import REPLY_PR as REPLY_PR
+from .rule import REPLY_ANY as REPLY_ANY
 from .rule import NO_GITHUB_EVENT as NO_GITHUB_EVENT
+from .rule import REPLY_ISSUE_OR_PR as REPLY_ISSUE_OR_PR
 
 # isort: split
 

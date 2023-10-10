@@ -2,59 +2,59 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-05 20:03:42
+@LastEditTime   : 2023-10-08 15:14:39
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from typing import Callable, AsyncContextManager
 
-from githubkit.rest import Issue
-from nonebot.adapters import Event
-from nonebot.params import Depends
-from nonebot.typing import T_State
 from nonebot import logger, on_command
+from nonebot.adapters.github import ActionTimeout
 from playwright.async_api import Error, TimeoutError
-from nonebot.adapters.github import GitHubBot, ActionTimeout
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
+from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
 from src.plugins.github import config
-from src.plugins.github.helpers import NO_GITHUB_EVENT
 from src.plugins.github.libs.renderer import pr_diff_to_image
-from src.providers.platform import PLATFORM, MESSAGE_INFO, extract_sent_message
-from src.plugins.github.cache.message_tag import PullRequestTag, create_message_tag
-
-from . import KEY_GITHUB_REPLY
-from .dependencies import get_issue, get_context, is_pull_request
+from src.plugins.github.helpers import REPLY_PR, NO_GITHUB_EVENT
+from src.plugins.github.cache.message_tag import create_message_tag
+from src.providers.platform import (
+    TARGET_INFO,
+    MESSAGE_INFO,
+    TargetType,
+    extract_sent_message,
+)
+from src.plugins.github.dependencies import (
+    ISSUE,
+    PR_REPLY_TAG,
+    STORE_TAG_DATA,
+    GITHUB_PUBLIC_CONTEXT,
+)
 
 diff = on_command(
     "diff",
-    rule=NO_GITHUB_EVENT & is_pull_request,
+    rule=NO_GITHUB_EVENT & REPLY_PR,
     priority=config.github_command_priority,
     block=True,
 )
 
 
-@diff.handle()
+@diff.handle(parameterless=(STORE_TAG_DATA,))
 async def handle_diff(
-    event: Event,
-    state: T_State,
-    platform: PLATFORM,
+    target_info: TARGET_INFO,
     message_info: MESSAGE_INFO,
-    issue_: Issue = Depends(get_issue),
-    context: Callable[[], AsyncContextManager[GitHubBot]] = Depends(get_context),
+    tag: PR_REPLY_TAG,
+    issue_: ISSUE,
+    context: GITHUB_PUBLIC_CONTEXT,
 ):
-    tag: PullRequestTag = state[KEY_GITHUB_REPLY]
-
-    if message_info:
-        await create_message_tag(
-            message_info,
-            tag.copy(update={"is_receive": True}),
-        )
+    await create_message_tag(
+        message_info,
+        tag.copy(update={"is_receive": True}),
+    )
 
     try:
-        async with context():
+        async with context:
             img = await pr_diff_to_image(issue_)
     except ActionTimeout:
         await diff.finish("GitHub API 超时，请稍后再试")
@@ -66,13 +66,17 @@ async def handle_diff(
         logger.opt(exception=e).error(f"Failed while generating issue image: {e}")
         await diff.finish("生成图片出错！请稍后再试")
 
-    match platform:
-        case "qq":
+    match target_info.type:
+        case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await diff.send(QQMS.image(img))
-        case _:
-            logger.error(f"Unprocessed event type: {type(event)}")
-            return
+        case (
+            TargetType.QQ_OFFICIAL_USER
+            | TargetType.QQGUILD_USER
+            | TargetType.QQ_OFFICIAL_GROUP
+            | TargetType.QQGUILD_CHANNEL
+        ):
+            result = await diff.send(QQOfficialMS.file_image(img))
 
     tag = tag.copy(update={"is_receive": False})
-    if sent_message_info := extract_sent_message(platform, result):
+    if sent_message_info := extract_sent_message(target_info, result):
         await create_message_tag(sent_message_info, tag)

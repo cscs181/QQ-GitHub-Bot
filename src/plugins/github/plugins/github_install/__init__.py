@@ -21,7 +21,7 @@ from src.plugins.github.libs.install import create_install_link
 from src.plugins.github.dependencies import (
     RUN_WHEN_GROUP,
     RUN_WHEN_PRIVATE,
-    GITHUB_INSTALLATION,
+    GITHUB_USER_INSTALLATION,
 )
 
 __plugin_meta__ = PluginMetadata(
@@ -59,7 +59,7 @@ install_check = on_command(
 
 
 @install_check.handle()
-async def check_user_installation(installation: GITHUB_INSTALLATION):
+async def check_user_installation(installation: GITHUB_USER_INSTALLATION):
     # sourcery skip: merge-else-if-into-elif
     repo_selection = installation.repository_selection
     if account := installation.account:
@@ -87,7 +87,7 @@ install_revoke = on_command(
 
 
 @install_revoke.handle()
-async def revoke_user(installation: GITHUB_INSTALLATION):
+async def revoke_user(installation: GITHUB_USER_INSTALLATION):
     bot = get_github_bot()
 
     try:

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:18:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:21:21
+@LastEditTime   : 2023-10-08 14:26:09
 @Description    : Platform compatibility provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,13 +39,25 @@ from .extractors import get_target_bot as get_target_bot
 from .extractors import extract_message as extract_message
 from .extractors import extract_is_private as extract_is_private
 from .extractors import extract_sent_message as extract_sent_message
+from .extractors import extract_reply_message as extract_reply_message
 
-OPTIONAL_USER_INFO: TypeAlias = Annotated[UserInfo | None, Depends(extract_user)]
-OPTIONAL_GROUP_INFO: TypeAlias = Annotated[GroupInfo | None, Depends(extract_group)]
-OPTIONAL_TARGET_INFO: TypeAlias = Annotated[TargetInfo | None, Depends(extract_target)]
-OPTIONAL_IS_PRIVATE: TypeAlias = Annotated[bool | None, Depends(extract_is_private)]
+OPTIONAL_USER_INFO: TypeAlias = Annotated[
+    UserInfo | None, Depends(extract_user, use_cache=True)
+]
+OPTIONAL_GROUP_INFO: TypeAlias = Annotated[
+    GroupInfo | None, Depends(extract_group, use_cache=True)
+]
+OPTIONAL_TARGET_INFO: TypeAlias = Annotated[
+    TargetInfo | None, Depends(extract_target, use_cache=True)
+]
+OPTIONAL_IS_PRIVATE: TypeAlias = Annotated[
+    bool | None, Depends(extract_is_private, use_cache=True)
+]
 OPTIONAL_MESSAGE_INFO: TypeAlias = Annotated[
-    MessageInfo | None, Depends(extract_message)
+    MessageInfo | None, Depends(extract_message, use_cache=True)
+]
+OPTIONAL_REPLY_MESSAGE_INFO: TypeAlias = Annotated[
+    MessageInfo | None, Depends(extract_reply_message, use_cache=True)
 ]
 
 
@@ -94,13 +106,15 @@ async def ensure_message(
     return message
 
 
-USER_INFO: TypeAlias = Annotated[UserInfo, Depends(ensure_user)]
+USER_INFO: TypeAlias = Annotated[UserInfo, Depends(ensure_user, use_cache=True)]
 """User info dependency. Finish the session if user info cannot be extracted."""
-GROUP_INFO: TypeAlias = Annotated[GroupInfo, Depends(ensure_group)]
+GROUP_INFO: TypeAlias = Annotated[GroupInfo, Depends(ensure_group, use_cache=True)]
 """Group info dependency. Finish the session if group info cannot be extracted."""
-TARGET_INFO: TypeAlias = Annotated[TargetInfo, Depends(ensure_target)]
+TARGET_INFO: TypeAlias = Annotated[TargetInfo, Depends(ensure_target, use_cache=True)]
 """Target info dependency. Finish the session if target info cannot be extracted.""" ""
-IS_PRIVATE: TypeAlias = Annotated[bool, Depends(ensure_is_private)]
+IS_PRIVATE: TypeAlias = Annotated[bool, Depends(ensure_is_private, use_cache=True)]
 """Is private dependency. Finish the session if is private cannot be extracted."""
-MESSAGE_INFO: TypeAlias = Annotated[MessageInfo, Depends(ensure_message)]
+MESSAGE_INFO: TypeAlias = Annotated[
+    MessageInfo, Depends(ensure_message, use_cache=True)
+]
 """Message info dependency. Finish the session if message info cannot be extracted."""

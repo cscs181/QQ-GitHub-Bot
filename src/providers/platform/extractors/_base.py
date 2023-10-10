@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:20:01
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:20:01
+@LastEditTime   : 2023-10-08 14:00:56
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,9 +20,10 @@ from src.providers.platform.targets import UserInfo, GroupInfo, TargetInfo
 UE = TypeVar("UE", bound=Event)
 GE = TypeVar("GE", bound=Event)
 ME = TypeVar("ME", bound=Event)
+RE = TypeVar("RE", bound=Event)
 
 
-class Extractor(abc.ABC, Generic[UE, GE, ME]):
+class Extractor(abc.ABC, Generic[UE, GE, ME, RE]):
     TARGETS: tuple[TargetType, ...]
     """Targets that can be extracted from the event or api result"""
 
@@ -32,6 +33,8 @@ class Extractor(abc.ABC, Generic[UE, GE, ME]):
     """Events that are related to groups"""
     MESSAGE_EVENTS: tuple[type[ME], ...]
     """Events that have messages"""
+    REPLY_EVENTS: tuple[type[RE], ...]
+    """Events that reply to target message"""
 
     @classmethod
     @abc.abstractmethod
@@ -61,6 +64,12 @@ class Extractor(abc.ABC, Generic[UE, GE, ME]):
     @abc.abstractmethod
     def extract_message(cls, event: ME) -> MessageInfo:
         """Get the message from the event"""
+        raise NotImplementedError
+
+    @classmethod
+    @abc.abstractmethod
+    def extract_reply_message(cls, event: RE) -> MessageInfo | None:
+        """Get the reply message from the event"""
         raise NotImplementedError
 
     @classmethod

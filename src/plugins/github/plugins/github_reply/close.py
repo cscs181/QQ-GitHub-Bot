@@ -2,39 +2,39 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 03:59:07
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-05 20:10:09
+@LastEditTime   : 2023-10-08 14:46:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from githubkit.utils import UNSET
-from nonebot.typing import T_State
+from nonebot.adapters import Message
+from nonebot.params import CommandArg
 from nonebot import logger, on_command
-from nonebot.adapters import Event, Message
-from nonebot.params import Depends, CommandArg
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
-from src.plugins.github.models import User
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.helpers import NO_GITHUB_EVENT
-from src.providers.platform import PLATFORM, MESSAGE_INFO, extract_sent_message
+from src.plugins.github.helpers import NO_GITHUB_EVENT, REPLY_ISSUE_OR_PR
+from src.plugins.github.dependencies import AUTHORIZED_USER, ISSUE_OR_PR_REPLY_TAG
 from src.plugins.github.cache.message_tag import (
-    Tag,
     IssueTag,
     PullRequestTag,
     create_message_tag,
 )
-
-from . import KEY_GITHUB_REPLY
-from .dependencies import get_user, is_github_reply
+from src.providers.platform import (
+    TARGET_INFO,
+    MESSAGE_INFO,
+    TargetType,
+    extract_sent_message,
+)
 
 ISSUE_CLOSE_REASON = {"completed", "not_planned", ""}
 
 close = on_command(
     "close",
-    rule=NO_GITHUB_EVENT & is_github_reply,
+    rule=NO_GITHUB_EVENT & REPLY_ISSUE_OR_PR,
     priority=config.github_command_priority,
     block=True,
 )
@@ -42,24 +42,18 @@ close = on_command(
 
 @close.handle()
 async def handle_close(
-    event: Event,
-    state: T_State,
-    platform: PLATFORM,
+    target_info: TARGET_INFO,
     message_info: MESSAGE_INFO,
+    user: AUTHORIZED_USER,
+    tag: ISSUE_OR_PR_REPLY_TAG,
     reason: Message = CommandArg(),
-    user: User = Depends(get_user),
 ):
     bot = get_github_bot()
-    tag: Tag = state[KEY_GITHUB_REPLY]
 
-    if not isinstance(tag, (IssueTag, PullRequestTag)):
-        await close.finish()
-
-    if message_info:
-        await create_message_tag(
-            message_info,
-            tag.copy(update={"is_receive": True}),
-        )
+    await create_message_tag(
+        message_info,
+        tag.copy(update={"is_receive": True}),
+    )
 
     try:
         async with bot.as_user(user.access_token):
@@ -94,13 +88,17 @@ async def handle_close(
         logger.opt(exception=e).error(f"Failed while close pr: {e}")
         await close.finish("未知错误发生，请尝试重试或联系管理员")
 
-    match platform:
-        case "qq":
+    match target_info.type:
+        case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await close.send(message)
-        case _:
-            logger.error(f"Unprocessed event type: {type(event)}")
-            return
+        case (
+            TargetType.QQ_OFFICIAL_USER
+            | TargetType.QQGUILD_USER
+            | TargetType.QQ_OFFICIAL_GROUP
+            | TargetType.QQGUILD_CHANNEL
+        ):
+            result = await close.send(message)
 
     tag = tag.copy(update={"is_receive": False})
-    if sent_message_info := extract_sent_message(platform, result):
+    if sent_message_info := extract_sent_message(target_info, result):
         await create_message_tag(sent_message_info, tag)
