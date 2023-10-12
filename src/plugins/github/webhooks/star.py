@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-12-18 13:44:11
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 20:02:36
+@LastEditTime   : 2023-10-08 18:02:15
 @Description    : Webhook star event broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,17 +17,9 @@ from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import StarCreated, StarDeleted
 
 from src.plugins.github import config
-from src.plugins.github.libs.message_tag import RepoTag
-from src.plugins.github.libs.platform import get_user_bot, get_group_bot
+from src.plugins.github.cache.message_tag import RepoTag
 
-from ._dependencies import (
-    SEND_INTERVAL,
-    Throttle,
-    send_user_text,
-    send_group_text,
-    get_subscribed_users,
-    get_subscribed_groups,
-)
+from ._dependencies import SUBSCRIBERS, SEND_INTERVAL, Throttle, send_subscriber_text
 
 __plugin_meta__ = PluginMetadata(
     "GitHub Star 事件通知",
@@ -45,7 +37,7 @@ star = on_type(
 @star.handle(
     parameterless=(Depends(Throttle((StarCreated, StarDeleted), THROTTLE_EXPIRE)),)
 )
-async def handle_star_event(event: StarCreated | StarDeleted):
+async def handle_star_event(event: StarCreated | StarDeleted, subscribers: SUBSCRIBERS):
     username = event.payload.sender.login
     repo_name = event.payload.repository.full_name
     action = event.payload.action
@@ -58,18 +50,13 @@ async def handle_star_event(event: StarCreated | StarDeleted):
     owner, repo = repo_name.split("/", 1)
     tag = RepoTag(owner=owner, repo=repo, is_receive=False)
 
-    for user in await get_subscribed_users(event):
+    for target in subscribers:
         try:
-            await send_user_text(user, get_user_bot(user), message, tag)
-        except Exception as e:
-            logger.opt(exception=e).warning(f"Send message to user {user} failed: {e}")
-        await asyncio.sleep(SEND_INTERVAL)
-
-    for group in await get_subscribed_groups(event):
-        try:
-            await send_group_text(group, get_group_bot(group), message, tag)
+            await send_subscriber_text(target.to_subscriber_info(), message, tag)
         except Exception as e:
             logger.opt(exception=e).warning(
-                f"Send message to group {group} failed: {e}"
+                f"Send message to subscriber failed: {e}",
+                target_info=target.to_subscriber_info(),
             )
+
         await asyncio.sleep(SEND_INTERVAL)

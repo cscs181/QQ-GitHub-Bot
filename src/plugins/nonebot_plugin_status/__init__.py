@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-06-05 16:43:31
+@LastEditTime   : 2023-10-08 13:40:21
 @Description    : Status plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -112,5 +112,9 @@ async def server_status(matcher: Matcher):
     await matcher.send(message=await render_template())
 
 
+from . import common as common
+
 with contextlib.suppress(ImportError):
-    pass
+    import nonebot.adapters.onebot.v11  # noqa: F401
+
+    from . import onebot_v11 as onebot_v11

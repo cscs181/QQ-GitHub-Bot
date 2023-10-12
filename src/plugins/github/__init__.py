@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-20 23:59:20
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-11-10 11:51:15
+@LastEditTime   : 2023-10-08 14:06:14
 @Description    : GitHub Main Plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,10 +17,11 @@ from .config import Config
 # load all github plugin config from global config
 config = Config.parse_obj(nonebot.get_driver().config)
 
-# store all github subplugins
+# load all github subplugins
 _sub_plugins = set()
 _sub_plugins |= nonebot.load_plugins(str((Path(__file__).parent / "plugins").resolve()))
 
+# load all webhook subplugins
 _webhook_plugins = set()
 _webhook_plugins |= nonebot.load_plugins(
     str((Path(__file__).parent / "webhooks").resolve())

@@ -2,28 +2,25 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-02 16:14:33
+@LastEditTime   : 2023-10-06 17:48:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from nonebot.adapters import Event
-from nonebot.params import Depends
 from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
-from src.plugins.github.models import User
+from src.providers.platform import USER_INFO
 from src.plugins.github.utils import get_github_bot
+from src.plugins.github.helpers import NO_GITHUB_EVENT
 from src.plugins.github.libs.auth import create_auth_link
-from src.plugins.github.helpers import (
-    NO_GITHUB_EVENT,
-    get_user_info,
-    run_when_group,
-    get_current_user,
-    run_when_private,
+from src.plugins.github.dependencies import (
+    RUN_WHEN_GROUP,
+    AUTHORIZED_USER,
+    RUN_WHEN_PRIVATE,
 )
 
 __plugin_meta__ = PluginMetadata(
@@ -42,18 +39,14 @@ auth = on_command(
 )
 
 
-@auth.handle(parameterless=(Depends(run_when_group),))
+@auth.handle(parameterless=(RUN_WHEN_GROUP,))
 async def handle_group():
     await auth.finish("请私聊我并使用 /auth 命令授权你的 GitHub 账号")
 
 
-@auth.handle(parameterless=(Depends(run_when_private),))
-async def handle_private(event: Event):
-    if info := get_user_info(event):
-        await auth.finish("请前往以下链接进行授权：\n" + await create_auth_link(info))
-    else:
-        logger.error(f"Unprocessed event type: {type(event)}")
-        await auth.finish("内部错误，请尝试私聊我并使用 /auth 命令授权你的 GitHub 账号")
+@auth.handle(parameterless=(RUN_WHEN_PRIVATE,))
+async def handle_private(user_info: USER_INFO):
+    await auth.finish("请前往以下链接进行授权：\n" + await create_auth_link(user_info))
 
 
 auth_check = on_command(
@@ -65,14 +58,7 @@ auth_check = on_command(
 
 
 @auth_check.handle()
-async def handle_check(user: None = Depends(get_current_user)):
-    await auth_check.finish(
-        "你还没有授权 GitHub 帐号，请私聊使用 /auth 进行授权或使用 /install 进行安装"
-    )
-
-
-@auth_check.handle()
-async def check_user_status(user: User = Depends(get_current_user)):
+async def check_user_status(user: AUTHORIZED_USER):
     bot = get_github_bot()
     async with bot.as_oauth_app():
         try:
@@ -110,15 +96,9 @@ auth_revoke = on_command(
 
 
 @auth_revoke.handle()
-async def handle_revoke(user: None = Depends(get_current_user)):
-    await auth_check.finish(
-        "你还没有授权 GitHub 帐号，请私聊使用 /auth 进行授权或使用 /install 进行安装"
-    )
-
-
-@auth_revoke.handle()
-async def revoke_user(user: User = Depends(get_current_user)):
+async def revoke_user(user: AUTHORIZED_USER):
     bot = get_github_bot()
+
     async with bot.as_oauth_app():
         try:
             await bot.rest.apps.async_delete_token(
@@ -133,8 +113,9 @@ async def revoke_user(user: User = Depends(get_current_user)):
             await auth_revoke.finish("未知错误发生，请尝试重试或联系管理员")
 
     try:
-        await user.delete()
+        await user.unauth()
     except Exception as e:
-        logger.opt(exception=e).error(f"Failed while deleting user in auth revoke: {e}")
+        logger.opt(exception=e).error(f"Failed while unauth user: {e}")
         await auth_revoke.finish("未知错误发生，请尝试重试或联系管理员")
+
     await auth_revoke.finish("你的 GitHub 帐号授权已撤销")

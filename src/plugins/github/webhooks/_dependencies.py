@@ -2,30 +2,37 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 08:35:10
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-19 12:13:09
+@LastEditTime   : 2023-10-08 17:51:31
 @Description    : Webhook dependencies
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 from datetime import timedelta
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Annotated, TypeAlias, cast
 
 from nonebot import logger
-from nonebot.adapters import Bot
+from nonebot.params import Depends
 from nonebot.matcher import Matcher
 from nonebot.adapters.github import Event
 from nonebot.adapters.onebot.v11 import Bot as QQBot
+from nonebot.adapters.qq import Bot as QQOfficialBot
 from nonebot.adapters.github.utils import get_attr_or_item
 from nonebot.adapters.onebot.v11 import Message as QQMessage
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
+from nonebot.adapters.qq.exception import ActionFailed as QQOfficialActionFailed
 
 from src.providers.redis import redis_client
-from src.plugins.github.models import UserSubscription, GroupSubscription
-from src.plugins.github.libs.message_tag import Tag, MessageInfo, create_message_tag
-from src.plugins.github.libs.platform import (
-    list_subscribed_users,
-    list_subscribed_groups,
+from src.plugins.github.models import Subscription
+from src.plugins.github.cache.message_tag import Tag, create_message_tag
+from src.providers.platform import TargetInfo, get_target_bot, extract_sent_message
+from src.providers.platform.targets import (
+    QQUserInfo,
+    QQGroupInfo,
+    QQGuildUserInfo,
+    QQGuildChannelInfo,
+    QQOfficialUserInfo,
+    QQOfficialGroupInfo,
 )
 
 T = TypeVar("T", bound=Event)
@@ -34,102 +41,156 @@ SEND_INTERVAL = 0.5
 THROTTLE_KEY = "cache:github:webhooks:throttle:{identifier}"
 
 
-async def get_subscribed_users(event: Event) -> list[UserSubscription]:
+async def get_event_info(
+    event: Event, matcher: Matcher
+) -> tuple[str, str, str, str | None]:
     repository = get_attr_or_item(event.payload, "repository")
     owner, repo = get_attr_or_item(repository, "full_name").split("/", 1)
     action = get_attr_or_item(event.payload, "action")
-    return (
-        await list_subscribed_users(owner, repo, event.name, action)
-        if all((owner, repo, event.name))
-        else []
-    )
+    if not all((owner, repo, event.name)):
+        await matcher.finish()
+    return owner, repo, event.name, action
 
 
-async def get_subscribed_groups(event: Event) -> list[GroupSubscription]:
-    repository = get_attr_or_item(event.payload, "repository")
-    owner, repo = get_attr_or_item(repository, "full_name").split("/", 1)
-    action = get_attr_or_item(event.payload, "action")
-    return (
-        await list_subscribed_groups(owner, repo, event.name, action)
-        if all((owner, repo, event.name))
-        else []
-    )
+EVENT_INFO: TypeAlias = Annotated[
+    tuple[str, str, str, str | None], Depends(get_event_info)
+]
 
 
-async def send_user_text(user: UserSubscription, bot: Bot, text: str, tag: Tag):
-    if isinstance(bot, QQBot):
-        result = await bot.send_private_msg(user_id=user.qq_id, message=text)
-        if isinstance(result, dict) and "message_id" in result:
-            await create_message_tag(
-                MessageInfo(type="qq", message_id=result["message_id"]), tag
-            )
-    else:
-        logger.error(f"Unprocessed bot type: {type(bot)}")
+async def list_subscribers(event_info: EVENT_INFO) -> list[Subscription]:
+    owner, repo, event_name, action = event_info
+    return await Subscription.list_subscribers(owner, repo, event_name, action)
 
 
-async def send_user_image(user: UserSubscription, bot: Bot, image: bytes, tag: Tag):
-    if isinstance(bot, QQBot):
-        result = await bot.send_private_msg(
-            user_id=user.qq_id, message=QQMessage(QQMS.image(image))
-        )
-        if isinstance(result, dict) and "message_id" in result:
-            await create_message_tag(
-                MessageInfo(type="qq", message_id=result["message_id"]), tag
-            )
-    else:
-        logger.error(f"Unprocessed bot type: {type(bot)}")
+SUBSCRIBERS: TypeAlias = Annotated[list[Subscription], Depends(list_subscribers)]
 
 
-async def send_user_image_url(user: UserSubscription, bot: Bot, image: str, tag: Tag):
-    if isinstance(bot, QQBot):
-        result = await bot.send_private_msg(
-            user_id=user.qq_id, message=QQMessage(QQMS.image(image))
-        )
-        if isinstance(result, dict) and "message_id" in result:
-            await create_message_tag(
-                MessageInfo(type="qq", message_id=result["message_id"]), tag
-            )
-    else:
-        logger.error(f"Unprocessed bot type: {type(bot)}")
+async def send_subscriber_text(target_info: TargetInfo, text: str, tag: Tag) -> None:
+    bot = get_target_bot(target_info)
+    if not bot:
+        logger.error("Unable to get target bot", target_info=target_info)
+        return
+
+    try:
+        match target_info:
+            case QQUserInfo():
+                result = await cast(QQBot, bot).send_private_msg(
+                    user_id=target_info.qq_user_id, message=text
+                )
+            case QQGroupInfo():
+                result = await cast(QQBot, bot).send_group_msg(
+                    group_id=target_info.qq_group_id, message=text
+                )
+            case QQOfficialUserInfo():
+                result = await cast(QQOfficialBot, bot).post_c2c_messages(
+                    user_id=target_info.qq_user_open_id, msg_type=0, content=text
+                )
+            case QQOfficialGroupInfo():
+                result = await cast(QQOfficialBot, bot).post_group_messages(
+                    group_id=target_info.qq_group_open_id, msg_type=0, content=text
+                )
+            case QQGuildUserInfo():
+                logger.error("Unable to send message to QQGuild User", user=target_info)
+                return
+            case QQGuildChannelInfo():
+                result = await cast(QQOfficialBot, bot).post_messages(
+                    channel_id=target_info.qq_channel_id, content=text
+                )
+    except QQOfficialActionFailed as e:
+        if e.code in (304045, 304046, 304047, 304048, 304049, 304050):
+            return
+        raise
+
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)
 
 
-async def send_group_text(group: GroupSubscription, bot: Bot, text: str, tag: Tag):
-    if isinstance(bot, QQBot):
-        result = await bot.send_group_msg(group_id=group.qq_group, message=text)
-        if isinstance(result, dict) and "message_id" in result:
-            await create_message_tag(
-                MessageInfo(type="qq", message_id=result["message_id"]), tag
-            )
-    else:
-        logger.error(f"Unprocessed bot type: {type(bot)}")
+async def send_subscriber_image(
+    target_info: TargetInfo, image: bytes, tag: Tag
+) -> None:
+    bot = get_target_bot(target_info)
+    if not bot:
+        logger.error("Unable to get target bot", target_info=target_info)
+        return
+
+    try:
+        match target_info:
+            case QQUserInfo():
+                result = await cast(QQBot, bot).send_private_msg(
+                    user_id=target_info.qq_user_id, message=QQMessage(QQMS.image(image))
+                )
+            case QQGroupInfo():
+                result = await cast(QQBot, bot).send_group_msg(
+                    group_id=target_info.qq_group_id,
+                    message=QQMessage(QQMS.image(image)),
+                )
+            case QQOfficialUserInfo():
+                logger.warning(
+                    "Unable to send image to QQOfficial User", user=target_info
+                )
+                return
+            case QQOfficialGroupInfo():
+                logger.warning(
+                    "Unable to send image to QQOfficial Group", group=target_info
+                )
+                return
+            case QQGuildUserInfo():
+                logger.error("Unable to send message to QQGuild User", user=target_info)
+                return
+            case QQGuildChannelInfo():
+                result = await cast(QQOfficialBot, bot).post_messages(
+                    channel_id=target_info.qq_channel_id, file_image=image
+                )
+    except QQOfficialActionFailed as e:
+        if e.code in (304045, 304046, 304047, 304048, 304049, 304050):
+            return
+        raise
+
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)
 
 
-async def send_group_image(group: GroupSubscription, bot: Bot, image: bytes, tag: Tag):
-    if isinstance(bot, QQBot):
-        result = await bot.send_group_msg(
-            group_id=group.qq_group, message=QQMessage(QQMS.image(image))
-        )
-        if isinstance(result, dict) and "message_id" in result:
-            await create_message_tag(
-                MessageInfo(type="qq", message_id=result["message_id"]), tag
-            )
-    else:
-        logger.error(f"Unprocessed bot type: {type(bot)}")
+async def send_subscriber_image_url(
+    target_info: TargetInfo, image: str, tag: Tag
+) -> None:
+    bot = get_target_bot(target_info)
+    if not bot:
+        logger.error("Unable to get target bot", target_info=target_info)
+        return
 
+    try:
+        match target_info:
+            case QQUserInfo():
+                result = await cast(QQBot, bot).send_private_msg(
+                    user_id=target_info.qq_user_id, message=QQMessage(QQMS.image(image))
+                )
+            case QQGroupInfo():
+                result = await cast(QQBot, bot).send_group_msg(
+                    group_id=target_info.qq_group_id,
+                    message=QQMessage(QQMS.image(image)),
+                )
+            case QQOfficialUserInfo():
+                result = await cast(QQOfficialBot, bot).post_c2c_files(
+                    user_id=target_info.qq_user_open_id, file_type=1, url=image
+                )
+            case QQOfficialGroupInfo():
+                result = await cast(QQOfficialBot, bot).post_group_files(
+                    group_id=target_info.qq_group_open_id, file_type=1, url=image
+                )
+            case QQGuildUserInfo():
+                logger.error("Unable to send message to QQGuild User", user=target_info)
+                return
+            case QQGuildChannelInfo():
+                result = await cast(QQOfficialBot, bot).post_messages(
+                    channel_id=target_info.qq_channel_id, image=image
+                )
+    except QQOfficialActionFailed as e:
+        if e.code in (304045, 304046, 304047, 304048, 304049, 304050):
+            return
+        raise
 
-async def send_group_image_url(
-    group: GroupSubscription, bot: Bot, image: str, tag: Tag
-):
-    if isinstance(bot, QQBot):
-        result = await bot.send_group_msg(
-            group_id=group.qq_group, message=QQMessage(QQMS.image(image))
-        )
-        if isinstance(result, dict) and "message_id" in result:
-            await create_message_tag(
-                MessageInfo(type="qq", message_id=result["message_id"]), tag
-            )
-    else:
-        logger.error(f"Unprocessed bot type: {type(bot)}")
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)
 
 
 class Throttle(Generic[T]):

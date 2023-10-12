@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-04-04 20:02:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-04-05 01:05:17
+@LastEditTime   : 2023-10-08 17:59:10
 @Description    : Webhook issue opened broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -20,17 +20,13 @@ from nonebot.adapters.github import IssuesOpened, ActionTimeout, PullRequestOpen
 from src.plugins.github import config
 from src.plugins.github.libs.renderer import issue_opened_to_image
 from src.plugins.github.utils import get_github_bot, set_context_bot
-from src.plugins.github.libs.message_tag import IssueTag, PullRequestTag
-from src.plugins.github.libs.platform import get_user_bot, get_group_bot
+from src.plugins.github.cache.message_tag import IssueTag, PullRequestTag
 
 from ._dependencies import (
+    SUBSCRIBERS,
     SEND_INTERVAL,
-    send_user_text,
-    send_group_text,
-    send_user_image,
-    send_group_image,
-    get_subscribed_users,
-    get_subscribed_groups,
+    send_subscriber_text,
+    send_subscriber_image,
 )
 
 __plugin_meta__ = PluginMetadata(
@@ -47,7 +43,9 @@ issue_opened = on_type(
 
 
 @issue_opened.handle()
-async def handle_issue_opened_event(event: IssuesOpened | PullRequestOpened):
+async def handle_issue_opened_event(
+    event: IssuesOpened | PullRequestOpened, subscribers: SUBSCRIBERS
+):
     repo_name = event.payload.repository.full_name
     owner, repo = repo_name.split("/", 1)
 
@@ -90,26 +88,18 @@ async def handle_issue_opened_event(event: IssuesOpened | PullRequestOpened):
             f"Failed while generating issue/opened image: {e}"
         )
 
-    for user in await get_subscribed_users(event):
+    for target in subscribers:
         try:
             if image is not None:
-                await send_user_image(user, get_user_bot(user), image, tag)
+                await send_subscriber_image(target.to_subscriber_info(), image, tag)
             else:
-                await send_user_text(user, get_user_bot(user), fallback_message, tag)
-        except Exception as e:
-            logger.opt(exception=e).warning(f"Send message to user {user} failed: {e}")
-        await asyncio.sleep(SEND_INTERVAL)
-
-    for group in await get_subscribed_groups(event):
-        try:
-            if image is not None:
-                await send_group_image(group, get_group_bot(group), image, tag)
-            else:
-                await send_group_text(
-                    group, get_group_bot(group), fallback_message, tag
+                await send_subscriber_text(
+                    target.to_subscriber_info(), fallback_message, tag
                 )
         except Exception as e:
             logger.opt(exception=e).warning(
-                f"Send message to group {group} failed: {e}"
+                f"Send message to subscriber failed: {e}",
+                target_info=target.to_subscriber_info(),
             )
+
         await asyncio.sleep(SEND_INTERVAL)

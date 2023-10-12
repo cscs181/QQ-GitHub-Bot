@@ -2,31 +2,27 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:50:10
+@LastEditTime   : 2023-10-07 16:02:23
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from nonebot.adapters import Event
-from nonebot.params import Depends
+from githubkit.rest import SimpleUser
 from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import ActionTimeout
-from githubkit.rest import SimpleUser, Installation
 
 from src.plugins.github import config
+from src.providers.platform import USER_INFO
 from src.plugins.github.utils import get_github_bot
+from src.plugins.github.helpers import NO_GITHUB_EVENT
 from src.plugins.github.libs.install import create_install_link
-from src.plugins.github.helpers import (
-    NO_GITHUB_EVENT,
-    get_user_info,
-    run_when_group,
-    get_current_user,
-    run_when_private,
+from src.plugins.github.dependencies import (
+    RUN_WHEN_GROUP,
+    RUN_WHEN_PRIVATE,
+    GITHUB_USER_INSTALLATION,
 )
-
-from .dependencies import get_user_installation
 
 __plugin_meta__ = PluginMetadata(
     "GitHub APP 集成",
@@ -42,20 +38,16 @@ install = on_command(
 )
 
 
-@install.handle(parameterless=(Depends(run_when_group),))
+@install.handle(parameterless=(RUN_WHEN_GROUP,))
 async def handle_group():
     await install.finish("请私聊我并使用 /install 命令进行安装或管理")
 
 
-@install.handle(parameterless=(Depends(run_when_private),))
-async def handle_private(event: Event):
-    if info := get_user_info(event):
-        await install.finish(
-            "请前往以下链接进行安装或管理：\n" + await create_install_link(info)
-        )
-    else:
-        logger.error(f"Unprocessed event type: {type(event)}")
-        await install.finish("内部错误，请尝试私聊我并使用 /install 命令进行安装或管理")
+@install.handle(parameterless=(RUN_WHEN_PRIVATE,))
+async def handle_private(user_info: USER_INFO):
+    await install.finish(
+        "请前往以下链接进行安装或管理：\n" + await create_install_link(user_info)
+    )
 
 
 install_check = on_command(
@@ -67,14 +59,7 @@ install_check = on_command(
 
 
 @install_check.handle()
-async def handle_check(user: None = Depends(get_current_user)):
-    await install_check.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
-
-
-@install_check.handle()
-async def check_user_installation(
-    installation: Installation = Depends(get_user_installation),
-):
+async def check_user_installation(installation: GITHUB_USER_INSTALLATION):
     # sourcery skip: merge-else-if-into-elif
     repo_selection = installation.repository_selection
     if account := installation.account:
@@ -102,12 +87,7 @@ install_revoke = on_command(
 
 
 @install_revoke.handle()
-async def handle_revoke(user: None = Depends(get_current_user)):
-    await install_check.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
-
-
-@install_revoke.handle()
-async def revoke_user(installation: Installation = Depends(get_user_installation)):
+async def revoke_user(installation: GITHUB_USER_INSTALLATION):
     bot = get_github_bot()
 
     try:

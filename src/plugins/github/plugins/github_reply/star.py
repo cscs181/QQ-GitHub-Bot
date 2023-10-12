@@ -2,39 +2,47 @@
 @Author         : yanyongyu
 @Date           : 2022-10-18 03:18:14
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:56:35
+@LastEditTime   : 2023-10-08 15:56:16
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from nonebot.adapters import Event
-from nonebot.params import Depends
-from nonebot.typing import T_State
 from nonebot import logger, on_command
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
-from src.plugins.github.models import User
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
-from src.plugins.github.libs.message_tag import Tag, RepoTag, create_message_tag
-
-from . import KEY_GITHUB_REPLY
-from .dependencies import get_user, is_github_reply
+from src.plugins.github.helpers import REPLY_ANY, NO_GITHUB_EVENT
+from src.plugins.github.dependencies import REPLY_TAG, AUTHORIZED_USER
+from src.plugins.github.cache.message_tag import RepoTag, create_message_tag
+from src.providers.platform import (
+    TARGET_INFO,
+    MESSAGE_INFO,
+    TargetType,
+    extract_sent_message,
+)
 
 star = on_command(
     "star",
-    rule=NO_GITHUB_EVENT & is_github_reply,
+    rule=NO_GITHUB_EVENT & REPLY_ANY,
     priority=config.github_command_priority,
     block=True,
 )
 
 
 @star.handle()
-async def handle_link(event: Event, state: T_State, user: User = Depends(get_user)):
+async def handle_star(
+    target_info: TARGET_INFO,
+    message_info: MESSAGE_INFO,
+    tag: REPLY_TAG,
+    user: AUTHORIZED_USER,
+):
     bot = get_github_bot()
-    tag: Tag = state[KEY_GITHUB_REPLY]
+
+    await create_message_tag(
+        message_info, RepoTag(owner=tag.owner, repo=tag.repo, is_receive=True)
+    )
 
     async with bot.as_user(user.access_token):
         # check starred
@@ -83,14 +91,17 @@ async def handle_link(event: Event, state: T_State, user: User = Depends(get_use
                 )
                 await star.finish("未知错误发生，请尝试重试或联系管理员")
 
-    result = await star.send(message)
+    match target_info.type:
+        case TargetType.QQ_USER | TargetType.QQ_GROUP:
+            result = await star.send(message)
+        case (
+            TargetType.QQ_OFFICIAL_USER
+            | TargetType.QQGUILD_USER
+            | TargetType.QQ_OFFICIAL_GROUP
+            | TargetType.QQGUILD_CHANNEL
+        ):
+            result = await star.send(message)
 
     tag = RepoTag(owner=tag.owner, repo=tag.repo, is_receive=False)
-    match get_platform(event):
-        case "qq":
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
-        case _:
-            logger.error(f"Unprocessed event type: {type(event)}")
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)

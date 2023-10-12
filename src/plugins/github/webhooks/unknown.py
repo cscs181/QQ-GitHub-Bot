@@ -2,14 +2,13 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 05:14:32
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-04-26 18:45:11
+@LastEditTime   : 2023-10-08 17:43:38
 @Description    : Webhook unknown event broadcast
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import asyncio
-from typing import NamedTuple
 from datetime import timedelta
 
 from nonebot.params import Depends
@@ -19,16 +18,14 @@ from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github.utils import get_attr_or_item
 
 from src.plugins.github import config
-from src.plugins.github.libs.message_tag import RepoTag
-from src.plugins.github.libs.platform import get_user_bot, get_group_bot
+from src.plugins.github.cache.message_tag import RepoTag
 
 from ._dependencies import (
+    EVENT_INFO,
+    SUBSCRIBERS,
     SEND_INTERVAL,
     Throttle,
-    send_user_text,
-    send_group_text,
-    get_subscribed_users,
-    get_subscribed_groups,
+    send_subscriber_text,
 )
 
 __plugin_meta__ = PluginMetadata(
@@ -44,51 +41,26 @@ THROTTLE_EXPIRE = timedelta(seconds=60)
 unknown = on_type(Event, priority=config.github_webhook_priority + 1, block=True)
 
 
-class EventInfo(NamedTuple):
-    username: str
-    repo_name: str | None
-    event_name: str
-    action: str | None
-
-
-def get_event_info(event: Event) -> EventInfo:
-    username: str = get_attr_or_item(get_attr_or_item(event.payload, "sender"), "login")
-    action: str | None = get_attr_or_item(event.payload, "action")
-    repository = get_attr_or_item(event.payload, "repository")
-    repo_name = None
-    if repository is not None:
-        repo_name = get_attr_or_item(repository, "full_name")
-    return EventInfo(username, repo_name, event.name, action)
-
-
 @unknown.handle(parameterless=(Depends(Throttle((Event,), THROTTLE_EXPIRE)),))
-async def handle_unknown_event(event: Event):
-    repository = get_attr_or_item(event.payload, "repository")
-    if repository is None:
-        return
-
+async def handle_unknown_event(
+    event: Event, event_info: EVENT_INFO, subscribers: SUBSCRIBERS
+):
     username: str = get_attr_or_item(get_attr_or_item(event.payload, "sender"), "login")
-    repo_name: str = get_attr_or_item(repository, "full_name")
-    action: str | None = get_attr_or_item(event.payload, "action")
-    message = f"用户 {username} 触发了仓库 {repo_name} 的事件 {event.name}" + (
+
+    owner, repo, event_name, action = event_info
+
+    message = f"用户 {username} 触发了仓库 {repo} 的事件 {event_name}" + (
         f"/{action}" if action else ""
     )
 
-    owner, repo = repo_name.split("/", 1)
     tag = RepoTag(owner=owner, repo=repo, is_receive=False)
-
-    for user in await get_subscribed_users(event):
+    for target in subscribers:
         try:
-            await send_user_text(user, get_user_bot(user), message, tag)
-        except Exception as e:
-            logger.opt(exception=e).warning(f"Send message to user {user} failed: {e}")
-        await asyncio.sleep(SEND_INTERVAL)
-
-    for group in await get_subscribed_groups(event):
-        try:
-            await send_group_text(group, get_group_bot(group), message, tag)
+            await send_subscriber_text(target.to_subscriber_info(), message, tag)
         except Exception as e:
             logger.opt(exception=e).warning(
-                f"Send message to group {group} failed: {e}"
+                f"Send message to subscriber failed: {e}",
+                target_info=target.to_subscriber_info(),
             )
+
         await asyncio.sleep(SEND_INTERVAL)

@@ -2,21 +2,20 @@
 @Author         : yanyongyu
 @Date           : 2021-03-15 20:18:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 21:01:11
+@LastEditTime   : 2023-10-06 16:11:40
 @Description    : OAuth API for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import nonebot
+from nonebot import logger
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-from src.plugins.github.models import User
 from src.plugins.github.libs.auth import (
-    get_state_data,
+    consume_state,
     create_auth_user,
-    delete_state_data,
     get_token_by_code,
 )
 
@@ -32,24 +31,33 @@ async def auth(code: str, state: str | None = None):
 
     try:
         token = await get_token_by_code(code)
-    except Exception:
+    except Exception as e:
+        logger.opt(exception=e).error("Failed to get oauth token!")
         return await template.render_async(
             title="Oops...", text="Invalid oauth code!", icon="error"
         )
 
     if not state:
-        return await template.render_async(title="Install Complete!", icon="success")
+        return await template.render_async(title="Invalid OAuth Session!", icon="error")
 
-    user_info = await get_state_data(state)
+    user_info = await consume_state(state)
     if not user_info:
         return await template.render_async(
             title="Oops...", text="OAuth Session Expired!", icon="error"
         )
 
-    await delete_state_data(state)
-    user: User = await create_auth_user(user_info, access_token=token)
+    try:
+        user = await create_auth_user(user_info, access_token=token)
+    except Exception as e:
+        logger.opt(exception=e).error(
+            "Failed to update access_token for user!", user=user_info.dict()
+        )
+        return await template.render_async(
+            title="Oops...", text="Failed to bind user!", icon="error"
+        )
+
     return await template.render_async(
         title="Install Complete!",
-        text=f"Successfully bind user {user.user_id}",
+        text=f"Successfully bind user {user.to_user_info().user_id}",
         icon="success",
     )

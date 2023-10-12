@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-27 04:24:58
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 23:24:36
+@LastEditTime   : 2023-10-08 14:54:11
 @Description    : Rule helpers
 @GitHub         : https://github.com/yanyongyu
 """
@@ -10,20 +10,10 @@ __author__ = "yanyongyu"
 
 from nonebot.rule import Rule
 from nonebot.adapters import Event
-from nonebot.matcher import Matcher
 from nonebot.adapters.github import Event as GitHubEvent
 
-from .event import GROUP_EVENT, PRIVATE_EVENT
-
-
-def is_private_event(event: Event) -> bool:
-    """Check if the event is a private event"""
-    return isinstance(event, PRIVATE_EVENT)
-
-
-def is_group_event(event: Event) -> bool:
-    """Check if the event is a group event"""
-    return isinstance(event, GROUP_EVENT)
+from src.plugins.github.dependencies import OPTIONAL_REPLY_TAG
+from src.plugins.github.cache.message_tag import IssueTag, PullRequestTag
 
 
 async def no_github_event(event: Event):
@@ -34,13 +24,22 @@ async def no_github_event(event: Event):
 NO_GITHUB_EVENT = Rule(no_github_event)
 
 
-async def run_when_private(event: Event, matcher: Matcher) -> None:
-    """Skip the matcher if the event is not a private event"""
-    if not is_private_event(event):
-        matcher.skip()
+async def reply_any(reply_tag: OPTIONAL_REPLY_TAG) -> bool:
+    return reply_tag is not None
 
 
-async def run_when_group(event: Event, matcher: Matcher) -> None:
-    """Skip the matcher if the event is not a group event"""
-    if not is_group_event(event):
-        matcher.skip()
+REPLY_ANY = Rule(reply_any)
+
+
+async def reply_issue_or_pr(reply_tag: OPTIONAL_REPLY_TAG) -> bool:
+    return isinstance(reply_tag, (IssueTag, PullRequestTag))
+
+
+REPLY_ISSUE_OR_PR = Rule(reply_issue_or_pr)
+
+
+async def reply_pr(reply_tag: OPTIONAL_REPLY_TAG) -> bool:
+    return isinstance(reply_tag, PullRequestTag)
+
+
+REPLY_PR = Rule(reply_pr)

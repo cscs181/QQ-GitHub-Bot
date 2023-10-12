@@ -2,40 +2,49 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:31:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2022-12-21 19:55:24
+@LastEditTime   : 2023-10-08 15:41:35
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from nonebot.adapters import Event
-from nonebot.typing import T_State
-from nonebot import logger, on_command
+from nonebot import on_command
 
 from src.plugins.github import config
-from src.plugins.github.helpers import NO_GITHUB_EVENT, get_platform
-from src.plugins.github.libs.message_tag import (
-    Tag,
+from src.plugins.github.dependencies import REPLY_TAG
+from src.plugins.github.helpers import REPLY_ANY, NO_GITHUB_EVENT
+from src.providers.platform import (
+    TARGET_INFO,
+    MESSAGE_INFO,
+    TargetType,
+    extract_sent_message,
+)
+from src.plugins.github.cache.message_tag import (
     IssueTag,
     CommitTag,
     PullRequestTag,
     create_message_tag,
 )
 
-from . import KEY_GITHUB_REPLY
-from .dependencies import is_github_reply
-
 link = on_command(
     "link",
-    rule=NO_GITHUB_EVENT & is_github_reply,
+    rule=NO_GITHUB_EVENT & REPLY_ANY,
     priority=config.github_command_priority,
     block=True,
 )
 
 
 @link.handle()
-async def handle_link(event: Event, state: T_State):
-    tag: Tag = state[KEY_GITHUB_REPLY]
+async def handle_link(
+    target_info: TARGET_INFO,
+    message_info: MESSAGE_INFO,
+    tag: REPLY_TAG,
+):
+    await create_message_tag(
+        message_info,
+        tag.copy(update={"is_receive": True}),
+    )
+
     url = f"https://github.com/{tag.owner}/{tag.repo}"
     match tag:
         case IssueTag():
@@ -45,13 +54,17 @@ async def handle_link(event: Event, state: T_State):
         case CommitTag():
             url += f"/commit/{tag.commit}"
 
-    result = await link.send(url)
+    match target_info.type:
+        case TargetType.QQ_USER | TargetType.QQ_GROUP:
+            result = await link.send(url)
+        case (
+            TargetType.QQ_OFFICIAL_USER
+            | TargetType.QQGUILD_USER
+            | TargetType.QQ_OFFICIAL_GROUP
+            | TargetType.QQGUILD_CHANNEL
+        ):
+            result = await link.send(url)
 
-    match get_platform(event):
-        case "qq":
-            if isinstance(result, dict) and "message_id" in result:
-                await create_message_tag(
-                    {"type": "qq", "message_id": result["message_id"]}, tag
-                )
-        case _:
-            logger.error(f"Unprocessed event type: {type(event)}")
+    tag = tag.copy(update={"is_receive": False})
+    if sent_message_info := extract_sent_message(target_info, result):
+        await create_message_tag(sent_message_info, tag)

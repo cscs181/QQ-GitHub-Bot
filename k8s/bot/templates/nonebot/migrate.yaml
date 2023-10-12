@@ -45,7 +45,7 @@ spec:
           command:
             - "sh"
             - "-c"
-            - "python ./scripts/database.py upgrade"
+            - "python ./scripts/database.py upgrade head"
           env:
             - name: ENVIRONMENT
               value: prod
