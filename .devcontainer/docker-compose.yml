@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   app:
-    image: mcr.microsoft.com/devcontainers/universal:2-linux
+    image: mcr.microsoft.com/devcontainers/python:3.11-bookworm
 
     volumes:
       - ../..:/workspaces:cached

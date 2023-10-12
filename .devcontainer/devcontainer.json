@@ -5,7 +5,8 @@
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
   "features": {
-    "ghcr.io/devcontainers-contrib/features/poetry:1": {}
+    "ghcr.io/devcontainers-contrib/features/poetry:2": {},
+    "ghcr.io/devcontainers-contrib/features/fish-apt-get:1": {}
   },
 
   // postgres port
@@ -21,10 +22,11 @@
         // disable dotenv auto activate
         "python.envFile": "",
         "python.analysis.diagnosticMode": "workspace",
-        "python.analysis.typeCheckingMode": "basic",
+        "ruff.organizeImports": false,
         "[python]": {
           "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": true,
             "source.organizeImports": true
           }
         },
@@ -56,6 +58,7 @@
         "ms-python.vscode-pylance",
         "ms-python.isort",
         "ms-python.black-formatter",
+        "charliermarsh.ruff",
         "EditorConfig.EditorConfig",
         "esbenp.prettier-vscode"
       ]
