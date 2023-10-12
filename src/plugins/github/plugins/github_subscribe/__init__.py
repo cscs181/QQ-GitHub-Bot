@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 17:13:24
+@LastEditTime   : 2023-10-11 14:04:48
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,8 +21,8 @@ from nonebot.params import Depends, CommandArg, ArgPlainText
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
-from src.plugins.github.models import Subscription
 from src.plugins.github.utils import get_github_bot
+from src.plugins.github.models import SubData, Subscription
 from src.providers.platform import TARGET_INFO, USER_EVENTS, GROUP_EVENTS
 from src.plugins.github.dependencies import (
     SUBSCRIPTIONS,
@@ -185,20 +185,25 @@ async def process_subscribe_event(state: T_State, events: str = ArgPlainText()):
 @subscribe.handle()
 async def create_user(target_info: TARGET_INFO, state: T_State):
     processed_events: dict[str, set[str] | None] = state["processed_events"]
-    await Subscription.subscribe_by_info(
-        target_info,
-        *(
-            {
-                "owner": state["owner"],
-                "repo": state["repo"],
-                "event": e,
-                "action": a and list(a),
-            }
-            for e, a in processed_events.items()
-        ),
-    )
+    try:
+        await Subscription.subscribe_by_info(
+            target_info,
+            *(
+                SubData(
+                    owner=state["owner"],
+                    repo=state["repo"],
+                    event=e,
+                    action=list(a) if a is not None else None,
+                )
+                for e, a in processed_events.items()
+            ),
+        )
+    except Exception as e:
+        logger.opt(exception=e).error(f"Failed to create or update subscription: {e}")
+        await subscribe.finish("订阅失败，请尝试重试或联系管理员")
+
     await subscribe.finish(
-        "操作成功，当前订阅：\n"
+        "订阅成功，当前订阅：\n"
         + subscriptions_to_message(await Subscription.from_info(target_info))
     )
 
@@ -266,25 +271,30 @@ async def process_unsubscribe_event(state: T_State, events: str = ArgPlainText()
 
 @unsubscribe.handle()
 async def delete_user(target_info: TARGET_INFO, state: T_State):
-    if state["processed_events"] == UNSUBSCRIBE_ALL_MESSAGE:
-        await Subscription.unsubscribe_all_by_info(
-            target_info, state["owner"], state["repo"]
-        )
-    else:
-        processed_events: dict[str, set[str] | None] = state["processed_events"]
-        await Subscription.unsubscribe_by_info(
-            target_info,
-            *(
-                {
-                    "owner": state["owner"],
-                    "repo": state["repo"],
-                    "event": e,
-                    "action": a and list(a),
-                }
-                for e, a in processed_events.items()
-            ),
-        )
+    try:
+        if state["processed_events"] == UNSUBSCRIBE_ALL_MESSAGE:
+            await Subscription.unsubscribe_all_by_info(
+                target_info, state["owner"], state["repo"]
+            )
+        else:
+            processed_events: dict[str, set[str] | None] = state["processed_events"]
+            await Subscription.unsubscribe_by_info(
+                target_info,
+                *(
+                    SubData(
+                        owner=state["owner"],
+                        repo=state["repo"],
+                        event=e,
+                        action=list(a) if a is not None else None,
+                    )
+                    for e, a in processed_events.items()
+                ),
+            )
+    except Exception as e:
+        logger.opt(exception=e).error(f"Failed to delete subscription: {e}")
+        await unsubscribe.finish("取消订阅失败，请尝试重试或联系管理员")
+
     await subscribe.finish(
-        "操作成功，当前订阅：\n"
+        "取消订阅成功，当前订阅：\n"
         + subscriptions_to_message(await Subscription.from_info(target_info))
     )

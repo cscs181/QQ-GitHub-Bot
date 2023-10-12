@@ -2,18 +2,20 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 09:50:07
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-06 17:22:40
+@LastEditTime   : 2023-10-11 13:26:13
 @Description    : User model
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from typing import cast
 from typing_extensions import Self
 
-from tortoise import fields
 from pydantic import parse_obj_as
-from tortoise.models import Model
-from tortoise.exceptions import DoesNotExist
+from sqlalchemy import String, select
+from sqlalchemy.orm import Mapped, mapped_column
+from nonebot_plugin_orm import Model, get_session
+from sqlalchemy.dialects.postgresql import JSONB, insert
 
 from src.providers.platform import UserInfo
 
@@ -21,12 +23,11 @@ from src.providers.platform import UserInfo
 class User(Model):
     """User model"""
 
-    id = fields.BigIntField(pk=True)
-    user = fields.JSONField(unique=True, null=False)
-    access_token = fields.CharField(max_length=255, null=True)
+    __tablename__ = "user"
 
-    class Meta:
-        table = "user"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user: Mapped[dict] = mapped_column(JSONB, unique=True, index=True, nullable=False)
+    access_token: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     def to_user_info(self) -> UserInfo:
         """Convert to user info"""
@@ -35,29 +36,34 @@ class User(Model):
     @classmethod
     async def from_info(cls, info: UserInfo) -> Self | None:
         """Get user model by user info"""
-        try:
-            return await cls.get(user=info.dict())
-        except DoesNotExist:
-            return None
+        sql = select(cls).where(cls.user == info.dict())
+        result = await get_session().execute(sql)
+        return result.scalar_one_or_none()
 
     @classmethod
     async def create_or_update_by_info(
         cls, info: UserInfo | Self, access_token: str | None
     ) -> Self:
         """Create or update user model by user info"""
-        data = {"access_token": access_token}
-
         if isinstance(info, cls):
-            await info.update_from_dict(data).save()
-            return info
+            info = info.to_user_info()
 
-        user, _ = await cls.update_or_create(user=info.dict(), defaults=data)
-        return user
+        info = cast(UserInfo, info)
+
+        insert_sql = insert(cls).values(user=info.dict(), access_token=access_token)
+        update_sql = insert_sql.on_conflict_do_update(
+            set_={"access_token": insert_sql.excluded.access_token}
+        ).returning(cls)
+
+        result = await get_session().execute(update_sql)
+        return result.scalar_one()
 
     async def unauth(self) -> None:
         """UnAuth user"""
         self.access_token = None
-        await self.save()
+        session = get_session()
+        session.add(self)
+        await session.commit()
 
     @classmethod
     async def unauth_by_info(cls, info: UserInfo) -> bool:

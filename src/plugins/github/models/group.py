@@ -2,18 +2,20 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 07:31:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-06 17:38:28
+@LastEditTime   : 2023-10-11 13:25:58
 @Description    : Group model
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from typing import cast
 from typing_extensions import Self
 
-from tortoise import fields
 from pydantic import parse_obj_as
-from tortoise.models import Model
-from tortoise.exceptions import DoesNotExist
+from sqlalchemy import String, select
+from sqlalchemy.orm import Mapped, mapped_column
+from nonebot_plugin_orm import Model, get_session
+from sqlalchemy.dialects.postgresql import JSONB, insert
 
 from src.providers.platform import GroupInfo
 
@@ -21,12 +23,11 @@ from src.providers.platform import GroupInfo
 class Group(Model):
     """Group model"""
 
-    id = fields.BigIntField(pk=True)
-    group = fields.JSONField(unique=True, null=False)
-    bind_repo = fields.CharField(max_length=255, null=True)
+    __tablename__ = "group"
 
-    class Meta:
-        table = "group"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    group: Mapped[dict] = mapped_column(JSONB, unique=True, index=True, nullable=False)
+    bind_repo: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     def to_group_info(self) -> GroupInfo:
         """Convert to group info"""
@@ -35,29 +36,34 @@ class Group(Model):
     @classmethod
     async def from_info(cls, info: GroupInfo) -> Self | None:
         """Get group model by group info"""
-        try:
-            return await cls.get(group=info.dict())
-        except DoesNotExist:
-            return None
+        sql = select(cls).where(cls.group == info.dict())
+        result = await get_session().execute(sql)
+        return result.scalar_one_or_none()
 
     @classmethod
     async def create_or_update_by_info(
         cls, info: GroupInfo | Self, bind_repo: str | None
     ) -> Self:
         """Create or update group model by group info"""
-        data = {"bind_repo": bind_repo}
-
         if isinstance(info, cls):
-            await info.update_from_dict(data).save()
-            return info
+            info = info.to_group_info()
 
-        group, _ = await cls.update_or_create(group=info.dict(), defaults=data)
-        return group
+        info = cast(GroupInfo, info)
+
+        insert_sql = insert(cls).values(user=info.dict(), bind_repo=bind_repo)
+        update_sql = insert_sql.on_conflict_do_update(
+            set_={"bind_repo": insert_sql.excluded.bind_repo}
+        ).returning(cls)
+
+        result = await get_session().execute(update_sql)
+        return result.scalar_one()
 
     async def unbind(self) -> None:
         """Unbind group and repo"""
         self.bind_repo = None
-        await self.save()
+        session = get_session()
+        session.add(self)
+        await session.commit()
 
     @classmethod
     async def unbind_by_info(cls, info: GroupInfo) -> bool:

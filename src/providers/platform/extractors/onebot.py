@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:20:11
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 14:00:40
+@LastEditTime   : 2023-10-11 11:22:27
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -43,6 +43,7 @@ class OneBotExtractor(
     USER_EVENTS = (MessageEvent,)
     GROUP_EVENTS = (GroupMessageEvent,)
     MESSAGE_EVENTS = (MessageEvent,)
+    REPLY_EVENTS = (MessageEvent,)
 
     @classmethod
     @override

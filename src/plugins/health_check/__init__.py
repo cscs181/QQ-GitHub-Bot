@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-10 06:57:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 20:00:43
+@LastEditTime   : 2023-10-11 11:28:43
 @Description    : Health check plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,12 +11,12 @@ __author__ = "yanyongyu"
 import nonebot
 from nonebot import logger
 from fastapi import FastAPI
+from sqlalchemy import text
 from fastapi.responses import JSONResponse
-from tortoise.connection import connections
+from nonebot_plugin_orm import get_session
 
 from src.providers.redis import redis_client
 from src.providers.playwright import get_browser
-from src.providers.tortoise import tortoise_config
 
 app: FastAPI = nonebot.get_app()
 
@@ -27,9 +27,7 @@ async def health_check():
 
     # check postgres connection
     try:
-        for conn_name in tortoise_config["connections"]:
-            conn = connections.get(conn_name)
-            await conn.execute_query("SELECT 1")
+        (await get_session().scalars(text("SELECT 1"))).all()
     except Exception as e:
         logger.opt(exception=e).error("Postgres connection health check failed.")
         return JSONResponse(

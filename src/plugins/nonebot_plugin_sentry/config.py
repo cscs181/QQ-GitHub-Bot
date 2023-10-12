@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-02 17:06:47
+@LastEditTime   : 2023-10-11 11:24:03
 @Description    : Config for Sentry plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,13 +18,17 @@ from pydantic import Extra, Field, BaseModel, validator, root_validator
 driver = get_driver()
 
 
-class Config(BaseModel, extra=Extra.allow):
+class Config(BaseModel):
     sentry_dsn: Optional[str]
     sentry_environment: str = driver.env
     sentry_integrations: List[Integration] = Field(default_factory=list)
 
     # [FIXED] https://github.com/getsentry/sentry-python/issues/653
     # sentry_default_integrations: bool = False
+
+    class Config:
+        extra = Extra.allow
+        arbitrary_types_allowed = True
 
     @root_validator(pre=True)
     def filter_sentry_configs(cls, values: Dict[str, Any]):
