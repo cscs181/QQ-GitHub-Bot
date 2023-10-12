@@ -11,10 +11,6 @@ on:
       - "master"
   workflow_dispatch:
 
-env:
-  # tmp image name for caching and inspection
-  TMP_IMAGE: ${{ github.repository }}
-
 jobs:
   check-version:
     runs-on: ubuntu-latest
@@ -67,11 +63,23 @@ jobs:
       - name: Setup Docker
         uses: docker/setup-buildx-action@v3
 
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Generate Image Name
+        id: image
+        run: |
+          "::set-output name=IMAGE::${GITHUB_REPOSITORY@L}"
+
       - name: Generate Labels
         uses: docker/metadata-action@v5
         id: metadata
         with:
-          images: ${{ env.TMP_IMAGE }}
+          images: ${{ steps.image.outputs.IMAGE }}
 
       - name: Build and Publish
         uses: docker/build-push-action@v5
@@ -82,7 +90,7 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          outputs: type=image,name=${{ env.TMP_IMAGE }},push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
+          outputs: type=image,name=${{ steps.image.outputs.IMAGE }},push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
 
       - name: Export digest
         run: |
@@ -127,6 +135,11 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Generate Image Name
+        id: image
+        run: |
+          "::set-output name=IMAGE::${GITHUB_REPOSITORY@L}"
+
       - name: Generate Tags
         uses: docker/metadata-action@v5
         id: metadata
@@ -145,9 +158,9 @@ jobs:
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create --dry-run $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.TMP_IMAGE }}@sha256:%s ' *)
+            $(printf '${{ steps.image.outputs.IMAGE }}@sha256:%s ' *)
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.TMP_IMAGE }}@sha256:%s ' *)
+            $(printf '${{ steps.image.outputs.IMAGE }}@sha256:%s ' *)
 
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v3
