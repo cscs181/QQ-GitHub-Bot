@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1
+
 FROM python:3.11-bookworm as requirements-stage
 
 WORKDIR /tmp
@@ -30,6 +31,13 @@ RUN --mount=type=bind,source=./.git/,target=/tmp/.git/ \
   || git rev-parse --short HEAD > /tmp/VERSION \
   && echo "Building version: $(cat /tmp/VERSION)"
 
+FROM python:3.11-bookworm as font-stage
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends curl p7zip-full \
+  && curl -sSL https://github.com/be5invis/Sarasa-Gothic/releases/download/v0.42.1/sarasa-gothic-ttc-0.42.1.7z -o /tmp/sarasa.7z \
+  && 7z x /tmp/sarasa.7z -o/tmp/sarasa
+
 FROM python:3.11-slim-bookworm
 
 WORKDIR /app
@@ -53,21 +61,22 @@ ENV APP_MODULE bot:app
 #   && echo "deb http://mirrors.aliyun.com/debian/ buster-updates main" >> /etc/apt/sources.list\
 #   && echo "deb http://mirrors.aliyun.com/debian-security/ buster/updates main" >> /etc/apt/sources.list
 
+COPY --from=font-stage /tmp/sarasa /tmp/sarasa
+
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends curl p7zip-full fontconfig fonts-noto-color-emoji \
-  && curl -sSL https://github.com/be5invis/Sarasa-Gothic/releases/download/v0.42.1/sarasa-gothic-ttc-0.42.1.7z -o /tmp/sarasa.7z \
-  && 7z x /tmp/sarasa.7z -o/tmp/sarasa \
+  && apt-get install -y --no-install-recommends fontconfig fonts-noto-color-emoji \
   && install -d /usr/share/fonts/sarasa-gothic \
   && install -m644 /tmp/sarasa/*.ttc /usr/share/fonts/sarasa-gothic \
   && fc-cache -fv \
-  && apt-get purge -y --auto-remove curl p7zip-full \
-  && rm -rf /tmp/sarasa/ /tmp/sarasa.7z
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /tmp/sarasa
 
 COPY --from=build-stage /wheel /wheel
 
 RUN pip install --no-cache-dir --no-index --find-links=/wheel -r /wheel/requirements.txt && rm -rf /wheel
 
-RUN playwright install --with-deps chromium
+RUN playwright install --with-deps chromium \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=metadata-stage /tmp/VERSION /app/VERSION
 
