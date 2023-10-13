@@ -73,7 +73,7 @@ jobs:
       - name: Generate Image Name
         id: image
         run: |
-          "::set-output name=IMAGE::${GITHUB_REPOSITORY@L}"
+          echo "IMAGE=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
 
       - name: Generate Labels
         uses: docker/metadata-action@v5
@@ -138,7 +138,7 @@ jobs:
       - name: Generate Image Name
         id: image
         run: |
-          "::set-output name=IMAGE::${GITHUB_REPOSITORY@L}"
+          echo "IMAGE=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
 
       - name: Generate Tags
         uses: docker/metadata-action@v5
