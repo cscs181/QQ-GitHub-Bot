@@ -70,10 +70,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Generate Image Name
+      - name: Generate Image Name and Scope
         id: image
         run: |
           echo "IMAGE=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
+          echo "SCOPE=${{ env.GITHUB_REF_NAME }}-${{ matrix.platform }}" >> $GITHUB_OUTPUT
 
       - name: Generate Labels
         uses: docker/metadata-action@v5
@@ -88,8 +89,8 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.metadata.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ steps.image.outputs.SCOPE }}
+          cache-to: type=gha,scope=${{ steps.image.outputs.SCOPE }},mode=max
           outputs: type=image,name=${{ steps.image.outputs.IMAGE }},push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
 
       - name: Export digest
@@ -116,6 +117,9 @@ jobs:
       }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Download digests
         uses: actions/download-artifact@v3
         with:
