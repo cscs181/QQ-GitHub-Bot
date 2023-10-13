@@ -6,7 +6,7 @@ authors = ["yanyongyu <yyy@yyydl.top>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 psutil = "^5.7.2"
 Jinja2 = "^3.0.0"
 unidiff = "^0.7.0"
