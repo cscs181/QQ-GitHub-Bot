@@ -52,7 +52,7 @@ status_config = Config.parse_obj(global_config)
 status_permission = (status_config.server_status_only_superusers or None) and SUPERUSER
 
 _ev = Environment(
-    trim_blocks=True, lstrip_blocks=True, autoescape=False, enable_async=True
+    lstrip_blocks=True, autoescape=False, enable_async=True
 )
 _ev.globals["relative_time"] = relative_time
 _ev.filters["relative_time"] = relative_time

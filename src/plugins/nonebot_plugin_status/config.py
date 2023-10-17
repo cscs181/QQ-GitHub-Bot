@@ -31,7 +31,7 @@ SWAP_TEMPLATE = (
 
 DISK_TEMPLATE = (
     "Disk:\n"
-    "{% for name, usage in disk_usage.items() %}\n"
+    "{% for name, usage in disk_usage.items() %}"
     "  {{ name }}: {{ '%02d' % usage.percent }}%\n"
     "{% endfor %}"
 )
