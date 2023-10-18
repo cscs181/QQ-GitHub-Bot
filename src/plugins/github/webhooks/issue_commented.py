@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-04-26 18:39:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 18:02:08
+@LastEditTime   : 2023-10-18 16:25:48
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,7 +18,7 @@ from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.github import ActionTimeout, IssueCommentCreated
 
 from src.plugins.github import config
-from src.plugins.github.utils import get_github_bot, set_context_bot
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.libs.renderer import issue_commented_to_image
 from src.plugins.github.cache.message_tag import IssueTag, PullRequestTag
 
@@ -76,10 +76,12 @@ async def handle_issue_opened_event(
     try:
         installation = cast(InstallationLite, event.payload.installation)
         async with bot.as_installation(installation.id):
-            with set_context_bot(bot):
-                image = await issue_commented_to_image(
-                    event.payload.repository, event.payload.issue, event.payload.comment
-                )
+            image = await issue_commented_to_image(
+                bot,
+                event.payload.repository,
+                event.payload.issue,
+                event.payload.comment,
+            )
     except (ActionTimeout, TimeoutError, Error):
         pass
     except Exception as e:

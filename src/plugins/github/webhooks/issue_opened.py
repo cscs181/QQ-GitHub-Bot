@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-04-04 20:02:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 17:59:10
+@LastEditTime   : 2023-10-18 16:26:03
 @Description    : Webhook issue opened broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,8 +18,8 @@ from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.github import IssuesOpened, ActionTimeout, PullRequestOpened
 
 from src.plugins.github import config
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.libs.renderer import issue_opened_to_image
-from src.plugins.github.utils import get_github_bot, set_context_bot
 from src.plugins.github.cache.message_tag import IssueTag, PullRequestTag
 
 from ._dependencies import (
@@ -79,8 +79,7 @@ async def handle_issue_opened_event(
     try:
         installation = cast(InstallationLite, event.payload.installation)
         async with bot.as_installation(installation.id):
-            with set_context_bot(bot):
-                image = await issue_opened_to_image(event.payload.repository, issue)
+            image = await issue_opened_to_image(bot, event.payload.repository, issue)
     except (ActionTimeout, TimeoutError, Error):
         pass
     except Exception as e:

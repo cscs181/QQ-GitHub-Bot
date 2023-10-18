@@ -8,8 +8,8 @@ from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.github import IssuesClosed, ActionTimeout, PullRequestClosed
 
 from src.plugins.github import config
+from src.plugins.github.utils import get_github_bot
 from src.plugins.github.libs.renderer import issue_closed_to_image
-from src.plugins.github.utils import get_github_bot, set_context_bot
 from src.plugins.github.cache.message_tag import IssueTag, PullRequestTag
 
 from ._dependencies import (
@@ -69,8 +69,7 @@ async def handle_issue_closed_event(
     try:
         installation = cast(InstallationLite, event.payload.installation)
         async with bot.as_installation(installation.id):
-            with set_context_bot(bot):
-                image = await issue_closed_to_image(event.payload.repository, issue)
+            image = await issue_closed_to_image(bot, event.payload.repository, issue)
     except (ActionTimeout, TimeoutError, Error):
         pass
     except Exception as e:

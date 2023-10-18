@@ -24,7 +24,8 @@ from githubkit.rest import (
 )
 
 from src.providers.redis import cache
-from src.plugins.github.utils import get_context_bot
+
+from .context import get_context_bot
 
 REACTION_EMOJIS = {
     "plus_one": "👍",

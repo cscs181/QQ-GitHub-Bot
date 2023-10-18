@@ -53,8 +53,8 @@ async def handle_content(
     )
 
     try:
-        async with context:
-            img = await issue_to_image(issue_)
+        async with context as bot:
+            img = await issue_to_image(bot, issue_)
     except ActionTimeout:
         await content.finish("GitHub API 超时，请稍后再试")
     except TimeoutError:

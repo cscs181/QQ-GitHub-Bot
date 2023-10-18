@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-04-26 18:25:32
+@LastEditTime   : 2023-10-18 16:22:15
 @Description    : GitHub html renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,7 +13,9 @@ from typing import Literal
 
 import jinja2
 from githubkit import rest, webhooks
+from nonebot.adapters.github import OAuthBot, GitHubBot
 
+from .context import set_context_bot
 from .filters import (
     debug_event,
     markdown_gfm,
@@ -63,7 +65,9 @@ env.globals["scale_linear"] = scale_linear
 
 
 async def issue_to_html(
-    issue: rest.Issue, theme: Literal["light", "dark"] = "light"
+    bot: GitHubBot | OAuthBot,
+    issue: rest.Issue,
+    theme: Literal["light", "dark"] = "light",
 ) -> str:
     """Render issue or pr with timeline to html
 
@@ -72,11 +76,14 @@ async def issue_to_html(
         theme: the theme of the html
     """
     template = env.get_template("views/issue.html.jinja")
-    return await template.render_async(issue=issue, theme=theme)
+    with set_context_bot(bot):
+        return await template.render_async(issue=issue, theme=theme)
 
 
 async def pr_diff_to_html(
-    issue: rest.Issue, theme: Literal["light", "dark"] = "light"
+    bot: GitHubBot | OAuthBot,
+    issue: rest.Issue,
+    theme: Literal["light", "dark"] = "light",
 ) -> str:
     """Render pr diff to html
 
@@ -85,10 +92,12 @@ async def pr_diff_to_html(
         theme: the theme of the html
     """
     template = env.get_template("views/diff.html.jinja")
-    return await template.render_async(issue=issue, theme=theme)
+    with set_context_bot(bot):
+        return await template.render_async(issue=issue, theme=theme)
 
 
 async def issue_opened_to_html(
+    bot: GitHubBot | OAuthBot,
     repo: webhooks.Repository,
     issue: webhooks.IssuesOpenedPropIssue | webhooks.PullRequestOpenedPropPullRequest,
     theme: Literal["light", "dark"] = "light",
@@ -101,10 +110,12 @@ async def issue_opened_to_html(
         theme: the theme of the html
     """
     template = env.get_template("views/issue-opened.html.jinja")
-    return await template.render_async(repo=repo, issue=issue, theme=theme)
+    with set_context_bot(bot):
+        return await template.render_async(repo=repo, issue=issue, theme=theme)
 
 
 async def issue_commented_to_html(
+    bot: GitHubBot | OAuthBot,
     repo: webhooks.Repository,
     issue: webhooks.IssueCommentCreatedPropIssue,
     comment: webhooks.IssueComment,
@@ -119,12 +130,14 @@ async def issue_commented_to_html(
         theme: the theme of the html
     """
     template = env.get_template("views/issue-commented.html.jinja")
-    return await template.render_async(
-        repo=repo, issue=issue, comment=comment, theme=theme
-    )
+    with set_context_bot(bot):
+        return await template.render_async(
+            repo=repo, issue=issue, comment=comment, theme=theme
+        )
 
 
 async def issue_closed_to_html(
+    bot: GitHubBot | OAuthBot,
     repo: webhooks.Repository,
     issue: webhooks.IssuesClosedPropIssue | webhooks.PullRequestClosedPropPullRequest,
     theme: Literal["light", "dark"] = "light",
@@ -138,4 +151,5 @@ async def issue_closed_to_html(
     """
     # 直接用issue-opened.html.jinja感觉就行
     template = env.get_template("views/issue-opened.html.jinja")
-    return await template.render_async(repo=repo, issue=issue, theme=theme)
+    with set_context_bot(bot):
+        return await template.render_async(repo=repo, issue=issue, theme=theme)
