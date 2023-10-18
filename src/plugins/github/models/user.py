@@ -6,6 +6,7 @@
 @Description    : User model
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 from typing import cast

@@ -6,6 +6,7 @@
 @Description    : Webhook issue opened broadcast
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 import asyncio

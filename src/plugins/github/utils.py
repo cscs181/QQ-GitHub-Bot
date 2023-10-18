@@ -6,6 +6,7 @@
 @Description    : Utils for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 import nonebot

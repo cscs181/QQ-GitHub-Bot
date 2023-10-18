@@ -6,6 +6,7 @@
 @Description    : Platform compatibility provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 from typing import Annotated, TypeAlias

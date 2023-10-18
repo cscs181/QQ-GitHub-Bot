@@ -6,6 +6,7 @@
 @Description    : GitHub app installation lib
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 import urllib.parse

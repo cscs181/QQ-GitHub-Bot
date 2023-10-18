@@ -6,6 +6,7 @@
 @Description    : Common text matcher for status plugin
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 from nonebot import on_command

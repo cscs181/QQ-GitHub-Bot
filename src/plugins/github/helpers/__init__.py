@@ -6,6 +6,7 @@
 @Description    : Helpers for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 from .cancellation import is_cancellation as is_cancellation

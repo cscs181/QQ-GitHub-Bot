@@ -6,6 +6,7 @@
 @Description    : Database Models
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 from .user import User as User

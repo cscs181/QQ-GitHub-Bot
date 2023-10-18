@@ -6,6 +6,7 @@
 @Description    : Config for status plugin
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 

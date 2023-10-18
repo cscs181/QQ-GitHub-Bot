@@ -6,6 +6,7 @@
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 from .common import STORE_REGEX_VARS as STORE_REGEX_VARS

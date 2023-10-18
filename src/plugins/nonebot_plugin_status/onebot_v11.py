@@ -6,6 +6,7 @@
 @Description    : OneBot v11 matchers for status plugin
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 from nonebot.rule import to_me

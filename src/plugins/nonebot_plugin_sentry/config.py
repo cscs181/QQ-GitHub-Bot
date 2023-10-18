@@ -6,6 +6,7 @@
 @Description    : Config for Sentry plugin
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 from typing import Any, Dict, List, Optional

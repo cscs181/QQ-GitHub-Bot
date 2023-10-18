@@ -6,6 +6,7 @@
 @Description    : Redis provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 import pickle

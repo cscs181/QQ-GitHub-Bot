@@ -6,6 +6,7 @@
 @Description    : Rule helpers
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 from nonebot.rule import Rule

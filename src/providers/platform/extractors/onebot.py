@@ -6,6 +6,7 @@
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 from typing import Any
