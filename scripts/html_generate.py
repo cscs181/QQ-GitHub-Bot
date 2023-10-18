@@ -14,7 +14,7 @@ root = Path(__file__).parent.parent
 sys.path.append(str(root))
 
 from src.plugins.github import config
-from src.plugins.github.utils import get_oauth_github
+from src.plugins.github.utils import get_oauth_bot
 from src.plugins.github.helpers import ISSUE_REGEX, FULLREPO_REGEX
 from src.plugins.github.libs.renderer.render import issue_to_html, pr_diff_to_html
 
@@ -29,10 +29,9 @@ async def gen_issue_html(issue: str, output_file: Optional[str] = None):
         return
 
     owner, repo, issue_number = m.groups()
-    resp = await get_oauth_github().rest.issues.async_get(
-        owner, repo, int(issue_number)
-    )
-    html = await issue_to_html(resp.parsed_data, config.github_theme)
+    bot = get_oauth_bot()
+    resp = await bot.rest.issues.async_get(owner, repo, int(issue_number))
+    html = await issue_to_html(bot, resp.parsed_data, config.github_theme)
     if not output_file:
         print(html)
         return
@@ -52,13 +51,12 @@ async def gen_diff_html(pr: str, output_file: Optional[str] = None):
         return
 
     owner, repo, issue_number = m.groups()
-    resp = await get_oauth_github().rest.issues.async_get(
-        owner, repo, int(issue_number)
-    )
+    bot = get_oauth_bot()
+    resp = await bot.rest.issues.async_get(owner, repo, int(issue_number))
     issue = resp.parsed_data
     if not issue.pull_request:
         print("Not a pull request")
-    html = await pr_diff_to_html(issue, config.github_theme)
+    html = await pr_diff_to_html(bot, issue, config.github_theme)
     if not output_file:
         print(html)
         return
