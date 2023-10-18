@@ -2,17 +2,20 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 14:22:39
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 18:31:15
+@LastEditTime   : 2023-10-18 17:21:12
 @Description    : Playwright provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
+from datetime import timedelta
 from typing import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from nonebot import get_driver
 from playwright.async_api import Page, Browser, Playwright, async_playwright
+
+from src.providers.redis import cache
 
 driver = get_driver()
 
@@ -59,3 +62,10 @@ async def get_new_page(**kwargs) -> AsyncGenerator[Page, None]:
     finally:
         await page.close()
         await ctx.close()
+
+
+@cache(ex=timedelta(hours=24))
+async def content_screenshot(html: str, width: int, height: int) -> bytes:
+    async with get_new_page(viewport={"width": width, "height": height}) as page:
+        await page.set_content(html)
+        return await page.screenshot(timeout=60_000, full_page=True)

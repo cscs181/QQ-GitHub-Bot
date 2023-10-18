@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 14:16:02
+@LastEditTime   : 2023-10-18 17:30:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,6 +15,7 @@ __plugin_meta__ = PluginMetadata(
     "通过回复 GitHub 消息来快速进行 Issue、PR 相关操作",
     "/link: 获取 Issue/PR 链接\n"
     "/repo: 获取仓库链接\n"
+    "/readme: 获取仓库 README\n"
     "/star: star 仓库（仅仓库安装 APP 后有效）\n"
     "/unstar: unstar 仓库（仅仓库安装 APP 后有效）\n"
     "/content: 查看 Issue、PR 信息及事件\n"
@@ -38,6 +39,7 @@ from . import star as star
 from . import close as close
 from . import label as label
 from . import merge as merge
+from . import readme as readme
 from . import reopen as reopen
 from . import unstar as unstar
 from . import approve as approve

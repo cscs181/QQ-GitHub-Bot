@@ -2,20 +2,18 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-18 16:23:55
+@LastEditTime   : 2023-10-18 17:21:33
 @Description    : GitHub image renderer
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
-from datetime import timedelta
 
 from githubkit import rest, webhooks
 from nonebot.adapters.github import OAuthBot, GitHubBot
 
 from src.plugins.github import config
-from src.providers.redis import cache
-from src.providers.playwright import get_new_page
+from src.providers.playwright import content_screenshot
 
 from .render import (
     issue_to_html,
@@ -26,13 +24,6 @@ from .render import (
 )
 
 
-@cache(ex=timedelta(minutes=30))
-async def _gen_image(html: str, width: int, height: int) -> bytes:
-    async with get_new_page(viewport={"width": width, "height": height}) as page:
-        await page.set_content(html)
-        return await page.screenshot(timeout=60_000, full_page=True)
-
-
 async def issue_to_image(
     bot: GitHubBot | OAuthBot,
     issue: rest.Issue,
@@ -41,7 +32,7 @@ async def issue_to_image(
 ) -> bytes:
     """Render a github issue/pr timeline to image"""
     html = await issue_to_html(bot, issue, config.github_theme)
-    return await _gen_image(html, width, height)
+    return await content_screenshot(html, width, height)
 
 
 async def pr_diff_to_image(
@@ -52,7 +43,7 @@ async def pr_diff_to_image(
 ) -> bytes:
     """Render a github pr diff to image"""
     html = await pr_diff_to_html(bot, issue, config.github_theme)
-    return await _gen_image(html, width, height)
+    return await content_screenshot(html, width, height)
 
 
 async def issue_opened_to_image(
@@ -64,7 +55,7 @@ async def issue_opened_to_image(
 ) -> bytes:
     """Render webhook event issue/opened to image"""
     html = await issue_opened_to_html(bot, repo, issue, config.github_theme)
-    return await _gen_image(html, width, height)
+    return await content_screenshot(html, width, height)
 
 
 async def issue_commented_to_image(
@@ -77,7 +68,7 @@ async def issue_commented_to_image(
 ) -> bytes:
     """Render webhook event issue_comment/created to image"""
     html = await issue_commented_to_html(bot, repo, issue, comment, config.github_theme)
-    return await _gen_image(html, width, height)
+    return await content_screenshot(html, width, height)
 
 
 async def issue_closed_to_image(
@@ -89,4 +80,4 @@ async def issue_closed_to_image(
 ) -> bytes:
     """Render webhook event issue/closed to image"""
     html = await issue_closed_to_html(bot, repo, issue, config.github_theme)
-    return await _gen_image(html, width, height)
+    return await content_screenshot(html, width, height)
