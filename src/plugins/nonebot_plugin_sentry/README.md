@@ -2,10 +2,12 @@
  * @Author         : yanyongyu
  * @Date           : 2020-11-23 20:23:12
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-10-02 16:44:50
+ * @LastEditTime   : 2023-10-18 10:29:34
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
+
+<!-- markdownlint-disable MD033 MD036 MD041 -->
 
 <p align="center">
   <a href="https://nonebot.dev/">
@@ -40,6 +42,6 @@ _✨ 在 Sentry.io 上进行 NoneBot 服务日志查看、错误处理 ✨_
 
 ## 配置项
 
-配置项需要添加前缀 `sentry_`，所有参数以及具体含义参考: [Sentry Docs](https://docs.sentry.io/platforms/python/configuration/options/)
+配置项需要添加前缀 `SENTRY_`，所有参数以及具体含义参考: [Sentry Docs](https://docs.sentry.io/platforms/python/configuration/options/)
 
-所有以 `sentry_` 开头的配置项将会被自动读取。
+所有以 `SENTRY_` 开头的配置项将会被自动读取。

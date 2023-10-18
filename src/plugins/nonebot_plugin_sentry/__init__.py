@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-02 17:07:39
+@LastEditTime   : 2023-10-18 10:32:17
 @Description    : Sentry plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,7 +11,6 @@ __author__ = "yanyongyu"
 import sentry_sdk
 from nonebot import logger, get_driver
 from nonebot.plugin import PluginMetadata
-from sentry_sdk.integrations.logging import EventHandler, BreadcrumbHandler
 
 from .config import Config
 
@@ -34,15 +33,8 @@ def init_sentry(config: Config):
     sentry_config = {key[7:]: value for key, value in config.dict().items()}
     sentry_sdk.init(**sentry_config)
 
-    logger.add(
-        EventHandler("ERROR"),
-        filter=lambda r: r["level"].no >= logger.level("ERROR").no,
-    )
-    logger.add(
-        BreadcrumbHandler("INFO"),
-        filter=lambda r: r["level"].no >= logger.level("INFO").no,
-    )
-
 
 if config.sentry_dsn:
     init_sentry(config)
+else:
+    logger.warning("Sentry DSN not provided! Sentry plugin disabled!")

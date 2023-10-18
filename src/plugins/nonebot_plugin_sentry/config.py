@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2020-11-23 18:44:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-11 11:24:03
+@LastEditTime   : 2023-10-18 10:32:28
 @Description    : Config for Sentry plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -10,7 +10,7 @@ __author__ = "yanyongyu"
 
 from typing import Any, Dict, List, Optional
 
-from nonebot import logger, get_driver
+from nonebot import get_driver
 from sentry_sdk.integrations import Integration
 from sentry_sdk.integrations.loguru import LoguruIntegration
 from pydantic import Extra, Field, BaseModel, validator, root_validator
@@ -35,12 +35,6 @@ class Config(BaseModel):
         return {
             key: value for key, value in values.items() if key.startswith("sentry_")
         }
-
-    @validator("sentry_dsn", allow_reuse=True)
-    def validate_dsn(cls, v: Optional[str]):
-        if not v:
-            logger.warning("Sentry DSN not provided! Sentry plugin disabled!")
-        return v
 
     @validator("sentry_integrations", allow_reuse=True)
     def validate_integrations(cls, v: List[Integration]):
