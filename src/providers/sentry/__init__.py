@@ -2,8 +2,8 @@
 @Author         : yanyongyu
 @Date           : 2023-11-07 15:16:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-07 15:16:04
-@Description    : None
+@LastEditTime   : 2023-11-07 15:23:55
+@Description    : Sentry provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
 
