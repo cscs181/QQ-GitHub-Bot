@@ -17,10 +17,10 @@ mdit-py-emoji = "^0.1.0"
 typing-extensions = "^4.0.0"
 nonebot-plugin-orm = "^0.1.1"
 nonebot-adapter-qq = "^1.0.0"
+nonebot-plugin-sentry = "^1.0.0"
 nonebot-adapter-github = "^0.3.0"
 nonebot-adapter-onebot = "^2.1.4"
 redis = { version = "^5.0.0", extras = ["hiredis"] }
-sentry-sdk = { version = "^1.23.0", extras = ["loguru"] }
 markdown-it-py = { version = "^3.0.0", extras = ["linkify", "plugins"] }
 nonebot2 = { version = "^2.1.0", extras = ["httpx", "websockets", "fastapi"] }
 
