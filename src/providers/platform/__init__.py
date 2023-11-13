@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:18:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 14:26:09
+@LastEditTime   : 2023-11-13 17:22:45
 @Description    : Platform compatibility provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,13 +16,16 @@ from nonebot.adapters import Event
 from nonebot.params import Depends
 from nonebot.matcher import Matcher
 
-from .typing import TargetType as TargetType
+# isort: split
+
+from .roles import RoleLevel as RoleLevel
 
 # isort: split
 
 from .targets import UserInfo as UserInfo
 from .targets import GroupInfo as GroupInfo
 from .targets import TargetInfo as TargetInfo
+from .targets import TargetType as TargetType
 
 # isort: split
 
@@ -30,11 +33,9 @@ from .messages import MessageInfo as MessageInfo
 
 # isort: split
 
-from .extractors import USER_EVENTS as USER_EVENTS
-from .extractors import GROUP_EVENTS as GROUP_EVENTS
+from .extractors import extract_role as extract_role
 from .extractors import extract_user as extract_user
 from .extractors import extract_group as extract_group
-from .extractors import MESSAGE_EVENTS as MESSAGE_EVENTS
 from .extractors import extract_target as extract_target
 from .extractors import get_target_bot as get_target_bot
 from .extractors import extract_message as extract_message
@@ -53,6 +54,9 @@ OPTIONAL_TARGET_INFO: TypeAlias = Annotated[
 ]
 OPTIONAL_IS_PRIVATE: TypeAlias = Annotated[
     bool | None, Depends(extract_is_private, use_cache=True)
+]
+OPTIONAL_ROLE: TypeAlias = Annotated[
+    RoleLevel | None, Depends(extract_role, use_cache=True)
 ]
 OPTIONAL_MESSAGE_INFO: TypeAlias = Annotated[
     MessageInfo | None, Depends(extract_message, use_cache=True)
@@ -98,6 +102,13 @@ async def ensure_is_private(
     return is_private
 
 
+async def ensure_role(event: Event, matcher: Matcher, role: OPTIONAL_ROLE) -> RoleLevel:
+    if role is None:
+        logger.error(f"Unprocessed event type: {type(event)}")
+        await matcher.finish()
+    return role
+
+
 async def ensure_message(
     event: Event, matcher: Matcher, message: OPTIONAL_MESSAGE_INFO
 ) -> MessageInfo:
@@ -115,6 +126,8 @@ TARGET_INFO: TypeAlias = Annotated[TargetInfo, Depends(ensure_target, use_cache=
 """Target info dependency. Finish the session if target info cannot be extracted.""" ""
 IS_PRIVATE: TypeAlias = Annotated[bool, Depends(ensure_is_private, use_cache=True)]
 """Is private dependency. Finish the session if is private cannot be extracted."""
+ROLE: TypeAlias = Annotated[RoleLevel, Depends(ensure_role, use_cache=True)]
+"""Role dependency. Finish the session if role cannot be extracted."""
 MESSAGE_INFO: TypeAlias = Annotated[
     MessageInfo, Depends(ensure_message, use_cache=True)
 ]

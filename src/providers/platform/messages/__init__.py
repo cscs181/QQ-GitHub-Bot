@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:19:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:19:34
+@LastEditTime   : 2023-11-11 15:00:02
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,7 +14,7 @@ from typing import Generic, Literal, TypeVar, Annotated, TypeAlias
 from pydantic import Field
 from pydantic.generics import GenericModel
 
-from src.providers.platform.typing import TargetType
+from src.providers.platform.targets import TargetType
 
 ID = TypeVar("ID", int, str)
 

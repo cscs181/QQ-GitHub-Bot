@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-11 14:04:48
+@LastEditTime   : 2023-11-13 17:35:51
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,7 +11,6 @@ __author__ = "yanyongyu"
 
 import re
 
-from nonebot.rule import is_type
 from nonebot.typing import T_State
 from nonebot.matcher import Matcher
 from nonebot.adapters import Message
@@ -22,9 +21,9 @@ from nonebot.params import Depends, CommandArg, ArgPlainText
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
+from src.providers.platform import TARGET_INFO
 from src.plugins.github.utils import get_github_bot
 from src.plugins.github.models import SubData, Subscription
-from src.providers.platform import TARGET_INFO, USER_EVENTS, GROUP_EVENTS
 from src.plugins.github.dependencies import (
     SUBSCRIPTIONS,
     AUTHORIZED_USER,
@@ -35,6 +34,7 @@ from src.plugins.github.helpers import (
     FULLREPO_REGEX,
     GROUP_SUPERPERM,
     NO_GITHUB_EVENT,
+    MATCH_WHEN_PRIVATE_OR_GROUP,
     allow_cancellation,
 )
 
@@ -73,7 +73,7 @@ def subscriptions_to_message(subscriptions: list[Subscription]) -> str:
 
 subscribe = on_command(
     "subscribe",
-    is_type(*USER_EVENTS, *GROUP_EVENTS) & NO_GITHUB_EVENT,
+    MATCH_WHEN_PRIVATE_OR_GROUP & NO_GITHUB_EVENT,
     permission=PRIVATE_PERM | GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,
@@ -211,7 +211,7 @@ async def create_user(target_info: TARGET_INFO, state: T_State):
 
 unsubscribe = on_command(
     "unsubscribe",
-    is_type(*USER_EVENTS, *GROUP_EVENTS) & NO_GITHUB_EVENT,
+    MATCH_WHEN_PRIVATE_OR_GROUP & NO_GITHUB_EVENT,
     permission=PRIVATE_PERM | GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,

@@ -2,14 +2,13 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:20:11
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-11 11:22:27
+@LastEditTime   : 2023-11-11 15:00:14
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
-from typing import Any
 from typing_extensions import override
 
 import nonebot
@@ -20,8 +19,8 @@ from nonebot.adapters.onebot.v11 import (
     PrivateMessageEvent,
 )
 
-from src.providers.platform.typing import TargetType
-from src.providers.platform.targets import QQUserInfo, TargetInfo, QQGroupInfo
+from src.providers.platform.roles import RoleLevel
+from src.providers.platform.targets import QQUserInfo, TargetType, QQGroupInfo
 from src.providers.platform.messages import (
     MessageInfo,
     QQUserMessageInfo,
@@ -31,20 +30,9 @@ from src.providers.platform.messages import (
 from ._base import Extractor
 
 
-class OneBotExtractor(
-    Extractor[
-        MessageEvent,
-        GroupMessageEvent,
-        MessageEvent,
-        MessageEvent,
-    ]
-):
-    TARGETS = (TargetType.QQ_USER, TargetType.QQ_GROUP)
-
-    USER_EVENTS = (MessageEvent,)
-    GROUP_EVENTS = (GroupMessageEvent,)
-    MESSAGE_EVENTS = (MessageEvent,)
-    REPLY_EVENTS = (MessageEvent,)
+class OneBotExtractor(Extractor[MessageEvent, QQUserInfo | QQGroupInfo]):
+    EVENTS = (MessageEvent,)
+    TARGETS = (QQUserInfo, QQGroupInfo)
 
     @classmethod
     @override
@@ -53,29 +41,30 @@ class OneBotExtractor(
 
     @classmethod
     @override
-    def extract_group(cls, event) -> QQGroupInfo:
-        return QQGroupInfo(type=TargetType.QQ_GROUP, qq_group_id=event.group_id)
+    def extract_group(cls, event) -> QQGroupInfo | None:
+        if isinstance(event, GroupMessageEvent):
+            return QQGroupInfo(type=TargetType.QQ_GROUP, qq_group_id=event.group_id)
 
     @classmethod
     @override
-    def extract_target(cls, event) -> TargetInfo:
-        return (
-            QQGroupInfo(type=TargetType.QQ_GROUP, qq_group_id=event.group_id)
-            if isinstance(event, GroupMessageEvent)
-            else QQUserInfo(type=TargetType.QQ_USER, qq_user_id=event.user_id)
-        )
+    def extract_role(cls, event) -> RoleLevel | None:
+        if not isinstance(event, GroupMessageEvent):
+            return
+
+        if event.sender.role == "owner":
+            return RoleLevel.OWNER
+        elif event.sender.role == "admin":
+            return RoleLevel.ADMIN
+        elif event.sender.role == "member":
+            return RoleLevel.MEMBER
+        return RoleLevel.GUEST
 
     @classmethod
     @override
-    def extract_is_private(cls, event) -> bool:
-        return isinstance(event, PrivateMessageEvent)
-
-    @classmethod
-    @override
-    def extract_message(cls, event) -> QQUserMessageInfo | QQGroupMessageInfo:
-        if cls.extract_is_private(event):
+    def extract_message(cls, event) -> QQUserMessageInfo | QQGroupMessageInfo | None:
+        if isinstance(event, PrivateMessageEvent):
             return QQUserMessageInfo(type=TargetType.QQ_USER, id=event.message_id)
-        else:
+        elif isinstance(event, GroupMessageEvent):
             return QQGroupMessageInfo(type=TargetType.QQ_GROUP, id=event.message_id)
 
     @classmethod
@@ -92,13 +81,13 @@ class OneBotExtractor(
 
     @classmethod
     @override
-    def get_target_bot(cls, target: TargetInfo) -> Bot:
+    def get_target_bot(cls, target) -> Bot:
         return next(bot for bot in nonebot.get_bots().values() if isinstance(bot, Bot))
 
     @classmethod
     @override
     def extract_sent_message(
-        cls, target: QQUserInfo | QQGroupInfo, result: Any
+        cls, target, result
     ) -> QQUserMessageInfo | QQGroupMessageInfo | None:
         if isinstance(result, dict) and "message_id" in result:
             if isinstance(target, QQUserInfo):

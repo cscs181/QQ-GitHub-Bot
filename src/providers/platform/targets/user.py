@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:19:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:19:21
+@LastEditTime   : 2023-11-11 14:58:53
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,9 +14,7 @@ from typing import Literal, Annotated, TypeAlias
 
 from pydantic import Field
 
-from src.providers.platform.typing import TargetType
-
-from ._base import BaseTargetInfo
+from ._base import TargetType, BaseTargetInfo
 
 
 class BaseUserInfo(abc.ABC, BaseTargetInfo):

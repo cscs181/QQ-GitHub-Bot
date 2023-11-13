@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-18 16:24:39
+@LastEditTime   : 2023-11-13 17:33:36
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -10,7 +10,6 @@
 __author__ = "yanyongyu"
 
 
-from nonebot.rule import is_type
 from nonebot.typing import T_State
 from nonebot import logger, on_regex
 from nonebot.plugin import PluginMetadata
@@ -26,23 +25,23 @@ from src.plugins.github.cache.message_tag import (
     PullRequestTag,
     create_message_tag,
 )
+from src.providers.platform import (
+    TARGET_INFO,
+    MESSAGE_INFO,
+    TargetType,
+    extract_sent_message,
+)
 from src.plugins.github.dependencies import (
     ISSUE,
     BINDED_GROUP,
     STORE_REGEX_VARS,
     GITHUB_PUBLIC_CONTEXT,
 )
-from src.providers.platform import (
-    TARGET_INFO,
-    GROUP_EVENTS,
-    MESSAGE_INFO,
-    TargetType,
-    extract_sent_message,
-)
 from src.plugins.github.helpers import (
     ISSUE_REGEX,
     FULLREPO_REGEX,
     NO_GITHUB_EVENT,
+    MATCH_WHEN_GROUP,
     GITHUB_PR_FILE_LINK_REGEX,
     GITHUB_ISSUE_OR_PR_LINK_REGEX,
 )
@@ -180,7 +179,7 @@ async def handle_pr_diff(
 
 issue_short = on_regex(
     rf"^#{ISSUE_REGEX}$",
-    rule=is_type(*GROUP_EVENTS) & NO_GITHUB_EVENT,
+    rule=MATCH_WHEN_GROUP & NO_GITHUB_EVENT,
     priority=config.github_command_priority,
 )
 

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:19:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 14:01:43
+@LastEditTime   : 2023-11-11 14:54:56
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,6 +13,7 @@ from typing import Any, cast
 
 from nonebot.adapters import Bot, Event
 
+from src.providers.platform.roles import RoleLevel
 from src.providers.platform.messages import MessageInfo
 from src.providers.platform.targets import UserInfo, GroupInfo, TargetInfo
 
@@ -21,47 +22,46 @@ from .onebot import OneBotExtractor as OneBotExtractor
 
 EXTRACTORS = cast(tuple[type[Extractor], ...], (OneBotExtractor,))
 
-USER_EVENTS = cast(tuple[type[Event], ...], tuple(e.USER_EVENTS for e in EXTRACTORS))
-GROUP_EVENTS = cast(tuple[type[Event], ...], tuple(e.GROUP_EVENTS for e in EXTRACTORS))
-MESSAGE_EVENTS = cast(
-    tuple[type[Event], ...], tuple(e.MESSAGE_EVENTS for e in EXTRACTORS)
-)
-REPLY_EVENTS = cast(tuple[type[Event], ...], tuple(e.REPLY_EVENTS for e in EXTRACTORS))
-
 
 def extract_user(event: Event) -> UserInfo | None:
     for extractor in EXTRACTORS:
-        if isinstance(event, extractor.USER_EVENTS):
+        if isinstance(event, extractor.EVENTS):
             return extractor.extract_user(event)
 
 
 def extract_group(event: Event) -> GroupInfo | None:
     for extractor in EXTRACTORS:
-        if isinstance(event, extractor.GROUP_EVENTS):
+        if isinstance(event, extractor.EVENTS):
             return extractor.extract_group(event)
 
 
 def extract_target(event: Event) -> TargetInfo | None:
     for extractor in EXTRACTORS:
-        if isinstance(event, extractor.USER_EVENTS):
+        if isinstance(event, extractor.EVENTS):
             return extractor.extract_target(event)
 
 
 def extract_is_private(event: Event) -> bool | None:
     for extractor in EXTRACTORS:
-        if isinstance(event, extractor.USER_EVENTS):
+        if isinstance(event, extractor.EVENTS):
             return extractor.extract_is_private(event)
+
+
+def extract_role(event: Event) -> RoleLevel | None:
+    for extractor in EXTRACTORS:
+        if isinstance(event, extractor.EVENTS):
+            return extractor.extract_role(event)
 
 
 def extract_message(event: Event) -> MessageInfo | None:
     for extractor in EXTRACTORS:
-        if isinstance(event, extractor.MESSAGE_EVENTS):
+        if isinstance(event, extractor.EVENTS):
             return extractor.extract_message(event)
 
 
 def extract_reply_message(event: Event) -> MessageInfo | None:
     for extractor in EXTRACTORS:
-        if isinstance(event, extractor.REPLY_EVENTS):
+        if isinstance(event, extractor.EVENTS):
             return extractor.extract_reply_message(event)
 
 

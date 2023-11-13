@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-03-04 17:55:56
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 14:50:08
+@LastEditTime   : 2023-11-13 17:23:10
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,11 +16,15 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.utils import get_github_bot
-from src.providers.platform.typing import TargetType
 from src.plugins.github.cache.message_tag import create_message_tag
 from src.plugins.github.helpers import NO_GITHUB_EVENT, REPLY_ISSUE_OR_PR
 from src.plugins.github.dependencies import AUTHORIZED_USER, ISSUE_OR_PR_REPLY_TAG
-from src.providers.platform import TARGET_INFO, MESSAGE_INFO, extract_sent_message
+from src.providers.platform import (
+    TARGET_INFO,
+    MESSAGE_INFO,
+    TargetType,
+    extract_sent_message,
+)
 
 comment = on_command(
     "comment",

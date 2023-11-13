@@ -16,7 +16,7 @@ playwright = "^1.17.2"
 mdit-py-emoji = "^0.1.0"
 typing-extensions = "^4.0.0"
 nonebot-plugin-orm = "^0.1.1"
-nonebot-adapter-qq = "^1.0.0"
+nonebot-adapter-qq = "^1.1.0"
 nonebot-plugin-sentry = "^1.0.0"
 nonebot-adapter-github = "^0.3.0"
 nonebot-adapter-onebot = "^2.1.4"
@@ -65,7 +65,6 @@ extraPaths = ["./"]
 
 pythonPlatform = "All"
 executionEnvironments = [
-  { root = "./src/plugins/nonebot_plugin_sentry", pythonVersion = "3.8" },
   { root = "./src/plugins/nonebot_plugin_status", pythonVersion = "3.8" },
   { root = "./", pythonVersion = "3.11" },
 ]

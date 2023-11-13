@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:19:00
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:19:00
+@LastEditTime   : 2023-11-11 14:58:29
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,6 +13,7 @@ from typing import Annotated, TypeAlias
 
 from pydantic import Field
 
+from ._base import TargetType as TargetType
 from ._base import BaseTargetInfo as BaseTargetInfo
 
 # isort: split

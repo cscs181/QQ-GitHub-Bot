@@ -11,7 +11,6 @@ __author__ = "yanyongyu"
 
 import re
 
-from nonebot.rule import is_type
 from nonebot.matcher import Matcher
 from nonebot.adapters import Message
 from nonebot import logger, on_command
@@ -21,13 +20,14 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.models import Group
+from src.providers.platform import GROUP_INFO
 from src.plugins.github.utils import get_github_bot
-from src.providers.platform import GROUP_INFO, GROUP_EVENTS
 from src.plugins.github.dependencies import GROUP, BINDED_GROUP
 from src.plugins.github.helpers import (
     FULLREPO_REGEX,
     GROUP_SUPERPERM,
     NO_GITHUB_EVENT,
+    MATCH_WHEN_GROUP,
     allow_cancellation,
 )
 
@@ -42,7 +42,7 @@ __plugin_meta__ = PluginMetadata(
 
 bind = on_command(
     "bind",
-    is_type(*GROUP_EVENTS) & NO_GITHUB_EVENT,
+    MATCH_WHEN_GROUP & NO_GITHUB_EVENT,
     permission=GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,
@@ -101,7 +101,7 @@ async def process_repo(group_info: GROUP_INFO, full_name: str = ArgPlainText()):
 
 unbind = on_command(
     "unbind",
-    is_type(*GROUP_EVENTS) & NO_GITHUB_EVENT,
+    MATCH_WHEN_GROUP & NO_GITHUB_EVENT,
     permission=GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,
