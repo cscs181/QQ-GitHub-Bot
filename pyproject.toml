@@ -15,8 +15,8 @@ asyncpg = "^0.28.0"
 playwright = "^1.17.2"
 mdit-py-emoji = "^0.1.0"
 typing-extensions = "^4.0.0"
-nonebot-plugin-orm = "^0.1.1"
-nonebot-adapter-qq = "^1.1.0"
+nonebot-plugin-orm = "^0.5.0"
+nonebot-adapter-qq = "^1.1.1"
 nonebot-plugin-sentry = "^1.0.0"
 nonebot-adapter-github = "^0.3.0"
 nonebot-adapter-onebot = "^2.1.4"
@@ -25,11 +25,11 @@ markdown-it-py = { version = "^3.0.0", extras = ["linkify", "plugins"] }
 nonebot2 = { version = "^2.1.0", extras = ["httpx", "websockets", "fastapi"] }
 
 [tool.poetry.group.dev.dependencies]
+ruff = "^0.1.0"
 isort = "^5.9.3"
 black = "^23.1.0"
 nonemoji = "^0.1.2"
 pre-commit = "^3.1.0"
-ruff = ">=0.0.291,<0.1.0"
 
 [tool.poetry.group.deploy.dependencies]
 gunicorn = "^20.1.0"
