@@ -42,16 +42,20 @@ USER_SUBSCRIPTION_UPGRADE_SQL = """
 INSERT INTO "subscription" ("subscriber", "owner", "repo", "event", "action") (
     SELECT
         jsonb_build_object('type', 'qq_user', 'qq_user_id', "qq_id"),
-        "owner", "repo", "event", "action"
-    FROM "user_subscription" WHERE "qq_id" IS NOT NULL
+        "owner", "repo", "event", array_agg("a")
+    FROM "user_subscription", LATERAL jsonb_array_elements_text("action") AS actions(a)
+    WHERE "qq_id" IS NOT NULL
+    GROUP BY "owner", "repo", "event", "qq_id"
 );
 """
 GROUP_SUBSCRIPTION_UPGRADE_SQL = """
 INSERT INTO "subscription" ("subscriber", "owner", "repo", "event", "action") (
     SELECT
         jsonb_build_object('type', 'qq_group', 'qq_group_id', "qq_group"),
-        "owner", "repo", "event", "action"
-    FROM "group_subscription" WHERE "qq_group" IS NOT NULL
+        "owner", "repo", "event", array_agg("a")
+    FROM "group_subscription", LATERAL jsonb_array_elements_text("action") AS actions(a)
+    WHERE "qq_group" IS NOT NULL
+    GROUP BY "owner", "repo", "event", "qq_group"
 );
 """
 
@@ -76,10 +80,10 @@ def upgrade(name: str = "") -> None:
         sa.Column(
             "subscriber", postgresql.JSONB(astext_type=sa.Text()), nullable=False
         ),
-        sa.Column("owner", sa.String(length=255), nullable=False),
-        sa.Column("repo", sa.String(length=255), nullable=False),
-        sa.Column("event", sa.String(length=255), nullable=False),
-        sa.Column("action", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        sa.Column("owner", sa.String(), nullable=False),
+        sa.Column("repo", sa.String(), nullable=False),
+        sa.Column("event", sa.String(), nullable=False),
+        sa.Column("action", postgresql.ARRAY(sa.String()), nullable=True),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_subscription")),
         sa.UniqueConstraint(
             "subscriber",
@@ -92,7 +96,7 @@ def upgrade(name: str = "") -> None:
     with op.batch_alter_table("subscription", schema=None) as batch_op:
         batch_op.create_index(
             batch_op.f("ix_subscription_owner"),
-            ["owner", "repo", "event"],
+            ["owner", "repo", "event", "action"],
             unique=False,
         )
         batch_op.create_index(
@@ -129,7 +133,7 @@ def upgrade(name: str = "") -> None:
         "user",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("user", postgresql.JSONB(astext_type=sa.Text()), nullable=False),
-        sa.Column("access_token", sa.String(length=255), nullable=True),
+        sa.Column("access_token", sa.String(), nullable=True),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_user")),
     )
     with op.batch_alter_table("user", schema=None) as batch_op:
@@ -148,7 +152,7 @@ def upgrade(name: str = "") -> None:
         "group",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("group", postgresql.JSONB(astext_type=sa.Text()), nullable=False),
-        sa.Column("bind_repo", sa.String(length=255), nullable=True),
+        sa.Column("bind_repo", sa.String(), nullable=True),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_group")),
     )
     with op.batch_alter_table("group", schema=None) as batch_op:

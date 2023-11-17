@@ -28,7 +28,7 @@ class Group(Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     group: Mapped[dict] = mapped_column(JSONB, unique=True, index=True, nullable=False)
-    bind_repo: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    bind_repo: Mapped[str | None] = mapped_column(String(), nullable=True)
 
     def to_group_info(self) -> GroupInfo:
         """Convert to group info"""

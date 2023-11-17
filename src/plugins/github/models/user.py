@@ -28,7 +28,7 @@ class User(Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user: Mapped[dict] = mapped_column(JSONB, unique=True, index=True, nullable=False)
-    access_token: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    access_token: Mapped[str | None] = mapped_column(String(), nullable=True)
 
     def to_user_info(self) -> UserInfo:
         """Convert to user info"""

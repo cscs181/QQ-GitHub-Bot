@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-26 14:54:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-11 14:43:45
+@LastEditTime   : 2023-11-17 16:08:46
 @Description    : User subscription model
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,16 +15,17 @@ from typing_extensions import Self
 from pydantic import parse_obj_as
 from sqlalchemy.orm import Mapped, mapped_column
 from nonebot_plugin_orm import Model, get_session
-from sqlalchemy.dialects.postgresql import JSONB, insert
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, insert
 from sqlalchemy import (
     Index,
     String,
     UniqueConstraint,
     case,
     func,
-    delete,
     select,
+    update,
     distinct,
+    bindparam,
 )
 
 from src.providers.platform import TargetInfo
@@ -44,16 +45,16 @@ class Subscription(Model):
 
     __tablename__ = "subscription"
     __table_args__ = (
-        Index(None, "owner", "repo", "event"),
+        Index(None, "owner", "repo", "event", "action"),
         UniqueConstraint("subscriber", "owner", "repo", "event"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     subscriber: Mapped[dict] = mapped_column(JSONB, index=True, nullable=False)
-    owner: Mapped[str] = mapped_column(String(255), nullable=False)
-    repo: Mapped[str] = mapped_column(String(255), nullable=False)
-    event: Mapped[str] = mapped_column(String(255), nullable=False)
-    action: Mapped[list[str] | None] = mapped_column(JSONB, nullable=True)
+    owner: Mapped[str] = mapped_column(String(), nullable=False)
+    repo: Mapped[str] = mapped_column(String(), nullable=False)
+    event: Mapped[str] = mapped_column(String(), nullable=False)
+    action: Mapped[list[str] | None] = mapped_column(ARRAY(String()), nullable=True)
 
     def to_subscriber_info(self) -> TargetInfo:
         """Convert to subscriber info"""
@@ -86,18 +87,25 @@ class Subscription(Model):
             ]
         )
 
+        # create new actions
         merge_action = insert_sql.excluded.action + cls.action
-        merge_action_elements = func.jsonb_array_elements(merge_action).alias()
+        merge_action_elements = func.unnest(merge_action).alias()
+        # deduplicate
         merge_action = (
-            select(func.jsonb_agg(distinct(merge_action_elements.column)))
+            select(func.array_agg(distinct(merge_action_elements.column)))
             .select_from(merge_action_elements)
             .subquery()
         )
+        # handle on conflict special case
         new_action = case(
+            # new action is None, subscribe all
             (insert_sql.excluded.action.is_(None), None),
+            # old action is None, do nothing
             (cls.action.is_(None), None),
+            # append when action is not None
             else_=merge_action,
         )
+
         update_sql = insert_sql.on_conflict_do_update(set_={"action": new_action})
         await get_session().execute(update_sql)
 
@@ -112,27 +120,46 @@ class Subscription(Model):
         info = cast(TargetInfo, info)
 
         session = get_session()
-        async with session.begin():
-            for unsubscription in unsubsciptions:
-                instance_sql = select(cls).where(
-                    cls.subscriber == info.dict(),
-                    cls.owner == unsubscription["owner"],
-                    cls.repo == unsubscription["repo"],
-                    cls.event == unsubscription["event"],
-                )
-                instance = (await session.execute(instance_sql)).scalar_one_or_none()
-                if instance:
-                    if unsubscription["action"] is None:
-                        await session.delete(instance)
-                    elif instance.action:
-                        new_action = list(
-                            set(instance.action) - set(unsubscription["action"])
-                        )
-                        if not new_action:
-                            await session.delete(instance)
-                        else:
-                            instance.action = new_action
-                            session.add(instance)
+
+        old_action_elements = func.unnest(cls.action).alias()
+        update_data = [
+            {
+                "subscriber": info.dict(),
+                "owner": unsubscription["owner"],
+                "repo": unsubscription["repo"],
+                "event": unsubscription["event"],
+                "action": (
+                    # remove all actions
+                    []
+                    if unsubscription["action"] is None
+                    else case(
+                        # do no action when origin action is None
+                        (cls.action.is_(None), None),
+                        # remove any value in unsubscription["action"]
+                        else_=(
+                            select(func.array_agg(old_action_elements))
+                            .select_from(old_action_elements)
+                            .where(
+                                old_action_elements.column
+                                != func.all(unsubscription["action"])
+                            )
+                            .subquery()
+                        ),
+                    )
+                ),
+            }
+            for unsubscription in unsubsciptions
+        ]
+        async with await session.connection() as conn:
+            await conn.execute(
+                update(cls).where(
+                    cls.subscriber == bindparam("subscriber"),
+                    cls.owner == bindparam("owner"),
+                    cls.repo == bindparam("repo"),
+                    cls.event == bindparam("event"),
+                ),
+                update_data,
+            )
 
     @classmethod
     async def unsubscribe_all_by_info(
@@ -144,29 +171,27 @@ class Subscription(Model):
 
         info = cast(TargetInfo, info)
 
-        delete_sql = delete(cls).where(
-            cls.subscriber == info.dict(), cls.owner == owner, cls.repo == repo
+        clear_sql = (
+            update(cls).where(
+                cls.subscriber == info.dict(), cls.owner == owner, cls.repo == repo
+            )
+            # set to empty array
+            .values(action=[])
         )
-        await get_session().execute(delete_sql)
+        await get_session().execute(clear_sql)
 
     @classmethod
     async def list_subscribers(
         cls, owner: str, repo: str, event: str, action: str | None = None
     ) -> list[Self]:
         """List subscribers from repo webhook event name"""
-        if action is None:
-            list_sql = select(cls).where(
-                cls.owner == owner,
-                cls.repo == repo,
-                cls.event == event,
-                cls.action.is_(None),
-            )
-        else:
-            list_sql = select(cls).where(
-                cls.owner == owner,
-                cls.repo == repo,
-                cls.event == event,
-                cls.action.contains(action),
-            )
+        action_filter = cls.action.is_(None)
+        if action is not None:
+            # pg operation `@>` array contains another array
+            action_filter |= cls.action.contains([action])
+
+        list_sql = select(cls).where(
+            cls.owner == owner, cls.repo == repo, cls.event == event, action_filter
+        )
         result = await get_session().execute(list_sql)
         return list(result.scalars().all())
