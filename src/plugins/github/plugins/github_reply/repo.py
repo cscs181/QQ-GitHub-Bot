@@ -24,6 +24,7 @@ from src.providers.platform import (
 
 repo = on_command(
     "repo",
+    aliases={"仓库"},
     rule=NO_GITHUB_EVENT & REPLY_ANY,
     priority=config.github_command_priority,
     block=True,

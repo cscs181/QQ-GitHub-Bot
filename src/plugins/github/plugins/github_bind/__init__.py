@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-06 17:53:33
+@LastEditTime   : 2023-11-25 17:11:09
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -42,7 +42,8 @@ __plugin_meta__ = PluginMetadata(
 
 bind = on_command(
     "bind",
-    MATCH_WHEN_GROUP & NO_GITHUB_EVENT,
+    aliases={"绑定"},
+    rule=MATCH_WHEN_GROUP & NO_GITHUB_EVENT,
     permission=GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,
@@ -101,7 +102,8 @@ async def process_repo(group_info: GROUP_INFO, full_name: str = ArgPlainText()):
 
 unbind = on_command(
     "unbind",
-    MATCH_WHEN_GROUP & NO_GITHUB_EVENT,
+    aliases={"解绑"},
+    rule=MATCH_WHEN_GROUP & NO_GITHUB_EVENT,
     permission=GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,

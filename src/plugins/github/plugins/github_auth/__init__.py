@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:06:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-06 17:48:12
+@LastEditTime   : 2023-11-25 17:10:37
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -34,6 +34,7 @@ __plugin_meta__ = PluginMetadata(
 
 auth = on_command(
     "auth",
+    aliases={"授权"},
     rule=NO_GITHUB_EVENT,
     priority=config.github_command_priority,
     block=True,
@@ -52,6 +53,7 @@ async def handle_private(user_info: USER_INFO):
 
 auth_check = on_command(
     ("auth", "check"),
+    aliases={("授权", "检查")},
     rule=NO_GITHUB_EVENT,
     priority=config.github_command_priority,
     block=True,
@@ -90,6 +92,7 @@ async def check_user_status(user: AUTHORIZED_USER):
 
 auth_revoke = on_command(
     ("auth", "revoke"),
+    aliases={("授权", "撤销")},
     rule=NO_GITHUB_EVENT,
     priority=config.github_command_priority,
     block=True,

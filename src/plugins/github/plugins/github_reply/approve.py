@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-21 07:08:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 14:26:35
+@LastEditTime   : 2023-11-25 17:12:27
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,6 +29,7 @@ from src.providers.platform import (
 
 approve = on_command(
     "approve",
+    aliases={"批准"},
     rule=NO_GITHUB_EVENT & REPLY_PR,
     priority=config.github_command_priority,
     block=True,

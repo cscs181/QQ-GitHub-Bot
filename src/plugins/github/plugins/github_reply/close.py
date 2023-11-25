@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 03:59:07
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 14:46:32
+@LastEditTime   : 2023-11-25 17:12:59
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -35,6 +35,7 @@ ISSUE_CLOSE_REASON = {"completed", "not_planned", ""}
 
 close = on_command(
     "close",
+    aliases={"关闭"},
     rule=NO_GITHUB_EVENT & REPLY_ISSUE_OR_PR,
     priority=config.github_command_priority,
     block=True,

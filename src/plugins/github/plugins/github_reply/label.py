@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-21 07:56:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 15:24:41
+@LastEditTime   : 2023-11-25 17:14:13
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -28,6 +28,7 @@ from src.providers.platform import (
 
 label = on_shell_command(
     "label",
+    aliases={"添加标签"},
     rule=NO_GITHUB_EVENT & REPLY_ISSUE_OR_PR,
     priority=config.github_command_priority,
     block=True,

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-13 17:35:51
+@LastEditTime   : 2023-11-25 17:16:22
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -73,7 +73,8 @@ def subscriptions_to_message(subscriptions: list[Subscription]) -> str:
 
 subscribe = on_command(
     "subscribe",
-    MATCH_WHEN_PRIVATE_OR_GROUP & NO_GITHUB_EVENT,
+    aliases={"订阅"},
+    rule=MATCH_WHEN_PRIVATE_OR_GROUP & NO_GITHUB_EVENT,
     permission=PRIVATE_PERM | GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,
@@ -211,7 +212,8 @@ async def create_user(target_info: TARGET_INFO, state: T_State):
 
 unsubscribe = on_command(
     "unsubscribe",
-    MATCH_WHEN_PRIVATE_OR_GROUP & NO_GITHUB_EVENT,
+    aliases={"取消订阅"},
+    rule=MATCH_WHEN_PRIVATE_OR_GROUP & NO_GITHUB_EVENT,
     permission=PRIVATE_PERM | GROUP_SUPERPERM,
     priority=config.github_command_priority,
     block=True,

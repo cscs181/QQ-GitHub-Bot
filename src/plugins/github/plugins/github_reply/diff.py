@@ -35,6 +35,7 @@ from src.plugins.github.dependencies import (
 
 diff = on_command(
     "diff",
+    aliases={"差异"},
     rule=NO_GITHUB_EVENT & REPLY_PR,
     priority=config.github_command_priority,
     block=True,

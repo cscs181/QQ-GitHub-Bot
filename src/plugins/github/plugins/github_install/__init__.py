@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 16:02:23
+@LastEditTime   : 2023-11-25 17:11:40
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -35,7 +35,11 @@ __plugin_meta__ = PluginMetadata(
 
 
 install = on_command(
-    "install", rule=NO_GITHUB_EVENT, priority=config.github_command_priority, block=True
+    "install",
+    aliases={"安装"},
+    rule=NO_GITHUB_EVENT,
+    priority=config.github_command_priority,
+    block=True,
 )
 
 
@@ -53,6 +57,7 @@ async def handle_private(user_info: USER_INFO):
 
 install_check = on_command(
     ("install", "check"),
+    aliases={("安装", "检查")},
     rule=NO_GITHUB_EVENT,
     priority=config.github_command_priority,
     block=True,
@@ -81,6 +86,7 @@ async def check_user_installation(installation: GITHUB_USER_INSTALLATION):
 
 install_revoke = on_command(
     ("install", "revoke"),
+    aliases={("安装", "撤销")},
     rule=NO_GITHUB_EVENT,
     priority=config.github_command_priority,
     block=True,

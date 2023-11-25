@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 15:04:01
+@LastEditTime   : 2023-11-25 17:13:27
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -34,6 +34,7 @@ from src.plugins.github.dependencies import (
 
 content = on_command(
     "content",
+    aliases={"内容"},
     rule=NO_GITHUB_EVENT & REPLY_ISSUE_OR_PR,
     priority=config.github_command_priority,
     block=True,

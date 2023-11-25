@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 04:23:29
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 15:49:04
+@LastEditTime   : 2023-11-25 17:15:17
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -30,6 +30,7 @@ from src.providers.platform import (
 
 reopen = on_command(
     "reopen",
+    aliases={"重新开启"},
     rule=NO_GITHUB_EVENT & REPLY_ISSUE_OR_PR,
     priority=config.github_command_priority,
     block=True,

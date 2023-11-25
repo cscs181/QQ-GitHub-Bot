@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-21 08:13:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 16:00:03
+@LastEditTime   : 2023-11-25 17:15:40
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -28,6 +28,7 @@ from src.providers.platform import (
 
 unlabel = on_command(
     "unlabel",
+    aliases={"移除标签"},
     rule=NO_GITHUB_EVENT & REPLY_ISSUE_OR_PR,
     priority=config.github_command_priority,
     block=True,

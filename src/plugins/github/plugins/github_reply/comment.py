@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-03-04 17:55:56
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-13 17:23:10
+@LastEditTime   : 2023-11-25 17:13:12
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -28,7 +28,7 @@ from src.providers.platform import (
 
 comment = on_command(
     "comment",
-    aliases={"reply"},
+    aliases={"reply", "评论", "回复"},
     rule=NO_GITHUB_EVENT & REPLY_ISSUE_OR_PR,
     priority=config.github_command_priority,
     block=True,

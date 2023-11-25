@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:31:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 15:41:35
+@LastEditTime   : 2023-11-25 17:14:27
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,6 +29,7 @@ from src.plugins.github.cache.message_tag import (
 
 link = on_command(
     "link",
+    aliases={"链接"},
     rule=NO_GITHUB_EVENT & REPLY_ANY,
     priority=config.github_command_priority,
     block=True,
