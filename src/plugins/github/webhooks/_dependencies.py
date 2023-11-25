@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 08:35:10
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 17:51:31
+@LastEditTime   : 2023-11-25 19:36:39
 @Description    : Webhook dependencies
 @GitHub         : https://github.com/yanyongyu
 """
@@ -84,11 +84,11 @@ async def send_subscriber_text(target_info: TargetInfo, text: str, tag: Tag) -> 
                 )
             case QQOfficialUserInfo():
                 result = await cast(QQOfficialBot, bot).post_c2c_messages(
-                    user_id=target_info.qq_user_open_id, msg_type=0, content=text
+                    openid=target_info.qq_user_open_id, msg_type=0, content=text
                 )
             case QQOfficialGroupInfo():
                 result = await cast(QQOfficialBot, bot).post_group_messages(
-                    group_id=target_info.qq_group_open_id, msg_type=0, content=text
+                    group_openid=target_info.qq_group_open_id, msg_type=0, content=text
                 )
             case QQGuildUserInfo():
                 logger.error("Unable to send message to QQGuild User", user=target_info)
@@ -172,11 +172,11 @@ async def send_subscriber_image_url(
                 )
             case QQOfficialUserInfo():
                 result = await cast(QQOfficialBot, bot).post_c2c_files(
-                    user_id=target_info.qq_user_open_id, file_type=1, url=image
+                    openid=target_info.qq_user_open_id, file_type=1, url=image
                 )
             case QQOfficialGroupInfo():
                 result = await cast(QQOfficialBot, bot).post_group_files(
-                    group_id=target_info.qq_group_open_id, file_type=1, url=image
+                    group_openid=target_info.qq_group_open_id, file_type=1, url=image
                 )
             case QQGuildUserInfo():
                 logger.error("Unable to send message to QQGuild User", user=target_info)

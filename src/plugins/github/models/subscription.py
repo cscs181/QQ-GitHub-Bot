@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-26 14:54:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-17 16:08:46
+@LastEditTime   : 2023-11-25 19:32:56
 @Description    : User subscription model
 @GitHub         : https://github.com/yanyongyu
 """
@@ -64,8 +64,9 @@ class Subscription(Model):
     async def from_info(cls, info: TargetInfo) -> list[Self]:
         """List subscriptions by subscriber info"""
         sql = select(cls).where(cls.subscriber == info.dict())
-        result = await get_session().execute(sql)
-        return list(result.scalars().all())
+        async with get_session() as session:
+            result = await session.execute(sql)
+            return list(result.scalars().all())
 
     @classmethod
     async def subscribe_by_info(
@@ -107,7 +108,8 @@ class Subscription(Model):
         )
 
         update_sql = insert_sql.on_conflict_do_update(set_={"action": new_action})
-        await get_session().execute(update_sql)
+        async with get_session() as session:
+            await session.execute(update_sql)
 
     @classmethod
     async def unsubscribe_by_info(
@@ -118,8 +120,6 @@ class Subscription(Model):
             info = info.to_subscriber_info()
 
         info = cast(TargetInfo, info)
-
-        session = get_session()
 
         old_action_elements = func.unnest(cls.action).alias()
         update_data = [
@@ -150,16 +150,17 @@ class Subscription(Model):
             }
             for unsubscription in unsubsciptions
         ]
-        async with await session.connection() as conn:
-            await conn.execute(
-                update(cls).where(
-                    cls.subscriber == bindparam("subscriber"),
-                    cls.owner == bindparam("owner"),
-                    cls.repo == bindparam("repo"),
-                    cls.event == bindparam("event"),
-                ),
-                update_data,
-            )
+        async with get_session() as session:
+            async with await session.connection() as conn:
+                await conn.execute(
+                    update(cls).where(
+                        cls.subscriber == bindparam("subscriber"),
+                        cls.owner == bindparam("owner"),
+                        cls.repo == bindparam("repo"),
+                        cls.event == bindparam("event"),
+                    ),
+                    update_data,
+                )
 
     @classmethod
     async def unsubscribe_all_by_info(
@@ -178,7 +179,8 @@ class Subscription(Model):
             # set to empty array
             .values(action=[])
         )
-        await get_session().execute(clear_sql)
+        async with get_session() as session:
+            await session.execute(clear_sql)
 
     @classmethod
     async def list_subscribers(
@@ -193,5 +195,6 @@ class Subscription(Model):
         list_sql = select(cls).where(
             cls.owner == owner, cls.repo == repo, cls.event == event, action_filter
         )
-        result = await get_session().execute(list_sql)
-        return list(result.scalars().all())
+        async with get_session() as session:
+            result = await session.execute(list_sql)
+            return list(result.scalars().all())

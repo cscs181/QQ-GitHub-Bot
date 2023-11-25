@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 07:31:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-11 13:25:58
+@LastEditTime   : 2023-11-25 19:36:03
 @Description    : Group model
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,7 +13,7 @@ from typing import cast
 from typing_extensions import Self
 
 from pydantic import parse_obj_as
-from sqlalchemy import String, select
+from sqlalchemy import String, select, update
 from sqlalchemy.orm import Mapped, mapped_column
 from nonebot_plugin_orm import Model, get_session
 from sqlalchemy.dialects.postgresql import JSONB, insert
@@ -38,8 +38,9 @@ class Group(Model):
     async def from_info(cls, info: GroupInfo) -> Self | None:
         """Get group model by group info"""
         sql = select(cls).where(cls.group == info.dict())
-        result = await get_session().execute(sql)
-        return result.scalar_one_or_none()
+        async with get_session() as session:
+            result = await session.execute(sql)
+            return result.scalar_one_or_none()
 
     @classmethod
     async def create_or_update_by_info(
@@ -56,20 +57,21 @@ class Group(Model):
             set_={"bind_repo": insert_sql.excluded.bind_repo}
         ).returning(cls)
 
-        result = await get_session().execute(update_sql)
-        return result.scalar_one()
+        async with get_session() as session:
+            result = await session.execute(update_sql)
+            return result.scalar_one()
 
     async def unbind(self) -> None:
         """Unbind group and repo"""
         self.bind_repo = None
-        session = get_session()
-        session.add(self)
-        await session.commit()
+        async with get_session() as session:
+            session.add(self)
+            await session.commit()
 
     @classmethod
     async def unbind_by_info(cls, info: GroupInfo) -> bool:
         """Unbind group and repo by group info"""
-        if group := await cls.from_info(info):
-            await group.unbind()
-            return True
-        return False
+        sql = update(cls).where(cls.group == info.dict()).values(bind_repo=None)
+        async with get_session() as session:
+            result = await session.execute(sql)
+            return bool(result.rowcount)
