@@ -3,7 +3,7 @@
 # @Author         : yanyongyu
 # @Date           : 2022-11-20 03:46:14
 # @LastEditors    : yanyongyu
-# @LastEditTime   : 2023-10-11 14:20:37
+# @LastEditTime   : 2023-11-25 16:53:04
 # @Description    : None
 # @GitHub         : https://github.com/yanyongyu
 ###
@@ -11,6 +11,7 @@
 poetry config virtualenvs.in-project true &&
   poetry install &&
   poetry run pre-commit install &&
+  poetry run playwright install-deps &&
   poetry run playwright install chromium
 
 cat >.env.dev <<EOF
@@ -19,6 +20,21 @@ LOG_LEVEL=DEBUG
 SUPERUSERS=[]
 
 ONEBOT_API_ROOTS={}
+
+QQ_IS_SANDBOX=true
+QQ_BOTS='
+[
+  {
+    "id": "xxx",
+    "token": "xxx",
+    "secret": "xxx",
+    "intent": {
+      "guild_messages": true,
+      "at_messages": false
+    }
+  }
+]
+'
 
 POSTGRES_HOST=127.0.0.1
 POSTGRES_PORT=5432

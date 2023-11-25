@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:19:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-11 14:54:56
+@LastEditTime   : 2023-11-25 16:57:01
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,9 +18,10 @@ from src.providers.platform.messages import MessageInfo
 from src.providers.platform.targets import UserInfo, GroupInfo, TargetInfo
 
 from ._base import Extractor as Extractor
+from .qq import QQExtractor as QQExtractor
 from .onebot import OneBotExtractor as OneBotExtractor
 
-EXTRACTORS = cast(tuple[type[Extractor], ...], (OneBotExtractor,))
+EXTRACTORS = cast(tuple[type[Extractor], ...], (OneBotExtractor, QQExtractor))
 
 
 def extract_user(event: Event) -> UserInfo | None:
