@@ -3,7 +3,7 @@
 # @Author         : yanyongyu
 # @Date           : 2022-11-20 03:46:14
 # @LastEditors    : yanyongyu
-# @LastEditTime   : 2023-11-25 16:53:04
+# @LastEditTime   : 2023-11-25 17:32:01
 # @Description    : None
 # @GitHub         : https://github.com/yanyongyu
 ###
@@ -11,8 +11,8 @@
 poetry config virtualenvs.in-project true &&
   poetry install &&
   poetry run pre-commit install &&
-  poetry run playwright install-deps &&
-  poetry run playwright install chromium
+  poetry run playwright install chromium &&
+  poetry run playwright install-deps
 
 cat >.env.dev <<EOF
 LOG_LEVEL=DEBUG

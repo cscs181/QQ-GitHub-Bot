@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-08 18:04:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-13 17:21:39
+@LastEditTime   : 2023-11-25 18:15:07
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,12 +14,7 @@ from typing_extensions import override
 
 import nonebot
 from nonebot.adapters.qq.models import Message as GuildMessage
-from nonebot.adapters.qq.models import (
-    PostC2CFilesReturn,
-    PostGroupFilesReturn,
-    PostC2CMessagesReturn,
-    PostGroupMessagesReturn,
-)
+from nonebot.adapters.qq.models import PostC2CMessagesReturn, PostGroupMessagesReturn
 from nonebot.adapters.qq import (
     Bot,
     MessageEvent,
@@ -74,9 +69,15 @@ class QQExtractor(
             return QQGuildUserInfo(
                 type=TargetType.QQGUILD_USER, qqguild_user_id=event.author.id
             )
-        elif isinstance(event, QQMessageEvent):
+        elif isinstance(event, C2CMessageCreateEvent):
             return QQOfficialUserInfo(
-                type=TargetType.QQ_OFFICIAL_USER, qq_user_open_id=event.author.id
+                type=TargetType.QQ_OFFICIAL_USER,
+                qq_user_open_id=event.author.user_openid,
+            )
+        elif isinstance(event, GroupAtMessageCreateEvent):
+            return QQOfficialUserInfo(
+                type=TargetType.QQ_OFFICIAL_USER,
+                qq_user_open_id=event.author.member_openid,
             )
         raise RuntimeError(f"Unknown event type {type(event)}")
 
@@ -91,7 +92,7 @@ class QQExtractor(
             )
         elif isinstance(event, (GroupAtMessageCreateEvent,)):
             return QQOfficialGroupInfo(
-                type=TargetType.QQ_OFFICIAL_GROUP, qq_group_open_id=event.group_id
+                type=TargetType.QQ_OFFICIAL_GROUP, qq_group_open_id=event.group_openid
             )
 
     @classmethod
@@ -138,9 +139,10 @@ class QQExtractor(
     @override
     def extract_reply_message(cls, event) -> MessageInfo | None:
         if isinstance(event, GuildMessageEvent):
-            if event.reply:
+            if event.message_reference:
                 return QQGuildChannelMessageInfo(
-                    type=TargetType.QQGUILD_CHANNEL, id=event.reply.id
+                    type=TargetType.QQGUILD_CHANNEL,
+                    id=event.message_reference.message_id,
                 )
         elif isinstance(event, QQMessageEvent):
             # NOTE: API not support currently
@@ -161,10 +163,10 @@ class QQExtractor(
             result = cast(GuildMessage, result)
             return QQGuildUserMessageInfo(type=target.type, id=result.id)
         elif isinstance(target, QQOfficialGroupInfo):
-            result = cast(PostGroupMessagesReturn | PostGroupFilesReturn, result)
+            result = cast(PostGroupMessagesReturn, result)
             if result.id:
                 return QQOfficialGroupMessageInfo(type=target.type, id=result.id)
         elif isinstance(target, QQOfficialUserInfo):
-            result = cast(PostC2CMessagesReturn | PostC2CFilesReturn, result)
+            result = cast(PostC2CMessagesReturn, result)
             if result.id:
                 return QQOfficialUserMessageInfo(type=target.type, id=result.id)

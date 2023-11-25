@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:19:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 16:57:01
+@LastEditTime   : 2023-11-25 18:02:20
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -68,11 +68,11 @@ def extract_reply_message(event: Event) -> MessageInfo | None:
 
 def get_target_bot(target: TargetInfo) -> Bot | None:
     for extractor in EXTRACTORS:
-        if target.type in extractor.TARGETS:
+        if isinstance(target, extractor.TARGETS):
             return extractor.get_target_bot(target)
 
 
 def extract_sent_message(target: TargetInfo, result: Any) -> MessageInfo | None:
     for extractor in EXTRACTORS:
-        if target.type in extractor.TARGETS:
+        if isinstance(target, extractor.TARGETS):
             return extractor.extract_sent_message(target, result)

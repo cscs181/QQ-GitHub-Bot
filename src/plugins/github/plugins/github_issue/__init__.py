@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-13 17:33:36
+@LastEditTime   : 2023-11-25 17:40:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -70,7 +70,7 @@ issue_link = on_regex(
 
 
 @issue.handle(parameterless=(STORE_REGEX_VARS,))
-@issue_link.handle()
+@issue_link.handle(parameterless=(STORE_REGEX_VARS,))
 async def handle_issue(
     state: T_State,
     target_info: TARGET_INFO,

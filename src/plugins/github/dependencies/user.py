@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:17:06
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 16:17:48
+@LastEditTime   : 2023-11-25 19:23:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -51,7 +51,7 @@ async def get_authorized_user(matcher: Matcher, user: USER) -> AuthorizedUser:
     return user  # type: ignore
 
 
-AUTHORIZED_USER: TypeAlias = Annotated[AuthorizedUser, Depends(get_current_user)]
+AUTHORIZED_USER: TypeAlias = Annotated[AuthorizedUser, Depends(get_authorized_user)]
 """Current database user from event. Finish the session if not authenticated."""
 
 
