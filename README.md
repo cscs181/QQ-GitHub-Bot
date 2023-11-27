@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-10-18 17:27:07
+ * @LastEditTime   : 2023-11-27 13:25:56
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -71,6 +71,10 @@ GitHub Bot for QQ
 
 ## 部署
 
+> [!WARNING]
+> 请注意，[go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 的部署方式已不再提供说明，请自行配置连接。
+> 如果使用 docker 部署，可以参考使用 `docker compose --profile go-cqhttp up -d` 命令启动。
+
 ### Docker
 
 1. 部署要求
@@ -91,14 +95,13 @@ GitHub Bot for QQ
    配置 GitHub App：
    1. callback URL 为 `http://<your-domain>/github/auth`
    2. webhook URL 为 `http://<your-domain>/github/webhooks/<app_id>`，可在 app 创建完成后添加
-   3. 权限为 `Issues (Read and Write)`, `Pull requests (Read and Write)`, `Metadata (Read Only)`, `Content (Read Only)` 和 `Starring (Read and Write)`
+   3. 权限为 `Contents (Read Only)`, `Deployments (Read Only)`, `Issues (Read and Write)`, `Pull requests (Read and Write)`, `Metadata (Read Only)` 和 `Starring (Read and Write)`
    4. Webhook 事件参考 [事件订阅](#事件订阅) 自行选择需要的事件
    5. 取消勾选 `Expire user authorization tokens` 或在 app optional feature 中 `opt-out`
    6. 勾选 `Request user authorization (OAuth) during installation`
    7. 记录 `app_id`, `client_id`，生成并下载 `private_key`, `client_secret` 备用
 3. 下载 [`docker-compose.yml`](./docker-compose.yml) 至任意空目录
-4. 如果使用 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)，请下载 [`bot`](./bot) 目录至 `docker-compose.yml` 同目录下
-5. 在 `docker-compose.yml` 同目录下创建 `.env` 并写入如下配置项：
+4. 在 `docker-compose.yml` 同目录下创建 `.env` 并写入如下配置项：
 
    ```dotenv
    # 可选，参考 nonebot superuser 格式
@@ -109,8 +112,22 @@ GitHub Bot for QQ
    ONEBOT_ACCESS_TOKEN=your_access_token
    # 可选
    ONEBOT_SECRET=your_secret
-   # 修改此处的 QQ 号
-   ONEBOT_API_ROOTS={"你的QQ号": "http://go-cqhttp:15700/"}
+
+   # 可选，QQ 机器人配置项
+   QQ_BOTS='
+   [
+     {
+       "id": "xxx",
+       "token": "xxx",
+       "secret": "xxx",
+       "intent": {
+         "at_messages": false,
+         "guild_messages": true,
+         "direct_message": true
+       }
+     }
+   ]
+   '
 
    # 必填，postgres 数据库配置项
    POSTGRES_USER=bot
@@ -152,15 +169,15 @@ GitHub Bot for QQ
 
    > `docker-compose.yml` 中的配置视情况修改，**如无必要请勿修改！**
 
-6. 如果使用 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)，修改 `bot/config.yml` 配置文件，参考 [go-cqhttp 配置](https://docs.go-cqhttp.org/guide/config.html#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF) 修改 `uin`, `password`, `access-token`, `secret` 配置项。如需修改连接配置，请保证与 `.env` 中的配置项一致。
-7. 启动
+5. 启动
 
    在目录下执行 `docker compose up -d` (旧版方式 `docker-compose up -d`) 即可。
-   如果使用 [go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 则执行 `docker compose --profile go-cqhttp up -d`。
 
 ### Kubernetes
 
 ~~待完善，可自行尝试使用 `k8s/bot/` 目录下的 helm chart~~
+
+下载或克隆 `k8s/bot/` 目录，新建文件 `values.yaml`，参考目录下的 `values.yaml` 填写覆盖配置项，然后执行 `helm install -n <botnamespace> --create-namespace -f values.yaml <botname> ./k8s/bot` 即可。其中 `<botnamespace>` 为命名空间，`<botname>` 为部署应用名称，请自行修改。
 
 ## 开发
 
