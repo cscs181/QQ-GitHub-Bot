@@ -42,6 +42,7 @@ GitHub Bot for QQ
 |             `/auth [check\|revoke]`              |               授权 APP 以进行用户快捷操作               |
 |               `/bind [owner/repo]`               |            群绑定指定仓库以进行仓库快捷操作             |
 |      `/subscribe owner/repo event[/action]`      |        订阅指定仓库的指定事件（支持多事件订阅）         |
+|        `/search [code\|repo\|user] query`        |              搜索 GitHub 代码、仓库、用户               |
 |       `owner/repo[#number]` 或 GitHub 链接       |            快捷查看仓库 Issue/PR, PR diff 等            |
 |                 `/link`, `/repo`                 |                 获取 Issue/PR、仓库链接                 |
 |                    `/readme`                     |                     查看仓库 README                     |
