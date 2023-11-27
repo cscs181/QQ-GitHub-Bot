@@ -2,15 +2,14 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 09:50:07
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 19:36:07
+@LastEditTime   : 2023-11-27 11:27:22
 @Description    : User model
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
-from typing import cast
-from typing_extensions import Self
+from typing import Self, cast
 
 from pydantic import parse_obj_as
 from sqlalchemy import String, select, update

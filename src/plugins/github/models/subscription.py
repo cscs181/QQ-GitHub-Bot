@@ -2,15 +2,14 @@
 @Author         : yanyongyu
 @Date           : 2022-10-26 14:54:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 19:32:56
+@LastEditTime   : 2023-11-27 11:27:13
 @Description    : User subscription model
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
-from typing import TypedDict, cast
-from typing_extensions import Self
+from typing import Self, TypedDict, cast
 
 from pydantic import parse_obj_as
 from sqlalchemy.orm import Mapped, mapped_column

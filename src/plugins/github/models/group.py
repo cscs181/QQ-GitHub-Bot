@@ -9,8 +9,7 @@
 
 __author__ = "yanyongyu"
 
-from typing import cast
-from typing_extensions import Self
+from typing import Self, cast
 
 from pydantic import parse_obj_as
 from sqlalchemy import String, select, update
