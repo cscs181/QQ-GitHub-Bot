@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-11-27 14:31:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 15:14:06
+@LastEditTime   : 2023-11-27 15:49:10
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -121,7 +121,7 @@ async def handle_repo_search(
 
 
 user_search = on_command(
-    ("serach", "user"),
+    ("search", "user"),
     aliases={"搜索用户"},
     rule=NO_GITHUB_EVENT,
     priority=config.github_command_priority,

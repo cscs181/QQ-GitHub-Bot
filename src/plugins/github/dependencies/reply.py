@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-08 14:02:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 14:21:34
+@LastEditTime   : 2023-11-27 15:35:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,7 +16,8 @@ from nonebot.params import Depends
 from nonebot.typing import T_State
 from nonebot.matcher import Matcher
 
-from src.providers.platform import OPTIONAL_REPLY_MESSAGE_INFO
+from src.plugins.github.models import Group
+from src.providers.platform import OPTIONAL_GROUP_INFO, OPTIONAL_REPLY_MESSAGE_INFO
 from src.plugins.github.cache.message_tag import (
     Tag,
     RepoTag,
@@ -25,17 +26,15 @@ from src.plugins.github.cache.message_tag import (
     get_message_tag,
 )
 
-from .group import GROUP
-
 
 async def _get_reply_tag(reply_info: OPTIONAL_REPLY_MESSAGE_INFO) -> Tag | None:
     """Get reply tag from replied message info."""
     return await get_message_tag(reply_info) if reply_info else None
 
 
-async def _get_bind_repo(group: GROUP) -> RepoTag | None:
+async def _get_bind_repo(group_info: OPTIONAL_GROUP_INFO) -> RepoTag | None:
     """Get binded repo tag from group info."""
-    if group and group.bind_repo:
+    if group_info and (group := await Group.from_info(group_info)) and group.bind_repo:
         owner, repo = group.bind_repo.split("/")
         return RepoTag(owner=owner, repo=repo, is_receive=True)
 
