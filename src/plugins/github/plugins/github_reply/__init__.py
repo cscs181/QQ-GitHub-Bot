@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-25 15:20:47
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-18 17:30:33
+@LastEditTime   : 2023-11-27 13:39:02
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -17,6 +17,7 @@ __plugin_meta__ = PluginMetadata(
     "/link: 获取 Issue/PR 链接\n"
     "/repo: 获取仓库链接\n"
     "/readme: 获取仓库 README\n"
+    "/license: 获取仓库 LICENSE\n"
     "/star: star 仓库（仅仓库安装 APP 后有效）\n"
     "/unstar: unstar 仓库（仅仓库安装 APP 后有效）\n"
     "/content: 查看 Issue、PR 信息及事件\n"
@@ -46,4 +47,5 @@ from . import unstar as unstar
 from . import approve as approve
 from . import comment as comment
 from . import content as content
+from . import license as license
 from . import unlabel as unlabel
