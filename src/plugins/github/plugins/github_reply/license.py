@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-11-27 13:32:08
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 13:38:26
+@LastEditTime   : 2023-11-27 14:09:07
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -54,10 +54,10 @@ async def handle_content(
     except ActionFailed as e:
         if e.response.status_code == 404:
             await license.finish("未找到该仓库的 README")
-        logger.opt(exception=e).error(f"Failed while getting repo readme: {e}")
+        logger.opt(exception=e).error(f"Failed while getting repo license: {e}")
         await license.finish("未知错误发生，请尝试重试或联系管理员")
     except Exception as e:
-        logger.opt(exception=e).error(f"Failed while getting repo readme: {e}")
+        logger.opt(exception=e).error(f"Failed while getting repo license: {e}")
         await license.finish("未知错误发生，请尝试重试或联系管理员")
 
     msg = (

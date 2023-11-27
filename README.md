@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-11-27 13:39:43
+ * @LastEditTime   : 2023-11-27 14:15:38
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -44,8 +44,9 @@ GitHub Bot for QQ
 |      `/subscribe owner/repo event[/action]`      |        订阅指定仓库的指定事件（支持多事件订阅）         |
 |       `owner/repo[#number]` 或 GitHub 链接       |            快捷查看仓库 Issue/PR, PR diff 等            |
 |                 `/link`, `/repo`                 |                 获取 Issue/PR、仓库链接                 |
-|                    `/license`                    |                     获取仓库许可证                      |
 |                    `/readme`                     |                     查看仓库 README                     |
+|                    `/license`                    |                     获取仓库许可证                      |
+|                 `/release [tag]`                 |       获取仓库最新 Release，或指定 tag 的 Release       |
 |                `/star`, `/unstar`                |                        快捷 star                        |
 |                     `/diff`                      |                      查看 PR diff                       |
 |                    `/comment`                    |                      评论 Issue/PR                      |

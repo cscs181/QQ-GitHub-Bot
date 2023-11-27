@@ -51,8 +51,16 @@ class CommitTag(RepoTag):
     commit: str
 
 
+class ReleaseTag(RepoTag):
+    """Release tag"""
+
+    type: Literal["release"] = "release"
+    tag: str
+
+
 Tag = Annotated[
-    RepoTag | IssueTag | PullRequestTag | CommitTag, Field(discriminator="type")
+    RepoTag | IssueTag | PullRequestTag | CommitTag | ReleaseTag,
+    Field(discriminator="type"),
 ]
 """Tag types"""
 

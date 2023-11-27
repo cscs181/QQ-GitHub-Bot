@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:34:02
+@LastEditTime   : 2023-11-27 14:12:45
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,7 +18,6 @@ from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
 from src.plugins.github import config
-from src.plugins.github.cache.message_tag import RepoTag, CommitTag, create_message_tag
 from src.plugins.github.dependencies import (
     COMMIT,
     RELEASE,
@@ -30,6 +29,12 @@ from src.providers.platform import (
     MESSAGE_INFO,
     TargetType,
     extract_sent_message,
+)
+from src.plugins.github.cache.message_tag import (
+    RepoTag,
+    CommitTag,
+    ReleaseTag,
+    create_message_tag,
 )
 from src.plugins.github.helpers import (
     FULLREPO_REGEX,
@@ -163,9 +168,10 @@ async def handle_release(
 
     await create_message_tag(
         message_info,
-        RepoTag(
+        ReleaseTag(
             owner=owner,
             repo=repo,
+            tag=release.tag_name,
             is_receive=True,
         ),
     )
@@ -176,15 +182,15 @@ async def handle_release(
     )
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
-            result = await commit_graph.send(QQMS.image(image_url))
+            result = await release_graph.send(QQMS.image(image_url))
         case (
             TargetType.QQ_OFFICIAL_USER
             | TargetType.QQGUILD_USER
             | TargetType.QQ_OFFICIAL_GROUP
             | TargetType.QQGUILD_CHANNEL
         ):
-            result = await commit_graph.send(QQOfficialMS.image(image_url))
+            result = await release_graph.send(QQOfficialMS.image(image_url))
 
-    tag = RepoTag(owner=owner, repo=repo, is_receive=False)
+    tag = ReleaseTag(owner=owner, repo=repo, tag=release.tag_name, is_receive=False)
     if sent_message_info := extract_sent_message(target_info, result):
         await create_message_tag(sent_message_info, tag)

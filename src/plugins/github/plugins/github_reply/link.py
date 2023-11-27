@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:31:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 17:14:27
+@LastEditTime   : 2023-11-27 14:11:03
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -23,6 +23,7 @@ from src.providers.platform import (
 from src.plugins.github.cache.message_tag import (
     IssueTag,
     CommitTag,
+    ReleaseTag,
     PullRequestTag,
     create_message_tag,
 )
@@ -55,6 +56,8 @@ async def handle_link(
             url += f"/pull/{tag.number}"
         case CommitTag():
             url += f"/commit/{tag.commit}"
+        case ReleaseTag():
+            url += f"/releases/tag/{tag.tag}"
 
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
