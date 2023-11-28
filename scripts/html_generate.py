@@ -13,6 +13,7 @@ root = Path(__file__).parent.parent
 
 sys.path.append(str(root))
 
+import bot as _bot  # noqa: F401
 from src.plugins.github import config
 from src.plugins.github.utils import get_oauth_bot
 from src.plugins.github.helpers import ISSUE_REGEX, FULLREPO_REGEX
@@ -22,7 +23,9 @@ parser = ArgumentParser()
 sub_parser = parser.add_subparsers(required=True)
 
 
-async def gen_issue_html(issue: str, output_file: Optional[str] = None):
+async def gen_issue_html(
+    issue: str, comment: Optional[int] = None, output_file: Optional[str] = None
+):
     m = re.match(rf"^{FULLREPO_REGEX}#{ISSUE_REGEX}$", issue)
     if not m:
         print("Invalid issue format, should be: <owner>/<repo>#<issue>")
@@ -30,8 +33,12 @@ async def gen_issue_html(issue: str, output_file: Optional[str] = None):
 
     owner, repo, issue_number = m.groups()
     bot = get_oauth_bot()
-    resp = await bot.rest.issues.async_get(owner, repo, int(issue_number))
-    html = await issue_to_html(bot, resp.parsed_data, config.github_theme)
+    resp = await bot.rest.issues.async_get(
+        owner=owner, repo=repo, issue_number=int(issue_number)
+    )
+    html = await issue_to_html(
+        bot, resp.parsed_data, highlight_comment=comment, theme=config.github_theme
+    )
     if not output_file:
         print(html)
         return
@@ -41,6 +48,7 @@ async def gen_issue_html(issue: str, output_file: Optional[str] = None):
 issue = sub_parser.add_parser("issue")
 issue.set_defaults(func=gen_issue_html)
 issue.add_argument("issue", help="issue to render (owner/repo#issue)")
+issue.add_argument("comment", nargs="?", type=int, help="comment to highlight")
 issue.add_argument("-o", "--output-file", required=False, help="output file path")
 
 
@@ -52,7 +60,9 @@ async def gen_diff_html(pr: str, output_file: Optional[str] = None):
 
     owner, repo, issue_number = m.groups()
     bot = get_oauth_bot()
-    resp = await bot.rest.issues.async_get(owner, repo, int(issue_number))
+    resp = await bot.rest.issues.async_get(
+        owner=owner, repo=repo, issue_number=int(issue_number)
+    )
     issue = resp.parsed_data
     if not issue.pull_request:
         print("Not a pull request")

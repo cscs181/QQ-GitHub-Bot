@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-06-05 17:01:23
+ * @LastEditTime   : 2023-11-28 16:03:53
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
@@ -27,6 +27,9 @@ g-emoji {
   vertical-align: -0.075em;
 }
 
+.timeline-comment.timeline-comment-highlight {
+  box-shadow: 0 0 0 1px var(--color-accent-emphasis);
+}
 .timeline-comment::before,
 .timeline-comment::after {
   display: block;
@@ -42,6 +45,9 @@ g-emoji {
 }
 .timeline-comment::before {
   background-color: var(--color-border-default);
+}
+.timeline-comment.timeline-comment-highlight::before {
+  background-color: var(--color-accent-emphasis);
 }
 .timeline-comment::after {
   margin-left: 2px;
@@ -137,7 +143,7 @@ g-emoji {
 }
 
 .tab-size {
-  tab-size: 8;
+  tab-size: 4;
 }
 
 /* primer css 21 removed diffstat */

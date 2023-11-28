@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-04-27 01:06:18
+ * @LastEditTime   : 2023-11-28 15:50:46
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -48,7 +48,7 @@
 {% from "components/timeline/unpinned.html.jinja" import unpinned %}
 {% from "components/timeline/user-blocked.html.jinja" import user_blocked %}
 
-{% macro issue_timeline(issue) %}
+{% macro issue_timeline(issue, highlight_comment=false) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
   {% set ns = namespace(issue=issue, past_events=[]) %}
   {{ commented(issue, ns, is_first=true) }}
@@ -70,7 +70,7 @@
     {% elif event.event == "comment_deleted" %}
     {{ comment_deleted(event, ns) }}
     {% elif event.event == "commented" %}
-    {{ commented(event, ns) }}
+    {{ commented(event, ns, highlight_comment=highlight_comment) }}
     {% elif event.event == "committed" %}
     {{ committed(event, ns) }}
     {% elif event.event == "convert_to_draft" %}

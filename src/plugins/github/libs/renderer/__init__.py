@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-18 17:21:33
+@LastEditTime   : 2023-11-28 15:32:57
 @Description    : GitHub image renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -28,11 +28,12 @@ from .render import (
 async def issue_to_image(
     bot: GitHubBot | OAuthBot,
     issue: rest.Issue,
+    highlight_comment: int | None = None,
     width: int = 800,
     height: int = 300,
 ) -> bytes:
     """Render a github issue/pr timeline to image"""
-    html = await issue_to_html(bot, issue, config.github_theme)
+    html = await issue_to_html(bot, issue, highlight_comment, theme=config.github_theme)
     return await content_screenshot(html, width, height)
 
 
@@ -43,7 +44,7 @@ async def pr_diff_to_image(
     height: int = 300,
 ) -> bytes:
     """Render a github pr diff to image"""
-    html = await pr_diff_to_html(bot, issue, config.github_theme)
+    html = await pr_diff_to_html(bot, issue, theme=config.github_theme)
     return await content_screenshot(html, width, height)
 
 
@@ -55,7 +56,7 @@ async def issue_opened_to_image(
     height: int = 300,
 ) -> bytes:
     """Render webhook event issue/opened to image"""
-    html = await issue_opened_to_html(bot, repo, issue, config.github_theme)
+    html = await issue_opened_to_html(bot, repo, issue, theme=config.github_theme)
     return await content_screenshot(html, width, height)
 
 
@@ -68,7 +69,9 @@ async def issue_commented_to_image(
     height: int = 300,
 ) -> bytes:
     """Render webhook event issue_comment/created to image"""
-    html = await issue_commented_to_html(bot, repo, issue, comment, config.github_theme)
+    html = await issue_commented_to_html(
+        bot, repo, issue, comment, theme=config.github_theme
+    )
     return await content_screenshot(html, width, height)
 
 
@@ -80,5 +83,5 @@ async def issue_closed_to_image(
     height: int = 300,
 ) -> bytes:
     """Render webhook event issue/closed to image"""
-    html = await issue_closed_to_html(bot, repo, issue, config.github_theme)
+    html = await issue_closed_to_html(bot, repo, issue, theme=config.github_theme)
     return await content_screenshot(html, width, height)
