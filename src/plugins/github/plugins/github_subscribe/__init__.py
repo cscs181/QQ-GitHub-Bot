@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 17:16:22
+@LastEditTime   : 2023-11-28 14:22:16
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,9 +16,11 @@ from nonebot.matcher import Matcher
 from nonebot.adapters import Message
 from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
+from nonebot.adapters.qq import Bot as QQBot
 from nonebot.exception import MatcherException
 from nonebot.params import Depends, CommandArg, ArgPlainText
 from nonebot.adapters.github import ActionFailed, ActionTimeout
+from nonebot.adapters.qq import GuildMessageEvent as QQGuildMessageEvent
 
 from src.plugins.github import config
 from src.providers.platform import TARGET_INFO
@@ -91,6 +93,17 @@ async def process_subscribe_arg(
             matcher.set_arg("full_name", arg.__class__(repo))
         if e := " ".join(events):
             matcher.set_arg("events", arg.__class__(e))
+
+
+@subscribe.handle()
+async def warn_qq_guild_rate_limit(bot: QQBot, event: QQGuildMessageEvent):
+    settings = await bot.get_message_setting(guild_id=event.guild_id)
+    if settings.disable_push_msg:
+        await subscribe.finish("频道消息推送已关闭，请允许本机器人推送消息后重试")
+    elif event.channel_id not in settings.channel_ids:
+        await subscribe.finish("当前子频道未允许推送消息，请添加本频道至允许列表后重试")
+    elif settings.channel_push_max_num <= 5:
+        await subscribe.send("当前频道最大消息推送数量较低，请考虑提升限额")
 
 
 @subscribe.handle(parameterless=(Depends(bypass_create),))
