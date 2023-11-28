@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 14:22:39
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-18 17:21:12
+@LastEditTime   : 2023-11-28 17:16:51
 @Description    : Playwright provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -38,7 +38,7 @@ async def shutdown_browser():
     if _browser:
         await _browser.close()
     if _playwright:
-        await _playwright.stop()  # type: ignore
+        await _playwright.stop()
 
 
 def get_browser() -> Browser:
