@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-11-27 14:15:38
+ * @LastEditTime   : 2023-11-28 13:32:11
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -48,6 +48,7 @@ GitHub Bot for QQ
 |                    `/readme`                     |                     查看仓库 README                     |
 |                    `/license`                    |                     获取仓库许可证                      |
 |                 `/release [tag]`                 |       获取仓库最新 Release，或指定 tag 的 Release       |
+|                  `/deployment`                   |                获取仓库 Deployment 列表                 |
 |                `/star`, `/unstar`                |                        快捷 star                        |
 |                     `/diff`                      |                      查看 PR diff                       |
 |                    `/comment`                    |                      评论 Issue/PR                      |

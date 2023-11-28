@@ -19,6 +19,7 @@ __plugin_meta__ = PluginMetadata(
     "/readme: 获取仓库 README\n"
     "/license: 获取仓库 LICENSE\n"
     "/release [tag]: 获取仓库最新或指定 Release\n"
+    "/deployment: 获取仓库 Deployment 列表\n"
     "/star: star 仓库（仅仓库安装 APP 后有效）\n"
     "/unstar: unstar 仓库（仅仓库安装 APP 后有效）\n"
     "/content: 查看 Issue、PR 信息及事件\n"
@@ -51,3 +52,4 @@ from . import content as content
 from . import license as license
 from . import release as release
 from . import unlabel as unlabel
+from . import deployment as deployment
