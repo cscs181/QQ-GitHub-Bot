@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-08 18:04:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 18:15:07
+@LastEditTime   : 2023-11-30 12:12:28
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -84,13 +84,13 @@ class QQExtractor(
     @classmethod
     @override
     def extract_group(cls, event) -> GroupInfo | None:
-        if isinstance(event, (MessageCreateEvent, AtMessageCreateEvent)):
+        if isinstance(event, MessageCreateEvent | AtMessageCreateEvent):
             return QQGuildChannelInfo(
                 type=TargetType.QQGUILD_CHANNEL,
                 qq_guild_id=event.guild_id,
                 qq_channel_id=event.channel_id,
             )
-        elif isinstance(event, (GroupAtMessageCreateEvent,)):
+        elif isinstance(event, GroupAtMessageCreateEvent):
             return QQOfficialGroupInfo(
                 type=TargetType.QQ_OFFICIAL_GROUP, qq_group_open_id=event.group_openid
             )
@@ -98,7 +98,7 @@ class QQExtractor(
     @classmethod
     @override
     def extract_role(cls, event) -> RoleLevel | None:
-        if isinstance(event, (MessageCreateEvent, AtMessageCreateEvent)):
+        if isinstance(event, MessageCreateEvent | AtMessageCreateEvent):
             if (roles := event.member and event.member.roles) is not None:
                 if "4" in roles:
                     return RoleLevel.OWNER
@@ -106,7 +106,7 @@ class QQExtractor(
                     return RoleLevel.ADMIN
                 return RoleLevel.MEMBER
             return RoleLevel.GUEST
-        elif isinstance(event, (GroupAtMessageCreateEvent,)):
+        elif isinstance(event, GroupAtMessageCreateEvent):
             return RoleLevel.MEMBER
 
     @classmethod
@@ -120,13 +120,13 @@ class QQExtractor(
         | QQGuildChannelMessageInfo
         | None
     ):
-        if isinstance(event, (MessageCreateEvent, AtMessageCreateEvent)):
+        if isinstance(event, MessageCreateEvent | AtMessageCreateEvent):
             return QQGuildChannelMessageInfo(
                 type=TargetType.QQGUILD_CHANNEL, id=event.id
             )
         elif isinstance(event, DirectMessageCreateEvent):
             return QQGuildUserMessageInfo(type=TargetType.QQGUILD_USER, id=event.id)
-        elif isinstance(event, (GroupAtMessageCreateEvent,)):
+        elif isinstance(event, GroupAtMessageCreateEvent):
             return QQOfficialGroupMessageInfo(
                 type=TargetType.QQ_OFFICIAL_GROUP, id=event.id
             )

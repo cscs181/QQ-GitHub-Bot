@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-11-27 14:31:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 15:49:10
+@LastEditTime   : 2023-11-29 15:59:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -77,7 +77,7 @@ async def handle_code_search(
 
 repo_search = on_command(
     "search",
-    aliases={("search", "repo"), "搜索仓库"},
+    aliases={("search", "repo"), "搜索", "搜索仓库"},
     rule=NO_GITHUB_EVENT,
     priority=config.github_command_priority,
 )

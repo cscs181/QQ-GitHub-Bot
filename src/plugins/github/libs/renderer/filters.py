@@ -9,7 +9,7 @@
 
 __author__ = "yanyongyu"
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import humanize
 from nonebot import logger
@@ -75,7 +75,7 @@ def relative_time(value: datetime | str) -> str:
     if isinstance(value, str):
         value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
     if not value.tzinfo:
-        value = value.replace(tzinfo=timezone.utc)
+        value = value.replace(tzinfo=UTC)
     now = datetime.now(value.tzinfo)
     delta = now - value
     if delta.microseconds > 0 and delta.days < 30:

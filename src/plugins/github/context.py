@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:18:14
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:18:14
+@LastEditTime   : 2023-11-30 12:11:39
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,7 +11,8 @@ __author__ = "yanyongyu"
 
 from functools import wraps
 from types import TracebackType
-from typing import Any, Generic, TypeVar, Callable, ParamSpec, AsyncGenerator
+from typing import Any, Generic, TypeVar, ParamSpec
+from collections.abc import Callable, AsyncGenerator
 
 P = ParamSpec("P")
 R = TypeVar("R", covariant=True)
@@ -22,7 +23,7 @@ class AsyncGeneratorContextManager(Generic[R]):
         __self,
         __func: Callable[P, AsyncGenerator[R, Any]],
         *args: P.args,
-        **kwargs: P.kwargs
+        **kwargs: P.kwargs,
     ):
         __self.func = __func
         __self.args = args
@@ -68,7 +69,7 @@ class AsyncGeneratorContextManager(Generic[R]):
                     if exc is exc_value:
                         return False
                     if (
-                        isinstance(exc_value, (StopIteration, StopAsyncIteration))
+                        isinstance(exc_value, StopIteration | StopAsyncIteration)
                         and exc.__cause__ is exc_value
                     ):
                         return False

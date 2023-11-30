@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-27 04:24:58
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-13 17:35:14
+@LastEditTime   : 2023-11-30 12:13:11
 @Description    : Rule helpers
 @GitHub         : https://github.com/yanyongyu
 """
@@ -57,7 +57,7 @@ REPLY_ANY = Rule(reply_any)
 
 
 async def reply_issue_or_pr(reply_tag: OPTIONAL_REPLY_TAG) -> bool:
-    return isinstance(reply_tag, (IssueTag, PullRequestTag))
+    return isinstance(reply_tag, IssueTag | PullRequestTag)
 
 
 REPLY_ISSUE_OR_PR = Rule(reply_issue_or_pr)

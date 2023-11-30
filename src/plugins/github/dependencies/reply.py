@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-08 14:02:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 15:35:46
+@LastEditTime   : 2023-11-30 12:13:04
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -69,7 +69,7 @@ async def get_issue_or_pr_reply_tag(
 
     Finish the session if the tag do not exists or is not issue or pull request tag.
     """
-    if not tag or not isinstance(tag, (IssueTag, PullRequestTag)):
+    if not tag or not isinstance(tag, IssueTag | PullRequestTag):
         await matcher.finish()
     return tag
 
@@ -105,7 +105,7 @@ async def store_tag_data(state: T_State, tag: OPTIONAL_REPLY_TAG) -> None:
         state["owner"] = tag.owner
         state["repo"] = tag.repo
 
-        if isinstance(tag, (IssueTag, PullRequestTag)):
+        if isinstance(tag, IssueTag | PullRequestTag):
             state["issue"] = tag.number
 
 

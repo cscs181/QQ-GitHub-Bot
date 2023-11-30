@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 07:31:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 19:36:03
+@LastEditTime   : 2023-11-29 15:04:01
 @Description    : Group model
 @GitHub         : https://github.com/yanyongyu
 """
@@ -51,14 +51,18 @@ class Group(Model):
 
         info = cast(GroupInfo, info)
 
-        insert_sql = insert(cls).values(user=info.dict(), bind_repo=bind_repo)
+        insert_sql = insert(cls).values(group=info.dict(), bind_repo=bind_repo)
         update_sql = insert_sql.on_conflict_do_update(
-            set_={"bind_repo": insert_sql.excluded.bind_repo}
+            index_elements=[cls.group],
+            set_={"bind_repo": insert_sql.excluded.bind_repo},
         ).returning(cls)
 
         async with get_session() as session:
             result = await session.execute(update_sql)
-            return result.scalar_one()
+            group = result.scalar_one()
+            await session.commit()
+            await session.refresh(group)
+            return group
 
     async def unbind(self) -> None:
         """Unbind group and repo"""

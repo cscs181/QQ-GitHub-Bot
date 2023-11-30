@@ -9,7 +9,7 @@
 
 __author__ = "yanyongyu"
 
-from typing import Generator
+from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import Token, ContextVar
 

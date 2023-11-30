@@ -10,7 +10,7 @@
 __author__ = "yanyongyu"
 
 from datetime import timedelta
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from nonebot import get_driver

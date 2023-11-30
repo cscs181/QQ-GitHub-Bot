@@ -37,6 +37,7 @@ uvicorn = ">=0.18.3,<1.0.0"
 
 [tool.black]
 preview = true
+target-version = ["py311", "py312"]
 line-length = 88
 extend-exclude = '''
 '''
@@ -54,7 +55,7 @@ select = ["E", "W", "F", "UP", "C", "T", "PYI", "PT", "Q"]
 ignore = ["E402", "C901", "UP037"]
 
 line-length = 88
-target-version = "py38"
+target-version = "py311"
 
 [tool.ruff.extend-per-file-ignores]
 "./scripts/*" = ["T201"]

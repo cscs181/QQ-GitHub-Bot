@@ -12,7 +12,8 @@ __author__ = "yanyongyu"
 import pickle
 from functools import wraps
 from datetime import timedelta
-from typing import Any, TypeVar, Callable, Awaitable, ParamSpec
+from typing import Any, TypeVar, ParamSpec
+from collections.abc import Callable, Awaitable
 
 import redis.asyncio as redis
 from nonebot import get_driver

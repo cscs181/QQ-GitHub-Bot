@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 09:50:07
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 11:27:22
+@LastEditTime   : 2023-11-29 14:59:19
 @Description    : User model
 @GitHub         : https://github.com/yanyongyu
 """
@@ -53,12 +53,16 @@ class User(Model):
 
         insert_sql = insert(cls).values(user=info.dict(), access_token=access_token)
         update_sql = insert_sql.on_conflict_do_update(
-            set_={"access_token": insert_sql.excluded.access_token}
+            index_elements=[cls.user],
+            set_={"access_token": insert_sql.excluded.access_token},
         ).returning(cls)
 
         async with get_session() as session:
             result = await session.execute(update_sql)
-            return result.scalar_one()
+            user = result.scalar_one()
+            await session.commit()
+            await session.refresh(user)
+            return user
 
     async def unauth(self) -> None:
         """UnAuth user"""

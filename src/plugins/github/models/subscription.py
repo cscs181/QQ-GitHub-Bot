@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-26 14:54:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 11:27:13
+@LastEditTime   : 2023-11-30 13:53:13
 @Description    : User subscription model
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,20 +12,12 @@ __author__ = "yanyongyu"
 from typing import Self, TypedDict, cast
 
 from pydantic import parse_obj_as
+from sqlalchemy import cast as sql_cast
 from sqlalchemy.orm import Mapped, mapped_column
 from nonebot_plugin_orm import Model, get_session
+from sqlalchemy import Index, String, UniqueConstraint, case
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, insert
-from sqlalchemy import (
-    Index,
-    String,
-    UniqueConstraint,
-    case,
-    func,
-    select,
-    update,
-    distinct,
-    bindparam,
-)
+from sqlalchemy import func, select, update, distinct, bindparam
 
 from src.providers.platform import TargetInfo
 
@@ -39,13 +31,16 @@ class SubData(TypedDict):
     action: list[str] | None
 
 
+UNIQUE_SUBSCRIPTION = UniqueConstraint("subscriber", "owner", "repo", "event")
+
+
 class Subscription(Model):
     """GitHub event subscription model"""
 
     __tablename__ = "subscription"
     __table_args__ = (
         Index(None, "owner", "repo", "event", "action"),
-        UniqueConstraint("subscriber", "owner", "repo", "event"),
+        UNIQUE_SUBSCRIPTION,
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -77,15 +72,13 @@ class Subscription(Model):
 
         info = cast(TargetInfo, info)
 
-        insert_sql = insert(cls).values(
-            [
-                {
-                    "subscriber": info.dict(),
-                    **subscription,
-                }
-                for subscription in subsciptions
-            ]
-        )
+        insert_sql = insert(cls).values([
+            {
+                "subscriber": info.dict(),
+                **subscription,
+            }
+            for subscription in subsciptions
+        ])
 
         # create new actions
         merge_action = insert_sql.excluded.action + cls.action
@@ -94,7 +87,7 @@ class Subscription(Model):
         merge_action = (
             select(func.array_agg(distinct(merge_action_elements.column)))
             .select_from(merge_action_elements)
-            .subquery()
+            .scalar_subquery()
         )
         # handle on conflict special case
         new_action = case(
@@ -106,9 +99,12 @@ class Subscription(Model):
             else_=merge_action,
         )
 
-        update_sql = insert_sql.on_conflict_do_update(set_={"action": new_action})
+        update_sql = insert_sql.on_conflict_do_update(
+            constraint=UNIQUE_SUBSCRIPTION, set_={"action": new_action}
+        )
         async with get_session() as session:
             await session.execute(update_sql)
+            await session.commit()
 
     @classmethod
     async def unsubscribe_by_info(
@@ -121,45 +117,49 @@ class Subscription(Model):
         info = cast(TargetInfo, info)
 
         old_action_elements = func.unnest(cls.action).alias()
-        update_data = [
-            {
-                "subscriber": info.dict(),
-                "owner": unsubscription["owner"],
-                "repo": unsubscription["repo"],
-                "event": unsubscription["event"],
-                "action": (
-                    # remove all actions
-                    []
-                    if unsubscription["action"] is None
-                    else case(
-                        # do no action when origin action is None
-                        (cls.action.is_(None), None),
-                        # remove any value in unsubscription["action"]
-                        else_=(
-                            select(func.array_agg(old_action_elements))
-                            .select_from(old_action_elements)
-                            .where(
-                                old_action_elements.column
-                                != func.all(unsubscription["action"])
-                            )
-                            .subquery()
-                        ),
-                    )
-                ),
-            }
-            for unsubscription in unsubsciptions
-        ]
-        async with get_session() as session:
-            async with await session.connection() as conn:
-                await conn.execute(
-                    update(cls).where(
-                        cls.subscriber == bindparam("subscriber"),
-                        cls.owner == bindparam("owner"),
-                        cls.repo == bindparam("repo"),
-                        cls.event == bindparam("event"),
+        sql = (
+            update(cls)
+            .where(
+                cls.subscriber == bindparam("tmp_subscriber"),
+                cls.owner == bindparam("tmp_owner"),
+                cls.repo == bindparam("tmp_repo"),
+                cls.event == bindparam("tmp_event"),
+            )
+            .values(
+                action=case(
+                    # do nothing if origin action is None
+                    (cls.action.is_(None), None),
+                    # remove all actions if unsubscription["action"] is None
+                    (sql_cast(bindparam("tmp_action"), ARRAY(String())).is_(None), []),
+                    # remove any value in unsubscription["action"]
+                    else_=(
+                        select(func.array_agg(old_action_elements.column))
+                        .select_from(old_action_elements)
+                        .where(
+                            old_action_elements.column
+                            != func.all(bindparam("tmp_action"))
+                        )
+                        .scalar_subquery()
                     ),
-                    update_data,
                 )
+            )
+        )
+        async with get_session() as session:
+            conn = await session.connection()
+            await conn.execute(
+                sql,
+                [
+                    {
+                        "tmp_subscriber": info.dict(),
+                        "tmp_owner": unsubscription["owner"],
+                        "tmp_repo": unsubscription["repo"],
+                        "tmp_event": unsubscription["event"],
+                        "tmp_action": unsubscription["action"],
+                    }
+                    for unsubscription in unsubsciptions
+                ],
+            )
+            await conn.commit()
 
     @classmethod
     async def unsubscribe_all_by_info(
@@ -180,6 +180,7 @@ class Subscription(Model):
         )
         async with get_session() as session:
             await session.execute(clear_sql)
+            await session.commit()
 
     @classmethod
     async def list_subscribers(

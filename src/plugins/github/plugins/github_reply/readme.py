@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 17:08:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-18 17:28:38
+@LastEditTime   : 2023-11-29 17:15:50
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,6 +29,7 @@ from src.providers.platform import (
 
 readme = on_command(
     "readme",
+    aliases={"仓库说明"},
     rule=NO_GITHUB_EVENT & REPLY_ANY,
     priority=config.github_command_priority,
     block=True,
@@ -53,7 +54,7 @@ async def handle_content(
                 repo=tag.repo,
                 headers={"Accept": "application/vnd.github.html"},
             )
-            content = resp.parsed_data.content
+            content = resp.text
     except ActionTimeout:
         await readme.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:

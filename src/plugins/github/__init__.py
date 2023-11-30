@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-20 23:59:20
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 14:06:14
+@LastEditTime   : 2023-11-29 14:27:38
 @Description    : GitHub Main Plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -27,3 +27,5 @@ _webhook_plugins = set()
 _webhook_plugins |= nonebot.load_plugins(
     str((Path(__file__).parent / "webhooks").resolve())
 )
+
+from . import apis as apis

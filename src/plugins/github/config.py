@@ -9,7 +9,7 @@
 
 __author__ = "yanyongyu"
 
-from typing import Any, Dict, Literal
+from typing import Any, Literal
 
 from nonebot.adapters.github.config import OAuthApp, GitHubApp
 from pydantic import Extra, BaseModel, validator, parse_obj_as, root_validator
@@ -30,7 +30,7 @@ class Config(BaseModel, extra=Extra.ignore):
     github_command_priority: int = 50
 
     @root_validator(pre=True)
-    def validate_app(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_app(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Auto get app from github adapter config"""
 
         if not (apps := values.get("github_apps")):

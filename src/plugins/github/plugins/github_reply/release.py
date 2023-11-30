@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-11-27 13:46:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 14:13:09
+@LastEditTime   : 2023-11-29 17:23:43
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -31,6 +31,7 @@ from src.providers.platform import (
 
 release = on_command(
     "release",
+    aliases={"发布"},
     rule=NO_GITHUB_EVENT & REPLY_ANY,
     priority=config.github_command_priority,
     block=True,

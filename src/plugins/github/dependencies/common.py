@@ -2,18 +2,20 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:11:56
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:13:38
+@LastEditTime   : 2023-11-29 16:15:24
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
+from typing import Any
+
 from nonebot.typing import T_State
 from nonebot.params import Depends, RegexDict
 
 
-async def store_regex_vars(state: T_State, group: dict[str, str] = RegexDict()):
+async def store_regex_vars(state: T_State, group: dict[str, Any] = RegexDict()):
     state.update(group)
 
 

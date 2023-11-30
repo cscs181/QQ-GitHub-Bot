@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-11-28 11:04:29
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-28 13:35:52
+@LastEditTime   : 2023-11-29 16:41:30
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -26,6 +26,7 @@ from src.providers.platform import (
 
 deployment = on_command(
     "deployment",
+    aliases={"部署", "部署记录"},
     rule=NO_GITHUB_EVENT & REPLY_ANY,
     priority=config.github_command_priority,
     block=True,

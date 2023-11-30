@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 17:11:40
+@LastEditTime   : 2023-11-29 15:17:03
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -98,7 +98,7 @@ async def revoke_user(installation: GITHUB_USER_INSTALLATION):
     bot = get_github_bot()
 
     try:
-        await bot.rest.apps.async_delete_installation(installation.id)
+        await bot.rest.apps.async_delete_installation(installation_id=installation.id)
     except ActionTimeout:
         await install_revoke.finish("GitHub API 超时，请稍后再试")
     except Exception as e:
@@ -106,3 +106,5 @@ async def revoke_user(installation: GITHUB_USER_INSTALLATION):
             f"Failed while deleting installation in installation revoke: {e}"
         )
         await install_revoke.finish("未知错误发生，请尝试重试或联系管理员")
+
+    await install_revoke.finish("已移除 GitHub APP 集成")

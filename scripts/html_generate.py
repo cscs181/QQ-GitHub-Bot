@@ -2,7 +2,6 @@ import re
 import sys
 import asyncio
 from pathlib import Path
-from typing import Optional
 from argparse import ArgumentParser
 
 from nonebot import logger, get_adapter
@@ -24,7 +23,7 @@ sub_parser = parser.add_subparsers(required=True)
 
 
 async def gen_issue_html(
-    issue: str, comment: Optional[int] = None, output_file: Optional[str] = None
+    issue: str, comment: int | None = None, output_file: str | None = None
 ):
     m = re.match(rf"^{FULLREPO_REGEX}#{ISSUE_REGEX}$", issue)
     if not m:
@@ -52,7 +51,7 @@ issue.add_argument("comment", nargs="?", type=int, help="comment to highlight")
 issue.add_argument("-o", "--output-file", required=False, help="output file path")
 
 
-async def gen_diff_html(pr: str, output_file: Optional[str] = None):
+async def gen_diff_html(pr: str, output_file: str | None = None):
     m = re.match(rf"^{FULLREPO_REGEX}#{ISSUE_REGEX}$", pr)
     if not m:
         print("Invalid pr format, should be: <owner>/<repo>#<issue>")

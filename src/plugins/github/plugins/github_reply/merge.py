@@ -2,12 +2,14 @@
 @Author         : yanyongyu
 @Date           : 2023-04-04 18:54:22
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 15:44:16
+@LastEditTime   : 2023-11-30 13:48:42
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
+
+from typing import Literal
 
 from githubkit.utils import UNSET
 from nonebot.adapters import Message
@@ -28,9 +30,19 @@ from src.providers.platform import (
     extract_sent_message,
 )
 
+MERGE_METHODS: dict[str, Literal["merge", "squash", "rebase"]] = {
+    "merge": "merge",
+    "squash": "squash",
+    "rebase": "rebase",
+    "合并": "merge",
+    "压缩合并": "squash",
+    "变基合并": "rebase",
+}
+
+
 merge = on_command(
     "merge",
-    aliases={"squash", "rebase"},
+    aliases={k for k in MERGE_METHODS if k != "merge"},
     rule=NO_GITHUB_EVENT & REPLY_PR,
     priority=config.github_command_priority,
     block=True,
@@ -48,7 +60,7 @@ async def handle_merge(
 ):
     bot = get_github_bot()
 
-    if action[0] not in ("merge", "squash", "rebase"):
+    if action[0] not in MERGE_METHODS:
         await merge.finish(f"操作 {action[0]} 不允许")
 
     await create_message_tag(
@@ -76,9 +88,11 @@ async def handle_merge(
             await merge.finish("未知错误发生，请尝试重试或联系管理员")
 
         if mergeable is None:
-            await merge.finish("GitHub 正在检查 PR 是否可合并，请稍后再试")
+            await merge.finish(
+                f"GitHub 正在检查 PR {tag.owner}/{tag.repo}#{tag.number} 是否可合并，请稍后再试"  # noqa: E501
+            )
         elif mergeable is not True:
-            await merge.finish("PR 当前无法合并")
+            await merge.finish(f"PR {tag.owner}/{tag.repo}#{tag.number} 当前无法合并")
 
         try:
             await bot.rest.pulls.async_check_if_merged(
@@ -102,7 +116,7 @@ async def handle_merge(
                 owner=tag.owner,
                 repo=tag.repo,
                 pull_number=tag.number,
-                merge_method=action[0],
+                merge_method=MERGE_METHODS[action[0]],
                 commit_title=content.extract_plain_text().strip() or UNSET,
             )
         except ActionTimeout:

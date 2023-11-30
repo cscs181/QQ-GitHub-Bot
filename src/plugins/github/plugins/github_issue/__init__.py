@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-28 15:35:34
+@LastEditTime   : 2023-11-29 16:16:15
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -81,7 +81,7 @@ async def handle_issue(
     owner = state["owner"]
     repo = state["repo"]
     number = int(state["issue"])
-    comment = int(state["comment"]) if "comment" in state else None
+    comment = int(comment) if (comment := state.get("comment")) else None
 
     await create_message_tag(
         message_info,

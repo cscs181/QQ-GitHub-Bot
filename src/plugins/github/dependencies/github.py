@@ -9,8 +9,9 @@
 
 __author__ = "yanyongyu"
 
+from typing import Annotated
 from contextlib import nullcontext
-from typing import Annotated, AsyncGenerator
+from collections.abc import AsyncGenerator
 
 from nonebot import logger
 from nonebot.params import Depends

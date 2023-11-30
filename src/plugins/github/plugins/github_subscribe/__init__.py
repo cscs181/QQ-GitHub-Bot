@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-28 14:22:16
+@LastEditTime   : 2023-11-30 11:44:46
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -63,6 +63,8 @@ UNSUBSCRIBE_ALL_MESSAGE = "全部"
 def subscriptions_to_message(subscriptions: list[Subscription]) -> str:
     repos: dict[str, list[str]] = {}
     for sub in subscriptions:
+        if sub.action == []:
+            continue
         events = repos.setdefault(f"{sub.owner}/{sub.repo}", [])
         events.append(
             f"{sub.event}/[{', '.join(sub.action)}]" if sub.action else sub.event
@@ -152,7 +154,7 @@ async def handle_subscribe_repo(
         await subscribe.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
         if e.response.status_code in {403, 404}:
-            await subscribe.finish(f"你没有权限访问仓库 {full_name} ！请重新发送或取消")
+            await subscribe.finish(f"你没有权限访问仓库 {full_name} ！")
         logger.opt(exception=e).error(
             f"Failed while checking user permission in group subscribe: {e}"
         )
@@ -198,7 +200,7 @@ async def process_subscribe_event(state: T_State, events: str = ArgPlainText()):
 
 
 @subscribe.handle()
-async def create_user(target_info: TARGET_INFO, state: T_State):
+async def create_subscriptions(target_info: TARGET_INFO, state: T_State):
     processed_events: dict[str, set[str] | None] = state["processed_events"]
     try:
         await Subscription.subscribe_by_info(
@@ -286,7 +288,7 @@ async def process_unsubscribe_event(state: T_State, events: str = ArgPlainText()
 
 
 @unsubscribe.handle()
-async def delete_user(target_info: TARGET_INFO, state: T_State):
+async def delete_subscriptions(target_info: TARGET_INFO, state: T_State):
     try:
         if state["processed_events"] == UNSUBSCRIBE_ALL_MESSAGE:
             await Subscription.unsubscribe_all_by_info(
