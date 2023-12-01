@@ -1,0 +1,23 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2023-12-01 15:20:09
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2023-12-01 15:42:18
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "components/header.html.jinja" import header %}
+{% from "components/readme.html.jinja" import readme %}
+
+{% extends "main.html.jinja" %}
+{% block main %}
+{{ header(repo) }}
+<div class="repository-content">
+  <div class="container-xl px-3 px-md-4 px-lg-5 mt-4">
+    <div>
+      {{ readme(content) }}
+    </div>
+  </div>
+</div>
+{% endblock %}

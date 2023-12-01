@@ -2,13 +2,14 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 17:08:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-29 17:15:50
+@LastEditTime   : 2023-12-01 15:53:41
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
+from nonebot.typing import T_State
 from nonebot import logger, on_command
 from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
@@ -16,15 +17,20 @@ from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
-from src.providers.playwright import content_screenshot
+from src.plugins.github.libs.renderer import readme_to_image
 from src.plugins.github.helpers import REPLY_ANY, NO_GITHUB_EVENT
 from src.plugins.github.cache.message_tag import RepoTag, create_message_tag
-from src.plugins.github.dependencies import REPLY_TAG, GITHUB_PUBLIC_CONTEXT
 from src.providers.platform import (
     TARGET_INFO,
     MESSAGE_INFO,
     TargetType,
     extract_sent_message,
+)
+from src.plugins.github.dependencies import (
+    REPLY_TAG,
+    REPOSITORY,
+    STORE_TAG_DATA,
+    GITHUB_PUBLIC_CONTEXT,
 )
 
 readme = on_command(
@@ -38,7 +44,7 @@ readme = on_command(
 
 @readme.handle()
 async def handle_content(
-    target_info: TARGET_INFO,
+    state: T_State,
     message_info: MESSAGE_INFO,
     tag: REPLY_TAG,
     context: GITHUB_PUBLIC_CONTEXT,
@@ -54,7 +60,8 @@ async def handle_content(
                 repo=tag.repo,
                 headers={"Accept": "application/vnd.github.html"},
             )
-            content = resp.text
+            state["content"] = resp.text
+            return
     except ActionTimeout:
         await readme.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
@@ -66,8 +73,18 @@ async def handle_content(
         logger.opt(exception=e).error(f"Failed while getting repo readme: {e}")
         await readme.finish("未知错误发生，请尝试重试或联系管理员")
 
+
+@readme.handle(parameterless=(STORE_TAG_DATA,))
+async def render_content(
+    state: T_State,
+    target_info: TARGET_INFO,
+    repo: REPOSITORY,
+    tag: REPLY_TAG,
+    context: GITHUB_PUBLIC_CONTEXT,
+):
     try:
-        img = await content_screenshot(content, 800, 300)
+        async with context as bot:
+            img = await readme_to_image(bot, repo, state["content"])
     except TimeoutError:
         await readme.finish("生成图片超时！请稍后再试")
     except Error:

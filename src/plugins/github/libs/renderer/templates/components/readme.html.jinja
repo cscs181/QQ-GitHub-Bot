@@ -1,0 +1,24 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2023-12-01 15:26:47
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2023-12-01 15:41:12
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "icons/book.html.jinja" import octicon_book %}
+
+{% macro readme(content) %}
+<div class="Box">
+  <div class="Box-header">
+    <h2 class="Box-title">
+      {{ octicon_book() }}
+      README
+    </h2>
+  </div>
+  <div class="Box-body">
+    {{ content }}
+  </div>
+</div>
+{% endmacro %}

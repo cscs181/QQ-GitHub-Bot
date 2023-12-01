@@ -65,6 +65,23 @@ env.globals["find_dismissed_review"] = find_dismissed_review
 env.globals["scale_linear"] = scale_linear
 
 
+async def readme_to_html(
+    bot: GitHubBot | OAuthBot,
+    repo: rest.FullRepository,
+    readme: str,
+    theme: Literal["light", "dark"] = "light",
+) -> str:
+    """Render issue or pr with timeline to html
+
+    Args:
+        issue: the issue object
+        theme: the theme of the html
+    """
+    template = env.get_template("views/readme.html.jinja")
+    with set_context_bot(bot):
+        return await template.render_async(repo=repo, content=readme, theme=theme)
+
+
 async def issue_to_html(
     bot: GitHubBot | OAuthBot,
     issue: rest.Issue,

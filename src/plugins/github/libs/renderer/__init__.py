@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-28 15:32:57
+@LastEditTime   : 2023-12-01 16:00:49
 @Description    : GitHub image renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,11 +18,24 @@ from src.providers.playwright import content_screenshot
 
 from .render import (
     issue_to_html,
+    readme_to_html,
     pr_diff_to_html,
     issue_closed_to_html,
     issue_opened_to_html,
     issue_commented_to_html,
 )
+
+
+async def readme_to_image(
+    bot: GitHubBot | OAuthBot,
+    repo: rest.FullRepository,
+    readme: str,
+    width: int = 800,
+    height: int = 300,
+) -> bytes:
+    """Render a github issue/pr timeline to image"""
+    html = await readme_to_html(bot, repo, readme, theme=config.github_theme)
+    return await content_screenshot(html, width, height)
 
 
 async def issue_to_image(

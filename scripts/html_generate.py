@@ -16,7 +16,11 @@ import bot as _bot  # noqa: F401
 from src.plugins.github import config
 from src.plugins.github.utils import get_oauth_bot
 from src.plugins.github.helpers import ISSUE_REGEX, FULLREPO_REGEX
-from src.plugins.github.libs.renderer.render import issue_to_html, pr_diff_to_html
+from src.plugins.github.libs.renderer.render import (
+    issue_to_html,
+    readme_to_html,
+    pr_diff_to_html,
+)
 
 parser = ArgumentParser()
 sub_parser = parser.add_subparsers(required=True)
@@ -76,6 +80,33 @@ diff = sub_parser.add_parser("diff")
 diff.set_defaults(func=gen_diff_html)
 diff.add_argument("pr", help="pr to render (owner/repo#pr)")
 diff.add_argument("-o", "--output-file", required=False, help="output file path")
+
+
+async def gen_readme_html(repo: str, output_file: str | None = None):
+    m = re.match(rf"^{FULLREPO_REGEX}$", repo)
+    if not m:
+        print("Invalid repo format, should be: <owner>/<repo>")
+        return
+
+    owner, repo = m.groups()
+    bot = get_oauth_bot()
+    resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
+    repository = resp.parsed_data
+    resp = await bot.rest.repos.async_get_readme(
+        owner=owner, repo=repo, headers={"Accept": "application/vnd.github.html"}
+    )
+    content = resp.text
+    html = await readme_to_html(bot, repository, content, config.github_theme)
+    if not output_file:
+        print(html)
+        return
+    Path(output_file).write_text(html)
+
+
+readme = sub_parser.add_parser("readme")
+readme.set_defaults(func=gen_readme_html)
+readme.add_argument("repo", help="repo readme to render (owner/repo)")
+readme.add_argument("-o", "--output-file", required=False, help="output file path")
 
 
 async def main():
