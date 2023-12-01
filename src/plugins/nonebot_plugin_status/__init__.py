@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-18 00:00:13
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 13:40:21
+@LastEditTime   : 2023-12-01 10:41:28
 @Description    : Status plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,7 +11,7 @@ __author__ = "yanyongyu"
 
 import inspect
 import contextlib
-from typing import Any
+from typing import Any, Dict
 
 from jinja2 import Environment
 from nonebot import get_driver
@@ -85,7 +85,7 @@ if not set(_t_vars).issubset(KNOWN_VARS):
     )
 
 
-async def _solve_required_vars() -> dict[str, Any]:
+async def _solve_required_vars() -> Dict[str, Any]:
     """Solve required variables for template rendering."""
     return (
         {
@@ -112,7 +112,7 @@ async def server_status(matcher: Matcher):
     await matcher.send(message=await render_template())
 
 
-from . import common as common
+from . import common as common  # noqa: E402
 
 with contextlib.suppress(ImportError):
     import nonebot.adapters.onebot.v11  # noqa: F401

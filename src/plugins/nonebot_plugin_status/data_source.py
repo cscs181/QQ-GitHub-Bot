@@ -11,7 +11,7 @@ __author__ = "yanyongyu"
 
 import asyncio
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 import psutil
 from nonebot.adapters import Bot
@@ -26,7 +26,7 @@ driver = get_driver()
 
 # bot status
 _nonebot_run_time: datetime
-_bot_connect_time: dict[str, datetime] = {}
+_bot_connect_time: Dict[str, datetime] = {}
 
 
 @driver.on_startup
@@ -53,7 +53,7 @@ def get_nonebot_run_time() -> datetime:
         raise RuntimeError("NoneBot not running!") from None
 
 
-def get_bot_connect_time() -> dict[str, datetime]:
+def get_bot_connect_time() -> Dict[str, datetime]:
     """Get the time when the bot connected to the server."""
     return _bot_connect_time
 
@@ -65,7 +65,7 @@ async def get_cpu_status() -> float:
     return psutil.cpu_percent()
 
 
-async def per_cpu_status() -> list[float]:
+async def per_cpu_status() -> List[float]:
     """Get the CPU usage status of each core."""
     psutil.cpu_percent(percpu=True)
     await asyncio.sleep(0.5)
@@ -89,7 +89,7 @@ def _get_disk_usage(path: str) -> Optional["sdiskusage"]:
         logger.warning(f"Could not get disk usage for {path}: {e!r}")
 
 
-def get_disk_usage() -> dict[str, "sdiskusage"]:
+def get_disk_usage() -> Dict[str, "sdiskusage"]:
     """Get the disk usage status."""
     disk_parts = psutil.disk_partitions()
     return {
