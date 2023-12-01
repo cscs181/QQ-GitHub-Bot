@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ include "bot.name" . }}-nonebot
   namespace: {{ .Release.Namespace }}
@@ -7,14 +7,12 @@ metadata:
     {{- include "bot.labels" . | nindent 4 }}
     app.kubernetes.io/component: nonebot
 spec:
-  serviceName: {{ include "bot.name" . }}-nonebot
   replicas: {{ .Values.bot.replicas }}
   selector:
     matchLabels:
       {{- include "bot.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: nonebot
-  minReadySeconds: 5
-  updateStrategy:
+  strategy:
     {{- toYaml .Values.bot.updateStrategy | nindent 4 }}
   template:
     metadata:
@@ -63,12 +61,6 @@ spec:
           image: "{{ .Values.bot.image.repo }}:{{ .Values.bot.image.tag }}"
           imagePullPolicy: {{ .Values.bot.image.pullPolicy }}
           env:
-            - name: POD_INDEX
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.labels['apps.kubernetes.io/pod-index']
-            - name: POD_COUNT
-              value: {{ .Values.bot.replicas | quote }}
             - name: ENVIRONMENT
               value: prod
             - name: PRE_START_PATH
