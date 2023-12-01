@@ -15,7 +15,7 @@ spec:
       app.kubernetes.io/component: nonebot
   minReadySeconds: 5
   updateStrategy:
-    {{- toYaml .Values.bot.updateStrategy | nindent 4 -}}
+    {{- toYaml .Values.bot.updateStrategy | nindent 4 }}
   template:
     metadata:
       {{- with .Values.bot.podAnnotations }}
@@ -26,10 +26,10 @@ spec:
         {{- include "bot.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: nonebot
     spec:
-      {{- with .Values.bot.podSecurityContext -}}
+      {{- with .Values.bot.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
-      {{- end -}}
+      {{- end }}
       initContainers:
         - name: wait-for-redis
           image: redis:7
@@ -56,10 +56,10 @@ spec:
               done;
       containers:
         - name: {{ .Chart.Name }}-nonebot
-          {{- with .Values.bot.securityContext -}}
+          {{- with .Values.bot.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
-          {{- end -}}
+          {{- end }}
           image: "{{ .Values.bot.image.repo }}:{{ .Values.bot.image.tag }}"
           imagePullPolicy: {{ .Values.bot.image.pullPolicy }}
           env:
