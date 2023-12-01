@@ -215,7 +215,7 @@ jobs:
           script: |
             cd $DEPLOY_PATH
             git pull
-            helm upgrade -n caibot -f values.yaml --set-string bot.image.tag=$VERSION --timeout 30m cai k8s/bot/
+            helm upgrade -n caibot -f values.yaml --set-string bot.image.tag=$VERSION --timeout 30m --atomic cai k8s/bot/
 
       - name: update deployment status
         uses: bobheadxi/deployments@v1
