@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "bot.name" . }}-nonebot
   namespace: {{ .Release.Namespace }}
@@ -7,13 +7,15 @@ metadata:
     {{- include "bot.labels" . | nindent 4 }}
     app.kubernetes.io/component: nonebot
 spec:
+  serviceName: {{ include "bot.name" . }}-nonebot
   replicas: {{ .Values.bot.replicas }}
   selector:
     matchLabels:
       {{- include "bot.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: nonebot
-  strategy:
-    type: {{ .Values.bot.updateStrategy }}
+  minReadySeconds: 5
+  updateStrategy:
+    {{- toYaml .Values.bot.updateStrategy | nindent 4 -}}
   template:
     metadata:
       {{- with .Values.bot.podAnnotations }}
@@ -24,8 +26,10 @@ spec:
         {{- include "bot.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: nonebot
     spec:
+      {{- with .Values.bot.podSecurityContext -}}
       securityContext:
-        {{- toYaml .Values.bot.podSecurityContext | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end -}}
       initContainers:
         - name: wait-for-redis
           image: redis:7
@@ -52,11 +56,17 @@ spec:
               done;
       containers:
         - name: {{ .Chart.Name }}-nonebot
+          {{- with .Values.bot.securityContext -}}
           securityContext:
-            {{- toYaml .Values.bot.securityContext | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end -}}
           image: "{{ .Values.bot.image.repo }}:{{ .Values.bot.image.tag }}"
           imagePullPolicy: {{ .Values.bot.image.pullPolicy }}
           env:
+            - name: POD_INDEX
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['apps.kubernetes.io/pod-index']
             - name: ENVIRONMENT
               value: prod
             - name: PRE_START_PATH
