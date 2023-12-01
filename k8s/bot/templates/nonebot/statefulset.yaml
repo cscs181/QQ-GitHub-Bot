@@ -67,6 +67,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.labels['apps.kubernetes.io/pod-index']
+            - name: POD_COUNT
+              value: {{ .Values.bot.replicas | quote }}
             - name: ENVIRONMENT
               value: prod
             - name: PRE_START_PATH
