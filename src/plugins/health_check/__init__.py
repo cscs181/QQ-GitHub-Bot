@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-10 06:57:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-11 11:28:43
+@LastEditTime   : 2023-12-02 14:54:09
 @Description    : Health check plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -28,7 +28,8 @@ async def health_check():
 
     # check postgres connection
     try:
-        (await get_session().scalars(text("SELECT 1"))).all()
+        async with get_session() as session:
+            (await session.scalars(text("SELECT 1"))).all()
     except Exception as e:
         logger.opt(exception=e).error("Postgres connection health check failed.")
         return JSONResponse(
