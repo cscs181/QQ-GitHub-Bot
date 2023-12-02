@@ -10,6 +10,7 @@
 __author__ = "yanyongyu"
 
 import nonebot
+from yarl import URL
 from nonebot.adapters.qq import Adapter as QQAdapter
 from nonebot.adapters.github import Adapter as GitHubAdapter
 from nonebot.adapters.onebot.v11 import Adapter as ONEBOT_V11_Adapter
@@ -23,11 +24,15 @@ driver.register_adapter(GitHubAdapter)
 driver.register_adapter(ONEBOT_V11_Adapter)
 
 config = driver.config
-config.sqlalchemy_database_url = (
-    "postgresql+asyncpg://"
-    f"{config.postgres_user}:{config.postgres_password}@"
-    f"{config.postgres_host}:{config.postgres_port}"
-    f"/{config.postgres_db}"
+config.sqlalchemy_database_url = str(
+    URL.build(
+        scheme="postgresql+asyncpg",
+        user=config.postgres_user,
+        password=config.postgres_password,
+        host=config.postgres_host,
+        port=config.postgres_port,
+        path=f"/{config.postgres_db}",
+    )
 )
 
 nonebot.load_plugins("src/providers")
