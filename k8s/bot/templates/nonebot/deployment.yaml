@@ -30,7 +30,7 @@ spec:
       {{- end }}
       initContainers:
         - name: wait-for-redis
-          image: redis:7
+          image: "{{ .Values.redis.image.repo }}:{{ .Values.redis.image.tag }}"
           command:
             - "sh"
             - "-c"
@@ -43,7 +43,7 @@ spec:
             - name: REDISCLI_AUTH
               value: {{ .Values.bot.config.REDIS_PASSWORD }}
         - name: wait-for-postgres
-          image: postgres:14
+          image: "{{ .Values.postgres.image.repo }}:{{ .Values.postgres.image.tag }}"
           command:
             - "sh"
             - "-c"
