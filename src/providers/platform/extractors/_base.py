@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:20:01
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-11 14:52:36
+@LastEditTime   : 2023-12-04 17:05:25
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -86,7 +86,7 @@ class Extractor(abc.ABC, Generic[E, T]):
 
     @classmethod
     @abc.abstractmethod
-    def get_target_bot(cls, target: T) -> Bot:
+    async def get_target_bot(cls, target: T) -> Bot:
         """Get the bot for the target"""
         raise NotImplementedError
 

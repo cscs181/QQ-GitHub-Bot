@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 08:35:10
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-04 16:34:57
+@LastEditTime   : 2023-12-04 17:06:12
 @Description    : Webhook dependencies
 @GitHub         : https://github.com/yanyongyu
 """
@@ -70,7 +70,7 @@ SUBSCRIBERS: TypeAlias = Annotated[list[Subscription], Depends(list_subscribers)
 
 
 async def send_subscriber_text(target_info: TargetInfo, text: str, tag: Tag) -> None:
-    bot = get_target_bot(target_info)
+    bot = await get_target_bot(target_info)
     if not bot:
         logger.error("Unable to get target bot", target_info=target_info)
         return
@@ -112,7 +112,7 @@ async def send_subscriber_text(target_info: TargetInfo, text: str, tag: Tag) -> 
 async def send_subscriber_image(
     target_info: TargetInfo, image: bytes, tag: Tag
 ) -> None:
-    bot = get_target_bot(target_info)
+    bot = await get_target_bot(target_info)
     if not bot:
         logger.error("Unable to get target bot", target_info=target_info)
         return
@@ -157,7 +157,7 @@ async def send_subscriber_image(
 async def send_subscriber_image_url(
     target_info: TargetInfo, image: str, tag: Tag
 ) -> None:
-    bot = get_target_bot(target_info)
+    bot = await get_target_bot(target_info)
     if not bot:
         logger.error("Unable to get target bot", target_info=target_info)
         return

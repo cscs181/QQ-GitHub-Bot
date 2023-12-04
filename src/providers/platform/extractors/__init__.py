@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:19:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 18:02:20
+@LastEditTime   : 2023-12-04 17:05:42
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -66,10 +66,10 @@ def extract_reply_message(event: Event) -> MessageInfo | None:
             return extractor.extract_reply_message(event)
 
 
-def get_target_bot(target: TargetInfo) -> Bot | None:
+async def get_target_bot(target: TargetInfo) -> Bot | None:
     for extractor in EXTRACTORS:
         if isinstance(target, extractor.TARGETS):
-            return extractor.get_target_bot(target)
+            return await extractor.get_target_bot(target)
 
 
 def extract_sent_message(target: TargetInfo, result: Any) -> MessageInfo | None:

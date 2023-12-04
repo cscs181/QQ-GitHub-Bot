@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:20:11
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-11 15:00:14
+@LastEditTime   : 2023-12-04 17:05:49
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -81,7 +81,7 @@ class OneBotExtractor(Extractor[MessageEvent, QQUserInfo | QQGroupInfo]):
 
     @classmethod
     @override
-    def get_target_bot(cls, target) -> Bot:
+    async def get_target_bot(cls, target) -> Bot:
         return next(bot for bot in nonebot.get_bots().values() if isinstance(bot, Bot))
 
     @classmethod

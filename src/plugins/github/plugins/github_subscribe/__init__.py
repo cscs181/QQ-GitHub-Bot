@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-30 11:44:46
+@LastEditTime   : 2023-12-04 17:35:54
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,8 +18,10 @@ from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.qq import Bot as QQBot
 from nonebot.exception import MatcherException
+from nonebot.adapters.qq import UnauthorizedException
 from nonebot.params import Depends, CommandArg, ArgPlainText
 from nonebot.adapters.github import ActionFailed, ActionTimeout
+from nonebot.adapters.qq.models import APIPermissionDemandIdentify
 from nonebot.adapters.qq import GuildMessageEvent as QQGuildMessageEvent
 
 from src.plugins.github import config
@@ -99,7 +101,23 @@ async def process_subscribe_arg(
 
 @subscribe.handle()
 async def warn_qq_guild_rate_limit(bot: QQBot, event: QQGuildMessageEvent):
-    settings = await bot.get_message_setting(guild_id=event.guild_id)
+    try:
+        settings = await bot.get_message_setting(guild_id=event.guild_id)
+    except UnauthorizedException:
+        try:
+            await bot.post_api_permission_demand(
+                guild_id=event.guild_id,
+                channel_id=event.channel_id,
+                api_identify=APIPermissionDemandIdentify(
+                    path="/guilds/{guild_id}/message/setting", method="GET"
+                ),
+                desc="获取频道消息推送设置",
+            )
+        except Exception:
+            await subscribe.finish(
+                "频道消息推送设置获取失败，请授予机器人获取频道消息频率设置信息"
+            )
+        await subscribe.finish()
     if settings.disable_push_msg:
         await subscribe.finish("频道消息推送已关闭，请允许本机器人推送消息后重试")
     elif event.channel_id not in settings.channel_ids:

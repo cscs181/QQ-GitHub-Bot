@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-08 18:04:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-30 12:12:28
+@LastEditTime   : 2023-12-04 17:14:37
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,6 +13,7 @@ from typing import cast
 from typing_extensions import override
 
 import nonebot
+from nonebot import logger
 from nonebot.adapters.qq.models import Message as GuildMessage
 from nonebot.adapters.qq.models import PostC2CMessagesReturn, PostGroupMessagesReturn
 from nonebot.adapters.qq import (
@@ -150,8 +151,27 @@ class QQExtractor(
 
     @classmethod
     @override
-    def get_target_bot(cls, target) -> Bot:
-        return next(bot for bot in nonebot.get_bots().values() if isinstance(bot, Bot))
+    async def get_target_bot(cls, target) -> Bot:
+        bots = [bot for bot in nonebot.get_bots().values() if isinstance(bot, Bot)]
+        private_bots = [bot for bot in bots if bot.bot_info.intent.guild_messages]
+        public_bot = next(bot for bot in bots if not bot.bot_info.intent.guild_messages)
+        if isinstance(
+            target, QQOfficialUserInfo | QQOfficialGroupInfo | QQGuildUserInfo
+        ):
+            return public_bot
+        for bot in private_bots:
+            try:
+                setting = await bot.get_message_setting(guild_id=target.qq_guild_id)
+            except Exception as e:
+                logger.warning(
+                    f"Failed to get message setting for guild {target.qq_guild_id}: {e}"
+                )
+                continue
+            if setting.disable_push_msg:
+                continue
+            if target.qq_channel_id not in setting.channel_ids:
+                continue
+        return public_bot
 
     @classmethod
     @override
