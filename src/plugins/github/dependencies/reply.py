@@ -27,23 +27,17 @@ from src.plugins.github.cache.message_tag import (
 )
 
 
-async def _get_reply_tag(reply_info: OPTIONAL_REPLY_MESSAGE_INFO) -> Tag | None:
-    """Get reply tag from replied message info."""
-    return await get_message_tag(reply_info) if reply_info else None
-
-
-async def _get_bind_repo(group_info: OPTIONAL_GROUP_INFO) -> RepoTag | None:
-    """Get binded repo tag from group info."""
+async def get_reply_tag(
+    reply_info: OPTIONAL_REPLY_MESSAGE_INFO,
+    group_info: OPTIONAL_GROUP_INFO,
+) -> Tag | None:
+    # get tag from cache if reply anything
+    if reply_info:
+        return await get_message_tag(reply_info)
+    # else create tag from group binded repo
     if group_info and (group := await Group.from_info(group_info)) and group.bind_repo:
         owner, repo = group.bind_repo.split("/")
         return RepoTag(owner=owner, repo=repo, is_receive=True)
-
-
-async def get_reply_tag(
-    reply_tag: Tag | None = Depends(_get_reply_tag),
-    group_tag: RepoTag | None = Depends(_get_bind_repo),
-) -> Tag | None:
-    return reply_tag or group_tag
 
 
 OPTIONAL_REPLY_TAG: TypeAlias = Annotated[
