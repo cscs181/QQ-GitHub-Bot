@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-10 06:57:31
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-02 14:54:09
+@LastEditTime   : 2023-12-04 16:42:20
 @Description    : Health check plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -45,7 +45,8 @@ async def health_check():
 
     # check playwright connection
     try:
-        assert get_browser().is_connected()
+        if not get_browser().is_connected():
+            raise RuntimeError("Playwright browser is not connected.")
     except Exception as e:
         logger.opt(exception=e).error("Playwright connection health check failed.")
         return JSONResponse(
