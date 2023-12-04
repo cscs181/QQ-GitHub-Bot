@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 08:35:10
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 19:36:39
+@LastEditTime   : 2023-12-04 16:34:57
 @Description    : Webhook dependencies
 @GitHub         : https://github.com/yanyongyu
 """
@@ -46,7 +46,10 @@ async def get_event_info(
     event: Event, matcher: Matcher
 ) -> tuple[str, str, str, str | None]:
     repository = get_attr_or_item(event.payload, "repository")
-    owner, repo = get_attr_or_item(repository, "full_name").split("/", 1)
+    full_name = get_attr_or_item(repository, "full_name")
+    if not repository or not full_name:
+        await matcher.finish()
+    owner, repo = full_name.split("/", 1)
     action = get_attr_or_item(event.payload, "action")
     if not all((owner, repo, event.name)):
         await matcher.finish()
