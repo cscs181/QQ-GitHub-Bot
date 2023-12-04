@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 14:12:45
+@LastEditTime   : 2023-12-04 16:37:56
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -156,7 +156,7 @@ release_graph = on_regex(
 )
 
 
-@release_graph.handle()
+@release_graph.handle(parameterless=(STORE_REGEX_VARS,))
 async def handle_release(
     state: T_State,
     target_info: TARGET_INFO,
