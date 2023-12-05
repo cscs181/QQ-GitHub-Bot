@@ -3,14 +3,14 @@
 @Author         : yanyongyu
 @Date           : 2020-09-10 17:12:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-02 15:20:46
+@LastEditTime   : 2023-12-05 19:07:09
 @Description    : Entry File of the Bot
 @GitHub         : https://github.com/yanyongyu
 """
 __author__ = "yanyongyu"
 
 import nonebot
-from sqlalchemy.engine.url import URL
+from sqlalchemy import URL
 from nonebot.adapters.qq import Adapter as QQAdapter
 from nonebot.adapters.github import Adapter as GitHubAdapter
 from nonebot.adapters.onebot.v11 import Adapter as ONEBOT_V11_Adapter
@@ -31,7 +31,7 @@ config.sqlalchemy_database_url = URL.create(
     host=config.postgres_host,
     port=config.postgres_port,
     database=config.postgres_db,
-).render_as_string()
+)
 
 nonebot.load_plugins("src/providers")
 nonebot.load_all_plugins(set(config.plugins), {"src/plugins"}.union(config.plugin_dirs))
