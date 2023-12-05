@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 17:13:27
+@LastEditTime   : 2023-12-05 17:17:51
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -10,6 +10,7 @@
 __author__ = "yanyongyu"
 
 from nonebot import logger, on_command
+from nonebot_plugin_filehost import FileHost
 from nonebot.adapters.github import ActionTimeout
 from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
@@ -70,12 +71,11 @@ async def handle_content(
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await content.send(QQMS.image(img))
-        case (
-            TargetType.QQ_OFFICIAL_USER
-            | TargetType.QQGUILD_USER
-            | TargetType.QQ_OFFICIAL_GROUP
-            | TargetType.QQGUILD_CHANNEL
-        ):
+        case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
+            result = await content.send(
+                QQOfficialMS.image(await FileHost(img, suffix=".png").to_url())
+            )
+        case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await content.send(QQOfficialMS.file_image(img))
 
     tag = tag.copy(update={"is_receive": False})

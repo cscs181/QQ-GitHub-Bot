@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-29 16:16:15
+@LastEditTime   : 2023-12-05 17:36:09
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,6 +13,7 @@ __author__ = "yanyongyu"
 from nonebot.typing import T_State
 from nonebot import logger, on_regex
 from nonebot.plugin import PluginMetadata
+from nonebot_plugin_filehost import FileHost
 from nonebot.adapters.github import ActionTimeout
 from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
@@ -113,12 +114,11 @@ async def handle_issue(
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await issue.send(QQMS.image(img))
-        case (
-            TargetType.QQ_OFFICIAL_USER
-            | TargetType.QQGUILD_USER
-            | TargetType.QQ_OFFICIAL_GROUP
-            | TargetType.QQGUILD_CHANNEL
-        ):
+        case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
+            result = await issue.send(
+                QQOfficialMS.image(await FileHost(img, suffix=".png").to_url())
+            )
+        case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await issue.send(QQOfficialMS.file_image(img))
 
     if sent_message_info := extract_sent_message(target_info, result):
@@ -166,12 +166,11 @@ async def handle_pr_diff(
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await pr_diff_link.send(QQMS.image(img))
-        case (
-            TargetType.QQ_OFFICIAL_USER
-            | TargetType.QQGUILD_USER
-            | TargetType.QQ_OFFICIAL_GROUP
-            | TargetType.QQGUILD_CHANNEL
-        ):
+        case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
+            result = await pr_diff_link.send(
+                QQOfficialMS.image(await FileHost(img, suffix=".png").to_url())
+            )
+        case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await pr_diff_link.send(QQOfficialMS.file_image(img))
 
     if sent_message_info := extract_sent_message(target_info, result):
@@ -230,12 +229,11 @@ async def handle_short(
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await issue_short.send(QQMS.image(img))
-        case (
-            TargetType.QQ_OFFICIAL_USER
-            | TargetType.QQGUILD_USER
-            | TargetType.QQ_OFFICIAL_GROUP
-            | TargetType.QQGUILD_CHANNEL
-        ):
+        case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
+            result = await issue_short.send(
+                QQOfficialMS.image(await FileHost(img, suffix=".png").to_url())
+            )
+        case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await issue_short.send(QQOfficialMS.file_image(img))
 
     if sent_message_info := extract_sent_message(target_info, result):

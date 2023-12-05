@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2020-09-10 17:11:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-11-28 13:32:11
+ * @LastEditTime   : 2023-12-05 17:28:17
  * @Description    : README
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -110,6 +110,10 @@ GitHub Bot for QQ
    ```dotenv
    # 可选，参考 nonebot superuser 格式
    SUPERUSERS=["机器人管理号"]
+
+   # filehost 配置项，用于上传图片
+   # 可选
+   FILEHOST_HOST_OVERRIDE
 
    # onebot
    # 可选

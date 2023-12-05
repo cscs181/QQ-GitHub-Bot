@@ -1210,6 +1210,21 @@ typing-extensions = ">=4.4.0,<5.0.0"
 yarl = ">=1.9.0,<2.0.0"
 
 [[package]]
+name = "nonebot-plugin-filehost"
+version = "1.0.2"
+description = "Effortless static file hosting plugin for NoneBot2."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "nonebot_plugin_filehost-1.0.2-py3-none-any.whl", hash = "sha256:eeae228befd2a9eafcf1b4e660a6aaa27fd69bca72002c9cfb069ed54049c76b"},
+    {file = "nonebot_plugin_filehost-1.0.2.tar.gz", hash = "sha256:81a276b7de82a8345d5d24ac3173a3eb0f11463f9ac7c99559eae870e3132853"},
+]
+
+[package.dependencies]
+anyio = ">=3"
+nonebot2 = {version = ">=2.0.0", extras = ["fastapi"]}
+
+[[package]]
 name = "nonebot-plugin-localstore"
 version = "0.5.1"
 description = "Local Storage Support for NoneBot2"
@@ -2291,4 +2306,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "4b2989e9677e27f2492b57fdd4c06fc69c128caccc3955ab6b0d985ef19a3f64"
+content-hash = "cf38ada740adcfc5aa4d5e54a9f561a7b398ce61e838170733aa0851b2cf1210"
