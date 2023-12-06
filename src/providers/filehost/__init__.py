@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-12-05 17:10:52
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-06 17:18:10
+@LastEditTime   : 2023-12-06 17:23:31
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,6 +14,7 @@ from datetime import timedelta
 from urllib.parse import urljoin
 
 import nonebot
+from nonebot import logger
 from fastapi import FastAPI
 from fastapi.responses import Response
 from nonebot.drivers import Request, HTTPClientMixin
@@ -36,6 +37,7 @@ config = Config.parse_obj(driver.config)
 async def save_image(img: bytes, ex: timedelta = TTL) -> str:
     """Save image to Redis and return url."""
     img_hash = sha256(img).hexdigest()
+    logger.debug(f"Saving image {img_hash}")
     await redis_client.set(CACHE_KEY.format(signature=img_hash), img, ex=ex)
     return urljoin(config.filehost_url_base, f"{config.filehost_url_prefix}/{img_hash}")
 
