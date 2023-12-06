@@ -13,13 +13,13 @@ __author__ = "yanyongyu"
 from nonebot.typing import T_State
 from nonebot import logger, on_regex
 from nonebot.plugin import PluginMetadata
-from nonebot_plugin_filehost import FileHost
 from nonebot.adapters.github import ActionTimeout
 from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
 from src.plugins.github import config
+from src.providers.filehost import save_image
 from src.plugins.github.libs.renderer import issue_to_image, pr_diff_to_image
 from src.plugins.github.cache.message_tag import (
     IssueTag,
@@ -115,9 +115,7 @@ async def handle_issue(
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await issue.send(QQMS.image(img))
         case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
-            result = await issue.send(
-                QQOfficialMS.image(await FileHost(img, suffix=".png").to_url())
-            )
+            result = await issue.send(QQOfficialMS.image(await save_image(img)))
         case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await issue.send(QQOfficialMS.file_image(img))
 
@@ -167,9 +165,7 @@ async def handle_pr_diff(
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await pr_diff_link.send(QQMS.image(img))
         case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
-            result = await pr_diff_link.send(
-                QQOfficialMS.image(await FileHost(img, suffix=".png").to_url())
-            )
+            result = await pr_diff_link.send(QQOfficialMS.image(await save_image(img)))
         case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await pr_diff_link.send(QQOfficialMS.file_image(img))
 
@@ -230,9 +226,7 @@ async def handle_short(
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await issue_short.send(QQMS.image(img))
         case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
-            result = await issue_short.send(
-                QQOfficialMS.image(await FileHost(img, suffix=".png").to_url())
-            )
+            result = await issue_short.send(QQOfficialMS.image(await save_image(img)))
         case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await issue_short.send(QQOfficialMS.file_image(img))
 

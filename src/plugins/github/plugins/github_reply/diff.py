@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-05 17:18:11
+@LastEditTime   : 2023-12-06 17:06:00
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,13 +11,13 @@ __author__ = "yanyongyu"
 
 
 from nonebot import logger, on_command
-from nonebot_plugin_filehost import FileHost
 from nonebot.adapters.github import ActionTimeout
 from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
 from src.plugins.github import config
+from src.providers.filehost import save_image
 from src.plugins.github.libs.renderer import pr_diff_to_image
 from src.plugins.github.helpers import REPLY_PR, NO_GITHUB_EVENT
 from src.plugins.github.cache.message_tag import create_message_tag
@@ -73,9 +73,7 @@ async def handle_diff(
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await diff.send(QQMS.image(img))
         case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
-            result = await diff.send(
-                QQOfficialMS.image(await FileHost(img, suffix=".png").to_url())
-            )
+            result = await diff.send(QQOfficialMS.image(await save_image(img)))
         case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await diff.send(QQOfficialMS.file_image(img))
 

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 17:08:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-05 17:18:33
+@LastEditTime   : 2023-12-06 17:06:32
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,13 +11,13 @@ __author__ = "yanyongyu"
 
 from nonebot.typing import T_State
 from nonebot import logger, on_command
-from nonebot_plugin_filehost import FileHost
 from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
+from src.providers.filehost import save_image
 from src.plugins.github.libs.renderer import readme_to_image
 from src.plugins.github.helpers import REPLY_ANY, NO_GITHUB_EVENT
 from src.plugins.github.cache.message_tag import RepoTag, create_message_tag
@@ -98,9 +98,7 @@ async def render_content(
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await readme.send(QQMS.image(img))
         case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
-            result = await readme.send(
-                QQOfficialMS.image(await FileHost(img, suffix=".png").to_url())
-            )
+            result = await readme.send(QQOfficialMS.image(await save_image(img)))
         case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await readme.send(QQOfficialMS.file_image(img))
 

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 08:35:10
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-05 17:21:29
+@LastEditTime   : 2023-12-06 17:07:07
 @Description    : Webhook dependencies
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,7 +16,6 @@ from nonebot import logger
 from nonebot.params import Depends
 from nonebot.matcher import Matcher
 from nonebot.adapters.github import Event
-from nonebot_plugin_filehost import FileHost
 from nonebot.adapters.onebot.v11 import Bot as QQBot
 from nonebot.adapters.qq import Bot as QQOfficialBot
 from nonebot.adapters.github.utils import get_attr_or_item
@@ -26,6 +25,7 @@ from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 from nonebot.adapters.qq.exception import ActionFailed as QQOfficialActionFailed
 
 from src.providers.redis import redis_client
+from src.providers.filehost import save_image
 from src.plugins.github.models import Subscription
 from src.plugins.github.cache.message_tag import Tag, create_message_tag
 from src.providers.platform import TargetInfo, get_target_bot, extract_sent_message
@@ -133,16 +133,12 @@ async def send_subscriber_image(
             case QQOfficialUserInfo():
                 result = await cast(QQOfficialBot, bot).send_to_c2c(
                     openid=target_info.qq_user_open_id,
-                    message=QQOfficialMS.image(
-                        await FileHost(image, suffix=".png").to_url()
-                    ),
+                    message=QQOfficialMS.image(await save_image(image)),
                 )
             case QQOfficialGroupInfo():
                 result = await cast(QQOfficialBot, bot).send_to_group(
                     group_openid=target_info.qq_group_open_id,
-                    message=QQOfficialMS.image(
-                        await FileHost(image, suffix=".png").to_url()
-                    ),
+                    message=QQOfficialMS.image(await save_image(image)),
                 )
             case QQGuildUserInfo():
                 logger.error("Unable to send message to QQGuild User", user=target_info)

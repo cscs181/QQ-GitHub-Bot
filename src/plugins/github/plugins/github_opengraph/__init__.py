@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-04 16:37:56
+@LastEditTime   : 2023-12-06 17:08:09
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,6 +18,7 @@ from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
 from src.plugins.github import config
+from src.providers.filehost import save_online_image
 from src.plugins.github.dependencies import (
     COMMIT,
     RELEASE,
@@ -82,14 +83,18 @@ async def handle(
     )
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
-            result = await repo_graph.send(QQMS.image(image_url))
+            result = await repo_graph.send(
+                QQMS.image(await save_online_image(image_url))
+            )
         case (
             TargetType.QQ_OFFICIAL_USER
             | TargetType.QQGUILD_USER
             | TargetType.QQ_OFFICIAL_GROUP
             | TargetType.QQGUILD_CHANNEL
         ):
-            result = await repo_graph.send(QQOfficialMS.image(image_url))
+            result = await repo_graph.send(
+                QQOfficialMS.image(await save_online_image(image_url))
+            )
 
     tag = RepoTag(owner=repo.owner.login, repo=repo.name, is_receive=False)
     if sent_message_info := extract_sent_message(target_info, result):
@@ -135,14 +140,18 @@ async def handle_commit(
     )
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
-            result = await commit_graph.send(QQMS.image(image_url))
+            result = await commit_graph.send(
+                QQMS.image(await save_online_image(image_url))
+            )
         case (
             TargetType.QQ_OFFICIAL_USER
             | TargetType.QQGUILD_USER
             | TargetType.QQ_OFFICIAL_GROUP
             | TargetType.QQGUILD_CHANNEL
         ):
-            result = await commit_graph.send(QQOfficialMS.image(image_url))
+            result = await commit_graph.send(
+                QQOfficialMS.image(await save_online_image(image_url))
+            )
 
     tag = CommitTag(owner=owner, repo=repo, commit=commit.sha, is_receive=False)
     if sent_message_info := extract_sent_message(target_info, result):
@@ -182,14 +191,18 @@ async def handle_release(
     )
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
-            result = await release_graph.send(QQMS.image(image_url))
+            result = await release_graph.send(
+                QQMS.image(await save_online_image(image_url))
+            )
         case (
             TargetType.QQ_OFFICIAL_USER
             | TargetType.QQGUILD_USER
             | TargetType.QQ_OFFICIAL_GROUP
             | TargetType.QQGUILD_CHANNEL
         ):
-            result = await release_graph.send(QQOfficialMS.image(image_url))
+            result = await release_graph.send(
+                QQOfficialMS.image(await save_online_image(image_url))
+            )
 
     tag = ReleaseTag(owner=owner, repo=repo, tag=release.tag_name, is_receive=False)
     if sent_message_info := extract_sent_message(target_info, result):

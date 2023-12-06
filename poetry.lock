@@ -1210,21 +1210,6 @@ typing-extensions = ">=4.4.0,<5.0.0"
 yarl = ">=1.9.0,<2.0.0"
 
 [[package]]
-name = "nonebot-plugin-filehost"
-version = "1.0.2"
-description = "Effortless static file hosting plugin for NoneBot2."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "nonebot_plugin_filehost-1.0.2-py3-none-any.whl", hash = "sha256:eeae228befd2a9eafcf1b4e660a6aaa27fd69bca72002c9cfb069ed54049c76b"},
-    {file = "nonebot_plugin_filehost-1.0.2.tar.gz", hash = "sha256:81a276b7de82a8345d5d24ac3173a3eb0f11463f9ac7c99559eae870e3132853"},
-]
-
-[package.dependencies]
-anyio = ">=3"
-nonebot2 = {version = ">=2.0.0", extras = ["fastapi"]}
-
-[[package]]
 name = "nonebot-plugin-localstore"
 version = "0.5.1"
 description = "Local Storage Support for NoneBot2"
@@ -1241,13 +1226,13 @@ typing-extensions = ">=4.0.0"
 
 [[package]]
 name = "nonebot-plugin-orm"
-version = "0.6.0"
+version = "0.6.1"
 description = "SQLAlchemy ORM support for nonebot"
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "nonebot_plugin_orm-0.6.0-py3-none-any.whl", hash = "sha256:482f35d102749eda93cd635608ec79e81718d080a80fa325c24d8fa7316f7d83"},
-    {file = "nonebot_plugin_orm-0.6.0.tar.gz", hash = "sha256:e1b4db52da60b53f33eac95bb4b9875d7000d71f47ec6a034aa908adde41c33e"},
+    {file = "nonebot_plugin_orm-0.6.1-py3-none-any.whl", hash = "sha256:cade3fef0df0343cd04f5d2b145059243395839e22f73a43046b4832afb07835"},
+    {file = "nonebot_plugin_orm-0.6.1.tar.gz", hash = "sha256:3665af8ccd0cbbab9eadcf9291e2a24402fa44ec4be09a3a46082d8fc295b8fc"},
 ]
 
 [package.dependencies]
@@ -2306,4 +2291,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "60f127421e2232fe4f2589625ceb63e9d1f70c3452564003cd3cb3d6aa8f4137"
+content-hash = "5fe98ac7cee4c05f10ffc9793c3b4c053c75ad9d947cbc5afed57372022b8bf6"
