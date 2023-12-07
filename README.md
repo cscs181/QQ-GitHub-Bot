@@ -10,7 +10,7 @@
 <!-- markdownlint-disable MD033 MD041 -->
 
 <p align="center">
-  <a href="https://github.com/cscs181/QQ-GitHub-Bot"><img src="https://github.com/cscs181/QQ-GitHub-Bot/raw/master/assets/logo.png" width="150" height="150" alt="qq-github-bot"></a>
+  <a href="https://github.com/cscs181/QQ-GitHub-Bot"><img src="https://github.com/cscs181/QQ-GitHub-Bot/raw/master/assets/logo.svg" width="150" height="150" alt="qq-github-bot"></a>
 </p>
 
 <div align="center">
