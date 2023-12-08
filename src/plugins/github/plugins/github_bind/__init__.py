@@ -28,7 +28,6 @@ from src.plugins.github.helpers import (
     GROUP_SUPERPERM,
     NO_GITHUB_EVENT,
     MATCH_WHEN_GROUP,
-    allow_cancellation,
 )
 
 from .dependencies import bypass_update
@@ -65,11 +64,10 @@ async def check_group_exists(group: GROUP):
 @bind.got(
     "full_name",
     prompt="绑定仓库的全名？(e.g. owner/repo)",
-    parameterless=(allow_cancellation("已取消"),),
 )
 async def process_repo(group_info: GROUP_INFO, full_name: str = ArgPlainText()):
     if not (matched := re.match(f"^{FULLREPO_REGEX}$", full_name)):
-        await bind.reject(f"仓库名 {full_name} 不合法！请重新发送或取消")
+        await bind.finish(f"仓库名 {full_name} 不合法！")
 
     bot = get_github_bot()
     owner: str = matched["owner"]
@@ -80,7 +78,7 @@ async def process_repo(group_info: GROUP_INFO, full_name: str = ArgPlainText()):
         await bind.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
         if e.response.status_code == 404:
-            await bind.reject(f"仓库 {owner}/{repo} 未安装 APP！请重新发送或取消")
+            await bind.finish(f"仓库 {owner}/{repo} 未安装 APP！")
         logger.opt(exception=e).error(
             f"Failed while getting repo installation in group bind: {e}"
         )
