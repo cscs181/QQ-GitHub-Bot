@@ -1,7 +1,7 @@
 .devcontainer/
 .github/
 .vscode/
-bot/
+assets/
 k8s/
 tests/
 .dockerignore
