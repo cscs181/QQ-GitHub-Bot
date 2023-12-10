@@ -2,18 +2,18 @@
 @Author         : yanyongyu
 @Date           : 2023-11-27 14:31:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-29 15:59:33
+@LastEditTime   : 2023-12-10 16:54:56
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
-
+from nonebot.matcher import Matcher
 from nonebot.adapters import Message
-from nonebot.params import CommandArg
 from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
+from nonebot.params import CommandArg, ArgPlainText
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
@@ -39,14 +39,16 @@ code_search = on_command(
 
 @code_search.handle()
 async def handle_code_search(
+    matcher: Matcher,
     user: AUTHORIZED_USER,  # need authorized user because of rate limit
-    context: GITHUB_PUBLIC_CONTEXT,
-    args: Message = CommandArg(),
+    arg: Message = CommandArg(),
 ):
-    query = args.extract_plain_text().strip()
-    if not query:
-        await code_search.finish("搜索内容不能为空")
+    if query := arg.extract_plain_text().strip():
+        matcher.set_arg("query", arg.__class__(query))
 
+
+@code_search.got("query", prompt="请输入想要搜索的内容")
+async def do_code_search(context: GITHUB_PUBLIC_CONTEXT, query: str = ArgPlainText()):
     try:
         async with context as bot:
             resp = await bot.rest.search.async_code(q=query, per_page=5)
@@ -84,13 +86,13 @@ repo_search = on_command(
 
 
 @repo_search.handle()
-async def handle_repo_search(
-    context: GITHUB_PUBLIC_CONTEXT, args: Message = CommandArg()
-):
-    query = args.extract_plain_text().strip()
-    if not query:
-        await repo_search.finish("搜索内容不能为空")
+async def handle_repo_search(matcher: Matcher, arg: Message = CommandArg()):
+    if query := arg.extract_plain_text().strip():
+        matcher.set_arg("query", arg.__class__(query))
 
+
+@repo_search.got("query", prompt="请输入想要搜索的仓库")
+async def do_repo_search(context: GITHUB_PUBLIC_CONTEXT, query: str = ArgPlainText()):
     try:
         async with context as bot:
             resp = await bot.rest.search.async_repos(q=query, per_page=5)
@@ -129,13 +131,13 @@ user_search = on_command(
 
 
 @user_search.handle()
-async def handle_user_search(
-    context: GITHUB_PUBLIC_CONTEXT, args: Message = CommandArg()
-):
-    query = args.extract_plain_text().strip()
-    if not query:
-        await user_search.finish("搜索内容不能为空")
+async def handle_user_search(matcher: Matcher, arg: Message = CommandArg()):
+    if query := arg.extract_plain_text().strip():
+        matcher.set_arg("query", arg.__class__(query))
 
+
+@user_search.got("query", prompt="请输入想要搜索的用户")
+async def do_user_search(context: GITHUB_PUBLIC_CONTEXT, query: str = ArgPlainText()):
     try:
         async with context as bot:
             resp = await bot.rest.search.async_users(q=query, per_page=5)

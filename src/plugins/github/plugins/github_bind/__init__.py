@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 17:11:09
+@LastEditTime   : 2023-12-10 17:13:38
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,23 +11,27 @@ __author__ = "yanyongyu"
 
 import re
 
+from nonebot.typing import T_State
 from nonebot.matcher import Matcher
 from nonebot.adapters import Message
 from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
 from nonebot.params import Depends, CommandArg, ArgPlainText
-from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.models import Group
 from src.providers.platform import GROUP_INFO
-from src.plugins.github.utils import get_github_bot
-from src.plugins.github.dependencies import GROUP, BINDED_GROUP
+from src.plugins.github.dependencies import (
+    GROUP,
+    BINDED_GROUP,
+    GITHUB_REPO_INSTALLATION,
+)
 from src.plugins.github.helpers import (
     FULLREPO_REGEX,
     GROUP_SUPERPERM,
     NO_GITHUB_EVENT,
     MATCH_WHEN_GROUP,
+    allow_cancellation,
 )
 
 from .dependencies import bypass_update
@@ -63,31 +67,26 @@ async def check_group_exists(group: GROUP):
 
 @bind.got(
     "full_name",
-    prompt="绑定仓库的全名？(e.g. owner/repo)",
+    prompt="请发送绑定仓库的全名，例如：「owner/repo」",
+    parameterless=(allow_cancellation("已取消"),),
 )
-async def process_repo(group_info: GROUP_INFO, full_name: str = ArgPlainText()):
+async def process_repo(state: T_State, full_name: str = ArgPlainText()):
     if not (matched := re.match(f"^{FULLREPO_REGEX}$", full_name)):
-        await bind.finish(f"仓库名 {full_name} 不合法！")
+        await bind.reject(
+            f"仓库名 {full_name} 错误！\n请重新发送正确的仓库名，"
+            "例如：「owner/repo」\n或发送「取消」以取消"
+        )
 
-    bot = get_github_bot()
-    owner: str = matched["owner"]
-    repo: str = matched["repo"]
-    try:
-        await bot.rest.apps.async_get_repo_installation(owner=owner, repo=repo)
-    except ActionTimeout:
-        await bind.finish("GitHub API 超时，请稍后再试")
-    except ActionFailed as e:
-        if e.response.status_code == 404:
-            await bind.finish(f"仓库 {owner}/{repo} 未安装 APP！")
-        logger.opt(exception=e).error(
-            f"Failed while getting repo installation in group bind: {e}"
-        )
-        await bind.finish("未知错误发生，请尝试重试或联系管理员")
-    except Exception as e:
-        logger.opt(exception=e).error(
-            f"Failed while getting repo installation in group bind: {e}"
-        )
-        await bind.finish("未知错误发生，请尝试重试或联系管理员")
+    state["owner"] = matched["owner"]
+    state["repo"] = matched["repo"]
+
+
+@bind.handle()
+async def handle_bind(
+    state: T_State, group_info: GROUP_INFO, repo_installation: GITHUB_REPO_INSTALLATION
+):
+    owner = state["owner"]
+    repo = state["repo"]
 
     try:
         await Group.create_or_update_by_info(group_info, bind_repo=f"{owner}/{repo}")

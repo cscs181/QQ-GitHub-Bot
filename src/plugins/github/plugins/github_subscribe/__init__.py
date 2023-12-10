@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-04 17:35:54
+@LastEditTime   : 2023-12-10 17:33:28
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -89,7 +89,9 @@ subscribe = on_command(
 
 @subscribe.handle(parameterless=(Depends(stop_unavailable_target),))
 async def process_subscribe_arg(
-    matcher: Matcher, user: AUTHORIZED_USER, arg: Message = CommandArg()
+    matcher: Matcher,
+    user: AUTHORIZED_USER,  # subscribe need user has permission to the repo
+    arg: Message = CommandArg(),
 ):
     if args := arg.extract_plain_text().strip().split(" "):
         repo, *events = args
@@ -118,6 +120,12 @@ async def warn_qq_guild_rate_limit(bot: QQBot, event: QQGuildMessageEvent):
                 "频道消息推送设置获取失败，请授予机器人获取频道消息频率设置信息"
             )
         await subscribe.finish()
+    except Exception as e:
+        logger.opt(exception=e).error(
+            f"Failed while getting guild message setting in group subscribe: {e}"
+        )
+        return
+
     if settings.disable_push_msg:
         await subscribe.finish("频道消息推送已关闭，请允许本机器人推送消息后重试")
     elif event.channel_id not in settings.channel_ids:
@@ -134,10 +142,13 @@ async def list_user_subscription(subsciptions: SUBSCRIPTIONS):
         )
 
 
-@subscribe.got("full_name", prompt="订阅仓库的全名？(e.g. owner/repo)")
+@subscribe.got("full_name", prompt="请发送要订阅的仓库全名，例如：「owner/repo」")
 async def parse_subscribe_repo(state: T_State, full_name: str = ArgPlainText()):
     if not (matched := re.match(f"^{FULLREPO_REGEX}$", full_name)):
-        await subscribe.finish(f"仓库名 {full_name} 不合法！")
+        await subscribe.finish(
+            f"仓库名 {full_name} 错误！\n请重新发送正确的仓库名，"
+            "例如：「owner/repo」\n或发送「取消」以取消"
+        )
 
     state["owner"] = matched["owner"]
     state["repo"] = matched["repo"]
@@ -186,7 +197,11 @@ async def handle_subscribe_repo(
 
 @subscribe.got(
     "events",
-    prompt=f"订阅哪些事件或{SUBSCRIBE_DEFAULT_MESSAGE}？(e.g. issues[/opened])",
+    prompt=(
+        "请发送想要订阅的事件类型列表，事件类型格式为「event[/action]」，类型之间以空格分割，"
+        "例如：「issues/opened release/published」\n"
+        f"或者发送「{SUBSCRIBE_DEFAULT_MESSAGE}」以订阅默认事件列表"
+    ),
     parameterless=(allow_cancellation("已取消"),),
 )
 async def process_subscribe_event(state: T_State, events: str = ArgPlainText()):
@@ -204,7 +219,10 @@ async def process_subscribe_event(state: T_State, events: str = ArgPlainText()):
                 r"^(?P<event>[a-zA-Z_]+)(?:/(?P<action>[a-zA-Z_]+))?$", event
             )
         ):
-            await subscribe.reject(f"事件 {event} 不合法！请重新发送或取消")
+            await subscribe.reject(
+                f"事件类型 {event} 错误！\n请重新发送正确的事件类型列表，"
+                "例如：「issues/opened」\n或发送「取消」以取消"
+            )
 
         # deduplicate
         if (a := matched["action"]) and (
@@ -263,10 +281,13 @@ async def process_unsubscribe_arg(matcher: Matcher, arg: Message = CommandArg())
             matcher.set_arg("events", arg.__class__(e))
 
 
-@unsubscribe.got("full_name", prompt="取消订阅仓库的全名？(e.g. owner/repo)")
+@unsubscribe.got("full_name", prompt="请发送要取消订阅的仓库全名，例如：「owner/repo」")
 async def process_unsubscribe_repo(state: T_State, full_name: str = ArgPlainText()):
     if not (matched := re.match(f"^{FULLREPO_REGEX}$", full_name)):
-        await unsubscribe.finish(f"仓库名 {full_name} 不合法！")
+        await unsubscribe.finish(
+            f"仓库名 {full_name} 错误！\n请重新发送正确的仓库名，"
+            "例如：「owner/repo」\n或发送「取消」以取消"
+        )
 
     state["owner"] = matched["owner"]
     state["repo"] = matched["repo"]
@@ -274,7 +295,11 @@ async def process_unsubscribe_repo(state: T_State, full_name: str = ArgPlainText
 
 @unsubscribe.got(
     "events",
-    prompt=f"取消订阅哪些事件或{UNSUBSCRIBE_ALL_MESSAGE}？(e.g. issues[/opened])",
+    prompt=(
+        "请发送想要取消订阅的事件类型列表，事件类型格式为「event[/action]」，"
+        "类型之间以空格分割，例如：「issues/opened release/published」\n"
+        f"或者发送「{UNSUBSCRIBE_ALL_MESSAGE}」以取消订阅该仓库全部事件列表"
+    ),
     parameterless=(allow_cancellation("已取消"),),
 )
 async def process_unsubscribe_event(state: T_State, events: str = ArgPlainText()):
@@ -292,7 +317,10 @@ async def process_unsubscribe_event(state: T_State, events: str = ArgPlainText()
                 r"^(?P<event>[a-zA-Z_]+)(?:/(?P<action>[a-zA-Z_]+))?$", event
             )
         ):
-            await unsubscribe.reject(f"事件 {event} 不合法！请重新发送或取消")
+            await unsubscribe.reject(
+                f"事件类型 {event} 错误！\n请重新发送正确的事件类型列表，"
+                "例如：「issues/opened」\n或发送「取消」以取消"
+            )
 
         # deduplicate
         if (a := matched["action"]) and (

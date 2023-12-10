@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:16:46
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 13:07:34
+@LastEditTime   : 2023-12-10 17:35:08
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -43,7 +43,7 @@ async def get_commit(
     except ActionFailed as e:
         if e.response.status_code == 404:
             await matcher.finish(
-                f"未找到 {owner}/{repo} 的 {ref} 提交" if should_remind else None
+                f"未找到仓库 {owner}/{repo} 的 {ref} 提交" if should_remind else None
             )
         elif e.response.status_code == 401:
             await matcher.finish(
