@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-06 17:08:09
+@LastEditTime   : 2023-12-11 12:04:25
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,6 +19,7 @@ from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
 from src.plugins.github import config
 from src.providers.filehost import save_online_image
+from src.plugins.github.helpers import NO_GITHUB_EVENT
 from src.plugins.github.dependencies import (
     COMMIT,
     RELEASE,
@@ -37,9 +38,8 @@ from src.plugins.github.cache.message_tag import (
     ReleaseTag,
     create_message_tag,
 )
-from src.plugins.github.helpers import (
+from src.plugins.github.libs.github import (
     FULLREPO_REGEX,
-    NO_GITHUB_EVENT,
     GITHUB_REPO_LINK_REGEX,
     GITHUB_COMMIT_LINK_REGEX,
     GITHUB_RELEASE_LINK_REGEX,

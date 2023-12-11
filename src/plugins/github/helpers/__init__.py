@@ -14,23 +14,6 @@ from .cancellation import allow_cancellation as allow_cancellation
 
 # isort: split
 
-from .github import REPO_REGEX as REPO_REGEX
-from .github import ISSUE_REGEX as ISSUE_REGEX
-from .github import OWNER_REGEX as OWNER_REGEX
-from .github import FULLREPO_REGEX as FULLREPO_REGEX
-from .github import COMMIT_HASH_REGEX as COMMIT_HASH_REGEX
-from .github import GITHUB_LINK_REGEX as GITHUB_LINK_REGEX
-from .github import GITHUB_PR_LINK_REGEX as GITHUB_PR_LINK_REGEX
-from .github import GITHUB_REPO_LINK_REGEX as GITHUB_REPO_LINK_REGEX
-from .github import GITHUB_ISSUE_LINK_REGEX as GITHUB_ISSUE_LINK_REGEX
-from .github import GITHUB_COMMIT_LINK_REGEX as GITHUB_COMMIT_LINK_REGEX
-from .github import GITHUB_PR_FILE_LINK_REGEX as GITHUB_PR_FILE_LINK_REGEX
-from .github import GITHUB_RELEASE_LINK_REGEX as GITHUB_RELEASE_LINK_REGEX
-from .github import GITHUB_PR_COMMIT_LINK_REGEX as GITHUB_PR_COMMIT_LINK_REGEX
-from .github import GITHUB_ISSUE_OR_PR_LINK_REGEX as GITHUB_ISSUE_OR_PR_LINK_REGEX
-
-# isort: split
-
 from .rule import REPLY_PR as REPLY_PR
 from .rule import REPLY_ANY as REPLY_ANY
 from .rule import NO_GITHUB_EVENT as NO_GITHUB_EVENT

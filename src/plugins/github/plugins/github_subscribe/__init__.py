@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-10 17:33:28
+@LastEditTime   : 2023-12-11 12:05:50
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -27,6 +27,7 @@ from nonebot.adapters.qq import GuildMessageEvent as QQGuildMessageEvent
 from src.plugins.github import config
 from src.providers.platform import TARGET_INFO
 from src.plugins.github.utils import get_github_bot
+from src.plugins.github.libs.github import FULLREPO_REGEX
 from src.plugins.github.models import SubData, Subscription
 from src.plugins.github.dependencies import (
     SUBSCRIPTIONS,
@@ -35,7 +36,6 @@ from src.plugins.github.dependencies import (
 )
 from src.plugins.github.helpers import (
     PRIVATE_PERM,
-    FULLREPO_REGEX,
     GROUP_SUPERPERM,
     NO_GITHUB_EVENT,
     MATCH_WHEN_PRIVATE_OR_GROUP,

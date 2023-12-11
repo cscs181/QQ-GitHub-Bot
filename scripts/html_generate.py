@@ -15,7 +15,7 @@ sys.path.append(str(root))
 import bot as _bot  # noqa: F401
 from src.plugins.github import config
 from src.plugins.github.utils import get_oauth_bot
-from src.plugins.github.helpers import ISSUE_REGEX, FULLREPO_REGEX
+from src.plugins.github.libs.github import ISSUE_REGEX, FULLREPO_REGEX
 from src.plugins.github.libs.renderer.render import (
     issue_to_html,
     readme_to_html,

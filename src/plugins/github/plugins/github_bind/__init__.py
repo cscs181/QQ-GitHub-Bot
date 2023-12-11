@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-10 17:13:38
+@LastEditTime   : 2023-12-11 12:05:24
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,13 +21,13 @@ from nonebot.params import Depends, CommandArg, ArgPlainText
 from src.plugins.github import config
 from src.plugins.github.models import Group
 from src.providers.platform import GROUP_INFO
+from src.plugins.github.libs.github import FULLREPO_REGEX
 from src.plugins.github.dependencies import (
     GROUP,
     BINDED_GROUP,
     GITHUB_REPO_INSTALLATION,
 )
 from src.plugins.github.helpers import (
-    FULLREPO_REGEX,
     GROUP_SUPERPERM,
     NO_GITHUB_EVENT,
     MATCH_WHEN_GROUP,
