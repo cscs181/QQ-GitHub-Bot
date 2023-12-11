@@ -2,53 +2,94 @@
 @Author         : yanyongyu
 @Date           : 2023-11-28 11:04:29
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-29 16:41:30
+@LastEditTime   : 2023-12-11 18:11:40
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
+import re
+
 from githubkit.utils import UNSET
+from nonebot.typing import T_State
+from nonebot.adapters import Message
+from nonebot.params import CommandArg
 from nonebot import logger, on_command
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
-from src.plugins.github.helpers import REPLY_ANY, NO_GITHUB_EVENT
+from src.plugins.github.helpers import NO_GITHUB_EVENT
+from src.plugins.github.libs.github import FULLREPO_REGEX
 from src.plugins.github.cache.message_tag import RepoTag, create_message_tag
-from src.plugins.github.dependencies import REPLY_TAG, GITHUB_PUBLIC_CONTEXT
 from src.providers.platform import (
     TARGET_INFO,
     MESSAGE_INFO,
     TargetType,
     extract_sent_message,
 )
+from src.plugins.github.dependencies import (
+    REPOSITORY,
+    OPTIONAL_REPLY_TAG,
+    GITHUB_PUBLIC_CONTEXT,
+    bypass_key,
+)
 
 deployment = on_command(
     "deployment",
     aliases={"部署", "部署记录"},
-    rule=NO_GITHUB_EVENT & REPLY_ANY,
+    rule=NO_GITHUB_EVENT,
     priority=config.github_command_priority,
     block=True,
 )
 
 
 @deployment.handle()
+async def parse_arg(
+    state: T_State, tag: OPTIONAL_REPLY_TAG, arg: Message = CommandArg()
+):
+    # if arg is not empty, use arg as full_name
+    if full_name := arg.extract_plain_text().strip():
+        if not (matched := re.match(rf"^{FULLREPO_REGEX}$", full_name)):
+            await deployment.finish(
+                f"仓库名 {full_name} 错误！\n请重新发送正确的仓库名，"
+                "例如：「/deployment owner/repo」"
+            )
+        state["owner"] = matched["owner"]
+        state["repo"] = matched["repo"]
+    elif tag:
+        state["owner"] = tag.owner
+        state["repo"] = tag.repo
+        state["from_tag"] = True
+    else:
+        await deployment.finish(
+            "请发送要查看部署的仓库全名，例如：「/deployment owner/repo」"
+        )
+
+
+@deployment.handle(parameterless=(bypass_key("from_tag"),))
+async def check_repo(repo: REPOSITORY): ...
+
+
+@deployment.handle()
 async def handle_content(
+    state: T_State,
     target_info: TARGET_INFO,
     message_info: MESSAGE_INFO,
-    tag: REPLY_TAG,
     context: GITHUB_PUBLIC_CONTEXT,
 ):
+    owner: str = state["owner"]
+    repo: str = state["repo"]
+
     await create_message_tag(
-        message_info, RepoTag(owner=tag.owner, repo=tag.repo, is_receive=True)
+        message_info, RepoTag(owner=owner, repo=repo, is_receive=True)
     )
 
     try:
         async with context as bot:
             resp = await bot.rest.repos.async_list_deployments(
-                owner=tag.owner,
-                repo=tag.repo,
+                owner=owner,
+                repo=repo,
                 sha=UNSET,
                 ref=UNSET,
                 task=UNSET,
@@ -92,6 +133,6 @@ async def handle_content(
         ):
             result = await deployment.send(msg)
 
-    tag = RepoTag(owner=tag.owner, repo=tag.repo, is_receive=False)
+    tag = RepoTag(owner=owner, repo=repo, is_receive=False)
     if sent_message_info := extract_sent_message(target_info, result):
         await create_message_tag(sent_message_info, tag)

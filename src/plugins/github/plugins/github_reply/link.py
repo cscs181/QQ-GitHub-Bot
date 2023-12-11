@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:31:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 14:11:03
+@LastEditTime   : 2023-12-11 15:26:29
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,8 +12,8 @@ __author__ = "yanyongyu"
 from nonebot import on_command
 
 from src.plugins.github import config
-from src.plugins.github.dependencies import REPLY_TAG
-from src.plugins.github.helpers import REPLY_ANY, NO_GITHUB_EVENT
+from src.plugins.github.helpers import NO_GITHUB_EVENT
+from src.plugins.github.dependencies import REPLY_TAG, OPTIONAL_REPLY_TAG
 from src.providers.platform import (
     TARGET_INFO,
     MESSAGE_INFO,
@@ -31,10 +31,16 @@ from src.plugins.github.cache.message_tag import (
 link = on_command(
     "link",
     aliases={"链接"},
-    rule=NO_GITHUB_EVENT & REPLY_ANY,
+    rule=NO_GITHUB_EVENT,
     priority=config.github_command_priority,
     block=True,
 )
+
+
+@link.handle()
+async def handle_no_reply(tag: OPTIONAL_REPLY_TAG):
+    if tag is None:
+        await link.finish("请回复 GitHub 相关消息来获取链接")
 
 
 @link.handle()

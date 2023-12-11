@@ -2,20 +2,25 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 04:23:29
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 17:15:17
+@LastEditTime   : 2023-12-11 18:16:22
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
+import re
+
+from nonebot.typing import T_State
+from nonebot.adapters import Message
+from nonebot.params import CommandArg
 from nonebot import logger, on_command
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.utils import get_github_bot
-from src.plugins.github.helpers import NO_GITHUB_EVENT, REPLY_ISSUE_OR_PR
-from src.plugins.github.dependencies import AUTHORIZED_USER, ISSUE_OR_PR_REPLY_TAG
+from src.plugins.github.helpers import NO_GITHUB_EVENT
+from src.plugins.github.libs.github import ISSUE_REGEX, FULLREPO_REGEX
 from src.plugins.github.cache.message_tag import (
     IssueTag,
     PullRequestTag,
@@ -27,49 +32,92 @@ from src.providers.platform import (
     TargetType,
     extract_sent_message,
 )
+from src.plugins.github.dependencies import (
+    ISSUE,
+    AUTHORIZED_USER,
+    OPTIONAL_REPLY_TAG,
+    bypass_key,
+)
 
 reopen = on_command(
     "reopen",
     aliases={"重新开启"},
-    rule=NO_GITHUB_EVENT & REPLY_ISSUE_OR_PR,
+    rule=NO_GITHUB_EVENT,
     priority=config.github_command_priority,
     block=True,
 )
 
 
 @reopen.handle()
+async def parse_arg(
+    state: T_State, tag: OPTIONAL_REPLY_TAG, arg: Message = CommandArg()
+):
+    # if arg is not empty, use arg as full_name
+    if full_name := arg.extract_plain_text().strip():
+        if not (matched := re.match(rf"^{FULLREPO_REGEX}#{ISSUE_REGEX}$", full_name)):
+            await reopen.finish(
+                "Issue 或 PR 信息错误！\n请重新发送要重新开启的 Issue 或 PR，"
+                "例如：「/reopen owner/repo#number」"
+            )
+        state["owner"] = matched["owner"]
+        state["repo"] = matched["repo"]
+        state["issue"] = matched["issue"]
+    # user reply to a issue or pr
+    elif isinstance(tag, IssueTag | PullRequestTag):
+        state["owner"] = tag.owner
+        state["repo"] = tag.repo
+        state["issue"] = tag.number
+        state["is_pr"] = isinstance(tag, PullRequestTag)
+        state["from_tag"] = True
+    else:
+        await reopen.finish(
+            "请发送要重新开启的 Issue 或 PR，例如：「/reopen owner/repo#number」"
+        )
+
+
+@reopen.handle(parameterless=(bypass_key("from_tag"),))
+async def check_issue(state: T_State, issue: ISSUE):
+    state["is_pr"] = bool(issue.pull_request)
+
+
+@reopen.handle()
 async def handle_reopen(
+    state: T_State,
     target_info: TARGET_INFO,
     message_info: MESSAGE_INFO,
     user: AUTHORIZED_USER,
-    tag: ISSUE_OR_PR_REPLY_TAG,
 ):
     bot = get_github_bot()
+    owner: str = state["owner"]
+    repo: str = state["repo"]
+    number: int = int(state["issue"])
+    is_pr: bool = state["is_pr"]
 
     await create_message_tag(
         message_info,
-        tag.copy(update={"is_receive": True}),
+        (
+            PullRequestTag(owner=owner, repo=repo, number=number, is_receive=True)
+            if is_pr
+            else IssueTag(owner=owner, repo=repo, number=number, is_receive=True)
+        ),
     )
 
     try:
         async with bot.as_user(user.access_token):
-            if isinstance(tag, IssueTag):
+            if not is_pr:
                 await bot.rest.issues.async_update(
-                    owner=tag.owner,
-                    repo=tag.repo,
-                    issue_number=tag.number,
+                    owner=owner,
+                    repo=repo,
+                    issue_number=number,
                     state="open",
                     state_reason="reopened",
                 )
-                message = f"已重新开启 Issue {tag.owner}/{tag.repo}#{tag.number}"
-            elif isinstance(tag, PullRequestTag):
+                message = f"已重新开启 Issue {owner}/{repo}#{number}"
+            else:
                 await bot.rest.pulls.async_update(
-                    owner=tag.owner,
-                    repo=tag.repo,
-                    pull_number=tag.number,
-                    state="open",
+                    owner=owner, repo=repo, pull_number=number, state="open"
                 )
-                message = f"已重新开启 PR {tag.owner}/{tag.repo}#{tag.number}"
+                message = f"已重新开启 PR {owner}/{repo}#{number}"
     except ActionTimeout:
         await reopen.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:
@@ -92,6 +140,10 @@ async def handle_reopen(
         ):
             result = await reopen.send(message)
 
-    tag = tag.copy(update={"is_receive": False})
+    tag = (
+        PullRequestTag(owner=owner, repo=repo, number=number, is_receive=False)
+        if is_pr
+        else IssueTag(owner=owner, repo=repo, number=number, is_receive=False)
+    )
     if sent_message_info := extract_sent_message(target_info, result):
         await create_message_tag(sent_message_info, tag)

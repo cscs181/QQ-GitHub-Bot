@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-12 15:03:23
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-11 13:10:43
+@LastEditTime   : 2023-12-11 13:42:18
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,7 +16,7 @@ from nonebot.matcher import Matcher
 from nonebot.adapters import Message
 from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
-from nonebot.params import Depends, CommandArg, ArgPlainText
+from nonebot.params import CommandArg, ArgPlainText
 
 from src.plugins.github import config
 from src.plugins.github.models import Group
@@ -31,10 +31,9 @@ from src.plugins.github.dependencies import (
     GROUP,
     BINDED_GROUP,
     GITHUB_REPO_INSTALLATION,
+    bypass_arg,
     allow_cancellation,
 )
-
-from .dependencies import bypass_update
 
 __plugin_meta__ = PluginMetadata(
     "GitHub 群仓库绑定",
@@ -55,11 +54,11 @@ bind = on_command(
 
 @bind.handle()
 async def process_arg(matcher: Matcher, arg: Message = CommandArg()):
-    if full_name := arg["text"]:
-        matcher.set_arg("full_name", full_name)
+    if full_name := arg.extract_plain_text().strip():
+        matcher.set_arg("full_name", arg.__class__(full_name))
 
 
-@bind.handle(parameterless=(Depends(bypass_update),))
+@bind.handle(parameterless=(bypass_arg("full_name"),))
 async def check_group_exists(group: GROUP):
     if group and group.bind_repo is not None:
         await bind.finish(f"当前已绑定仓库：{group.bind_repo}")
@@ -67,7 +66,7 @@ async def check_group_exists(group: GROUP):
 
 @bind.got(
     "full_name",
-    prompt="请发送绑定仓库的全名，例如：「owner/repo」",
+    prompt="请发送要绑定的仓库全名，例如：「owner/repo」",
     parameterless=(allow_cancellation("已取消"),),
 )
 async def process_repo(state: T_State, full_name: str = ArgPlainText()):
