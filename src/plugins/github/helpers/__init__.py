@@ -9,11 +9,6 @@
 
 __author__ = "yanyongyu"
 
-from .cancellation import is_cancellation as is_cancellation
-from .cancellation import allow_cancellation as allow_cancellation
-
-# isort: split
-
 from .rule import REPLY_PR as REPLY_PR
 from .rule import REPLY_ANY as REPLY_ANY
 from .rule import NO_GITHUB_EVENT as NO_GITHUB_EVENT

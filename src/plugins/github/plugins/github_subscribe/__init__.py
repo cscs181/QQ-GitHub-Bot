@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-22 14:35:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-11 12:05:50
+@LastEditTime   : 2023-12-11 13:10:53
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,16 +29,16 @@ from src.providers.platform import TARGET_INFO
 from src.plugins.github.utils import get_github_bot
 from src.plugins.github.libs.github import FULLREPO_REGEX
 from src.plugins.github.models import SubData, Subscription
-from src.plugins.github.dependencies import (
-    SUBSCRIPTIONS,
-    AUTHORIZED_USER,
-    GITHUB_REPO_INSTALLATION,
-)
 from src.plugins.github.helpers import (
     PRIVATE_PERM,
     GROUP_SUPERPERM,
     NO_GITHUB_EVENT,
     MATCH_WHEN_PRIVATE_OR_GROUP,
+)
+from src.plugins.github.dependencies import (
+    SUBSCRIPTIONS,
+    AUTHORIZED_USER,
+    GITHUB_REPO_INSTALLATION,
     allow_cancellation,
 )
 
