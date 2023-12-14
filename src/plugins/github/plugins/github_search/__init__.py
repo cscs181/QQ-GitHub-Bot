@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-11-27 14:31:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-10 16:54:56
+@LastEditTime   : 2023-12-14 17:16:31
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,7 +18,11 @@ from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.helpers import NO_GITHUB_EVENT
-from src.plugins.github.dependencies import AUTHORIZED_USER, GITHUB_PUBLIC_CONTEXT
+from src.plugins.github.dependencies import (
+    AUTHORIZED_USER,
+    GITHUB_PUBLIC_CONTEXT,
+    allow_cancellation,
+)
 
 __plugin_meta__ = PluginMetadata(
     "GitHub 搜索",
@@ -47,8 +51,18 @@ async def handle_code_search(
         matcher.set_arg("query", arg.__class__(query))
 
 
-@code_search.got("query", prompt="请输入想要搜索的内容")
+@code_search.got(
+    "query",
+    prompt="请发送想要搜索的内容",
+    parameterless=(allow_cancellation("已取消"),),
+)
 async def do_code_search(context: GITHUB_PUBLIC_CONTEXT, query: str = ArgPlainText()):
+    if not query:
+        await code_search.reject(
+            "搜索内容不能为空！\n请重新发送想要搜索的内容，"
+            "例如：「nonebot」\n或发送「取消」以取消"
+        )
+
     try:
         async with context as bot:
             resp = await bot.rest.search.async_code(q=query, per_page=5)
@@ -91,8 +105,18 @@ async def handle_repo_search(matcher: Matcher, arg: Message = CommandArg()):
         matcher.set_arg("query", arg.__class__(query))
 
 
-@repo_search.got("query", prompt="请输入想要搜索的仓库")
+@repo_search.got(
+    "query",
+    prompt="请输入想要搜索的仓库",
+    parameterless=(allow_cancellation("已取消"),),
+)
 async def do_repo_search(context: GITHUB_PUBLIC_CONTEXT, query: str = ArgPlainText()):
+    if not query:
+        await code_search.reject(
+            "搜索仓库不能为空！\n请重新发送想要搜索的仓库，"
+            "例如：「nonebot」\n或发送「取消」以取消"
+        )
+
     try:
         async with context as bot:
             resp = await bot.rest.search.async_repos(q=query, per_page=5)
@@ -136,8 +160,18 @@ async def handle_user_search(matcher: Matcher, arg: Message = CommandArg()):
         matcher.set_arg("query", arg.__class__(query))
 
 
-@user_search.got("query", prompt="请输入想要搜索的用户")
+@user_search.got(
+    "query",
+    prompt="请输入想要搜索的用户",
+    parameterless=(allow_cancellation("已取消"),),
+)
 async def do_user_search(context: GITHUB_PUBLIC_CONTEXT, query: str = ArgPlainText()):
+    if not query:
+        await code_search.reject(
+            "搜索用户不能为空！\n请重新发送想要搜索的用户，"
+            "例如：「nonebot」\n或发送「取消」以取消"
+        )
+
     try:
         async with context as bot:
             resp = await bot.rest.search.async_users(q=query, per_page=5)
