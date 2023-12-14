@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-03-08 00:11:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-06 17:09:09
+@LastEditTime   : 2023-12-14 16:57:09
 @Description    : About plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -34,6 +34,7 @@ __plugin_meta__ = PluginMetadata(
 
 OWNER = "cscs181"
 REPO = "QQ-GitHub-Bot"
+HOMEPAGE = f"https://github.com/{OWNER}/{REPO}"
 
 
 about = on_command(
@@ -67,3 +68,6 @@ async def handle_about(target_info: TARGET_INFO, message_info: MESSAGE_INFO):
 
     if sent_message_info := extract_sent_message(target_info, result):
         await create_message_tag(sent_message_info, tag)
+
+
+from . import apis as apis
