@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-11 18:12:12
+@LastEditTime   : 2023-12-15 10:37:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -26,17 +26,16 @@ from src.plugins.github.helpers import NO_GITHUB_EVENT
 from src.plugins.github.libs.renderer import pr_diff_to_image
 from src.plugins.github.libs.github import ISSUE_REGEX, FULLREPO_REGEX
 from src.plugins.github.cache.message_tag import PullRequestTag, create_message_tag
+from src.plugins.github.dependencies import (
+    ISSUE,
+    OPTIONAL_REPLY_TAG,
+    GITHUB_PUBLIC_CONTEXT,
+)
 from src.providers.platform import (
     TARGET_INFO,
     MESSAGE_INFO,
     TargetType,
     extract_sent_message,
-)
-from src.plugins.github.dependencies import (
-    ISSUE,
-    OPTIONAL_REPLY_TAG,
-    GITHUB_PUBLIC_CONTEXT,
-    bypass_key,
 )
 
 diff = on_command(
@@ -72,7 +71,7 @@ async def parse_arg(
         await diff.finish("请发送要查看差异的 PR，例如：「/diff owner/repo#number」")
 
 
-@diff.handle(parameterless=(bypass_key("from_tag"),))
+@diff.handle()
 async def check_issue(state: T_State, issue: ISSUE):
     if not issue.pull_request:
         await diff.finish(

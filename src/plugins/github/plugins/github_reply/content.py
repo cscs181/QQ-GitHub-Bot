@@ -25,6 +25,11 @@ from src.providers.filehost import save_image
 from src.plugins.github.helpers import NO_GITHUB_EVENT
 from src.plugins.github.libs.renderer import issue_to_image
 from src.plugins.github.libs.github import ISSUE_REGEX, FULLREPO_REGEX
+from src.plugins.github.dependencies import (
+    ISSUE,
+    OPTIONAL_REPLY_TAG,
+    GITHUB_PUBLIC_CONTEXT,
+)
 from src.plugins.github.cache.message_tag import (
     IssueTag,
     PullRequestTag,
@@ -35,12 +40,6 @@ from src.providers.platform import (
     MESSAGE_INFO,
     TargetType,
     extract_sent_message,
-)
-from src.plugins.github.dependencies import (
-    ISSUE,
-    OPTIONAL_REPLY_TAG,
-    GITHUB_PUBLIC_CONTEXT,
-    bypass_key,
 )
 
 content = on_command(
@@ -79,7 +78,7 @@ async def parse_arg(
         )
 
 
-@content.handle(parameterless=(bypass_key("from_tag"),))
+@content.handle()
 async def check_issue(state: T_State, issue: ISSUE):
     state["issue_info"] = issue
     state["is_pr"] = bool(issue.pull_request)
