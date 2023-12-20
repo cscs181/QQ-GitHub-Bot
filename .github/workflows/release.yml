@@ -49,9 +49,11 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
+        include:
+          - platform: linux/amd64
+            platform-artifact: linux-amd64
+          - platform: linux/arm64
+            platform-artifact: linux-arm64
 
     steps:
       - name: Checkout
@@ -102,7 +104,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digests
+          name: ${{ matrix.platform-artifact }}-digests
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
@@ -113,7 +115,8 @@ jobs:
     if: |-
       ${{
         always() &&
-        github.event_name != 'pull_request'
+        github.event_name != 'pull_request' &&
+        needs.build.result == 'success'
       }}
 
     steps:
@@ -123,8 +126,12 @@ jobs:
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
-          name: digests
-          path: /tmp/digests
+          path: /tmp/artifacts
+
+      - name: Copy digests
+        run: |
+          mkdir -p /tmp/digests
+          cp /tmp/artifacts/*-digests/* /tmp/digests
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -184,7 +191,8 @@ jobs:
     if: |-
       ${{
         always() &&
-        startsWith(github.ref, 'refs/tags/v')
+        startsWith(github.ref, 'refs/tags/v') &&
+        needs.push.result == 'success'
       }}
 
     steps:
@@ -210,7 +218,8 @@ jobs:
     if: |-
       ${{
         always() &&
-        startsWith(github.ref, 'refs/tags/v')
+        startsWith(github.ref, 'refs/tags/v') &&
+        needs.push.result == 'success'
       }}
 
     steps:
