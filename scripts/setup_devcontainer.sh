@@ -46,6 +46,8 @@ REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 REDIS_PASSWORD=bot_redis
 
+FILEHOST_URL_BASE=http://example.com
+
 # Github App 配置
 GITHUB_THEME=light
 GITHUB_APPS='
