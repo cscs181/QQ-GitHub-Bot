@@ -49,11 +49,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        include:
-          - platform: linux/amd64
-            platform-artifact: linux-amd64
-          - platform: linux/arm64
-            platform-artifact: linux-arm64
+        platform:
+          - linux/amd64
+          - linux/arm64
 
     steps:
       - name: Checkout
@@ -77,6 +75,8 @@ jobs:
         run: |
           echo "IMAGE=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
           echo "SCOPE=${{ hashFiles('**/poetry.lock') }}-${{ matrix.platform }}" >> $GITHUB_OUTPUT
+          platform="${{ matrix.platform }}"
+          echo "ARTIFACT=${platform/\//-}-digests" >> $GITHUB_OUTPUT
 
       - name: Generate Labels
         uses: docker/metadata-action@v5
@@ -104,7 +104,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform-artifact }}-digests
+          name: ${{ steps.image.outputs.ARTIFACT }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
