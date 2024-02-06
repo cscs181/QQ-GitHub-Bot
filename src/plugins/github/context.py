@@ -85,7 +85,7 @@ class AsyncGeneratorContextManager(Generic[R]):
 
 
 def asynccontextmanager(
-    func: Callable[P, AsyncGenerator[R, Any]]
+    func: Callable[P, AsyncGenerator[R, Any]],
 ) -> Callable[P, AsyncGeneratorContextManager[R]]:
     @wraps(func)
     def helper(*args: P.args, **kwds: P.kwargs):
