@@ -14,8 +14,8 @@ import contextlib
 from typing import Any, Dict
 
 from jinja2 import Environment
-from nonebot import get_driver
 from nonebot.matcher import Matcher
+from nonebot import get_plugin_config
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata
 from jinja2.meta import find_undeclared_variables
@@ -47,8 +47,7 @@ __plugin_meta__ = PluginMetadata(
     supported_adapters=None,
 )
 
-global_config = get_driver().config
-status_config = Config.parse_obj(global_config)
+status_config = get_plugin_config(Config)
 status_permission = (status_config.server_status_only_superusers or None) and SUPERUSER
 
 _ev = Environment(

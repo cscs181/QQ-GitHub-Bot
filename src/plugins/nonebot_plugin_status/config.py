@@ -10,7 +10,7 @@
 __author__ = "yanyongyu"
 
 
-from pydantic import Extra, BaseModel
+from pydantic import BaseModel
 
 CPU_TEMPLATE = r"CPU: {{ '%02d' % cpu_usage }}%"
 """Default CPU status template."""
@@ -45,7 +45,7 @@ RUNTIME_TEMPLATE = "Runtime: {{ runtime | relative_time | humanize_delta }}"
 """Default runtime status template."""
 
 
-class Config(BaseModel, extra=Extra.ignore):
+class Config(BaseModel):
     server_status_enabled: bool = True
     """Whether to enable the server status commands."""
     server_status_truncate: bool = True
