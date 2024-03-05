@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:16:46
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-10 17:35:08
+@LastEditTime   : 2024-03-05 14:30:05
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,11 +12,11 @@ __author__ = "yanyongyu"
 from typing import Annotated, TypeAlias
 
 from nonebot import logger
-from githubkit.rest import Commit
 from nonebot.adapters import Event
 from nonebot.params import Depends
 from nonebot.typing import T_State
 from nonebot.matcher import Matcher
+from githubkit.versions.latest.models import Commit
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from .github import GITHUB_PUBLIC_CONTEXT

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-04-26 18:39:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-18 16:25:48
+@LastEditTime   : 2024-03-05 14:40:23
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,8 +14,8 @@ from typing import cast
 
 from nonebot import logger, on_type
 from nonebot.plugin import PluginMetadata
-from githubkit.webhooks import InstallationLite
 from playwright.async_api import Error, TimeoutError
+from githubkit.versions.latest.models import SimpleInstallation
 from nonebot.adapters.github import ActionTimeout, IssueCommentCreated
 
 from src.plugins.github import config
@@ -75,7 +75,7 @@ async def handle_issue_opened_event(
     image = None
 
     try:
-        installation = cast(InstallationLite, event.payload.installation)
+        installation = cast(SimpleInstallation, event.payload.installation)
         async with bot.as_installation(installation.id):
             image = await issue_commented_to_image(
                 bot,

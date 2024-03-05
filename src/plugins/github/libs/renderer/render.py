@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-28 15:31:22
+@LastEditTime   : 2024-03-05 14:41:09
 @Description    : GitHub html renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Literal
 
 import jinja2
-from githubkit import rest, webhooks
+from githubkit.versions.latest import models
 from nonebot.adapters.github import OAuthBot, GitHubBot
 
 from .context import set_context_bot
@@ -67,7 +67,7 @@ env.globals["scale_linear"] = scale_linear
 
 async def readme_to_html(
     bot: GitHubBot | OAuthBot,
-    repo: rest.FullRepository,
+    repo: models.FullRepository,
     readme: str,
     theme: Literal["light", "dark"] = "light",
 ) -> str:
@@ -84,7 +84,7 @@ async def readme_to_html(
 
 async def issue_to_html(
     bot: GitHubBot | OAuthBot,
-    issue: rest.Issue,
+    issue: models.Issue,
     highlight_comment: int | None = None,
     theme: Literal["light", "dark"] = "light",
 ) -> str:
@@ -103,7 +103,7 @@ async def issue_to_html(
 
 async def pr_diff_to_html(
     bot: GitHubBot | OAuthBot,
-    issue: rest.Issue,
+    issue: models.Issue,
     theme: Literal["light", "dark"] = "light",
 ) -> str:
     """Render pr diff to html
@@ -119,8 +119,11 @@ async def pr_diff_to_html(
 
 async def issue_opened_to_html(
     bot: GitHubBot | OAuthBot,
-    repo: webhooks.Repository,
-    issue: webhooks.IssuesOpenedPropIssue | webhooks.PullRequestOpenedPropPullRequest,
+    repo: models.RepositoryWebhooks,
+    issue: (
+        models.WebhookIssuesOpenedPropIssue
+        | models.WebhookPullRequestOpenedPropPullRequest
+    ),
     theme: Literal["light", "dark"] = "light",
 ) -> str:
     """Render issue or pr opened webhook event to html
@@ -137,9 +140,9 @@ async def issue_opened_to_html(
 
 async def issue_commented_to_html(
     bot: GitHubBot | OAuthBot,
-    repo: webhooks.Repository,
-    issue: webhooks.IssueCommentCreatedPropIssue,
-    comment: webhooks.IssueComment,
+    repo: models.RepositoryWebhooks,
+    issue: models.WebhookIssueCommentCreatedPropIssue,
+    comment: models.WebhookIssueCommentCreatedPropComment,
     theme: Literal["light", "dark"] = "light",
 ) -> str:
     """Render issue commented webhook event to html
@@ -163,8 +166,11 @@ async def issue_commented_to_html(
 
 async def issue_closed_to_html(
     bot: GitHubBot | OAuthBot,
-    repo: webhooks.Repository,
-    issue: webhooks.IssuesClosedPropIssue | webhooks.PullRequestClosedPropPullRequest,
+    repo: models.RepositoryWebhooks,
+    issue: (
+        models.WebhookIssuesClosedPropIssue
+        | models.WebhookPullRequestClosedPropPullRequest
+    ),
     theme: Literal["light", "dark"] = "light",
 ) -> str:
     """Render issue or pr closed webhook event to html

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-13 15:56:01
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-06 16:01:09
+@LastEditTime   : 2024-03-05 14:48:21
 @Description    : Message tag cache
 @GitHub         : https://github.com/yanyongyu
 """
@@ -12,7 +12,7 @@ __author__ = "yanyongyu"
 from datetime import timedelta
 from typing import Literal, Annotated
 
-from pydantic import Field, BaseModel, parse_raw_as
+from pydantic import Field, BaseModel, TypeAdapter
 
 from src.providers.redis import redis_client
 from src.providers.platform import MessageInfo
@@ -100,4 +100,4 @@ async def get_message_tag(message: MessageInfo) -> Tag | None:
             )
         )
     ) is not None:
-        return parse_raw_as(Tag, data)
+        return TypeAdapter(Tag).validate_json(data)

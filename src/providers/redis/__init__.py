@@ -16,7 +16,7 @@ from typing import Any, TypeVar, ParamSpec
 from collections.abc import Callable, Awaitable
 
 import redis.asyncio as redis
-from nonebot import get_driver
+from nonebot import get_plugin_config
 
 from .config import Config
 
@@ -26,7 +26,7 @@ C = Callable[P, R]
 
 CACHE_KEY_FORMAT = "cache:{signature}"
 
-redis_config = Config.parse_obj(get_driver().config)
+redis_config = get_plugin_config(Config)
 
 redis_client = redis.Redis(
     host=redis_config.redis_host,

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-12-05 17:10:52
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-06 17:23:31
+@LastEditTime   : 2024-03-05 14:53:23
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,9 +14,9 @@ from datetime import timedelta
 from urllib.parse import urljoin
 
 import nonebot
-from nonebot import logger
 from fastapi import FastAPI
 from fastapi.responses import Response
+from nonebot import logger, get_plugin_config
 from nonebot.drivers import Request, HTTPClientMixin
 
 from src.providers.redis import redis_client
@@ -31,7 +31,7 @@ app: FastAPI = nonebot.get_app()
 driver = nonebot.get_driver()
 assert isinstance(driver, HTTPClientMixin)
 
-config = Config.parse_obj(driver.config)
+config = get_plugin_config(Config)
 
 
 async def save_image(img: bytes, ex: timedelta = TTL) -> str:

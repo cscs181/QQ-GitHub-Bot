@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-02 16:13:42
+@LastEditTime   : 2024-03-05 14:36:18
 @Description    : Jinjia globals for renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,13 +13,13 @@ from datetime import timedelta
 from colorsys import rgb_to_hls
 
 from unidiff import PatchSet
+from githubkit import GitHubModel
 from githubkit.exception import RequestFailed, RequestTimeout
 from nonebot.adapters.github import ActionFailed, NetworkError, ActionTimeout
-from githubkit.rest import (
+from githubkit.versions.latest.models import (
     Issue,
     PullRequest,
     FullRepository,
-    GitHubRestModel,
     TimelineCommentEvent,
     TimelineReviewedEvent,
 )
@@ -138,7 +138,7 @@ def get_issue_label_color(color: str) -> tuple[int, int, int, int, int, int]:
 
 
 def find_dismissed_review(
-    past_timeline: list[GitHubRestModel], review_id: int
+    past_timeline: list[GitHubModel], review_id: int
 ) -> TimelineReviewedEvent | None:
     """Find the dismissed review event in the timeline"""
     for event in past_timeline:

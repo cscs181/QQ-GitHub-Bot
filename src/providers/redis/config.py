@@ -2,23 +2,23 @@
 @Author         : yanyongyu
 @Date           : 2021-03-13 14:45:54
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 18:55:43
+@LastEditTime   : 2024-03-05 14:52:12
 @Description    : Config for Redis provider
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
-from pydantic import Extra, BaseSettings, validator
+from pydantic import BaseModel, field_validator
 
 
-class Config(BaseSettings, extra=Extra.ignore):
+class Config(BaseModel):
     redis_host: str
     redis_port: int
     redis_db: int = 0
     redis_password: str | None = None
     redis_username: str | None = None
 
-    @validator("redis_db", pre=True)
+    @field_validator("redis_db", mode="before")
     def replace_empty(cls, value):
         return value or 0

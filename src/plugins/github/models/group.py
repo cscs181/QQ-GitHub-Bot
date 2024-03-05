@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 07:31:43
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-29 15:04:01
+@LastEditTime   : 2024-03-05 14:54:37
 @Description    : Group model
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,7 +11,7 @@ __author__ = "yanyongyu"
 
 from typing import Self, cast
 
-from pydantic import parse_obj_as
+from pydantic import TypeAdapter
 from sqlalchemy import String, select, update
 from sqlalchemy.orm import Mapped, mapped_column
 from nonebot_plugin_orm import Model, get_session
@@ -31,12 +31,12 @@ class Group(Model):
 
     def to_group_info(self) -> GroupInfo:
         """Convert to group info"""
-        return parse_obj_as(GroupInfo, self.group)
+        return TypeAdapter(GroupInfo).validate_python(self.group)
 
     @classmethod
     async def from_info(cls, info: GroupInfo) -> Self | None:
         """Get group model by group info"""
-        sql = select(cls).where(cls.group == info.dict())
+        sql = select(cls).where(cls.group == info.model_dump())
         async with get_session() as session:
             result = await session.execute(sql)
             return result.scalar_one_or_none()
@@ -51,7 +51,7 @@ class Group(Model):
 
         info = cast(GroupInfo, info)
 
-        insert_sql = insert(cls).values(group=info.dict(), bind_repo=bind_repo)
+        insert_sql = insert(cls).values(group=info.model_dump(), bind_repo=bind_repo)
         update_sql = insert_sql.on_conflict_do_update(
             index_elements=[cls.group],
             set_={"bind_repo": insert_sql.excluded.bind_repo},
@@ -74,7 +74,7 @@ class Group(Model):
     @classmethod
     async def unbind_by_info(cls, info: GroupInfo) -> bool:
         """Unbind group and repo by group info"""
-        sql = update(cls).where(cls.group == info.dict()).values(bind_repo=None)
+        sql = update(cls).where(cls.group == info.model_dump()).values(bind_repo=None)
         async with get_session() as session:
             result = await session.execute(sql)
             return bool(result.rowcount)

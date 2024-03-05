@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-02 16:12:52
+@LastEditTime   : 2024-03-05 14:54:18
 @Description    : Jinja filters for renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -13,11 +13,11 @@ from datetime import UTC, datetime
 
 import humanize
 from nonebot import logger
+from githubkit import GitHubModel
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
 from mdit_py_emoji import emoji_plugin
 from markdown_it.utils import OptionsDict
-from githubkit.rest import GitHubRestModel
 from markdown_it.renderer import RendererProtocol
 from mdit_py_plugins.tasklists import tasklists_plugin
 
@@ -85,13 +85,13 @@ def relative_time(value: datetime | str) -> str:
     return f"on {humanize.naturalday(value, t)}"
 
 
-def debug_event(event: GitHubRestModel) -> str:
+def debug_event(event: GitHubModel) -> str:
     """Log unhandled event using error level to report on sentry"""
-    logger.debug(f"Unhandled event: {event.dict()}")
+    logger.debug(f"Unhandled event: {event.model_dump()}")
     logger.error(
         f"Unhandled event type: {event.__class__.__name__}"
         + (f" {event_name}" if (event_name := getattr(event, "event", None)) else ""),
-        event=event.dict(),
+        event=event.model_dump(),
     )
     return ""
 

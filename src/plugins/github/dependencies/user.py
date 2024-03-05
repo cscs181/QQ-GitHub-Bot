@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:17:06
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-25 19:23:32
+@LastEditTime   : 2024-03-05 14:31:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -14,8 +14,8 @@ from typing import TYPE_CHECKING, Annotated, TypeAlias
 from nonebot import logger
 from nonebot.params import Depends
 from nonebot.matcher import Matcher
-from githubkit.rest import PublicUser, PrivateUser
 from nonebot.adapters.github import ActionFailed, ActionTimeout
+from githubkit.versions.latest.models import PublicUser, PrivateUser
 
 from src.plugins.github.models import User
 from src.providers.platform import USER_INFO

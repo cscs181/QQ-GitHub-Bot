@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:19:34
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-11 15:00:02
+@LastEditTime   : 2024-03-05 14:51:27
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,15 +11,14 @@ __author__ = "yanyongyu"
 
 from typing import Generic, Literal, TypeVar, Annotated, TypeAlias
 
-from pydantic import Field
-from pydantic.generics import GenericModel
+from pydantic import Field, BaseModel
 
 from src.providers.platform.targets import TargetType
 
 ID = TypeVar("ID", int, str)
 
 
-class BaseMessageInfo(GenericModel, Generic[ID]):
+class BaseMessageInfo(BaseModel, Generic[ID]):
     """Message entity."""
 
     id: ID
