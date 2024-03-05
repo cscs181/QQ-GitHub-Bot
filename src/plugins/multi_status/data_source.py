@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-15 09:01:57
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-20 12:04:36
+@LastEditTime   : 2024-03-05 14:24:25
 @Description    : Getting status of multi pods
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,9 +16,9 @@ import contextlib
 from uuid import UUID, uuid4
 
 from nonebot import logger, get_driver
+from nonebot_plugin_status import render_template
 
 from src.providers.redis import redis_client
-from src.plugins.nonebot_plugin_status import render_template
 
 CHANNEL = "bot:status"
 REQUEST = b"bot:status:ping"

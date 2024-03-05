@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-26 14:54:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-30 13:53:13
+@LastEditTime   : 2024-03-05 14:54:56
 @Description    : User subscription model
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,7 +11,7 @@ __author__ = "yanyongyu"
 
 from typing import Self, TypedDict, cast
 
-from pydantic import parse_obj_as
+from pydantic import TypeAdapter
 from sqlalchemy import cast as sql_cast
 from sqlalchemy.orm import Mapped, mapped_column
 from nonebot_plugin_orm import Model, get_session
@@ -52,12 +52,12 @@ class Subscription(Model):
 
     def to_subscriber_info(self) -> TargetInfo:
         """Convert to subscriber info"""
-        return parse_obj_as(TargetInfo, self.subscriber)
+        return TypeAdapter(TargetInfo).validate_python(self.subscriber)
 
     @classmethod
     async def from_info(cls, info: TargetInfo) -> list[Self]:
         """List subscriptions by subscriber info"""
-        sql = select(cls).where(cls.subscriber == info.dict())
+        sql = select(cls).where(cls.subscriber == info.model_dump())
         async with get_session() as session:
             result = await session.execute(sql)
             return list(result.scalars().all())
@@ -74,7 +74,7 @@ class Subscription(Model):
 
         insert_sql = insert(cls).values([
             {
-                "subscriber": info.dict(),
+                "subscriber": info.model_dump(),
                 **subscription,
             }
             for subscription in subsciptions
@@ -150,7 +150,7 @@ class Subscription(Model):
                 sql,
                 [
                     {
-                        "tmp_subscriber": info.dict(),
+                        "tmp_subscriber": info.model_dump(),
                         "tmp_owner": unsubscription["owner"],
                         "tmp_repo": unsubscription["repo"],
                         "tmp_event": unsubscription["event"],
@@ -173,7 +173,9 @@ class Subscription(Model):
 
         clear_sql = (
             update(cls).where(
-                cls.subscriber == info.dict(), cls.owner == owner, cls.repo == repo
+                cls.subscriber == info.model_dump(),
+                cls.owner == owner,
+                cls.repo == repo,
             )
             # set to empty array
             .values(action=[])

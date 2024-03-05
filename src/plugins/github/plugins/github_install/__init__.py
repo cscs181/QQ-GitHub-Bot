@@ -2,17 +2,17 @@
 @Author         : yanyongyu
 @Date           : 2022-09-06 09:02:27
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-29 15:17:03
+@LastEditTime   : 2024-03-05 14:38:05
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
-from githubkit.rest import SimpleUser
 from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import ActionTimeout
+from githubkit.versions.latest.models import SimpleUser
 
 from src.plugins.github import config
 from src.providers.platform import USER_INFO

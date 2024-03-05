@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-14 17:04:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-02 16:10:56
+@LastEditTime   : 2024-03-05 14:23:52
 @Description    : Multi pod status plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,9 +11,12 @@ __author__ = "yanyongyu"
 
 import contextlib
 
+from nonebot import require
 from nonebot.matcher import Matcher
 
-from src.plugins.nonebot_plugin_status import status_config
+require("nonebot_plugin_status")
+
+from nonebot_plugin_status import status_config
 
 from .data_source import get_all_status
 

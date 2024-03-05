@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-05 09:50:07
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-29 14:59:19
+@LastEditTime   : 2024-03-05 14:55:11
 @Description    : User model
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,7 +11,7 @@ __author__ = "yanyongyu"
 
 from typing import Self, cast
 
-from pydantic import parse_obj_as
+from pydantic import TypeAdapter
 from sqlalchemy import String, select, update
 from sqlalchemy.orm import Mapped, mapped_column
 from nonebot_plugin_orm import Model, get_session
@@ -31,12 +31,12 @@ class User(Model):
 
     def to_user_info(self) -> UserInfo:
         """Convert to user info"""
-        return parse_obj_as(UserInfo, self.user)
+        return TypeAdapter(UserInfo).validate_python(self.user)
 
     @classmethod
     async def from_info(cls, info: UserInfo) -> Self | None:
         """Get user model by user info"""
-        sql = select(cls).where(cls.user == info.dict())
+        sql = select(cls).where(cls.user == info.model_dump())
         async with get_session() as session:
             result = await session.execute(sql)
             return result.scalar_one_or_none()
@@ -51,7 +51,9 @@ class User(Model):
 
         info = cast(UserInfo, info)
 
-        insert_sql = insert(cls).values(user=info.dict(), access_token=access_token)
+        insert_sql = insert(cls).values(
+            user=info.model_dump(), access_token=access_token
+        )
         update_sql = insert_sql.on_conflict_do_update(
             index_elements=[cls.user],
             set_={"access_token": insert_sql.excluded.access_token},
@@ -74,7 +76,7 @@ class User(Model):
     @classmethod
     async def unauth_by_info(cls, info: UserInfo) -> bool:
         """UnAuth user by user info"""
-        sql = update(cls).where(cls.user == info.dict()).values(access_token=None)
+        sql = update(cls).where(cls.user == info.model_dump()).values(access_token=None)
         async with get_session() as session:
             result = await session.execute(sql)
             return bool(result.rowcount)

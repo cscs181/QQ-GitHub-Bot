@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:16:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-27 13:07:50
+@LastEditTime   : 2024-03-05 14:31:17
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -16,7 +16,7 @@ from nonebot.adapters import Event
 from nonebot.params import Depends
 from nonebot.typing import T_State
 from nonebot.matcher import Matcher
-from githubkit.rest import FullRepository
+from githubkit.versions.latest.models import FullRepository
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from .github import GITHUB_PUBLIC_CONTEXT

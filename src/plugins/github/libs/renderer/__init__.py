@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-01 16:00:49
+@LastEditTime   : 2024-03-05 14:41:18
 @Description    : GitHub image renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -10,7 +10,7 @@
 __author__ = "yanyongyu"
 
 
-from githubkit import rest, webhooks
+from githubkit.versions.latest import models
 from nonebot.adapters.github import OAuthBot, GitHubBot
 
 from src.plugins.github import config
@@ -28,7 +28,7 @@ from .render import (
 
 async def readme_to_image(
     bot: GitHubBot | OAuthBot,
-    repo: rest.FullRepository,
+    repo: models.FullRepository,
     readme: str,
     width: int = 800,
     height: int = 300,
@@ -40,7 +40,7 @@ async def readme_to_image(
 
 async def issue_to_image(
     bot: GitHubBot | OAuthBot,
-    issue: rest.Issue,
+    issue: models.Issue,
     highlight_comment: int | None = None,
     width: int = 800,
     height: int = 300,
@@ -52,7 +52,7 @@ async def issue_to_image(
 
 async def pr_diff_to_image(
     bot: GitHubBot | OAuthBot,
-    issue: rest.Issue,
+    issue: models.Issue,
     width: int = 800,
     height: int = 300,
 ) -> bytes:
@@ -63,8 +63,11 @@ async def pr_diff_to_image(
 
 async def issue_opened_to_image(
     bot: GitHubBot | OAuthBot,
-    repo: webhooks.Repository,
-    issue: webhooks.IssuesOpenedPropIssue | webhooks.PullRequestOpenedPropPullRequest,
+    repo: models.RepositoryWebhooks,
+    issue: (
+        models.WebhookIssuesOpenedPropIssue
+        | models.WebhookPullRequestOpenedPropPullRequest
+    ),
     width: int = 800,
     height: int = 300,
 ) -> bytes:
@@ -75,9 +78,9 @@ async def issue_opened_to_image(
 
 async def issue_commented_to_image(
     bot: GitHubBot | OAuthBot,
-    repo: webhooks.Repository,
-    issue: webhooks.IssueCommentCreatedPropIssue,
-    comment: webhooks.IssueComment,
+    repo: models.RepositoryWebhooks,
+    issue: models.WebhookIssueCommentCreatedPropIssue,
+    comment: models.WebhookIssueCommentCreatedPropComment,
     width: int = 800,
     height: int = 300,
 ) -> bytes:
@@ -90,8 +93,11 @@ async def issue_commented_to_image(
 
 async def issue_closed_to_image(
     bot: GitHubBot | OAuthBot,
-    repo: webhooks.Repository,
-    issue: webhooks.IssuesClosedPropIssue | webhooks.PullRequestClosedPropPullRequest,
+    repo: models.RepositoryWebhooks,
+    issue: (
+        models.WebhookIssuesClosedPropIssue
+        | models.WebhookPullRequestClosedPropPullRequest
+    ),
     width: int = 800,
     height: int = 300,
 ) -> bytes:

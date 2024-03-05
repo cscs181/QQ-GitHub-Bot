@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-15 09:00:09
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-03-30 20:00:04
+@LastEditTime   : 2024-03-05 14:24:48
 @Description    : OneBot v11 matchers for multi pod status plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,10 +11,9 @@ __author__ = "yanyongyu"
 
 from nonebot.rule import to_me
 from nonebot import on_type, on_message
+from nonebot_plugin_status.onebot_v11 import _poke
+from nonebot_plugin_status import status_permission
 from nonebot.adapters.onebot.v11 import PokeNotifyEvent
-
-from src.plugins.nonebot_plugin_status.onebot_v11 import _poke
-from src.plugins.nonebot_plugin_status import status_permission
 
 from . import server_status
 
