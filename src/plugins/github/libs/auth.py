@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:30:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-15 10:47:33
+@LastEditTime   : 2024-03-17 14:00:14
 @Description    : OAuth lib
 @GitHub         : https://github.com/yanyongyu
 """
@@ -53,7 +53,7 @@ async def get_token_by_code(code: str) -> str:
         "https://github.com/login/oauth/access_token",
         json=data,
         headers=headers,
-    )
+    )  # type: ignore
     data = response.json()
     if "access_token" not in data:
         raise RuntimeError("Get oauth token failed", data)

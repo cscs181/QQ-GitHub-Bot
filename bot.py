@@ -3,7 +3,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-10 17:12:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-05 19:07:09
+@LastEditTime   : 2024-03-17 14:08:03
 @Description    : Entry File of the Bot
 @GitHub         : https://github.com/yanyongyu
 """
@@ -31,7 +31,7 @@ config.sqlalchemy_database_url = URL.create(
     host=config.postgres_host,
     port=config.postgres_port,
     database=config.postgres_db,
-)
+).render_as_string(hide_password=False)
 
 nonebot.load_plugins("src/providers")
 nonebot.load_all_plugins(set(config.plugins), {"src/plugins"}.union(config.plugin_dirs))

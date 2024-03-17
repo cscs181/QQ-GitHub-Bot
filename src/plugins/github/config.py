@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 19:05:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-05 14:46:53
+@LastEditTime   : 2024-03-17 13:59:50
 @Description    : Config for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -49,7 +49,7 @@ class Config(BaseModel):
                 "A GitHub App must be provided to use the bot. "
                 "See https://github.com/nonebot/adapter-github for more information."
             )
-        values.setdefault("github_app", github_app)
+        values.setdefault("github_app", github_app.model_dump())
         if oauth_app := next((app for app in apps if isinstance(app, OAuthApp)), None):
             values.setdefault("oauth_app", oauth_app)
         return values

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:09:04
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-05 14:36:18
+@LastEditTime   : 2024-03-17 14:00:33
 @Description    : Jinjia globals for renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -89,7 +89,7 @@ async def get_pull_request(issue: Issue) -> PullRequest:
 async def _get_pull_request_diff(diff_url: str) -> PatchSet:
     bot = get_context_bot()
     try:
-        resp = await bot.github.arequest("GET", diff_url)
+        resp = await bot.github.arequest("GET", diff_url)  # type: ignore
     except RequestFailed as e:
         raise ActionFailed(e.response) from None
     except RequestTimeout as e:
