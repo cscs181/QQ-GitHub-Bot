@@ -72,13 +72,15 @@ class Subscription(Model):
 
         info = cast(TargetInfo, info)
 
-        insert_sql = insert(cls).values([
-            {
-                "subscriber": info.model_dump(),
-                **subscription,
-            }
-            for subscription in subsciptions
-        ])
+        insert_sql = insert(cls).values(
+            [
+                {
+                    "subscriber": info.model_dump(),
+                    **subscription,
+                }
+                for subscription in subsciptions
+            ]
+        )
 
         # create new actions
         merge_action = insert_sql.excluded.action + cls.action
