@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 03:31:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-05 21:29:53
+@LastEditTime   : 2024-05-16 00:36:21
 @Description    : GitHub helpers
 @GitHub         : https://github.com/yanyongyu
 """
@@ -36,4 +36,6 @@ GITHUB_ISSUE_OR_PR_LINK_REGEX = (
 )
 GITHUB_PR_COMMIT_LINK_REGEX = rf"{GITHUB_PR_LINK_REGEX}/commits/{COMMIT_HASH_REGEX}"
 GITHUB_PR_FILE_LINK_REGEX = rf"{GITHUB_PR_LINK_REGEX}/files"
-GITHUB_RELEASE_LINK_REGEX = rf"{GITHUB_REPO_LINK_REGEX}/releases/tag/(?P<tag>{URL_PCHAR}+)"
+GITHUB_RELEASE_LINK_REGEX = (
+    rf"{GITHUB_REPO_LINK_REGEX}/releases/tag/(?P<tag>{URL_PCHAR}+)"
+)

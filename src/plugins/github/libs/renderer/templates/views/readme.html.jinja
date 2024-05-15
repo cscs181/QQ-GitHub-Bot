@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2023-12-01 15:20:09
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-12-01 15:42:18
+ * @LastEditTime   : 2024-05-15 00:20:49
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,11 +12,14 @@
 
 {% extends "main.html.jinja" %}
 {% block main %}
-{{ header(repo) }}
+{{ header(
+ctx.repo.owner, ctx.repo.name, ctx.repo.private, ctx.repo.fork, ctx.repo.is_template,
+ctx.repo.parent_full_name, ctx.repo.template_full_name, ctx.repo.forks_count, ctx.repo.stargazers_count
+) }}
 <div class="repository-content">
   <div class="container-xl px-3 px-md-4 px-lg-5 mt-4">
     <div>
-      {{ readme(content) }}
+      {{ readme(ctx.content) }}
     </div>
   </div>
 </div>

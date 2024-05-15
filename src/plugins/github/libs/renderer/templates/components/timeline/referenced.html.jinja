@@ -2,14 +2,21 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 06:16:39
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-06 03:57:26
+ * @LastEditTime   : 2024-05-15 15:52:22
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/cross-reference.html.jinja" import octicon_cross_reference %}
 
-{% macro referenced(event, ns) %}
+{#
+actor: str
+actor_avatar: str
+created_at: datetime
+is_pull_request: bool
+commit_id: str | None
+#}
+{% macro referenced(actor, actor_avatar, created_at, is_pull_request, commit_id) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_cross_reference() }}
@@ -18,24 +25,26 @@
     <div class="d-flex flex-auto">
       <div class="flex-auto pr-1 min-width-0">
         <a>
-          <img class="avatar avatar-user" height="20" width="20" src="{{ event.actor.avatar_url }}" />
+          <img class="avatar avatar-user" height="20" width="20" src="{{ actor_avatar }}" />
         </a>
         <a class="author Link--primary text-bold">
-          {{ event.actor.login|escape }}
+          {{ actor|escape }}
         </a>
         pushed a commit that referenced this
-        {% if ns.issue.pull_request %}
+        {% if is_pull_request %}
         pull request
         {% else %}
         issue
         {% endif %}
-        <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
+        <a class="Link--secondary">{{ created_at|relative_time }}</a>
       </div>
+      {% if commit_id %}
       <div class="text-right ml-1">
         <code>
-          <a class="Link--secondary">{{ event.commit_id[:7] }}</a>
+          <a class="Link--secondary">{{ commit_id[:7] }}</a>
         </code>
       </div>
+      {% endif %}
     </div>
   </div>
 </div>

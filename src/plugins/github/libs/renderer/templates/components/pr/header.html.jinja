@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 16:40:46
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-22 03:44:03
+ * @LastEditTime   : 2024-05-14 21:17:46
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -10,55 +10,75 @@
 {% from "components/issue/title.html.jinja" import issue_title %}
 {% from "components/pr/state.html.jinja" import pr_state %}
 
-{% macro pr_header(issue) %}
-{% set pull_request = get_pull_request(issue) %}
+{#
+number: int
+title: str
+state: str
+merged: bool
+draft: bool
+user: str
+merged_by: str | None
+commits: int
+base_owner: str
+base_label: str
+base_ref: str
+head_owner: str | None
+head_label: str
+head_ref: str
+merged_at: datetime | None
+created_at: datetime
+#}
+{% macro pr_header(
+number, title, state, merged, draft, user, merged_by, commits,
+base_owner, base_label, base_ref, head_owner, head_label, head_ref,
+merged_at, created_at
+) %}
 <div class="color-bg-default mb-3">
-  {{ issue_title(issue) }}
+  {{ issue_title(number, title) }}
   <div class="
       d-flex
       flex-items-center flex-wrap
       pb-2 mt-0 mb-3
       border-bottom color-border-default color-fg-muted
     ">
-    {{ pr_state(pull_request, "flex-shrink-0 mb-2 flex-self-start flex-md-self-center") }}
+    {{ pr_state(state, merged, draft, "flex-shrink-0 mb-2 flex-self-start flex-md-self-center") }}
     <div class="flex-auto min-width-0 mb-2">
       <a href="#" class="author text-bold Link--secondary">
-        {% if pull_request.merged %}
-        {{ pull_request.merged_by.login|escape }}
+        {% if merged %}
+        {{ merged_by|escape }}
         {% else %}
-        {{ pull_request.user.login|escape }}
+        {{ user|escape }}
         {% endif %}
       </a>
-      {% if pull_request.merged %}
+      {% if merged %}
       merged
       {% else %}
       wants to merge
       {% endif %}
-      {{ pull_request.commits }} commits into
-      {% set current_repo = pull_request.base.repo.fork or pull_request.base.repo.owner.login %}
+      {{ commits }} commits into
       <span class="branch-name css-truncate">
         <a class="no-underline">
-          {% if pull_request.base.repo.fork %}
-          {{ pull_request.base.label|escape }}
+          {% if base_owner == head_owner %}
+          {{ base_ref|escape }}
           {% else %}
-          {{ pull_request.base.ref|escape }}
+          {{ base_label|escape }}
           {% endif %}
         </a>
       </span>
       from
       <span class="branch-name css-truncate">
         <a class="no-underline">
-          {% if pull_request.head.repo and (pull_request.head.repo.owner.login == current_repo) %}
-          {{ pull_request.head.ref|escape }}
+          {% if base_owner == head_owner %}
+          {{ head_ref|escape }}
           {% else %}
-          {{ pull_request.head.label|escape }}
+          {{ head_label|escape }}
           {% endif %}
         </a>
       </span>
-      {% if pull_request.merged %}
-      {{ pull_request.merged_at|relative_time }}
+      {% if merged %}
+      {{ merged_at|relative_time }}
       {% else %}
-      {{ pull_request.created_at|relative_time }}
+      {{ created_at|relative_time }}
       {% endif %}
     </div>
   </div>

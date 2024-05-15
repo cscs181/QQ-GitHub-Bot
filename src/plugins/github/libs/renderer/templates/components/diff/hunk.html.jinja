@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-10-04 07:11:12
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-04 09:00:23
+ * @LastEditTime   : 2024-05-15 23:57:00
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -10,6 +10,9 @@
 {% from "components/diff/hunk-header.html.jinja" import diff_hunk_header %}
 {% from "components/diff/hunk-line.html.jinja" import diff_hunk_line %}
 
+{#
+hunk: Hunk
+#}
 {% macro diff_hunk(hunk) %}
 {{ diff_hunk_header(hunk) }}
 {% for line in hunk %}

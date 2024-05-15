@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 16:39:09
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-22 03:31:26
+ * @LastEditTime   : 2024-05-14 20:51:55
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,24 +12,30 @@
 {% from "icons/issue-draft.html.jinja" import octicon_issue_draft %}
 {% from "icons/issue-not-planned.html.jinja" import octicon_issue_not_planned %}
 
-{% macro issue_state(issue, class="") %}
+{#
+state: str
+state_reason: str
+draft: bool
+class: str
+#}
+{% macro issue_state(state, state_reason, draft, class="") %}
 <div class="{{ class }}">
-  {% if issue.draft %}
-  {% set state = "draft" %}
-  {% elif issue.state_reason == "not_planned" %}
-  {% set state = "draft" %}
-  {% elif issue.state == "closed" %}
-  {% set state = "merged" %}
+  {% if draft %}
+  {% set color = "draft" %}
+  {% elif state_reason == "not_planned" %}
+  {% set color = "draft" %}
+  {% elif state == "closed" %}
+  {% set color = "merged" %}
   {% else %}
-  {% set state = "open" %}
+  {% set color = "open" %}
   {% endif %}
 
-  <span class="State State--{{ state }} mr-2">
-    {% if issue.draft %}
+  <span class="State State--{{ color }} mr-2">
+    {% if draft %}
     {{ octicon_issue_draft() }} Draft
-    {% elif issue.state_reason == "not_planned" %}
+    {% elif state_reason == "not_planned" %}
     {{ octicon_issue_not_planned() }} Closed
-    {% elif issue.state == "closed" %}
+    {% elif state == "closed" %}
     {{ octicon_issue_closed() }} Closed
     {% else %}
     {{ octicon_issue_opened() }} Open

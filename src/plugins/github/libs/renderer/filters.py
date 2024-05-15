@@ -2,24 +2,26 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-05 14:54:18
+@LastEditTime   : 2024-05-15 17:08:11
 @Description    : Jinja filters for renderer
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
+from dataclasses import asdict
 from datetime import UTC, datetime
 
 import humanize
 from nonebot import logger
-from githubkit import GitHubModel
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
 from mdit_py_emoji import emoji_plugin
 from markdown_it.utils import OptionsDict
 from markdown_it.renderer import RendererProtocol
 from mdit_py_plugins.tasklists import tasklists_plugin
+
+from .context import TimelineEvent
 
 REVIEW_STATES = {
     "commented": "reviewed",
@@ -85,13 +87,14 @@ def relative_time(value: datetime | str) -> str:
     return f"on {humanize.naturalday(value, t)}"
 
 
-def debug_event(event: GitHubModel) -> str:
+def debug_event(event: TimelineEvent) -> str:
     """Log unhandled event using error level to report on sentry"""
-    logger.debug(f"Unhandled event: {event.model_dump()}")
+    event_data = asdict(event)
+    logger.debug(f"Unhandled event: {event_data}")
     logger.error(
         f"Unhandled event type: {event.__class__.__name__}"
         + (f" {event_name}" if (event_name := getattr(event, "event", None)) else ""),
-        event=event.model_dump(),
+        event=event_data,
     )
     return ""
 

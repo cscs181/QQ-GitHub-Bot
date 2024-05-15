@@ -2,10 +2,25 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-11-28 16:03:53
+ * @LastEditTime   : 2024-05-16 00:30:18
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
+
+.markdown-heading .anchor {
+  position: absolute;
+  top: 50%;
+  left: -28px;
+  display: flex;
+  width: 28px;
+  height: 28px;
+  margin: auto;
+  border-radius: 6px;
+  opacity: 0;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(-50%);
+}
 
 .markdown-title code {
   padding: 2px 4px;
@@ -205,7 +220,7 @@ g-emoji {
 .blob-code {
   position: relative;
   padding-right: 10px;
-  padding-left: 10px;
+  padding-left: 22px;
   line-height: 20px;
   vertical-align: top;
 }
@@ -219,10 +234,17 @@ g-emoji {
   word-wrap: anywhere;
   white-space: pre-wrap;
 }
+.blob-code-marker::before {
+  content: attr(data-code-marker);
+  position: absolute;
+  left: 0.5rem;
+  padding-right: 0.5rem;
+}
 .blob-code-hunk {
   padding-top: 4px;
   padding-bottom: 4px;
   padding-left: 22px;
+  color: var(--color-fg-subtle);
   background-color: var(--color-accent-subtle);
   border-width: 1px 0;
 }

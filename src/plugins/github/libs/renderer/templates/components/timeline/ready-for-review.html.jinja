@@ -2,27 +2,32 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 06:31:43
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-06 03:57:19
+ * @LastEditTime   : 2024-05-15 15:52:06
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/eye.html.jinja" import octicon_eye %}
 
-{% macro ready_for_review(event, ns) %}
+{#
+actor: str
+actor_avatar: str
+created_at: datetime
+#}
+{% macro ready_for_review(actor, actor_avatar, created_at) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_eye() }}
   </div>
   <div class="TimelineItem-body">
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ event.actor.avatar_url }}" />
+      <img class="avatar avatar-user" height="20" width="20" src="{{ actor_avatar }}" />
     </a>
     <a class="author Link--primary text-bold">
-      {{ event.actor.login|escape }}
+      {{ actor|escape }}
     </a>
     marked this pull request as ready for review
-    <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
+    <a class="Link--secondary">{{ created_at|relative_time }}</a>
   </div>
 </div>
 {% endmacro %}

@@ -2,15 +2,18 @@
  * @Author         : yanyongyu
  * @Date           : 2023-12-01 15:26:47
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-12-04 16:45:26
+ * @LastEditTime   : 2024-05-15 00:18:48
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/book.html.jinja" import octicon_book %}
 
+{#
+content: str
+#}
 {% macro readme(content) %}
-<div class="Box pb-3">
+<div class="Box mb-3">
   <div class="Box-header">
     <h2 class="Box-title">
       {{ octicon_book() }}

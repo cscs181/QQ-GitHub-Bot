@@ -10,6 +10,9 @@
 {% from "components/diff/header.html.jinja" import diff_header %}
 {% from "components/diff/content.html.jinja" import diff_content %}
 
+{#
+file: PatchedFile
+#}
 {% macro diff_file(file) %}
 <div class="position-relative mb-3 border rounded-2 color-border-default">
   {{ diff_header(file) }}

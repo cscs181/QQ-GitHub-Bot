@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-15 04:08:55
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-11-28 15:51:04
+ * @LastEditTime   : 2024-05-15 17:39:24
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -19,22 +19,35 @@
 
 {% extends "main.html.jinja" %}
 {% block main %}
-{{ header(get_issue_repo(issue)) }}
+{{ header(
+ctx.repo.owner, ctx.repo.name, ctx.repo.private, ctx.repo.fork, ctx.repo.is_template,
+ctx.repo.parent_full_name, ctx.repo.template_full_name, ctx.repo.forks_count, ctx.repo.stargazers_count
+) }}
 <div class="repository-content">
   <div class="container-xl px-3 px-md-4 px-lg-5 mt-4">
     <div>
-      {% if issue.pull_request %}
-      {{ pr_header(issue) }}
+      {% if ctx.is_pull_request %}
+      {{ pr_header(
+      ctx.issue.number, ctx.issue.title, ctx.issue.state, ctx.issue.merged, ctx.issue.draft,
+      ctx.issue.user, ctx.issue.merged_by, ctx.issue.commits,
+      ctx.issue.base_owner, ctx.issue.base_label, ctx.issue.base_ref,
+      ctx.issue.head_owner, ctx.issue.head_label, ctx.issue.head_ref,
+      ctx.issue.merged_at, ctx.issue.created_at
+      ) }}
       {% else %}
-      {{ issue_header(issue) }}
+      {{ issue_header(
+      ctx.issue.number, ctx.issue.title,
+      ctx.issue.state, ctx.issue.state_reason, ctx.issue.draft,
+      ctx.issue.user, ctx.issue.created_at, ctx.issue.comments
+      ) }}
       {% endif %}
       <div id="discussion_bucket">
         <div>
-          {{ issue_timeline(issue, highlight_comment=highlight_comment) }}
-          {% if issue.pull_request %}
-          {{ pr_action(issue) }}
+          {{ issue_timeline(ctx.repo, ctx.issue, ctx.is_pull_request, ctx.timeline_events, ctx.highlight_comment) }}
+          {% if ctx.is_pull_request %}
+          {{ pr_action() }}
           {% else %}
-          {{ issue_action(issue) }}
+          {{ issue_action() }}
           {% endif %}
         </div>
       </div>

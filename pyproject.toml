@@ -17,7 +17,7 @@ playwright = "^1.17.2"
 mdit-py-emoji = "^0.1.0"
 nonebot-plugin-orm = "^0.7.0"
 nonebot-adapter-qq = "^1.4.2"
-nonebot-plugin-sentry = "^1.1.0"
+nonebot-plugin-sentry = "^2.0.0"
 nonebot-plugin-status = "^0.8.1"
 nonebot-adapter-github = "^0.4.0"
 nonebot-adapter-onebot = "^2.4.2"
@@ -26,14 +26,14 @@ markdown-it-py = { version = "^3.0.0", extras = ["linkify", "plugins"] }
 nonebot2 = { version = "^2.2.0", extras = ["httpx", "websockets", "fastapi"] }
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.3.0"
+ruff = "^0.4.0"
 isort = "^5.9.3"
 black = "^24.0.0"
 nonemoji = "^0.1.2"
 pre-commit = "^3.1.0"
 
 [tool.poetry.group.deploy.dependencies]
-gunicorn = "^21.1.0"
+gunicorn = "^22.0.0"
 uvicorn = ">=0.18.3,<1.0.0"
 
 [tool.black]
@@ -56,8 +56,27 @@ line-length = 88
 target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "W", "F", "UP", "C", "T", "PYI", "PT", "Q"]
-ignore = ["E402", "C901", "UP037"]
+select = [
+  "F",     # Pyflakes
+  "W",     # pycodestyle warnings
+  "E",     # pycodestyle errors
+  "UP",    # pyupgrade
+  "ASYNC", # flake8-async
+  "C4",    # flake8-comprehensions
+  "T10",   # flake8-debugger
+  "T20",   # flake8-print
+  "PYI",   # flake8-pyi
+  "PT",    # flake8-pytest-style
+  "Q",     # flake8-quotes
+  "RUF",   # Ruff-specific rules
+]
+ignore = [
+  "E402",   # module-import-not-at-top-of-file
+  "UP037",  # quoted-annotation
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
+]
 
 [tool.ruff.lint.extend-per-file-ignores]
 "./scripts/*" = ["T201"]
@@ -67,14 +86,12 @@ ignore = ["E402", "C901", "UP037"]
 extraPaths = ["./"]
 
 pythonPlatform = "All"
-executionEnvironments = [
-  { root = "./src/plugins/nonebot_plugin_status", pythonVersion = "3.8" },
-  { root = "./", pythonVersion = "3.11" },
-]
+pythonVersion = "3.11"
 
-typeCheckingMode = "basic"
+typeCheckingMode = "standard"
 reportShadowedImports = false
 disableBytesTypePromotions = true
+reportIncompatibleVariableOverride = false
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

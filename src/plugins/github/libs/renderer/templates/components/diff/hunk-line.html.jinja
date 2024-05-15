@@ -2,24 +2,30 @@
  * @Author         : yanyongyu
  * @Date           : 2022-10-04 08:35:37
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-06-17 11:56:52
+ * @LastEditTime   : 2024-05-16 00:24:30
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
+{#
+line: Line
+#}
 {% macro diff_hunk_line(line) %}
 {% if line.is_added %}
 {% set type = "addition" %}
+{% set marker = "+" %}
 {% elif line.is_removed %}
 {% set type = "deletion" %}
+{% set marker = "-" %}
 {% else %}
 {% set type = "context" %}
+{% set marker = "" %}
 {% endif %}
 <tr>
   <td class="blob-num blob-num-{{ type }}">{{ line.source_line_no or "" }}</td>
   <td class="blob-num blob-num-{{ type }}">{{ line.target_line_no or "" }}</td>
   <td class="blob-code blob-code-{{ type }}">
-    <span class="blob-code-inner">{{ line.value|escape }}</span>
+    <span class="blob-code-inner blob-code-marker" data-code-marker="{{ marker }}">{{ line.value|escape }}</span>
   </td>
 </tr>
 {% endmacro %}
