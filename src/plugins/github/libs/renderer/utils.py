@@ -24,7 +24,17 @@ REACTION_EMOJIS = {
 """Issue comment reaction emoji mapping"""
 
 
-def get_comment_reactions(reactions: models.ReactionRollup) -> dict[str, int]:
+def get_comment_reactions(
+    reactions: (
+        models.ReactionRollup
+        | models.WebhookIssuesOpenedPropIssuePropReactions
+        | models.WebhookIssuesClosedPropIssueMergedReactions
+        | models.WebhookIssueCommentCreatedPropIssueMergedReactions
+        | models.WebhookIssueCommentEditedPropIssueMergedReactions
+        | models.WebhookIssueCommentCreatedPropCommentPropReactions
+        | models.WebhookIssueCommentEditedPropCommentPropReactions
+    ),
+) -> dict[str, int]:
     """Parse the reactions of the issue comment"""
     result: dict[str, int] = {}
     for reaction, emoji in REACTION_EMOJIS.items():
@@ -61,7 +71,12 @@ async def get_repo_from_issue(
 
 
 async def get_pull_request_from_issue(
-    bot: GitHubBot | OAuthBot, issue: models.Issue
+    bot: GitHubBot | OAuthBot,
+    issue: (
+        models.Issue
+        | models.WebhookIssueCommentCreatedPropIssue
+        | models.WebhookIssueCommentEditedPropIssue
+    ),
 ) -> models.PullRequest | None:
     if issue.pull_request and issue.pull_request.url:
         try:

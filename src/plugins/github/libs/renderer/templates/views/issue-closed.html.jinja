@@ -1,8 +1,8 @@
 <!--
  * @Author         : yanyongyu
- * @Date           : 2023-04-05 00:44:01
+ * @Date           : 2024-05-16 14:44:52
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 14:41:00
+ * @LastEditTime   : 2024-05-16 14:59:57
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -15,8 +15,10 @@
 {% from "components/issue/action.html.jinja" import issue_action %}
 {% from "components/pr/action.html.jinja" import pr_action %}
 
+{% from "components/timeline/closed.html.jinja" import closed %}
 {% from "components/timeline/commented.html.jinja" import commented %}
 {% from "components/timeline/labeled.html.jinja" import labeled %}
+{% from "components/timeline/merged.html.jinja" import merged %}
 
 {% extends "main.html.jinja" %}
 {% block main %}
@@ -58,6 +60,18 @@ ctx.repo.parent_full_name, ctx.repo.template_full_name, ctx.repo.forks_count, ct
               label_name, label_color
               ) }}
               {% endfor %}
+              {% endif %}
+              {# show merged if pr merged #}
+              {% if ctx.is_pull_request and ctx.issue.merged %}
+              {{ merged(
+              ctx.issue.user, ctx.issue.user_avatar, ctx.issue.created_at,
+              ctx.merge_commit_sha, ctx.issue.base_ref
+              ) }}
+              {% else %}
+              {{ closed(
+              ctx.issue.user, ctx.issue.user_avatar, ctx.issue.created_at,
+              ctx.issue.state_reason|default(none), ctx.is_pull_request
+              ) }}
               {% endif %}
             </div>
           </div>

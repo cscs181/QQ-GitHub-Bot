@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 16:20:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-15 23:44:44
+@LastEditTime   : 2024-05-16 15:29:39
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -62,6 +62,24 @@ class RepoInfo:
             stargazers_count=repo.stargazers_count,
         )
 
+    @classmethod
+    def from_webhook(cls, repo: models.RepositoryWebhooks) -> Self:
+        return cls(
+            owner=repo.owner.login,
+            name=repo.name,
+            private=repo.private,
+            fork=repo.fork,
+            is_template=bool(repo.is_template),
+            parent_full_name=None,
+            template_full_name=(
+                repo.template_repository.full_name
+                if repo.template_repository and repo.template_repository.full_name
+                else None
+            ),
+            forks_count=repo.forks_count,
+            stargazers_count=repo.stargazers_count,
+        )
+
 
 @dataclass(frozen=True, kw_only=True)
 class IssueInfo:
@@ -104,6 +122,47 @@ class IssueInfo:
             ),
         )
 
+    @classmethod
+    def from_webhook(
+        cls,
+        issue: (
+            models.WebhookIssuesOpenedPropIssue
+            | models.WebhookIssuesClosedPropIssue
+            | models.WebhookIssueCommentCreatedPropIssue
+            | models.WebhookIssueCommentEditedPropIssue
+        ),
+    ) -> Self:
+        if issue.state:
+            state = issue.state
+        elif isinstance(issue, models.WebhookIssuesOpenedPropIssue):
+            state = "open"
+        elif isinstance(issue, models.WebhookIssuesClosedPropIssue):
+            state = "closed"
+        else:
+            state = issue.state
+
+        return cls(
+            number=issue.number,
+            title=issue.title,
+            state=state,
+            state_reason=issue.state_reason if issue.state_reason else None,
+            draft=bool(issue.draft),
+            user=issue.user.login if issue.user else "ghost",
+            user_avatar=(
+                issue.user.avatar_url
+                if issue.user and issue.user.avatar_url
+                else "https://github.com/ghost.png"
+            ),
+            author_association=issue.author_association,
+            created_at=issue.created_at,
+            comments=issue.comments,
+            body_html=None,
+            body=issue.body if issue.body else None,
+            reactions=(
+                get_comment_reactions(issue.reactions) if issue.reactions else {}
+            ),
+        )
+
 
 @dataclass(frozen=True, kw_only=True)
 class PullRequestInfo:
@@ -136,7 +195,15 @@ class PullRequestInfo:
     reactions: dict[str, int]
 
     @classmethod
-    def from_pr(cls, issue: models.Issue, pr: models.PullRequest) -> Self:
+    def from_pr(
+        cls,
+        issue: (
+            models.Issue
+            | models.WebhookIssueCommentCreatedPropIssue
+            | models.WebhookIssueCommentEditedPropIssue
+        ),
+        pr: models.PullRequest,
+    ) -> Self:
         return cls(
             number=pr.number,
             title=pr.title,
@@ -156,11 +223,37 @@ class PullRequestInfo:
             head_ref=pr.head.ref,
             merged_at=pr.merged_at,
             created_at=pr.created_at,
-            body_html=issue.body_html if issue.body_html else None,
+            body_html=b if (b := getattr(issue, "body_html", None)) else None,
             body=issue.body if issue.body else None,
             reactions=(
                 get_comment_reactions(issue.reactions) if issue.reactions else {}
             ),
+        )
+
+    @classmethod
+    def from_webhook(cls, pr: models.PullRequestWebhook) -> Self:
+        return cls(
+            number=pr.number,
+            title=pr.title,
+            state=pr.state,
+            merged=pr.merged,
+            draft=bool(pr.draft),
+            user=pr.user.login,
+            user_avatar=pr.user.avatar_url,
+            author_association=pr.author_association,
+            merged_by=pr.merged_by and pr.merged_by.login,
+            commits=pr.commits,
+            base_owner=pr.base.repo.owner.login,
+            base_label=pr.base.label,
+            base_ref=pr.base.ref,
+            head_owner=pr.head.repo and pr.head.repo.owner.login,
+            head_label=pr.head.label or pr.head.ref,
+            head_ref=pr.head.ref,
+            merged_at=pr.merged_at,
+            created_at=pr.created_at,
+            body_html=None,
+            body=pr.body,
+            reactions={},
         )
 
 
@@ -231,6 +324,30 @@ class TimelineEventCommented:
             reactions=(
                 get_comment_reactions(event.reactions) if event.reactions else {}
             ),
+        )
+
+    @classmethod
+    def from_webhook(
+        cls,
+        event: (
+            models.WebhookIssueCommentCreatedPropComment
+            | models.WebhookIssueCommentEditedPropComment
+        ),
+    ) -> Self:
+        return cls(
+            event="commented",
+            id=event.id,
+            actor=event.user.login if event.user else "ghost",
+            actor_avatar=(
+                event.user.avatar_url
+                if event.user and event.user.avatar_url
+                else "https://github.com/ghost.png"
+            ),
+            created_at=event.created_at,
+            body_html=None,
+            body=event.body,
+            author_association=event.author_association,
+            reactions=get_comment_reactions(event.reactions),
         )
 
 
@@ -762,4 +879,108 @@ class DiffContext:
             repo=RepoInfo.from_repo(repo),
             pr=PullRequestInfo.from_pr(issue, pr),
             diff=diff,
+        )
+
+
+@dataclass(frozen=True, kw_only=True)
+class IssueOpenedContext:
+    repo: RepoInfo
+    issue: IssueInfo | PullRequestInfo
+    labels: list[tuple[str, tuple[int, int, int, int, int, int]]]
+
+    @property
+    def is_pull_request(self) -> bool:
+        return isinstance(self.issue, PullRequestInfo)
+
+    @classmethod
+    async def from_webhook(
+        cls,
+        bot: GitHubBot | OAuthBot,
+        repo: models.RepositoryWebhooks,
+        issue: models.WebhookIssuesOpenedPropIssue | models.PullRequestWebhook,
+    ) -> Self:
+        if isinstance(issue, models.PullRequestWebhook):
+            issue_info = PullRequestInfo.from_webhook(issue)
+        else:
+            issue_info = IssueInfo.from_webhook(issue)
+
+        labels: list[tuple[str, tuple[int, int, int, int, int, int]]] = []
+        if issue.labels:
+            for label in issue.labels:
+                labels.append((label.name, get_issue_label_color(label.color)))
+
+        return cls(repo=RepoInfo.from_webhook(repo), issue=issue_info, labels=labels)
+
+
+@dataclass(frozen=True, kw_only=True)
+class IssueCommentedContext:
+    repo: RepoInfo
+    issue: IssueInfo | PullRequestInfo
+    comment: TimelineEventCommented
+
+    @property
+    def is_pull_request(self) -> bool:
+        return isinstance(self.issue, PullRequestInfo)
+
+    @classmethod
+    async def from_webhook(
+        cls,
+        bot: GitHubBot | OAuthBot,
+        repo: models.RepositoryWebhooks,
+        issue: (
+            models.WebhookIssueCommentCreatedPropIssue
+            | models.WebhookIssueCommentEditedPropIssue
+        ),
+        comment: (
+            models.WebhookIssueCommentCreatedPropComment
+            | models.WebhookIssueCommentEditedPropComment
+        ),
+    ) -> Self:
+        if pull_request := await get_pull_request_from_issue(bot, issue):
+            issue_info = PullRequestInfo.from_pr(issue, pull_request)
+        else:
+            issue_info = IssueInfo.from_webhook(issue)
+
+        return cls(
+            repo=RepoInfo.from_webhook(repo),
+            issue=issue_info,
+            comment=TimelineEventCommented.from_webhook(comment),
+        )
+
+
+@dataclass(frozen=True, kw_only=True)
+class IssueClosedContext:
+    repo: RepoInfo
+    issue: IssueInfo | PullRequestInfo
+    labels: list[tuple[str, tuple[int, int, int, int, int, int]]]
+    merge_commit_sha: str | None
+
+    @property
+    def is_pull_request(self) -> bool:
+        return isinstance(self.issue, PullRequestInfo)
+
+    @classmethod
+    async def from_webhook(
+        cls,
+        bot: GitHubBot | OAuthBot,
+        repo: models.RepositoryWebhooks,
+        issue: models.WebhookIssuesClosedPropIssue | models.PullRequestWebhook,
+    ) -> Self:
+        if isinstance(issue, models.PullRequestWebhook):
+            issue_info = PullRequestInfo.from_webhook(issue)
+            merge_commit_sha = issue.merge_commit_sha
+        else:
+            issue_info = IssueInfo.from_webhook(issue)
+            merge_commit_sha = None
+
+        labels: list[tuple[str, tuple[int, int, int, int, int, int]]] = []
+        if issue.labels:
+            for label in issue.labels:
+                labels.append((label.name, get_issue_label_color(label.color)))
+
+        return cls(
+            repo=RepoInfo.from_webhook(repo),
+            issue=issue_info,
+            labels=labels,
+            merge_commit_sha=merge_commit_sha,
         )
