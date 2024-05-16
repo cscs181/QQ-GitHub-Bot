@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 17:43:03
+ * @LastEditTime   : 2024-05-16 16:39:04
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -54,7 +54,7 @@ is_pull_request: bool
 timeline_events: list[TimelineEvent]
 highlight_comment: int | None
 #}
-{% macro issue_timeline(repo, issue, is_pull_request, timeline_events, highlight_comment=false) %}
+{% macro issue_timeline(repo, issue, is_pull_request, timeline_events, highlight_comment=none) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
   {# merged: current pr state #}
   {# reviews: previous review events #}

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-10-15 09:01:57
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-05 14:24:25
+@LastEditTime   : 2024-05-16 16:42:26
 @Description    : Getting status of multi pods
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,6 +29,7 @@ IDENTIFIER = os.getenv("HOSTNAME", str(uuid4()).split("-")[-1])
 driver = get_driver()
 pubsub = redis_client.pubsub()
 _task: asyncio.Task | None = None
+_response_tasks: set[asyncio.Task] = set()
 _responses: dict[UUID, dict[str, str]] = {}
 
 
@@ -53,7 +54,9 @@ async def _listen_message():
         try:
             msg = await pubsub.get_message(ignore_subscribe_messages=True)
             if msg and msg["data"] == REQUEST:
-                asyncio.create_task(_send_status())
+                task = asyncio.create_task(_send_status())
+                _response_tasks.add(task)
+                task.add_done_callback(_response_tasks.discard)
             elif msg and msg["data"]:
                 data = json.loads(msg["data"])
                 for resp in _responses.values():

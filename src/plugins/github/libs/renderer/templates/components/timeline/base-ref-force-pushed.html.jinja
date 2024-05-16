@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-23 14:11:18
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 16:02:03
+ * @LastEditTime   : 2024-05-16 16:38:37
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -16,7 +16,7 @@ create_at: datetime
 base_ref: str
 commit_id: str | None
 #}
-{% macro base_ref_force_pushed(actor, actor_avatar, create_at, base_ref, commit_id=false) %}
+{% macro base_ref_force_pushed(actor, actor_avatar, create_at, base_ref, commit_id=none) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_repo_push() }}
