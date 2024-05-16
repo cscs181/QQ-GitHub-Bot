@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:30:16
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-17 14:00:14
+@LastEditTime   : 2024-05-16 18:03:01
 @Description    : OAuth lib
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,7 +39,7 @@ async def create_auth_user(info: UserInfo, access_token: str) -> User:
     return await User.create_or_update_by_info(info, access_token=access_token)
 
 
-async def get_token_by_code(code: str) -> str:
+async def get_token_by_code(code: str) -> str | None:
     """Get oauth token by oauth code"""
     github = get_github()
     data = {
@@ -55,6 +55,4 @@ async def get_token_by_code(code: str) -> str:
         headers=headers,
     )  # type: ignore
     data = response.json()
-    if "access_token" not in data:
-        raise RuntimeError("Get oauth token failed", data)
-    return data["access_token"]
+    return data.get("access_token")
