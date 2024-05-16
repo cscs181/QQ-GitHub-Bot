@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:16:46
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-05 14:30:43
+@LastEditTime   : 2024-05-16 18:19:54
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,6 +39,8 @@ async def get_issue(
     except ActionFailed as e:
         if e.response.status_code == 404:
             await matcher.finish(f"未找到 {owner}/{repo}#{number} 对应的 Issue 或 PR")
+        elif e.response.status_code == 410:
+            await matcher.finish(f"{owner}/{repo}#{number} 对应的 Issue 或 PR 已被删除")
         elif e.response.status_code == 401:
             await matcher.finish("你的 GitHub 帐号授权已过期，请使用 /auth 进行刷新")
         logger.opt(exception=e).error(f"Failed while getting issue: {e}")
