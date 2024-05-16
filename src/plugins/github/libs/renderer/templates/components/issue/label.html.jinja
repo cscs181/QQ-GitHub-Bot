@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-25 09:35:12
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 15:29:42
+ * @LastEditTime   : 2024-05-16 16:06:06
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,14 +12,17 @@ name: str
 color: tuple[int, int, int, int, int, int]
 #}
 {% macro issue_label(name, color) %}
-<a class="IssueLabel hx_IssueLabel d-inline-block v-align-middle" style="
+<a
+  class="IssueLabel hx_IssueLabel d-inline-block v-align-middle"
+  style="
     --label-r: {{ color[0] }};
     --label-g: {{ color[1] }};
     --label-b: {{ color[2] }};
     --label-h: {{ color[3] }};
     --label-l: {{ color[4] }};
     --label-s: {{ color[5] }};
-  ">
+  "
+>
   {{ name|markdown_emoji }}
 </a>
 {% endmacro %}

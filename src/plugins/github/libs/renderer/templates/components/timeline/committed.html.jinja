@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-20 08:08:36
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 13:03:44
+ * @LastEditTime   : 2024-05-16 16:02:41
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -65,7 +65,10 @@ verified: bool
       </div>
       {% if commit_msg|length > 1 and commit_msg[1].strip("\n") %}
       <div class="mt-2">
-        <pre class="color-fg-muted" style="white-space: pre-wrap;">{{ commit_msg[1].strip("\n") }}</pre>
+        <pre
+          class="color-fg-muted"
+          style="white-space: pre-wrap;"
+        >{{ commit_msg[1].strip("\n") }}</pre>
       </div>
       {% endif %}
     </div>

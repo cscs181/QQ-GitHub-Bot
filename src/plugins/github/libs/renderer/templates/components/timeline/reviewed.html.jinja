@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 15:53:30
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 16:33:03
+ * @LastEditTime   : 2024-05-16 16:04:38
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -24,8 +24,16 @@ author_association: str
 {% macro reviewed(actor, actor_avatar, created_at, state, body_html, body, author_association) %}
 <div class="TimelineItem">
   <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">
-    <a href="#" class="d-inline-block">
-      <img class="avatar circle" src="{{ actor_avatar }}" height="40" width="40" />
+    <a
+      href="#"
+      class="d-inline-block"
+    >
+      <img
+        class="avatar circle"
+        src="{{ actor_avatar }}"
+        height="40"
+        width="40"
+      />
     </a>
   </div>
   {% if state == "changes_requested" %}

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-22 03:25:56
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 14:48:46
+ * @LastEditTime   : 2024-05-16 16:03:05
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -31,9 +31,17 @@ actor, actor_avatar, created_at, is_pull_request, repo_full_name, source, source
   <div class="TimelineItem-body">
     <div>
       <a class="d-inline-block">
-        <img class="avatar avatar-user" height="20" width="20" src="{{ actor_avatar }}" />
+        <img
+          class="avatar avatar-user"
+          height="20"
+          width="20"
+          src="{{ actor_avatar }}"
+        />
       </a>
-      <a href="#" class="Link--primary text-bold">{{ actor|escape }}</a>
+      <a
+        href="#"
+        class="Link--primary text-bold"
+      >{{ actor|escape }}</a>
       mentioned this
       {% if is_pull_request %}
       pull request
@@ -45,7 +53,10 @@ actor, actor_avatar, created_at, is_pull_request, repo_full_name, source, source
     {% if source %}
     <div class="mt-2 d-flex flex-items-start flex-column flex-md-row">
       <div class="flex-auto wb-break-word">
-        <a href="#" class="Link--primary f4 text-bold markdown-title">
+        <a
+          href="#"
+          class="Link--primary f4 text-bold markdown-title"
+        >
           {{ source.title|markdown_title }}
           <span class="color-fg-muted text-normal">
             {% if source_repo == repo_full_name %}

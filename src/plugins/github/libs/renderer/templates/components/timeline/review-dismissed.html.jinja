@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 15:01:05
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 16:08:24
+ * @LastEditTime   : 2024-05-16 16:04:21
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -23,7 +23,12 @@ dismissed_review: TimelineEventReviewed | None
   </div>
   <div class="TimelineItem-body">
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ actor_avatar }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ actor_avatar }}"
+      />
     </a>
     <a class="author Link--primary text-bold">
       {{ actor|escape }}
@@ -31,7 +36,12 @@ dismissed_review: TimelineEventReviewed | None
     dismissed
     {% if dismissed_review %}
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ dismissed_review.actor_avatar }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ dismissed_review.actor_avatar }}"
+      />
     </a>
     <a class="author Link--primary text-bold">
       {{ dismissed_review.actor|escape }}

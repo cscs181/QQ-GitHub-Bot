@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 11:32:34
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-14 20:56:02
+ * @LastEditTime   : 2024-05-16 16:05:58
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -31,7 +31,10 @@ comments: int
     ">
     {{ issue_state(state, state_reason, draft, "flex-shrink-0 mb-2 flex-self-start flex-md-self-center") }}
     <div class="flex-auto min-width-0 mb-2">
-      <a href="#" class="author text-bold Link--secondary">{{ user|escape }}</a>
+      <a
+        href="#"
+        class="author text-bold Link--secondary"
+      >{{ user|escape }}</a>
       opened this issue {{ created_at|relative_time }}
       · {{ comments }} comments
     </div>

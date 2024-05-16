@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-10-04 07:13:54
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 00:03:38
+ * @LastEditTime   : 2024-05-16 16:07:18
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,10 +12,16 @@ hunk: Hunk
 #}
 {% macro diff_hunk_header(hunk) %}
 <tr>
-  <td class="blob-num color-fg-muted color-bg-accent" style="vertical-align: middle;">
+  <td
+    class="blob-num color-fg-muted color-bg-accent"
+    style="vertical-align: middle;"
+  >
     ...
   </td>
-  <td class="blob-num color-fg-muted color-bg-accent" style="vertical-align: middle;">
+  <td
+    class="blob-num color-fg-muted color-bg-accent"
+    style="vertical-align: middle;"
+  >
     ...
   </td>
   {# ensure render in one line #}

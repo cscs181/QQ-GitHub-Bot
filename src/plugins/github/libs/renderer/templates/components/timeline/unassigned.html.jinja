@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-27 08:06:12
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 16:41:24
+ * @LastEditTime   : 2024-05-16 16:04:45
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -23,7 +23,12 @@ assignee_avatar: str
   </div>
   <div class="TimelineItem-body">
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ actor_avatar }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ actor_avatar }}"
+      />
     </a>
     <a class="author Link--primary text-bold">{{ actor|escape }}</a>
     {% if actor == assignee %}
@@ -31,7 +36,12 @@ assignee_avatar: str
     {% else %}
     removed
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ assignee_avatar }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ assignee_avatar }}"
+      />
     </a>
     <a class="author Link--primary text-bold">
       {{ assignee|escape }}

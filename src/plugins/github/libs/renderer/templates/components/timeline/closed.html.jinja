@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-22 05:21:01
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 11:08:32
+ * @LastEditTime   : 2024-05-16 16:02:14
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -35,16 +35,27 @@ is_pull_request: bool
   {% endif %}
   <div class="TimelineItem-body">
     <a>
-      <img class="avatar avatar-user" height="20" width="20" src="{{ acctor_avatar }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ acctor_avatar }}"
+      />
     </a>
     <a class="author Link--primary text-bold">{{ actor|escape }}</a>
     closed this
     {% if not is_pull_request %}
     as
     {% if state_reason == "not_planned" %}
-    <a href="#" class="Link--secondary">not planned</a>
+    <a
+      href="#"
+      class="Link--secondary"
+    >not planned</a>
     {% else %}
-    <a href="#" class="Link--secondary">completed</a>
+    <a
+      href="#"
+      class="Link--secondary"
+    >completed</a>
     {% endif %}
     {% endif %}
     <a class="Link--secondary">{{ created_at|relative_time }}</a>

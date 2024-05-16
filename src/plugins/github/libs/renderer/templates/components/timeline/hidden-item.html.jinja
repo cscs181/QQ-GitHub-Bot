@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2023-04-26 11:45:16
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 15:24:07
+ * @LastEditTime   : 2024-05-16 16:03:33
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -15,11 +15,17 @@ action: str
 <div class="pagination-loader-container mt-4 mb-4 ml-0 text-center">
   <div class="discussion-item-header pt-0">
     <div class="Box d-inline-flex flex-column">
-      <button type="submit" class="color-fg-muted no-underline pb-0 pt-2 px-4 mt-0 mb-1 color-bg-default border-0">
+      <button
+        type="submit"
+        class="color-fg-muted no-underline pb-0 pt-2 px-4 mt-0 mb-1 color-bg-default border-0"
+      >
         {{ tagline }}
       </button>
       {% if action %}
-      <button type="submit" class="color-fg-accent no-underline pb-1 pt-0 px-4 mt-0 mb-1 color-bg-default border-0">
+      <button
+        type="submit"
+        class="color-fg-accent no-underline pb-1 pt-0 px-4 mt-0 mb-1 color-bg-default border-0"
+      >
         {{ action }}
       </button>
       {% endif %}

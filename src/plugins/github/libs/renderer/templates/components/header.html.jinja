@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-15 16:07:21
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-14 21:03:54
+ * @LastEditTime   : 2024-05-16 15:56:43
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -28,11 +28,14 @@ stargazers_count: int
 owner, name, private, fork, is_template, parent_full_name, template_full_name, forks_count, stargazers_count
 ) %}
 <div class="pt-3 pb-3 color-bg-subtle">
-  <div class="
+  <div
+    class="
       d-flex
       flex-wrap flex-justify-end
       px-3 px-md-4 px-lg-5
-    " style="gap: 1rem;">
+    "
+    style="gap: 1rem;"
+  >
     <div class="flex-auto min-width-0 width-fit mr-3">
       <div class="d-flex flex-wrap flex-items-center wb-break-word f3 text-normal">
         {% if private %}
@@ -78,16 +81,25 @@ owner, name, private, fork, is_template, parent_full_name, template_full_name, f
       </span>
       {% endif %}
     </div>
-    <ul class="flex-shrink-0 d-none d-md-inline list-style-none" style="padding: 2px 0;">
+    <ul
+      class="flex-shrink-0 d-none d-md-inline list-style-none"
+      style="padding: 2px 0;"
+    >
       <li class="float-left mr-2 f6 color-fg-default">
-        <a href="#" class="tooltipped tooltipped-s btn-sm btn">
+        <a
+          href="#"
+          class="tooltipped tooltipped-s btn-sm btn"
+        >
           {{ octicon_repo_forked(16, "mr-2") }}
           Fork
           <span class="Counter">{{ forks_count }}</span>
         </a>
       </li>
       <li class="float-left mr-2 f6 color-fg-default">
-        <a href="#" class="tooltipped tooltipped-s btn-sm btn">
+        <a
+          href="#"
+          class="tooltipped tooltipped-s btn-sm btn"
+        >
           {{ octicon_star(16, "mr-2") }}
           Star
           <span class="Counter">{{ stargazers_count }}</span>

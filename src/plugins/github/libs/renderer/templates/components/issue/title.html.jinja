@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 16:36:19
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-20 06:44:54
+ * @LastEditTime   : 2024-05-16 16:06:21
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -15,7 +15,10 @@ title: str
 <div>
   <div class="d-flex flex-column flex-md-row">
     <h1 class="text-normal mb-2 lh-condensed f1 mr-0 flex-auto wb-break-word">
-      <span class="markdown-title" {# for css #}>{{ title|markdown_title }}</span>
+      <span
+        {# for css #}
+        class="markdown-title"
+      >{{ title|markdown_title }}</span>
       <span class="f1-light color-fg-muted">#{{ number|escape }}</span>
     </h1>
   </div>

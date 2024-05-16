@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:29:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 11:35:09
+ * @LastEditTime   : 2024-05-16 16:02:29
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -29,8 +29,16 @@ is_first=false, is_review=false, highlight=false
   {# do not show avatar for review comment #}
   {% if not is_review %}
   <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">
-    <a href="#" class="d-inline-block">
-      <img class="avatar circle" src="{{ actor_avatar }}" height="40" width="40" />
+    <a
+      href="#"
+      class="d-inline-block"
+    >
+      <img
+        class="avatar circle"
+        src="{{ actor_avatar }}"
+        height="40"
+        width="40"
+      />
     </a>
   </div>
   {% endif %}
