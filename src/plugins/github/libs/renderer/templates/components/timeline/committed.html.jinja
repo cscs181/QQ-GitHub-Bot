@@ -2,15 +2,20 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-20 08:08:36
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-22 05:38:35
+ * @LastEditTime   : 2024-05-16 16:02:41
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/commit.html.jinja" import octicon_commit %}
 
-{% macro committed(event, ns) %}
-{% set commit_msg = event.message.split("\n", 1) %}
+{#
+message: str
+sha: str
+verified: bool
+#}
+{% macro committed(message, sha, verified) %}
+{% set commit_msg = message.split("\n", 1) %}
 <div class="TimelineItem TimelineItem--condensed py-3">
   <div class="TimelineItem-badge">
     {{ octicon_commit() }}
@@ -20,15 +25,13 @@
       <div class="d-flex flex-md-row flex-column">
         <div class="d-flex flex-auto">
           {# {% set coauthor = event.author.name != event.committer.name %}
-          <div
-            class="
+          <div class="
               AvatarStack
               flex-self-start
               {% if coauthor %}
               AvatarStack--two
               {% endif %}
-            "
-          >
+            ">
             <div class="AvatarStack-body">
               <a class="avatar avatar-user">
                 <img height="20" width="20" src="{{ event.author.avatar }}">
@@ -48,21 +51,24 @@
               </a>
             </code>
           </div>
-          {% if event.verification.verified %}
+          {% if verified %}
           <div class="text-right pr-1 d-md-inline-block d-none">
             <span class="Label Label--success ml-1">Verified</span>
           </div>
           {% endif %}
           <div class="text-right ml-1">
             <code>
-              <a class="Link--secondary">{{ event.sha[:7] }}</a>
+              <a class="Link--secondary">{{ sha[:7] }}</a>
             </code>
           </div>
         </div>
       </div>
       {% if commit_msg|length > 1 and commit_msg[1].strip("\n") %}
       <div class="mt-2">
-        <pre class="color-fg-muted" style="white-space: pre-wrap;">{{ commit_msg[1].strip("\n") }}</pre>
+        <pre
+          class="color-fg-muted"
+          style="white-space: pre-wrap;"
+        >{{ commit_msg[1].strip("\n") }}</pre>
       </div>
       {% endif %}
     </div>

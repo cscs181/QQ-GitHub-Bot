@@ -2,13 +2,16 @@
  * @Author         : yanyongyu
  * @Date           : 2022-10-04 03:51:10
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-07 06:20:24
+ * @LastEditTime   : 2024-05-15 23:54:18
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "components/diff/hunk.html.jinja" import diff_hunk %}
 
+{#
+file: PatchedFile
+#}
 {% macro diff_content(file) %}
 <div class="position-relative">
   <div class="data highlight overflow-x-auto">

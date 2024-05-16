@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2023-04-26 18:22:24
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-04-27 19:51:58
+ * @LastEditTime   : 2024-05-16 15:23:49
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -21,35 +21,58 @@
 
 {% extends "main.html.jinja" %}
 {% block main %}
-{{ header(repo) }}
+{{ header(
+ctx.repo.owner, ctx.repo.name, ctx.repo.private, ctx.repo.fork, ctx.repo.is_template,
+ctx.repo.parent_full_name, ctx.repo.template_full_name, ctx.repo.forks_count, ctx.repo.stargazers_count
+) }}
 <div class="repository-content">
   <div class="container-xl px-3 px-md-4 px-lg-5 mt-4">
     <div>
-      {% if issue.pull_request %}
-      {{ pr_header(issue) }}
+      {% if ctx.is_pull_request %}
+      {{ pr_header(
+      ctx.issue.number, ctx.issue.title, ctx.issue.state, ctx.issue.merged, ctx.issue.draft,
+      ctx.issue.user, ctx.issue.merged_by, ctx.issue.commits,
+      ctx.issue.base_owner, ctx.issue.base_label, ctx.issue.base_ref,
+      ctx.issue.head_owner, ctx.issue.head_label, ctx.issue.head_ref,
+      ctx.issue.merged_at, ctx.issue.created_at
+      ) }}
       {% else %}
-      {{ issue_header(issue) }}
+      {{ issue_header(
+      ctx.issue.number, ctx.issue.title,
+      ctx.issue.state, ctx.issue.state_reason, ctx.issue.draft,
+      ctx.issue.user, ctx.issue.created_at, ctx.issue.comments
+      ) }}
       {% endif %}
       <div id="discussion_bucket">
-        {% set ns = namespace(issue=issue) %}
         <div>
           <div class="ml-0 pl-0 ml-md-6 pl-md-3">
-            {{ commented(issue, ns, is_first=true) }}
+            {{ commented(
+            ctx.issue.user, ctx.issue.user_avatar, ctx.issue.created_at,
+            ctx.issue.body_html, ctx.issue.body, ctx.issue.author_association,
+            true, ctx.issue.reactions, is_first=true
+            ) }}
             <div>
-              {# {% if issue.labels %}
-              {% for label in issue.labels %}
-              {% set event = namespace(actor=issue.user, label=label, created_at=issue.created_at) %}
-              {{ labeled(event) }}
+              {% if ctx.labels %}
+              {% for label_name, label_color in ctx.labels %}
+              {{ labeled(
+              ctx.issue.user, ctx.issue.user_avatar, ctx.issue.created_at,
+              label_name, label_color
+              ) }}
               {% endfor %}
-              {% endif %} #}
+              {% endif %}
               {{ hidden_item() }}
-              {{ commented(comment, ns) }}
+              {{ commented(
+              ctx.comment.actor, ctx.comment.actor_avatar, ctx.comment.created_at,
+              ctx.comment.body_html, ctx.comment.body,
+              ctx.comment.author_association, (ctx.comment.actor == ctx.issue.user),
+              ctx.comment.reactions, highlight=true
+              ) }}
             </div>
           </div>
-          {% if issue.pull_request %}
-          {{ pr_action(issue) }}
+          {% if ctx.is_pull_request %}
+          {{ pr_action() }}
           {% else %}
-          {{ issue_action(issue) }}
+          {{ issue_action() }}
           {% endif %}
         </div>
       </div>

@@ -2,26 +2,36 @@
  * @Author         : yanyongyu
  * @Date           : 2022-10-04 07:13:54
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-04 08:32:43
+ * @LastEditTime   : 2024-05-16 16:07:18
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
+{#
+hunk: Hunk
+#}
 {% macro diff_hunk_header(hunk) %}
 <tr>
-  <td class="blob-num color-fg-muted color-bg-accent" style="vertical-align: middle;">
+  <td
+    class="blob-num color-fg-muted color-bg-accent"
+    style="vertical-align: middle;"
+  >
     ...
   </td>
-  <td class="blob-num color-fg-muted color-bg-accent" style="vertical-align: middle;">
+  <td
+    class="blob-num color-fg-muted color-bg-accent"
+    style="vertical-align: middle;"
+  >
     ...
   </td>
+  {# ensure render in one line #}
   <td class="blob-code blob-code-inner blob-code-hunk">{{
     "@@ -%d,%d +%d,%d @@%s"|format(
-      hunk.source_start,
-      hunk.source_length,
-      hunk.target_start,
-      hunk.target_length,
-      " " + hunk.section_header if hunk.section_header else "")
-  }}</td>
+    hunk.source_start,
+    hunk.source_length,
+    hunk.target_start,
+    hunk.target_length,
+    " " + hunk.section_header if hunk.section_header else "")
+    }}</td>
 </tr>
 {% endmacro %}

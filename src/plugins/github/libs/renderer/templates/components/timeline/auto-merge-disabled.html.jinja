@@ -2,27 +2,37 @@
  * @Author         : yanyongyu
  * @Date           : 2023-04-27 00:44:11
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-04-27 01:04:44
+ * @LastEditTime   : 2024-05-16 16:01:53
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/pr.html.jinja" import octicon_pr %}
 
-{% macro auto_merge_disabled(event, ns) %}
+{#
+actor: str
+actor_avatar: str
+create_at: datetime
+#}
+{% macro auto_merge_disabled(actor, actor_avatar, create_at) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_pr() }}
   </div>
   <div class="TimelineItem-body">
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ event.actor.avatar_url }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ actor_avatar }}"
+      />
     </a>
     <a class="author Link--primary text-bold">
-      {{ event.actor.login|escape }}
+      {{ actor|escape }}
     </a>
     disabled auto-merge
-    <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
+    <a class="Link--secondary">{{ created_at|relative_time }}</a>
   </div>
 </div>
 {% endmacro %}

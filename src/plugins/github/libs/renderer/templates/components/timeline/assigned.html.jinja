@@ -2,35 +2,52 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-23 13:23:50
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-06 03:56:04
+ * @LastEditTime   : 2024-05-16 16:01:47
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/person.html.jinja" import octicon_person %}
 
-{% macro assigned(event, ns) %}
+{#
+actor: str
+actor_avatar: str
+create_at: datetime
+assignee: str
+assignee_avatar: str
+#}
+{% macro assigned(actor, actor_avatar, create_at, assignee, assignee_avatar) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_person() }}
   </div>
   <div class="TimelineItem-body">
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ event.actor.avatar_url }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ actor_avatar }}"
+      />
     </a>
-    <a class="author Link--primary text-bold">{{ event.actor.login|escape }}</a>
-    {% if event.actor.login == event.assignee.login %}
+    <a class="author Link--primary text-bold">{{ actor|escape }}</a>
+    {% if actor == assignee %}
     self-assigned this
     {% else %}
     assigned
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ event.assignee.avatar_url }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ assignee_avatar }}"
+      />
     </a>
     <a class="author Link--primary text-bold">
-      {{ event.assignee.login|escape }}
+      {{ assignee|escape }}
     </a>
     {% endif %}
-    <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
+    <a class="Link--secondary">{{ created_at|relative_time }}</a>
   </div>
 </div>
 {% endmacro %}

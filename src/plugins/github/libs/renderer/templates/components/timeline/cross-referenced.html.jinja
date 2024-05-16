@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-22 03:25:56
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-17 12:20:25
+ * @LastEditTime   : 2024-05-16 16:03:05
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -11,8 +11,19 @@
 {% from "components/issue/state.html.jinja" import issue_state %}
 {% from "components/pr/state.html.jinja" import pr_state %}
 
-{% macro cross_referenced(event, ns) %}
-{% set repo = get_issue_repo(ns.issue) %}
+{#
+actor: str
+actor_avatar: str
+created_at: datetime
+is_pull_request: bool
+repo_full_name: str
+source: IssueInfo | PullRequestInfo | None
+source_is_pull_request: bool
+source_repo: str | None
+#}
+{% macro cross_referenced(
+actor, actor_avatar, created_at, is_pull_request, repo_full_name, source, source_is_pull_request, source_repo
+) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_cross_reference() }}
@@ -20,36 +31,49 @@
   <div class="TimelineItem-body">
     <div>
       <a class="d-inline-block">
-        <img class="avatar avatar-user" height="20" width="20" src="{{ event.actor.avatar_url }}" />
+        <img
+          class="avatar avatar-user"
+          height="20"
+          width="20"
+          src="{{ actor_avatar }}"
+        />
       </a>
-      <a href="#" class="Link--primary text-bold">{{ event.actor.login|escape }}</a>
+      <a
+        href="#"
+        class="Link--primary text-bold"
+      >{{ actor|escape }}</a>
       mentioned this
-      {% if ns.issue.pull_request %}
+      {% if is_pull_request %}
       pull request
       {% else %}
       issue
       {% endif %}
-      {{ event.created_at|relative_time }}
+      {{ created_at|relative_time }}
     </div>
+    {% if source %}
     <div class="mt-2 d-flex flex-items-start flex-column flex-md-row">
       <div class="flex-auto wb-break-word">
-        <a href="#" class="Link--primary f4 text-bold markdown-title">
-          {{ event.source.issue.title|markdown_title }}
+        <a
+          href="#"
+          class="Link--primary f4 text-bold markdown-title"
+        >
+          {{ source.title|markdown_title }}
           <span class="color-fg-muted text-normal">
-            {% if event.source.issue.repository.full_name == repo.full_name %}
-            {{ '#' ~ event.source.issue.number }}
+            {% if source_repo == repo_full_name %}
+            {{ '#' ~ source.number }}
             {% else %}
-            {{ event.source.issue.repository.full_name|escape ~ '#' ~ event.source.issue.number }}
+            {{ source_repo|escape ~ '#' ~ source.number }}
             {% endif %}
           </span>
         </a>
       </div>
-      {% if event.source.issue.pull_request %}
-      {{ pr_state(get_pull_request(event.source.issue), "flex-shrink-0 my-1 my-md-0 ml-md-3")}}
+      {% if source_is_pull_request %}
+      {{ pr_state(source.state, source.merged, source.draft, "flex-shrink-0 my-1 my-md-0 ml-md-3")}}
       {% else %}
-      {{ issue_state(event.source.issue, "flex-shrink-0 my-1 my-md-0 ml-md-3") }}
+      {{ issue_state(source.state, source.state_reason, source.draft, "flex-shrink-0 my-1 my-md-0 ml-md-3") }}
       {% endif %}
     </div>
+    {% endif %}
   </div>
 </div>
 {% endmacro %}

@@ -2,22 +2,25 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-25 09:35:12
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-29 02:20:21
+ * @LastEditTime   : 2024-05-16 16:06:06
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
+{#
+name: str
+color: tuple[int, int, int, int, int, int]
+#}
 {% macro issue_label(name, color) %}
-{% set color_rgbhls = get_issue_label_color(color) %}
 <a
   class="IssueLabel hx_IssueLabel d-inline-block v-align-middle"
   style="
-    --label-r: {{ color_rgbhls[0] }};
-    --label-g: {{ color_rgbhls[1] }};
-    --label-b: {{ color_rgbhls[2] }};
-    --label-h: {{ color_rgbhls[3] }};
-    --label-l: {{ color_rgbhls[4] }};
-    --label-s: {{ color_rgbhls[5] }};
+    --label-r: {{ color[0] }};
+    --label-g: {{ color[1] }};
+    --label-b: {{ color[2] }};
+    --label-h: {{ color[3] }};
+    --label-l: {{ color[4] }};
+    --label-s: {{ color[5] }};
   "
 >
   {{ name|markdown_emoji }}

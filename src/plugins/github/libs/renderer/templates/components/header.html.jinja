@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-15 16:07:21
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-21 17:06:32
+ * @LastEditTime   : 2024-05-16 15:56:43
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -13,7 +13,20 @@
 {% from "icons/repo-forked.html.jinja" import octicon_repo_forked %}
 {% from "icons/repo-template.html.jinja" import octicon_repo_template %}
 
-{% macro header(repo) %}
+{#
+owner: str
+name: str
+private: bool
+fork: bool
+is_template: bool
+parent_full_name: str | None
+template_full_name: str | None
+forks_count: int
+stargazers_count: int
+#}
+{% macro header(
+owner, name, private, fork, is_template, parent_full_name, template_full_name, forks_count, stargazers_count
+) %}
 <div class="pt-3 pb-3 color-bg-subtle">
   <div
     class="
@@ -25,62 +38,71 @@
   >
     <div class="flex-auto min-width-0 width-fit mr-3">
       <div class="d-flex flex-wrap flex-items-center wb-break-word f3 text-normal">
-        {% if repo.private %}
+        {% if private %}
         {{ octicon_lock(16, "color-fg-muted mr-2") }}
-        {% elif repo.is_template %}
+        {% elif is_template %}
         {{ octicon_repo_template(16, "color-fg-muted mr-2") }}
-        {% elif repo.fork %}
+        {% elif fork %}
         {{ octicon_repo_forked(16, "color-fg-muted mr-2") }}
         {% else %}
         {{ octicon_repo(16, "color-fg-muted mr-2") }}
         {% endif %}
         <span class="author flex-self-stretch">
           <a href="#">
-            {{ repo.owner.login|escape }}
+            {{ owner|escape }}
           </a>
         </span>
         <span class="mx-1 flex-self-stretch color-fg-muted">/</span>
         <strong class="mr-2 flex-self-stretch">
           <a href="#">
-            {{ repo.name|escape }}
+            {{ name|escape }}
           </a>
         </strong>
         <span class="Label Label--secondary v-align-middle mr-1">
-          {% if repo.private %}
+          {% if private %}
           Private
           {% else %}
           Public
           {% endif %}
-          {% if repo.is_template %}
+          {% if is_template %}
           template
           {% endif %}
         </span>
       </div>
-      {% if repo.parent %}
+      {% if parent_full_name %}
       <span class="text-small no-wrap mt-1 color-fg-muted">
         forked from
-        <a href="#">{{ repo.parent.full_name|escape }}</a>
+        <a href="#">{{ parent_full_name|escape }}</a>
       </span>
-      {% elif repo.template_repository %}
+      {% elif template_full_name %}
       <span class="text-small no-wrap mt-1 color-fg-muted">
         generated from
-        <a href="#">{{ repo.template_repository.full_name|escape }}</a>
+        <a href="#">{{ template_full_name|escape }}</a>
       </span>
       {% endif %}
     </div>
-    <ul class="flex-shrink-0 d-none d-md-inline list-style-none" style="padding: 2px 0;">
+    <ul
+      class="flex-shrink-0 d-none d-md-inline list-style-none"
+      style="padding: 2px 0;"
+    >
       <li class="float-left mr-2 f6 color-fg-default">
-        <a href="#" class="tooltipped tooltipped-s btn-sm btn">
+        <a
+          href="#"
+          class="tooltipped tooltipped-s btn-sm btn"
+        >
           {{ octicon_repo_forked(16, "mr-2") }}
           Fork
-          <span class="Counter">{{ repo.forks_count }}</span>
+          <span class="Counter">{{ forks_count }}</span>
         </a>
       </li>
       <li class="float-left mr-2 f6 color-fg-default">
-        <a href="#" class="tooltipped tooltipped-s btn-sm btn">
+        <a
+          href="#"
+          class="tooltipped tooltipped-s btn-sm btn"
+        >
           {{ octicon_star(16, "mr-2") }}
           Star
-          <span class="Counter">{{ repo.stargazers_count }}</span>
+          <span class="Counter">{{ stargazers_count }}</span>
         </a>
       </li>
     </ul>

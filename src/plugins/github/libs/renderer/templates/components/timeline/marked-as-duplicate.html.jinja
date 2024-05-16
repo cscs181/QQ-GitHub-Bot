@@ -2,27 +2,37 @@
  * @Author         : yanyongyu
  * @Date           : 2023-04-27 00:27:45
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-04-27 00:36:03
+ * @LastEditTime   : 2024-05-15 15:34:10
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/bookmark.html.jinja" import octicon_bookmark %}
 
-{% macro marked_as_duplicate(event, ns) %}
+{#
+actor: str
+actor_avatar: str
+created_at: datetime
+#}
+{% macro marked_as_duplicate(actor, actor_avatar, created_at) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_bookmark() }}
   </div>
   <div class="TimelineItem-body">
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ event.actor.avatar_url }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ actor_avatar }}"
+      />
     </a>
     <a class="author Link--primary text-bold">
-      {{ event.actor.login|escape }}
+      {{ actor|escape }}
     </a>
     marked this as a duplicate
-    <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
+    <a class="Link--secondary">{{ created_at|relative_time }}</a>
   </div>
 </div>
 {% endmacro %}

@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 11:32:34
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-09-22 03:31:39
+ * @LastEditTime   : 2024-05-16 16:05:58
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -10,22 +10,33 @@
 {% from "components/issue/title.html.jinja" import issue_title %}
 {% from "components/issue/state.html.jinja" import issue_state %}
 
-{% macro issue_header(issue) %}
+{#
+number: int
+title: str
+state: str
+state_reason: str
+draft: bool
+user: str
+created_at: datetime
+comments: int
+#}
+{% macro issue_header(number, title, state, state_reason, draft, user, created_at, comments) %}
 <div class="color-bg-default mb-3">
-  {{ issue_title(issue) }}
-  <div
-    class="
+  {{ issue_title(number, title) }}
+  <div class="
       d-flex
       flex-items-center flex-wrap
       pb-2 mt-0 mb-3
       border-bottom color-border-default color-fg-muted
-    "
-  >
-    {{ issue_state(issue, "flex-shrink-0 mb-2 flex-self-start flex-md-self-center") }}
+    ">
+    {{ issue_state(state, state_reason, draft, "flex-shrink-0 mb-2 flex-self-start flex-md-self-center") }}
     <div class="flex-auto min-width-0 mb-2">
-      <a href="#" class="author text-bold Link--secondary">{{ issue.user.login|escape }}</a>
-      opened this issue {{ issue.created_at|relative_time }}
-      · {{ issue.comments }} comments
+      <a
+        href="#"
+        class="author text-bold Link--secondary"
+      >{{ user|escape }}</a>
+      opened this issue {{ created_at|relative_time }}
+      · {{ comments }} comments
     </div>
   </div>
 </div>

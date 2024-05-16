@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-21 19:05:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-17 13:59:50
+@LastEditTime   : 2024-05-14 17:13:58
 @Description    : Config for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -18,8 +18,8 @@ from pydantic import Field, BaseModel, TypeAdapter, model_validator
 class GitHubAPP(GitHubApp):
     """GitHub App config for github plugin"""
 
-    client_id: str
-    client_secret: str
+    client_id: str  # type: ignore
+    client_secret: str  # type: ignore
 
 
 class Config(BaseModel):

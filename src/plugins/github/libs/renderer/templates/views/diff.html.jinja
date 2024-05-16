@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-30 10:05:36
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-10-04 09:11:23
+ * @LastEditTime   : 2024-05-15 23:51:45
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -16,18 +16,26 @@
 
 {% extends "main.html.jinja" %}
 {% block main %}
-{{ header(get_issue_repo(issue)) }}
+{{ header(
+ctx.repo.owner, ctx.repo.name, ctx.repo.private, ctx.repo.fork, ctx.repo.is_template,
+ctx.repo.parent_full_name, ctx.repo.template_full_name, ctx.repo.forks_count, ctx.repo.stargazers_count
+) }}
 <div class="clearfix mt-4 px-3 px-md-4 px-lg-5">
   <div class="position-relative">
     <div class="mb-3">
-      {{ pr_header(issue) }}
+      {{ pr_header(
+      ctx.pr.number, ctx.pr.title, ctx.pr.state, ctx.pr.merged, ctx.pr.draft,
+      ctx.pr.user, ctx.pr.merged_by, ctx.pr.commits,
+      ctx.pr.base_owner, ctx.pr.base_label, ctx.pr.base_ref,
+      ctx.pr.head_owner, ctx.pr.head_label, ctx.pr.head_ref,
+      ctx.pr.merged_at, ctx.pr.created_at
+      ) }}
       <div>
-        {% set diff = get_pull_request_diff(get_pull_request(issue)) %}
-        {% for file in diff %}
+        {% for file in ctx.diff %}
         {{ diff_file(file) }}
         {% endfor %}
       </div>
-      {{ pr_action(issue) }}
+      {{ pr_action() }}
     </div>
   </div>
 </div>

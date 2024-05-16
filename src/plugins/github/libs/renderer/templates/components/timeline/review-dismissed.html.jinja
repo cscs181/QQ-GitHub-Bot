@@ -2,41 +2,57 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 15:01:05
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-03-30 00:04:39
+ * @LastEditTime   : 2024-05-16 16:04:21
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/x.html.jinja" import octicon_x %}
 
-{% macro review_dismissed(event, ns) %}
+{#
+actor: str
+actor_avatar: str
+created_at: datetime
+dismissal_commit: str | None
+dismissed_review: TimelineEventReviewed | None
+#}
+{% macro review_dismissed(actor, actor_avatar, created_at, dismissal_commit, dismissed_review) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_x() }}
   </div>
   <div class="TimelineItem-body">
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ event.actor.avatar_url }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ actor_avatar }}"
+      />
     </a>
     <a class="author Link--primary text-bold">
-      {{ event.actor.login|escape }}
+      {{ actor|escape }}
     </a>
-    {% set dismissed_review = find_dismissed_review(ns.past_events, event.dismissed_review.review_id) %}
     dismissed
     {% if dismissed_review %}
     <a class="d-inline-block">
-      <img class="avatar avatar-user" height="20" width="20" src="{{ dismissed_review.user.avatar_url }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ dismissed_review.actor_avatar }}"
+      />
     </a>
     <a class="author Link--primary text-bold">
-      {{ dismissed_review.user.login|escape }}
+      {{ dismissed_review.actor|escape }}
     </a>
     's
     {% endif %}
     stale review
-    {% if event.dismissed_review.dismissal_commit %}
-    via {{ event.dismissed_review.dismissal_commit[:7] }}
+    {% if dismissal_commit %}
+    via {{ dismissal_commit[:7] }}
     {% endif %}
-    <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
+    <a class="Link--secondary">{{ created_at|relative_time }}</a>
   </div>
 </div>
 {% endmacro %}

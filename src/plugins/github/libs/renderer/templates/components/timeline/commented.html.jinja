@@ -2,30 +2,56 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:29:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-11-28 15:53:39
+ * @LastEditTime   : 2024-05-16 16:02:29
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
-{% macro commented(event, ns, is_first=false, showavatar=true, created_at=false, highlight_comment=false) %}
+{#
+actor: str
+actor_avatar: str
+created_at: datetime
+body_html: str | None
+body: str | None
+author_association: str
+is_author: bool
+reactions: dict[str, int]
+is_first: bool
+is_review: bool
+highlight: bool
+#}
+{% macro commented(
+actor, actor_avatar, created_at,
+body_html, body, author_association, is_author, reactions,
+is_first=false, is_review=false, highlight=false
+) %}
 <div class="TimelineItem{% if is_first %} pt-0{% endif %}">
-  {% if showavatar %}
+  {# do not show avatar for review comment #}
+  {% if not is_review %}
   <div class="avatar-parent-child TimelineItem-avatar d-none d-md-block">
-    <a href="#" class="d-inline-block">
-      <img class="avatar circle" src="{{ event.user.avatar_url }}" height="40" width="40" />
+    <a
+      href="#"
+      class="d-inline-block"
+    >
+      <img
+        class="avatar circle"
+        src="{{ actor_avatar }}"
+        height="40"
+        width="40"
+      />
     </a>
   </div>
   {% endif %}
   <div class="TimelineItem-body my-0">
     <div class="
         timeline-comment  {# for css #}
-        {% if not showavatar %}timeline-comment-nw{% endif %}  {# for review comment #}
+        {% if is_review %}timeline-comment-nw{% endif %}  {# for review comment #}
         position-relative
         ml-n3
         color-fg-default color-bg-default
         border
         rounded-2
-        {% if highlight_comment == event.id %}
+        {% if highlight %}
         timeline-comment-highlight  {# for css #}
         color-border-accent-emphasis
         {% else %}
@@ -42,24 +68,24 @@
           rounded-top-2
         ">
         <div class="d-none d-sm-flex">
-          {% if event.author_association != "NONE" %}
+          {% if author_association != "NONE" %}
           <span class="Label Label--primary ml-1">
-            {{ event.author_association|title|escape }}
+            {{ author_association|title|escape }}
           </span>
           {% endif %}
-          {% if event.user.login == ns.issue.user.login %}
+          {% if is_author %}
           <span class="Label Label--primary ml-1">Author</span>
           {% endif %}
         </div>
         <h3 class="flex-auto text-normal f5">
           <strong class="css-truncate">
             <a class="Link--primary css-truncate-target text-bold">
-              {{ event.user.login|escape }}
+              {{ actor|escape }}
             </a>
           </strong>
           commented
           <a class="Link--secondary">
-            {{ (created_at or event.created_at)|relative_time }}
+            {{ created_at|relative_time }}
           </a>
         </h3>
       </div>
@@ -74,10 +100,10 @@
                   f5 color-fg-default
                   markdown-body
                 ">
-                {% if event.body_html %}
-                {{ event.body_html }}
-                {% elif event.body %}
-                {{ event.body|markdown_gfm }}
+                {% if body_html %}
+                {{ body_html }}
+                {% elif body %}
+                {{ body|markdown_gfm }}
                 {% else %}
                 <p class="color-fg-muted">
                   <em>No description provided.</em>
@@ -89,11 +115,10 @@
         </table>
       </div>
       <div>
-        {% set _reactions = get_comment_reactions(event) %}
-        {% if _reactions %}
+        {% if reactions %}
         <div class="d-md-flex flex-row-reverse flex-justify-end ml-3 mb-3">
           <div class="d-flex flex-items-center flex-row flex-wrap">
-            {% for reaction, count in _reactions.items() %}
+            {% for emoji, count in reactions.items() %}
             {% if count %}
             <button class="
                 comment-reaction-button  {# for css #}
@@ -103,7 +128,7 @@
                 border color-border-default
                 btn-link
               ">
-              {{ REACTION_EMOJIS[reaction] }}
+              {{ emoji }}
               <span>{{ count }}</span>
             </button>
             {% endif %}

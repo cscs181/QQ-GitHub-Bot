@@ -2,34 +2,48 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-23 14:11:18
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2022-12-18 14:18:04
+ * @LastEditTime   : 2024-05-16 16:02:03
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
 {% from "icons/repo-push.html.jinja" import octicon_repo_push %}
 
-{% macro base_ref_force_pushed(event, ns) %}
-{% set pull_request = get_pull_request(ns.issue) %}
+{#
+actor: str
+actor_avatar: str
+create_at: datetime
+base_ref: str
+commit_id: str | None
+#}
+{% macro base_ref_force_pushed(actor, actor_avatar, create_at, base_ref, commit_id=false) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_repo_push() }}
   </div>
   <div class="TimelineItem-body">
     <a>
-      <img class="avatar avatar-user" height="20" width="20" src="{{ event.actor.avatar_url }}" />
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ actor_avatar }}"
+      />
     </a>
-    <a class="author Link--primary text-bold">{{ event.actor.login|escape }}</a>
+    <a class="author Link--primary text-bold">{{ actor|escape }}</a>
     force-pushed the
     <span class="branch-name css-truncate color-fg-muted">
       <a class="no-underline">
-        {{ pull_request.base.ref|escape }}
+        {{ base_ref|escape }}
       </a>
     </span>
-    branch to
+    branch
+    {% if commit_id %}
+    to
     <a class="Link--primary text-bold no-underline">
-      <code>{{ event.commit_id[:7] }}</code>
+      <code>{{ commit_id[:7] }}</code>
     </a>
+    {% endif %}
     <a class="Link--secondary">{{ event.created_at|relative_time }}</a>
   </div>
 </div>

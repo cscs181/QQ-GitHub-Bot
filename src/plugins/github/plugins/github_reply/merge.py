@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-04-04 18:54:22
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-11 17:35:43
+@LastEditTime   : 2024-05-16 00:36:30
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -148,7 +148,7 @@ async def handle_merge(
 
         if mergeable is None:
             await merge.finish(
-                f"GitHub 正在检查 PR {owner}/{repo}#{number} 是否可合并，请稍后再试"  # noqa: E501
+                f"GitHub 正在检查 PR {owner}/{repo}#{number} 是否可合并，请稍后再试"
             )
         elif mergeable is not True:
             await merge.finish(f"PR {owner}/{repo}#{number} 当前无法合并")

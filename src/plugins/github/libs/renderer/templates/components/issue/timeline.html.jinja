@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2023-11-28 15:50:46
+ * @LastEditTime   : 2024-05-15 17:43:03
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -26,7 +26,6 @@
 {% from "components/timeline/labeled.html.jinja" import labeled %}
 {% from "components/timeline/locked.html.jinja" import locked %}
 {% from "components/timeline/marked-as-duplicate.html.jinja" import marked_as_duplicate %}
-{% from "components/timeline/mentioned.html.jinja" import mentioned %}
 {% from "components/timeline/merged.html.jinja" import merged %}
 {% from "components/timeline/milestoned.html.jinja" import milestoned %}
 {% from "components/timeline/moved-columns-in-project.html.jinja" import moved_columns_in_project %}
@@ -48,97 +47,218 @@
 {% from "components/timeline/unpinned.html.jinja" import unpinned %}
 {% from "components/timeline/user-blocked.html.jinja" import user_blocked %}
 
-{% macro issue_timeline(issue, highlight_comment=false) %}
+{#
+repo: RepoInfo
+issue: IssueInfo | PullRequestInfo
+is_pull_request: bool
+timeline_events: list[TimelineEvent]
+highlight_comment: int | None
+#}
+{% macro issue_timeline(repo, issue, is_pull_request, timeline_events, highlight_comment=false) %}
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
-  {% set ns = namespace(issue=issue, past_events=[]) %}
-  {{ commented(issue, ns, is_first=true) }}
+  {# merged: current pr state #}
+  {# reviews: previous review events #}
+  {% set ns = namespace(merged=false, reviews={}) %}
+  {{ commented(
+  issue.user, issue.user_avatar, issue.created_at,
+  issue.body_html, issue.body, issue.author_association,
+  true, issue.reactions, is_first=true
+  ) }}
   <div>
-    {% for event in get_issue_timeline(issue) %}
-    {% set _ = ns.past_events.append(event) %}
+    {% for event in timeline_events %}
     {% if event.event == "added_to_project" %}
-    {{ added_to_project(event, ns) }}
+    {{ added_to_project(
+    event.actor, event.actor_avatar, event.created_at,
+    event.column_name, event.previous_column_name
+    ) }}
     {% elif event.event == "assigned" %}
-    {{ assigned(event, ns) }}
+    {{ assigned(
+    event.actor, event.actor_avatar, event.created_at,
+    event.assignee, event.assignee_avatar
+    ) }}
     {% elif event.event == "auto_merge_disabled" %}
-    {{ auto_merge_disabled(event, ns) }}
+    {{ auto_merge_disabled(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "auto_squash_enabled" %}
-    {{ auto_squash_enabled(event, ns) }}
+    {{ auto_squash_enabled(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "base_ref_force_pushed" %}
-    {{ base_ref_force_pushed(event, ns) }}
+    {{ base_ref_force_pushed(
+    event.actor, event.actor_avatar, event.created_at,
+    issue.base_ref, event.commit_id
+    ) }}
     {% elif event.event == "closed" %}
-    {{ closed(event, ns) }}
+    {# only show closed when not merged #}
+    {% if not ns.merged %}
+    {{ closed(
+    event.actor, event.actor_avatar, event.created_at,
+    event.state_reason, is_pull_request
+    ) }}
+    {% endif %}
     {% elif event.event == "comment_deleted" %}
-    {{ comment_deleted(event, ns) }}
+    {{ comment_deleted(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "commented" %}
-    {{ commented(event, ns, highlight_comment=highlight_comment) }}
+    {{ commented(
+    event.actor, event.actor_avatar, event.created_at,
+    event.body_html, event.body,
+    event.author_association, (event.actor == issue.user),
+    event.reactions,
+    highlight=(highlight_comment == event.id)
+    ) }}
     {% elif event.event == "committed" %}
-    {{ committed(event, ns) }}
+    {{ committed(event.message, event.sha, event.verified) }}
     {% elif event.event == "convert_to_draft" %}
-    {{ convert_to_draft(event, ns) }}
+    {{ convert_to_draft(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "converted_to_discussion" %}
-    {{ converted_to_discussion(event, ns) }}
+    {{ converted_to_discussion(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "cross-referenced" %}
-    {{ cross_referenced(event, ns) }}
+    {{ cross_referenced(
+    event.actor, event.actor_avatar, event.created_at,
+    is_pull_request, repo.full_name,
+    event.source, event.source_is_pull_request, event.source_repo
+    ) }}
     {% elif event.event == "demilestoned" %}
-    {{ demilestoned(event, ns) }}
+    {{ demilestoned(
+    event.actor, event.actor_avatar, event.created_at,
+    event.milestone
+    ) }}
     {% elif event.event == "deployed" %}
-    {{ deployed(event, ns) }}
+    {{ deployed(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "head_ref_deleted" %}
-    {{ head_ref_deleted(event, ns) }}
+    {{ head_ref_deleted(
+    event.actor, event.actor_avatar, event.created_at,
+    issue.head_ref
+    ) }}
     {% elif event.event == "head_ref_force_pushed" %}
-    {{ head_ref_force_pushed(event, ns) }}
+    {{ head_ref_force_pushed(
+    event.actor, event.actor_avatar, event.created_at,
+    event.commit_id, issue.head_ref
+    ) }}
     {% elif event.event == "labeled" %}
-    {{ labeled(event, ns) }}
+    {{ labeled(
+    event.actor, event.actor_avatar, event.created_at,
+    event.label_name, event.label_color
+    ) }}
     {% elif event.event == "locked" %}
-    {{ locked(event, ns) }}
+    {{ locked(
+    event.actor, event.actor_avatar, event.created_at,
+    event.lock_reason
+    ) }}
     {% elif event.event == "marked_as_duplicate" %}
-    {{ marked_as_duplicate(event, ns)}}
+    {{ marked_as_duplicate(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "mentioned" %}
-    {{ mentioned(event, ns) }}
+    {# mentioned event is triggered by @user. ignored #}
     {% elif event.event == "merged" %}
-    {{ merged(event, ns) }}
+    {# set current pr state to merged #}
+    {% set ns.merged = true %}
+    {{ merged(
+    event.actor, event.actor_avatar, event.created_at,
+    event.commit_id, issue.base_ref
+    ) }}
     {% elif event.event == "milestoned" %}
-    {{ milestoned(event, ns) }}
+    {{ milestoned(
+    event.actor, event.actor_avatar, event.created_at,
+    event.milestone
+    ) }}
     {% elif event.event == "moved_columns_in_project" %}
-    {{ moved_columns_in_project(event, ns) }}
+    {{ moved_columns_in_project(
+    event.actor, event.actor_avatar, event.created_at,
+    event.column_name, event.previous_column_name
+    ) }}
     {% elif event.event == "pinned" %}
-    {{ pinned(event, ns) }}
+    {{ pinned(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "ready_for_review" %}
-    {{ ready_for_review(event, ns) }}
+    {{ ready_for_review(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "referenced" %}
-    {{ referenced(event, ns) }}
+    {{ referenced(
+    event.actor, event.actor_avatar, event.created_at,
+    is_pull_request, event.commit_id
+    ) }}
     {% elif event.event == "removed_from_project" %}
-    {{ removed_from_project(event, ns) }}
+    {{ removed_from_project(
+    event.actor, event.actor_avatar, event.created_at,
+    event.column_name
+    ) }}
     {% elif event.event == "renamed"%}
-    {{ renamed(event, ns) }}
+    {{ renamed(
+    event.actor, event.actor_avatar, event.created_at,
+    event.from_name, event.to_name
+    ) }}
     {% elif event.event == "reopened" %}
-    {{ reopened(event, ns) }}
+    {{ reopened(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "review_dismissed" %}
-    {{ review_dismissed(event, ns) }}
+    {{ review_dismissed(
+    event.actor, event.actor_avatar, event.created_at,
+    event.dismissal_commit, ns.reviews.get(event.dismissed_review_id)
+    ) }}
     {% elif event.event == "review_request_removed" %}
-    {{ review_request_removed(event, ns) }}
+    {{ review_request_removed(
+    event.actor, event.actor_avatar, event.created_at,
+    event.requested_name
+    ) }}
     {% elif event.event == "review_requested" %}
-    {{ review_requested(event, ns) }}
+    {{ review_requested(
+    event.actor, event.actor_avatar, event.created_at,
+    event.requested_name
+    ) }}
     {% elif event.event == "reviewed" %}
-    {{ reviewed(event, ns) }}
+    {% set _ = ns.reviews.update({event.id: event}) %}
+    {{ reviewed(
+    event.actor, event.actor_avatar, event.created_at,
+    event.state, event.body_html, event.body, event.author_association
+    ) }}
     {% elif event.event == "subscribed" %}
     {# subscribed event ignored #}
     {% elif event.event == "transferred" %}
-    {{ transferred(event, ns) }}
+    {{ transferred(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "unassigned" %}
-    {{ unassigned(event, ns) }}
+    {{ unassigned(
+    event.actor, event.actor_avatar, event.created_at,
+    event.assignee, event.assignee_avatar
+    ) }}
     {% elif event.event == "unlabeled" %}
-    {{ unlabeled(event, ns) }}
+    {{ unlabeled(
+    event.actor, event.actor_avatar, event.created_at,
+    event.label_name, event.label_color
+    ) }}
     {% elif event.event == "unlocked" %}
-    {{ unlocked(event, ns) }}
+    {{ unlocked(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "unmarked_as_duplicate" %}
-    {{ unmarked_as_duplicate(event, ns) }}
+    {{ unmarked_as_duplicate(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "unpinned" %}
-    {{ unpinned(event, ns) }}
+    {{ unpinned(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "unsubscribed" %}
     {# unsubscribed event ignored #}
     {% elif event.event == "user-blocked" %}
-    {{ user_blocked(event, ns) }}
+    {{ user_blocked(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% else %}
     {{ event|debug_event }}
     {% endif %}
