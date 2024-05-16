@@ -1,25 +1,24 @@
 <!--
  * @Author         : yanyongyu
- * @Date           : 2022-09-23 14:11:18
+ * @Date           : 2024-05-16 17:32:49
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 17:42:54
+ * @LastEditTime   : 2024-05-16 17:34:15
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
-{% from "icons/repo-push.html.jinja" import octicon_repo_push %}
+{% from "icons/branch.html.jinja" import octicon_branch %}
 
 {#
 actor: str
 actor_avatar: str
 created_at: datetime
-base_ref: str
-commit_id: str | None
+head_ref: str
 #}
-{% macro base_ref_force_pushed(actor, actor_avatar, created_at, base_ref, commit_id=none) %}
+{% macro head_ref_restored(actor, actor_avatar, created_at, head_ref) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
-    {{ octicon_repo_push() }}
+    {{ octicon_branch() }}
   </div>
   <div class="TimelineItem-body">
     <a>
@@ -31,19 +30,13 @@ commit_id: str | None
       />
     </a>
     <a class="author Link--primary text-bold">{{ actor|escape }}</a>
-    force-pushed the
+    restore the
     <span class="branch-name css-truncate color-fg-muted">
       <a class="no-underline">
-        {{ base_ref|escape }}
+        {{ head_ref|escape }}
       </a>
     </span>
     branch
-    {% if commit_id %}
-    to
-    <a class="Link--primary text-bold no-underline">
-      <code>{{ commit_id[:7] }}</code>
-    </a>
-    {% endif %}
     <a class="Link--secondary">{{ created_at|relative_time }}</a>
   </div>
 </div>

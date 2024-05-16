@@ -1,0 +1,50 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2024-05-16 17:00:02
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2024-05-16 17:03:12
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "icons/bookmark.html.jinja" import octicon_bookmark %}
+
+{#
+actor: str
+actor_avatar: str
+created_at: datetime
+is_pull_request: bool
+#}
+{% macro connected(actor, actor_avatar, created_at, is_pull_request) %}
+<div class="TimelineItem">
+  <div class="TimelineItem-badge">
+    {{ octicon_bookmark() }}
+  </div>
+  <div class="TimelineItem-body">
+    <a class="d-inline-block">
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ actor_avatar }}"
+      />
+    </a>
+    <a class="author Link--primary text-bold">
+      {{ actor|escape }}
+    </a>
+    linked a
+    {% if is_pull_request %}
+    issue
+    {% else %}
+    pull request
+    {% endif %}
+    <a class="Link--secondary">{{ created_at|relative_time }}</a>
+    that
+    {% if is_pull_request %}
+    may be closed by this pull request
+    {% else %}
+    will close this issue
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}

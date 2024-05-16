@@ -1,0 +1,38 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2024-05-16 17:22:46
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2024-05-16 17:24:00
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% from "icons/clock.html.jinja" import octicon_clock %}
+
+{#
+actor: str
+actor_avatar: str
+created_at: datetime
+#}
+{% macro added_to_merge_queue(actor, actor_avatar, created_at) %}
+<div class="TimelineItem">
+  <div class="TimelineItem-badge">
+    {{ octicon_clock() }}
+  </div>
+  <div class="TimelineItem-body">
+    <a class="d-inline-block">
+      <img
+        class="avatar avatar-user"
+        height="20"
+        width="20"
+        src="{{ actor_avatar }}"
+      />
+    </a>
+    <a class="author Link--primary text-bold">
+      {{ actor|escape }}
+    </a>
+    added this pull request to the merge queue
+    <a class="Link--secondary">{{ created_at|relative_time }}</a>
+  </div>
+</div>
+{% endmacro %}

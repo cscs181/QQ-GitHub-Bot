@@ -2,20 +2,25 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 16:39:04
+ * @LastEditTime   : 2024-05-16 17:49:48
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
 
+{% from "components/timeline/added-to-merge-queue.html.jinja" import added_to_merge_queue %}
 {% from "components/timeline/added-to-project.html.jinja" import added_to_project %}
 {% from "components/timeline/assigned.html.jinja" import assigned %}
 {% from "components/timeline/auto-merge-disabled.html.jinja" import auto_merge_disabled %}
+{% from "components/timeline/auto-merge-enabled.html.jinja" import auto_merge_enabled %}
 {% from "components/timeline/auto-squash-enabled.html.jinja" import auto_squash_enabled %}
+{% from "components/timeline/automatic-base-change-succeeded.html.jinja" import automatic_base_change_succeeded %}
+{% from "components/timeline/base-ref-changed.html.jinja" import base_ref_changed %}
 {% from "components/timeline/base-ref-force-pushed.html.jinja" import base_ref_force_pushed %}
 {% from "components/timeline/closed.html.jinja" import closed %}
 {% from "components/timeline/comment-deleted.html.jinja" import comment_deleted %}
 {% from "components/timeline/commented.html.jinja" import commented %}
 {% from "components/timeline/committed.html.jinja" import committed %}
+{% from "components/timeline/connected.html.jinja" import connected %}
 {% from "components/timeline/convert-to-draft.html.jinja" import convert_to_draft %}
 {% from "components/timeline/converted-to-discussion.html.jinja" import converted_to_discussion %}
 {% from "components/timeline/cross-referenced.html.jinja" import cross_referenced %}
@@ -23,6 +28,7 @@
 {% from "components/timeline/deployed.html.jinja" import deployed %}
 {% from "components/timeline/head-ref-deleted.html.jinja" import head_ref_deleted %}
 {% from "components/timeline/head-ref-force-pushed.html.jinja" import head_ref_force_pushed %}
+{% from "components/timeline/head-ref-restored.html.jinja" import head_ref_restored %}
 {% from "components/timeline/labeled.html.jinja" import labeled %}
 {% from "components/timeline/locked.html.jinja" import locked %}
 {% from "components/timeline/marked-as-duplicate.html.jinja" import marked_as_duplicate %}
@@ -66,7 +72,11 @@ highlight_comment: int | None
   ) }}
   <div>
     {% for event in timeline_events %}
-    {% if event.event == "added_to_project" %}
+    {% if event.event == "added_to_merge_queue" %}
+    {{ added_to_merge_queue(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
+    {% elif event.event == "added_to_project" %}
     {{ added_to_project(
     event.actor, event.actor_avatar, event.created_at,
     event.column_name, event.previous_column_name
@@ -80,8 +90,20 @@ highlight_comment: int | None
     {{ auto_merge_disabled(
     event.actor, event.actor_avatar, event.created_at
     ) }}
+    {% elif event.event == "auto_merge_enabled" %}
+    {{ auto_merge_enabled(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
     {% elif event.event == "auto_squash_enabled" %}
     {{ auto_squash_enabled(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
+    {% elif event.event == "automatic_base_change_succeeded" %}
+    {{ automatic_base_change_succeeded(
+    event.created_at
+    ) }}
+    {% elif event.event == "base_ref_changed" %}
+    {{ base_ref_changed(
     event.actor, event.actor_avatar, event.created_at
     ) }}
     {% elif event.event == "base_ref_force_pushed" %}
@@ -111,6 +133,11 @@ highlight_comment: int | None
     ) }}
     {% elif event.event == "committed" %}
     {{ committed(event.message, event.sha, event.verified) }}
+    {% elif event.event == "connected" %}
+    {{ connected(
+    event.actor, event.actor_avatar, event.created_at,
+    is_pull_request
+    ) }}
     {% elif event.event == "convert_to_draft" %}
     {{ convert_to_draft(
     event.actor, event.actor_avatar, event.created_at
@@ -143,6 +170,11 @@ highlight_comment: int | None
     {{ head_ref_force_pushed(
     event.actor, event.actor_avatar, event.created_at,
     event.commit_id, issue.head_ref
+    ) }}
+    {% elif event.event == "head_ref_restored" %}
+    {{ head_ref_restored(
+    event.actor, event.actor_avatar, event.created_at,
+    issue.head_ref
     ) }}
     {% elif event.event == "labeled" %}
     {{ labeled(
