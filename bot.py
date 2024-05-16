@@ -3,7 +3,7 @@
 @Author         : yanyongyu
 @Date           : 2020-09-10 17:12:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-17 14:08:03
+@LastEditTime   : 2024-05-16 16:45:56
 @Description    : Entry File of the Bot
 @GitHub         : https://github.com/yanyongyu
 """
@@ -24,7 +24,7 @@ driver.register_adapter(GitHubAdapter)
 driver.register_adapter(ONEBOT_V11_Adapter)
 
 config = driver.config
-config.sqlalchemy_database_url = URL.create(
+config.sqlalchemy_database_url = URL.create(  # type: ignore
     "postgresql+asyncpg",
     username=config.postgres_user,
     password=config.postgres_password,

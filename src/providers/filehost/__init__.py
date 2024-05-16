@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-12-05 17:10:52
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-05 14:53:23
+@LastEditTime   : 2024-05-16 16:51:14
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,6 +11,7 @@ __author__ = "yanyongyu"
 
 from hashlib import sha256
 from datetime import timedelta
+from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
 import nonebot
@@ -31,7 +32,7 @@ app: FastAPI = nonebot.get_app()
 driver = nonebot.get_driver()
 assert isinstance(driver, HTTPClientMixin)
 
-config = get_plugin_config(Config)
+plugin_config = get_plugin_config(Config)
 
 
 async def save_image(img: bytes, ex: timedelta = TTL) -> str:
@@ -39,11 +40,16 @@ async def save_image(img: bytes, ex: timedelta = TTL) -> str:
     img_hash = sha256(img).hexdigest()
     logger.debug(f"Saving image {img_hash}")
     await redis_client.set(CACHE_KEY.format(signature=img_hash), img, ex=ex)
-    return urljoin(config.filehost_url_base, f"{config.filehost_url_prefix}/{img_hash}")
+    return urljoin(
+        plugin_config.filehost_url_base,
+        f"{plugin_config.filehost_url_prefix}/{img_hash}",
+    )
 
 
 async def save_online_image(url: str, ex: timedelta = TTL) -> str:
     """Save online image to Redis and return url."""
+    if TYPE_CHECKING:
+        assert isinstance(driver, HTTPClientMixin)
     resp = await driver.request(
         Request(
             "GET",
@@ -73,7 +79,7 @@ async def check_image(img_hash: str) -> bool:
     return await redis_client.exists(CACHE_KEY.format(signature=img_hash))
 
 
-@app.get(f"{config.filehost_url_prefix}/{{img_hash}}")
+@app.get(f"{plugin_config.filehost_url_prefix}/{{img_hash}}")
 async def get_image_handler(img_hash: str) -> Response:
     """Get image from Redis."""
     img = await get_image(img_hash)
@@ -82,7 +88,7 @@ async def get_image_handler(img_hash: str) -> Response:
     return Response(content=img, media_type="image/png")
 
 
-@app.head(f"{config.filehost_url_prefix}/{{img_hash}}")
+@app.head(f"{plugin_config.filehost_url_prefix}/{{img_hash}}")
 async def check_image_handler(img_hash: str) -> Response:
     """Check if image exists in Redis."""
     if not await check_image(img_hash):
