@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2024-05-16 14:44:52
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 14:59:57
+ * @LastEditTime   : 2024-05-18 18:02:01
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -17,6 +17,7 @@
 
 {% from "components/timeline/closed.html.jinja" import closed %}
 {% from "components/timeline/commented.html.jinja" import commented %}
+{% from "components/timeline/hidden-item.html.jinja" import hidden_item %}
 {% from "components/timeline/labeled.html.jinja" import labeled %}
 {% from "components/timeline/merged.html.jinja" import merged %}
 
@@ -61,6 +62,7 @@ ctx.repo.parent_full_name, ctx.repo.template_full_name, ctx.repo.forks_count, ct
               ) }}
               {% endfor %}
               {% endif %}
+              {{ hidden_item() }}
               {# show merged if pr merged #}
               {% if ctx.is_pull_request and ctx.issue.merged %}
               {{ merged(
