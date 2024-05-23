@@ -2,22 +2,20 @@
 @Author         : yanyongyu
 @Date           : 2023-03-08 00:11:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-14 16:57:09
+@LastEditTime   : 2024-05-23 14:22:49
 @Description    : About plugin
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
-import secrets
-
 from nonebot import on_command
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
-from src.providers.filehost import save_online_image
 from src.plugins.github.helpers import NO_GITHUB_EVENT
+from src.plugins.github.libs.opengraph import get_opengraph_image
 from src.plugins.github.cache.message_tag import RepoTag, create_message_tag
 from src.providers.platform import (
     TARGET_INFO,
@@ -49,13 +47,10 @@ async def handle_about(target_info: TARGET_INFO, message_info: MESSAGE_INFO):
     )
 
     tag = RepoTag(owner=OWNER, repo=REPO, is_receive=False)
-    image_url = (
-        f"https://opengraph.githubassets.com/{secrets.token_urlsafe(16)}/{OWNER}/{REPO}"
-    )
 
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
-            result = await about.send(QQMS.image(await save_online_image(image_url)))
+            result = await about.send(QQMS.image(await get_opengraph_image(tag)))
         case (
             TargetType.QQ_OFFICIAL_USER
             | TargetType.QQGUILD_USER
@@ -63,7 +58,7 @@ async def handle_about(target_info: TARGET_INFO, message_info: MESSAGE_INFO):
             | TargetType.QQGUILD_CHANNEL
         ):
             result = await about.send(
-                QQOfficialMS.image(await save_online_image(image_url))
+                QQOfficialMS.file_image(await get_opengraph_image(tag))
             )
 
     if sent_message_info := extract_sent_message(target_info, result):

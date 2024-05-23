@@ -77,7 +77,7 @@ async def create_message_tag(message: MessageInfo, tag: Tag) -> None:
         MESSAGE_TAG_CACHE_KEY.format(
             type=message.type.value, message_id=str(message.id)
         ),
-        tag.json(),
+        tag.model_dump_json(),
         ex=MESSAGE_TAG_CACHE_EXPIRE,
     )
 
