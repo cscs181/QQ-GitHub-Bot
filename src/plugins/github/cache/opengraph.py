@@ -1,3 +1,14 @@
+"""
+@Author         : yanyongyu
+@Date           : 2024-05-23 16:57:27
+@LastEditors    : yanyongyu
+@LastEditTime   : 2024-05-23 16:57:27
+@Description    : None
+@GitHub         : https://github.com/yanyongyu
+"""
+
+__author__ = "yanyongyu"
+
 from datetime import timedelta
 
 from src.providers.redis import redis_client

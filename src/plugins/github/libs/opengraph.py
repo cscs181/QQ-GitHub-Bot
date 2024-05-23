@@ -1,3 +1,14 @@
+"""
+@Author         : yanyongyu
+@Date           : 2024-05-23 16:57:48
+@LastEditors    : yanyongyu
+@LastEditTime   : 2024-05-23 16:57:48
+@Description    : None
+@GitHub         : https://github.com/yanyongyu
+"""
+
+__author__ = "yanyongyu"
+
 import secrets
 
 import nonebot
@@ -57,6 +68,8 @@ async def get_opengraph_image(tag: Tag) -> bytes:
 
     if image := await get_opengraph(cache_type, cache_identifier):
         return image
+
+    assert isinstance(driver, HTTPClientMixin)
 
     resp = await driver.request(
         Request(
