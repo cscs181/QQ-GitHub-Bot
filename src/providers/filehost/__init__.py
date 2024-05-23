@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-12-05 17:10:52
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-16 16:51:14
+@LastEditTime   : 2024-05-23 17:46:29
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,14 +11,13 @@ __author__ = "yanyongyu"
 
 from hashlib import sha256
 from datetime import timedelta
-from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
 import nonebot
 from fastapi import FastAPI
 from fastapi.responses import Response
+from nonebot.drivers import HTTPClientMixin
 from nonebot import logger, get_plugin_config
-from nonebot.drivers import Request, HTTPClientMixin
 
 from src.providers.redis import redis_client
 
@@ -44,29 +43,6 @@ async def save_image(img: bytes, ex: timedelta = TTL) -> str:
         plugin_config.filehost_url_base,
         f"{plugin_config.filehost_url_prefix}/{img_hash}",
     )
-
-
-async def save_online_image(url: str, ex: timedelta = TTL) -> str:
-    """Save online image to Redis and return url."""
-    if TYPE_CHECKING:
-        assert isinstance(driver, HTTPClientMixin)
-    resp = await driver.request(
-        Request(
-            "GET",
-            url,
-            headers={
-                "User-Agent": (
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like"
-                    " Gecko) Chrome/120.0.0.0 Safari/537.36"
-                )
-            },
-        )
-    )
-    if (400 <= resp.status_code < 600) or not resp.content:
-        raise RuntimeError(f"Failed to download image {url}: {resp}")
-    if isinstance((content := resp.content), str):
-        content = content.encode("utf-8")
-    return await save_image(content, ex=ex)
 
 
 async def get_image(img_hash: str) -> bytes | None:
