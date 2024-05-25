@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 16:20:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-16 15:29:39
+@LastEditTime   : 2024-05-25 12:40:07
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -953,7 +953,7 @@ class IssueClosedContext:
     repo: RepoInfo
     issue: IssueInfo | PullRequestInfo
     labels: list[tuple[str, tuple[int, int, int, int, int, int]]]
-    merge_commit_sha: str | None
+    event: TimelineEventStateChange
 
     @property
     def is_pull_request(self) -> bool:
@@ -965,12 +965,15 @@ class IssueClosedContext:
         bot: GitHubBot | OAuthBot,
         repo: models.RepositoryWebhooks,
         issue: models.WebhookIssuesClosedPropIssue | models.PullRequestWebhook,
+        sender: models.SimpleUserWebhooks,
     ) -> Self:
         if isinstance(issue, models.PullRequestWebhook):
             issue_info = PullRequestInfo.from_webhook(issue)
+            state_reason = None
             merge_commit_sha = issue.merge_commit_sha
         else:
             issue_info = IssueInfo.from_webhook(issue)
+            state_reason = issue.state_reason if issue.state_reason else None
             merge_commit_sha = None
 
         labels: list[tuple[str, tuple[int, int, int, int, int, int]]] = []
@@ -982,5 +985,12 @@ class IssueClosedContext:
             repo=RepoInfo.from_webhook(repo),
             issue=issue_info,
             labels=labels,
-            merge_commit_sha=merge_commit_sha,
+            event=TimelineEventStateChange(
+                event="closed",
+                actor=sender.login,
+                actor_avatar=sender.avatar_url,
+                created_at=issue.closed_at or issue.updated_at,
+                state_reason=state_reason,
+                commit_id=merge_commit_sha,
+            ),
         )

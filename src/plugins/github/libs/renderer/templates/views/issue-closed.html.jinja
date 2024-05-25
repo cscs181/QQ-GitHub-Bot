@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2024-05-16 14:44:52
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-18 18:02:01
+ * @LastEditTime   : 2024-05-25 12:42:23
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -66,13 +66,13 @@ ctx.repo.parent_full_name, ctx.repo.template_full_name, ctx.repo.forks_count, ct
               {# show merged if pr merged #}
               {% if ctx.is_pull_request and ctx.issue.merged %}
               {{ merged(
-              ctx.issue.user, ctx.issue.user_avatar, ctx.issue.created_at,
-              ctx.merge_commit_sha, ctx.issue.base_ref
+              ctx.event.actor, ctx.event.actor_avatar, ctx.event.created_at,
+              ctx.event.commit_id, ctx.issue.base_ref
               ) }}
               {% else %}
               {{ closed(
-              ctx.issue.user, ctx.issue.user_avatar, ctx.issue.created_at,
-              ctx.issue.state_reason|default(none), ctx.is_pull_request
+              ctx.event.actor, ctx.event.actor_avatar, ctx.event.created_at,
+              ctx.event.state_reason, ctx.is_pull_request
               ) }}
               {% endif %}
             </div>
