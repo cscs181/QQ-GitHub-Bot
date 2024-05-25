@@ -69,7 +69,9 @@ async def handle_issue_closed_event(
     try:
         installation = cast(SimpleInstallation, event.payload.installation)
         async with bot.as_installation(installation.id):
-            image = await issue_closed_to_image(bot, event.payload.repository, issue)
+            image = await issue_closed_to_image(
+                bot, event.payload.repository, issue, event.payload.sender
+            )
     except (ActionTimeout, TimeoutError, Error):
         pass
     except Exception as e:

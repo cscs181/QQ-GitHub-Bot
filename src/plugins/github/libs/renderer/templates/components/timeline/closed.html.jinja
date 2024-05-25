@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-22 05:21:01
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 16:58:59
+ * @LastEditTime   : 2024-05-25 12:44:04
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -15,7 +15,7 @@
 actor: str
 actor_avatar: str
 created_at: datetime
-state_reason: str
+state_reason: str | None
 is_pull_request: bool
 #}
 {% macro closed(actor, actor_avatar, created_at, state_reason, is_pull_request) %}

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-23 17:15:48
+@LastEditTime   : 2024-05-25 12:30:54
 @Description    : GitHub image renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -164,9 +164,10 @@ async def issue_closed_to_image(
     bot: GitHubBot | OAuthBot,
     repo: models.RepositoryWebhooks,
     issue: models.WebhookIssuesClosedPropIssue | models.PullRequestWebhook,
+    sender: models.SimpleUserWebhooks,
 ) -> bytes:
     """Render webhook event issue/closed to image"""
-    context = await IssueClosedContext.from_webhook(bot, repo, issue)
+    context = await IssueClosedContext.from_webhook(bot, repo, issue, sender)
     context_hash = _context_hash(context)
     if cached_image := await get_rendered_image("issue_closed", context_hash):
         return cached_image
