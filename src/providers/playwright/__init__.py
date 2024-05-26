@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 14:22:39
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-23 16:55:13
+@LastEditTime   : 2024-05-26 17:09:44
 @Description    : Playwright provider plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -10,9 +10,9 @@
 __author__ = "yanyongyu"
 
 from collections.abc import AsyncGenerator
-from contextlib import asynccontextmanager
+from contextlib import contextmanager, asynccontextmanager
 
-from nonebot import get_driver
+from nonebot import logger, get_driver
 from playwright.async_api import Page, Browser, Playwright, async_playwright
 
 driver = get_driver()
@@ -20,6 +20,14 @@ driver = get_driver()
 _playwright: Playwright | None = None
 _browser: Browser | None = None
 """Global playwright browser instance used to control multiple pages."""
+
+
+@contextmanager
+def _suppress_and_log():
+    try:
+        yield
+    except Exception as e:
+        logger.opt(exception=e).warning("An error occurred during playwright shutdown.")
 
 
 @driver.on_startup
@@ -33,9 +41,11 @@ async def start_browser():
 @driver.on_shutdown
 async def shutdown_browser():
     if _browser:
-        await _browser.close()
+        with _suppress_and_log():
+            await _browser.close()
     if _playwright:
-        await _playwright.stop()
+        with _suppress_and_log():
+            await _playwright.stop()
 
 
 def get_browser() -> Browser:
