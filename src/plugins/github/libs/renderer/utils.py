@@ -32,7 +32,7 @@ def get_comment_reactions(
         | models.WebhookIssueCommentCreatedPropIssueMergedReactions
         | models.WebhookIssueCommentEditedPropIssueMergedReactions
         | models.WebhookIssueCommentCreatedPropCommentPropReactions
-        | models.WebhookIssueCommentEditedPropCommentPropReactions
+        | models.WebhooksIssueCommentPropReactions
     ),
 ) -> dict[str, int]:
     """Parse the reactions of the issue comment"""

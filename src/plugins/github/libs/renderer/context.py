@@ -330,8 +330,7 @@ class TimelineEventCommented:
     def from_webhook(
         cls,
         event: (
-            models.WebhookIssueCommentCreatedPropComment
-            | models.WebhookIssueCommentEditedPropComment
+            models.WebhookIssueCommentCreatedPropComment | models.WebhooksIssueComment
         ),
     ) -> Self:
         return cls(
@@ -932,8 +931,7 @@ class IssueCommentedContext:
             | models.WebhookIssueCommentEditedPropIssue
         ),
         comment: (
-            models.WebhookIssueCommentCreatedPropComment
-            | models.WebhookIssueCommentEditedPropComment
+            models.WebhookIssueCommentCreatedPropComment | models.WebhooksIssueComment
         ),
     ) -> Self:
         if pull_request := await get_pull_request_from_issue(bot, issue):

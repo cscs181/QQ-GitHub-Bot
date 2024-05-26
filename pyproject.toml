@@ -5,6 +5,7 @@ version = "2.1.3"
 description = "GitHub Bot for QQ"
 authors = ["yanyongyu <yyy@yyydl.top>"]
 license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
