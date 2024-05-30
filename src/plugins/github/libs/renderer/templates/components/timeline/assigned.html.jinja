@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-23 13:23:50
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 16:01:47
+ * @LastEditTime   : 2024-05-30 14:14:36
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -16,7 +16,7 @@ create_at: datetime
 assignee: str
 assignee_avatar: str
 #}
-{% macro assigned(actor, actor_avatar, create_at, assignee, assignee_avatar) %}
+{% macro assigned(actor, actor_avatar, created_at, assignee, assignee_avatar) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_person() }}
