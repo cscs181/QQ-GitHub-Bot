@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 16:20:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-25 12:40:07
+@LastEditTime   : 2024-05-30 14:20:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -862,7 +862,11 @@ class IssueContext:
 class DiffContext:
     repo: RepoInfo
     pr: PullRequestInfo
-    diff: PatchSet
+    diff: str
+
+    @property
+    def patch_set(self) -> PatchSet:
+        return PatchSet.from_string(self.diff)
 
     @classmethod
     async def from_issue(cls, bot: GitHubBot | OAuthBot, issue: models.Issue) -> Self:

@@ -1,6 +1,5 @@
 from colorsys import rgb_to_hls
 
-from unidiff import PatchSet
 from githubkit.versions.latest import models
 from githubkit.exception import RequestFailed, RequestTimeout
 from nonebot.adapters.github import (
@@ -96,7 +95,7 @@ async def get_pull_request_from_issue(
 
 async def get_diff_from_pull_request(
     bot: GitHubBot | OAuthBot, pr: models.PullRequest
-) -> PatchSet:
+) -> str:
     try:
         resp = await bot.github.arequest("GET", pr.diff_url)
     except RequestFailed as e:
@@ -105,4 +104,4 @@ async def get_diff_from_pull_request(
         raise ActionTimeout(e.request) from None
     except Exception as e:
         raise NetworkError(f"API request failed: {e!r}") from e
-    return PatchSet.from_string(resp.text)
+    return resp.text

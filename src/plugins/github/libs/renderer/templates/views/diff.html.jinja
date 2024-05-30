@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-30 10:05:36
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-15 23:51:45
+ * @LastEditTime   : 2024-05-30 14:21:07
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -31,7 +31,7 @@ ctx.repo.parent_full_name, ctx.repo.template_full_name, ctx.repo.forks_count, ct
       ctx.pr.merged_at, ctx.pr.created_at
       ) }}
       <div>
-        {% for file in ctx.diff %}
+        {% for file in ctx.patch_set %}
         {{ diff_file(file) }}
         {% endfor %}
       </div>
