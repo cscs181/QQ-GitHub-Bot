@@ -2,11 +2,85 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 00:30:18
+ * @LastEditTime   : 2024-05-31 14:39:34
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
 
+/* contribution styles */
+.ContributionCalendar-grid {
+  position: relative;
+  width: max-content;
+  border-collapse: separate;
+  border-spacing: 3px;
+}
+
+.ContributionCalendar-label {
+  padding: 0.125em 0.5em 0.125em 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-fg-default);
+  text-align: left;
+  fill: var(--color-fg-default);
+}
+
+.ContributionCalendar-day {
+  --color-calendar-graph-day-bg: #ebedf0;
+  --color-calendar-graph-day-border: rgba(27, 31, 35, 0.06);
+  --color-calendar-graph-day-L1-bg: #9be9a8;
+  --color-calendar-graph-day-L2-bg: #40c463;
+  --color-calendar-graph-day-L3-bg: #30a14e;
+  --color-calendar-graph-day-L4-bg: #216e39;
+  --color-calendar-graph-day-L1-border: rgba(27, 31, 35, 0.06);
+  --color-calendar-graph-day-L2-border: rgba(27, 31, 35, 0.06);
+  --color-calendar-graph-day-L3-border: rgba(27, 31, 35, 0.06);
+  --color-calendar-graph-day-L4-border: rgba(27, 31, 35, 0.06);
+}
+[data-color-mode="light"][data-light-theme*="dark"] .ContributionCalendar-day,
+[data-color-mode="dark"][data-dark-theme*="dark"] .ContributionCalendar-day {
+  --color-calendar-graph-day-bg: #161b22;
+  --color-calendar-graph-day-border: rgba(27, 31, 35, 0.06);
+  --color-calendar-graph-day-L1-bg: #0e4429;
+  --color-calendar-graph-day-L2-bg: #006d32;
+  --color-calendar-graph-day-L3-bg: #26a641;
+  --color-calendar-graph-day-L4-bg: #39d353;
+  --color-calendar-graph-day-L1-border: rgba(255, 255, 255, 0.05);
+  --color-calendar-graph-day-L2-border: rgba(255, 255, 255, 0.05);
+  --color-calendar-graph-day-L3-border: rgba(255, 255, 255, 0.05);
+  --color-calendar-graph-day-L4-border: rgba(255, 255, 255, 0.05);
+}
+
+.ContributionCalendar-day,
+.ContributionCalendar-day[data-level="0"] {
+  fill: var(--color-calendar-graph-day-bg);
+  shape-rendering: geometricPrecision;
+  background-color: var(--color-calendar-graph-day-bg);
+  border-radius: 2px;
+  outline: 1px solid var(--color-calendar-graph-day-border);
+  outline-offset: -1px;
+}
+.ContributionCalendar-day[data-level="1"] {
+  fill: var(--color-calendar-graph-day-L1-bg);
+  background-color: var(--color-calendar-graph-day-L1-bg);
+  outline: 1px solid var(--color-calendar-graph-day-L1-border);
+}
+.ContributionCalendar-day[data-level="2"] {
+  fill: var(--color-calendar-graph-day-L2-bg);
+  background-color: var(--color-calendar-graph-day-L2-bg);
+  outline: 1px solid var(--color-calendar-graph-day-L2-border);
+}
+.ContributionCalendar-day[data-level="3"] {
+  fill: var(--color-calendar-graph-day-L3-bg);
+  background-color: var(--color-calendar-graph-day-L3-bg);
+  outline: 1px solid var(--color-calendar-graph-day-L3-border);
+}
+.ContributionCalendar-day[data-level="4"] {
+  fill: var(--color-calendar-graph-day-L4-bg);
+  background-color: var(--color-calendar-graph-day-L4-bg);
+  outline: 1px solid var(--color-calendar-graph-day-L4-border);
+}
+
+/* readme styles */
 .markdown-heading .anchor {
   position: absolute;
   top: 50%;

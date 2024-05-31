@@ -2,6 +2,7 @@ import re
 import sys
 import asyncio
 from pathlib import Path
+from datetime import date
 from argparse import ArgumentParser
 
 from nonebot import logger, get_adapter
@@ -16,19 +17,55 @@ import bot as _bot  # noqa: F401
 from src.plugins.github import config
 from src.plugins.github.utils import get_oauth_bot
 from src.plugins.github.libs.github import ISSUE_REGEX, FULLREPO_REGEX
+from src.plugins.github.plugins.github_contribution import CONTRIBUTION_QUERY
 from src.plugins.github.libs.renderer.context import (
     DiffContext,
     IssueContext,
     ReadmeContext,
+    UserContributionContext,
 )
 from src.plugins.github.libs.renderer.render import (
     issue_to_html,
     readme_to_html,
     pr_diff_to_html,
+    user_contribution_to_html,
 )
 
 parser = ArgumentParser()
 sub_parser = parser.add_subparsers(required=True)
+
+
+async def gen_user_contribution_html(token: str, output_file: str | None = None):
+    bot = get_oauth_bot()
+    async with bot.as_user(token):
+        resp = await bot.async_graphql(query=CONTRIBUTION_QUERY)
+
+    username = resp["viewer"]["login"]
+    calendar = resp["viewer"]["contributionsCollection"]["contributionCalendar"]
+    total_contributions: int = calendar["totalContributions"]
+    weeks: list[list[tuple[str, date]]] = [
+        [
+            (day["contributionLevel"], date.fromisoformat(day["date"]))
+            for day in week["contributionDays"]
+        ]
+        for week in calendar["weeks"]
+    ]
+    context = UserContributionContext.from_user_contribution(
+        username, total_contributions, weeks
+    )
+    html = await user_contribution_to_html(context, config.github_theme)
+    if not output_file:
+        print(html)
+        return
+    Path(output_file).write_text(html)
+
+
+contribution = sub_parser.add_parser("contribution")
+contribution.set_defaults(func=gen_user_contribution_html)
+contribution.add_argument("token", help="github token")
+contribution.add_argument(
+    "-o", "--output-file", required=False, help="output file path"
+)
 
 
 async def gen_readme_html(repo: str, output_file: str | None = None):

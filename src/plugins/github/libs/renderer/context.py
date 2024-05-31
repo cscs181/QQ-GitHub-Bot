@@ -2,15 +2,15 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 16:20:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-30 14:20:44
+@LastEditTime   : 2024-05-31 15:00:31
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import date, datetime
 from typing import Self, Literal, TypeAlias
 
 from nonebot import logger
@@ -742,6 +742,47 @@ TimelineEvent: TypeAlias = (
     | TimelineEventUnlabeled
     | TimelineEventStateChange
 )
+
+
+@dataclass(frozen=True, kw_only=True)
+class UserContributionContext:
+    username: str
+    total_contributions: int
+    day_levels: list[list[int | None]]
+
+    @staticmethod
+    def _level_to_int(level: str) -> int:
+        if level == "NONE":
+            return 0
+        elif level == "FIRST_QUARTILE":
+            return 1
+        elif level == "SECOND_QUARTILE":
+            return 2
+        elif level == "THIRD_QUARTILE":
+            return 3
+        elif level == "FOURTH_QUARTILE":
+            return 4
+        else:
+            return 0
+
+    @classmethod
+    def from_user_contribution(
+        cls,
+        username: str,
+        total_contributions: int,
+        weeks: list[list[tuple[str, date]]],
+    ) -> Self:
+        return cls(
+            username=username,
+            total_contributions=total_contributions,
+            day_levels=[
+                [
+                    cls._level_to_int(week[i][0]) if len(week) > i else None
+                    for week in weeks
+                ]
+                for i in range(7)
+            ],
+        )
 
 
 @dataclass(frozen=True, kw_only=True)

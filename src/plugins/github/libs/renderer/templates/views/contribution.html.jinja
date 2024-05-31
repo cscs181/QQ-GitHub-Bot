@@ -1,0 +1,90 @@
+<!--
+ * @Author         : yanyongyu
+ * @Date           : 2024-05-31 11:23:27
+ * @LastEditors    : yanyongyu
+ * @LastEditTime   : 2024-05-31 15:17:18
+ * @Description    : None
+ * @GitHub         : https://github.com/yanyongyu
+-->
+
+{% extends "main.html.jinja" %}
+{% block main %}
+<div
+  class="position-relative mx-2"
+  style="width: fit-content;"
+>
+  <h2 class="f4 text-normal">@{{ ctx.username }} {{ ctx.total_contributions }} contributions in the last year</h2>
+  <div class="py-2">
+    <div class="d-flex flex-column text-center">
+      <div style="width: fit-content;">
+        <table class="ContributionCalendar-grid">
+          <thead>
+            <tr style="height: 13px;">
+              <td style="width: 28px;"></td>
+              {# TODO: month hints #}
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in range(7) %}
+            <tr style="height: 10px;">
+              <td class="ContributionCalendar-label position-relative">
+                {% if i == 1 %}
+                <span style="clip-path: None; position: absolute; bottom: -3px">Mon</span>
+                {% elif i == 3 %}
+                <span style="clip-path: None; position: absolute; bottom: -3px">Wed</span>
+                {% elif i == 5 %}
+                <span style="clip-path: None; position: absolute; bottom: -3px">Fri</span>
+                {% endif %}
+              </td>
+              {% for level in ctx.day_levels[i] %}
+              {% if level is none %}
+              <td></td>
+              {% else %}
+              <td
+                class="ContributionCalendar-day"
+                style="width: 10px"
+                data-level="{{ level }}"
+                tabindex="-1"
+              ></td>
+              {% endif %}
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="width-full f6 px-5 py-1">
+        <div class="float-right d-flex flex-items-center color-fg-muted">
+          <span class="mr-1">Less</span>
+          <div
+            class="ContributionCalendar-day rounded-1 mr-1"
+            style="width: 10px; height: 10px;"
+            data-level="0"
+          ></div>
+          <div
+            class="ContributionCalendar-day rounded-1 mr-1"
+            style="width: 10px; height: 10px;"
+            data-level="1"
+          ></div>
+          <div
+            class="ContributionCalendar-day rounded-1 mr-1"
+            style="width: 10px; height: 10px;"
+            data-level="2"
+          ></div>
+          <div
+            class="ContributionCalendar-day rounded-1 mr-1"
+            style="width: 10px; height: 10px;"
+            data-level="3"
+          ></div>
+          <div
+            class="ContributionCalendar-day rounded-1 mr-1"
+            style="width: 10px; height: 10px;"
+            data-level="4"
+          ></div>
+          <span>More</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

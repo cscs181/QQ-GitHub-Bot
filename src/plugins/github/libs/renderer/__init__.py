@@ -2,13 +2,14 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-25 12:30:54
+@LastEditTime   : 2024-05-31 14:59:58
 @Description    : GitHub image renderer
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
+from datetime import date
 from hashlib import sha256
 
 from pydantic_core import to_json
@@ -30,6 +31,7 @@ from .context import (
     IssueClosedContext,
     IssueOpenedContext,
     IssueCommentedContext,
+    UserContributionContext,
 )
 from .render import (
     issue_to_html,
@@ -38,6 +40,7 @@ from .render import (
     issue_closed_to_html,
     issue_opened_to_html,
     issue_commented_to_html,
+    user_contribution_to_html,
 )
 
 WIDTH = 800
@@ -67,7 +70,8 @@ async def _github_html_to_image(html: str, context_url: str | None = None) -> by
 
 def _context_hash(
     context: (
-        ReadmeContext
+        UserContributionContext
+        | ReadmeContext
         | IssueContext
         | DiffContext
         | IssueOpenedContext
@@ -77,6 +81,25 @@ def _context_hash(
 ) -> str:
     context_json = to_json(context)
     return sha256(context_json).hexdigest()
+
+
+async def user_contribution_to_image(
+    username: str,
+    total_contributions: int,
+    weeks: list[list[tuple[str, date]]],
+) -> bytes:
+    """Render user contribution calendar to image"""
+    context = UserContributionContext.from_user_contribution(
+        username, total_contributions, weeks
+    )
+    context_hash = _context_hash(context)
+    if cached_image := await get_rendered_image("contribution", context_hash):
+        return cached_image
+
+    html = await user_contribution_to_html(context, theme=config.github_theme)
+    image = await _github_html_to_image(html)
+    await save_rendered_image("contribution", context_hash, image)
+    return image
 
 
 async def readme_to_image(

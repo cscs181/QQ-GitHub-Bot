@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-05-14 17:09:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-16 15:21:01
+@LastEditTime   : 2024-05-31 11:22:49
 @Description    : GitHub html renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -15,14 +15,6 @@ from typing import Literal
 import jinja2
 
 from .globals import scale_linear
-from .context import (
-    DiffContext,
-    IssueContext,
-    ReadmeContext,
-    IssueClosedContext,
-    IssueOpenedContext,
-    IssueCommentedContext,
-)
 from .filters import (
     debug_event,
     markdown_gfm,
@@ -31,6 +23,15 @@ from .filters import (
     relative_time,
     markdown_emoji,
     markdown_title,
+)
+from .context import (
+    DiffContext,
+    IssueContext,
+    ReadmeContext,
+    IssueClosedContext,
+    IssueOpenedContext,
+    IssueCommentedContext,
+    UserContributionContext,
 )
 
 env = jinja2.Environment(
@@ -50,6 +51,19 @@ env.filters["review_state"] = review_state
 env.filters["left_truncate"] = left_truncate
 
 env.globals["scale_linear"] = scale_linear
+
+
+async def user_contribution_to_html(
+    ctx: UserContributionContext, theme: Literal["light", "dark"] = "light"
+) -> str:
+    """Render user contribution to image
+
+    Args:
+        ctx: the user contribution context
+        theme: the theme of the image
+    """
+    template = env.get_template("views/contribution.html.jinja")
+    return await template.render_async(ctx=ctx, theme=theme)
 
 
 async def readme_to_html(
