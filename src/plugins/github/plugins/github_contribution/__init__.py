@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2024-05-30 17:30:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-31 15:40:54
+@LastEditTime   : 2024-05-31 15:49:04
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -59,10 +59,7 @@ contribution = on_command(
 
 
 @contribution.handle()
-async def handle_contribution(
-    target_info: TARGET_INFO,
-    user: AUTHORIZED_USER,
-):
+async def handle_contribution(target_info: TARGET_INFO, user: AUTHORIZED_USER):
     bot = get_github_bot()
 
     try:
