@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 08:35:10
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-06 17:07:07
+@LastEditTime   : 2024-06-02 16:52:21
 @Description    : Webhook dependencies
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,12 +21,11 @@ from nonebot.adapters.qq import Bot as QQOfficialBot
 from nonebot.adapters.github.utils import get_attr_or_item
 from nonebot.adapters.onebot.v11 import Message as QQMessage
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
-from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 from nonebot.adapters.qq.exception import ActionFailed as QQOfficialActionFailed
 
 from src.providers.redis import redis_client
-from src.providers.filehost import save_image
 from src.plugins.github.models import Subscription
+from src.plugins.github.helpers import qqofficial_conditional_image
 from src.plugins.github.cache.message_tag import Tag, create_message_tag
 from src.providers.platform import TargetInfo, get_target_bot, extract_sent_message
 from src.providers.platform.targets import (
@@ -133,12 +132,12 @@ async def send_subscriber_image(
             case QQOfficialUserInfo():
                 result = await cast(QQOfficialBot, bot).send_to_c2c(
                     openid=target_info.qq_user_open_id,
-                    message=QQOfficialMS.image(await save_image(image)),
+                    message=await qqofficial_conditional_image(image),
                 )
             case QQOfficialGroupInfo():
                 result = await cast(QQOfficialBot, bot).send_to_group(
                     group_openid=target_info.qq_group_open_id,
-                    message=QQOfficialMS.image(await save_image(image)),
+                    message=await qqofficial_conditional_image(image),
                 )
             case QQGuildUserInfo():
                 logger.error("Unable to send message to QQGuild User", user=target_info)

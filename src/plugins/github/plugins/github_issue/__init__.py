@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-11 12:04:57
+@LastEditTime   : 2024-06-02 16:49:23
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -19,8 +19,6 @@ from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
 from src.plugins.github import config
-from src.providers.filehost import save_image
-from src.plugins.github.helpers import NO_GITHUB_EVENT, MATCH_WHEN_GROUP
 from src.plugins.github.libs.renderer import issue_to_image, pr_diff_to_image
 from src.plugins.github.cache.message_tag import (
     IssueTag,
@@ -32,6 +30,11 @@ from src.providers.platform import (
     MESSAGE_INFO,
     TargetType,
     extract_sent_message,
+)
+from src.plugins.github.helpers import (
+    NO_GITHUB_EVENT,
+    MATCH_WHEN_GROUP,
+    qqofficial_conditional_image,
 )
 from src.plugins.github.dependencies import (
     ISSUE,
@@ -114,7 +117,7 @@ async def handle_issue(
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await issue.send(QQMS.image(img))
         case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
-            result = await issue.send(QQOfficialMS.image(await save_image(img)))
+            result = await issue.send(await qqofficial_conditional_image(img))
         case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await issue.send(QQOfficialMS.file_image(img))
 
@@ -164,7 +167,7 @@ async def handle_pr_diff(
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await pr_diff_link.send(QQMS.image(img))
         case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
-            result = await pr_diff_link.send(QQOfficialMS.image(await save_image(img)))
+            result = await pr_diff_link.send(await qqofficial_conditional_image(img))
         case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await pr_diff_link.send(QQOfficialMS.file_image(img))
 
@@ -225,7 +228,7 @@ async def handle_short(
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await issue_short.send(QQMS.image(img))
         case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
-            result = await issue_short.send(QQOfficialMS.image(await save_image(img)))
+            result = await issue_short.send(await qqofficial_conditional_image(img))
         case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await issue_short.send(QQOfficialMS.file_image(img))
 

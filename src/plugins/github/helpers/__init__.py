@@ -2,12 +2,16 @@
 @Author         : yanyongyu
 @Date           : 2022-09-07 12:17:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-11-13 17:35:27
+@LastEditTime   : 2024-06-02 16:49:07
 @Description    : Helpers for github plugin
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
+
+from .image import qqofficial_conditional_image as qqofficial_conditional_image
+
+# isort: split
 
 from .rule import REPLY_PR as REPLY_PR
 from .rule import REPLY_ANY as REPLY_ANY

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-11 18:11:00
+@LastEditTime   : 2024-06-02 16:50:38
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -21,10 +21,9 @@ from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
 
 from src.plugins.github import config
-from src.providers.filehost import save_image
-from src.plugins.github.helpers import NO_GITHUB_EVENT
 from src.plugins.github.libs.renderer import issue_to_image
 from src.plugins.github.libs.github import ISSUE_REGEX, FULLREPO_REGEX
+from src.plugins.github.helpers import NO_GITHUB_EVENT, qqofficial_conditional_image
 from src.plugins.github.dependencies import (
     ISSUE,
     OPTIONAL_REPLY_TAG,
@@ -123,7 +122,7 @@ async def handle_content(
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
             result = await content.send(QQMS.image(img))
         case TargetType.QQ_OFFICIAL_USER | TargetType.QQ_OFFICIAL_GROUP:
-            result = await content.send(QQOfficialMS.image(await save_image(img)))
+            result = await content.send(await qqofficial_conditional_image(img))
         case TargetType.QQGUILD_USER | TargetType.QQGUILD_CHANNEL:
             result = await content.send(QQOfficialMS.file_image(img))
 
