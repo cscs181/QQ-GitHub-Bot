@@ -2,10 +2,17 @@
  * @Author         : yanyongyu
  * @Date           : 2024-05-31 11:23:27
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-06-02 16:10:36
+ * @LastEditTime   : 2024-06-10 12:27:32
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
+
+{% from "icons/clock.html.jinja" import octicon_clock %}
+{% from "icons/trophy.html.jinja" import octicon_trophy %}
+{% from "icons/commit.html.jinja" import octicon_commit %}
+{% from "icons/issue-opened.html.jinja" import octicon_issue_opened %}
+{% from "icons/pr.html.jinja" import octicon_pr %}
+{% from "icons/code-review.html.jinja" import octicon_code_review %}
 
 {% extends "main.html.jinja" %}
 {% block main %}
@@ -13,7 +20,15 @@
   class="position-relative mx-auto pt-3"
   style="width: fit-content;"
 >
-  <h2 class="f4 text-normal">@{{ ctx.username }} {{ ctx.total_contributions }} contributions in the last year</h2>
+  <h2 class="f4 text-normal">
+    <img
+      class="avatar avatar-user"
+      height="20"
+      width="20"
+      src="{{ ctx.user_avatar }}"
+    />
+    {{ ctx.username }} on GitHub
+  </h2>
   <div class="py-2">
     <div class="d-flex flex-column text-center">
       <div style="width: fit-content;">
@@ -21,7 +36,18 @@
           <thead>
             <tr style="height: 13px;">
               <td style="width: 28px;"></td>
-              {# TODO: month hints #}
+              {% for month in ctx.month_headers %}
+              <td
+                class="ContributionCalendar-label"
+                colspan="{{ month[1] }}"
+                style="position: relative;"
+              >
+                {# show month header when more than one week #}
+                {% if month[1] > 1 %}
+                <span style="position: absolute; top: 0;">{{ month[0] }}</span>
+                {% endif %}
+              </td>
+              {% endfor %}
             </tr>
           </thead>
           <tbody>
@@ -84,6 +110,31 @@
           <span>More</span>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="border-top color-border-default py-2">
+    <div class="d-flex flex-items-center">
+      <div class="col-6">
+        <p>
+          {{ octicon_clock(class="mr-2") }} {{ ctx.from_date }} ~ {{ ctx.to_date }}
+        </p>
+        <p>
+          {{ octicon_trophy(class="mr-2") }} Total contributions: {{ ctx.total_contributions }}
+        </p>
+        <p>
+          {{ octicon_commit(class="mr-2") }} Total commits: {{ ctx.total_commit_contributions }}
+        </p>
+        <p>
+          {{ octicon_issue_opened(class="mr-2") }} Total issues: {{ ctx.total_issue_contributions }}
+        </p>
+        <p>
+          {{ octicon_pr(class="mr-2") }} Total PRs: {{ ctx.total_pull_request_contributions }}
+        </p>
+        <p>
+          {{ octicon_code_review(class="mr-2") }} Total reviews: {{ ctx.total_pull_request_review_contributions }}
+        </p>
+      </div>
+      <div class="col-6"></div>
     </div>
   </div>
 </div>

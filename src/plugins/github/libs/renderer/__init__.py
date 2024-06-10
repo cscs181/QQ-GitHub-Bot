@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 16:45:25
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-31 14:59:58
+@LastEditTime   : 2024-06-10 12:15:55
 @Description    : GitHub image renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -85,12 +85,24 @@ def _context_hash(
 
 async def user_contribution_to_image(
     username: str,
+    user_avatar: str,
     total_contributions: int,
+    total_commit_contributions: int,
+    total_issue_contributions: int,
+    total_pull_request_contributions: int,
+    total_pull_request_review_contributions: int,
     weeks: list[list[tuple[str, date]]],
 ) -> bytes:
     """Render user contribution calendar to image"""
     context = UserContributionContext.from_user_contribution(
-        username, total_contributions, weeks
+        username,
+        user_avatar,
+        total_contributions,
+        total_commit_contributions,
+        total_issue_contributions,
+        total_pull_request_contributions,
+        total_pull_request_review_contributions,
+        weeks,
     )
     context_hash = _context_hash(context)
     if cached_image := await get_rendered_image("contribution", context_hash):

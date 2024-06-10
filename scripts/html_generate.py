@@ -41,7 +41,15 @@ async def gen_user_contribution_html(token: str, output_file: str | None = None)
         resp = await bot.async_graphql(query=CONTRIBUTION_QUERY)
 
     username = resp["viewer"]["login"]
-    calendar = resp["viewer"]["contributionsCollection"]["contributionCalendar"]
+    user_avatar = resp["viewer"]["avatarUrl"]
+    collection = resp["viewer"]["contributionsCollection"]
+    total_commit_contributions: int = collection["totalCommitContributions"]
+    total_issue_contributions: int = collection["totalIssueContributions"]
+    total_pull_request_contributions: int = collection["totalPullRequestContributions"]
+    total_pull_request_review_contributions: int = collection[
+        "totalPullRequestReviewContributions"
+    ]
+    calendar = collection["contributionCalendar"]
     total_contributions: int = calendar["totalContributions"]
     weeks: list[list[tuple[str, date]]] = [
         [
@@ -51,7 +59,14 @@ async def gen_user_contribution_html(token: str, output_file: str | None = None)
         for week in calendar["weeks"]
     ]
     context = UserContributionContext.from_user_contribution(
-        username, total_contributions, weeks
+        username,
+        user_avatar,
+        total_contributions,
+        total_commit_contributions,
+        total_issue_contributions,
+        total_pull_request_contributions,
+        total_pull_request_review_contributions,
+        weeks,
     )
     html = await user_contribution_to_html(context, config.github_theme)
     if not output_file:

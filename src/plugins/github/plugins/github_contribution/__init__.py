@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2024-05-30 17:30:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-31 15:49:04
+@LastEditTime   : 2024-06-10 12:15:42
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -31,10 +31,15 @@ __plugin_meta__ = PluginMetadata(
 
 
 CONTRIBUTION_QUERY: str = """
-query {
+query ($from: DateTime, $to: DateTime) {
   viewer {
     login
-    contributionsCollection {
+    avatarUrl
+    contributionsCollection(from: $from, to: $to) {
+      totalCommitContributions
+      totalIssueContributions
+      totalPullRequestContributions
+      totalPullRequestReviewContributions
       contributionCalendar {
         totalContributions
         weeks {
@@ -78,7 +83,15 @@ async def handle_contribution(target_info: TARGET_INFO, user: AUTHORIZED_USER):
         await contribution.finish("未知错误发生，请尝试重试或联系管理员")
 
     username = resp["viewer"]["login"]
-    calendar = resp["viewer"]["contributionsCollection"]["contributionCalendar"]
+    user_avatar = resp["viewer"]["avatarUrl"]
+    collection = resp["viewer"]["contributionsCollection"]
+    total_commit_contributions: int = collection["totalCommitContributions"]
+    total_issue_contributions: int = collection["totalIssueContributions"]
+    total_pull_request_contributions: int = collection["totalPullRequestContributions"]
+    total_pull_request_review_contributions: int = collection[
+        "totalPullRequestReviewContributions"
+    ]
+    calendar = collection["contributionCalendar"]
     total_contributions: int = calendar["totalContributions"]
     weeks: list[list[tuple[str, date]]] = [
         [
@@ -89,7 +102,16 @@ async def handle_contribution(target_info: TARGET_INFO, user: AUTHORIZED_USER):
     ]
 
     try:
-        img = await user_contribution_to_image(username, total_contributions, weeks)
+        img = await user_contribution_to_image(
+            username,
+            user_avatar,
+            total_contributions,
+            total_commit_contributions,
+            total_issue_contributions,
+            total_pull_request_contributions,
+            total_pull_request_review_contributions,
+            weeks,
+        )
     except ActionTimeout:
         await contribution.finish("GitHub API 超时，请稍后再试")
     except TimeoutError:

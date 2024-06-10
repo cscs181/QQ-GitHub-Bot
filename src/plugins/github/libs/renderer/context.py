@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 16:20:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-06-02 15:39:13
+@LastEditTime   : 2024-06-10 12:15:22
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -10,8 +10,8 @@
 __author__ = "yanyongyu"
 
 from dataclasses import dataclass
-from datetime import date, datetime
-from typing import Self, Literal, TypeAlias
+from datetime import date, datetime, timedelta
+from typing import Self, Literal, TypeAlias, TypedDict
 
 from nonebot import logger
 from unidiff import PatchSet
@@ -744,10 +744,25 @@ TimelineEvent: TypeAlias = (
 )
 
 
+class _MonthInfo(TypedDict):
+    month: int
+    weeks: int
+
+
 @dataclass(frozen=True, kw_only=True)
 class UserContributionContext:
     username: str
+    user_avatar: str
+    from_date: date
+    to_date: date
     total_contributions: int
+    total_commit_contributions: int
+    total_issue_contributions: int
+    total_pull_request_contributions: int
+    total_pull_request_review_contributions: int
+    # used to render the calendar header
+    month_headers: list[tuple[str, int]]
+    # levels of contributions for each day of the week
     day_levels: list[list[int | None]]
 
     @staticmethod
@@ -765,23 +780,56 @@ class UserContributionContext:
         else:
             return 0
 
+    @staticmethod
+    def _month_to_name(month: int) -> str:
+        return date(2000, month, 1).strftime("%b")
+
+    @classmethod
+    def _parse_week(cls, week: list[tuple[str, date]]) -> list[int | None]:
+        date_map = {d: cls._level_to_int(lvl) for lvl, d in week}
+        # make sunday as the first day of the week
+        first_day_of_week = week[0][1] - timedelta(days=week[0][1].isoweekday() % 7)
+        return [
+            date_map.get(first_day_of_week + timedelta(days=i), None) for i in range(7)
+        ]
+
+    @classmethod
+    def _parse_month(cls, weeks: list[list[tuple[str, date]]]) -> list[tuple[str, int]]:
+        result: list[_MonthInfo] = []
+        for week in weeks:
+            month = week[0][1].month
+            if result and result[-1]["month"] == month:
+                result[-1]["weeks"] += 1
+            else:
+                result.append({"month": month, "weeks": 1})
+
+        return [(cls._month_to_name(info["month"]), info["weeks"]) for info in result]
+
     @classmethod
     def from_user_contribution(
         cls,
         username: str,
+        user_avatar: str,
         total_contributions: int,
+        total_commit_contributions: int,
+        total_issue_contributions: int,
+        total_pull_request_contributions: int,
+        total_pull_request_review_contributions: int,
         weeks: list[list[tuple[str, date]]],
     ) -> Self:
+        parsed_weeks = [cls._parse_week(week) for week in weeks]
         return cls(
             username=username,
+            user_avatar=user_avatar,
+            from_date=weeks[0][0][1],
+            to_date=weeks[-1][-1][1],
             total_contributions=total_contributions,
-            day_levels=[
-                [
-                    cls._level_to_int(week[i][0]) if len(week) > i else None
-                    for week in weeks
-                ]
-                for i in range(7)
-            ],
+            total_commit_contributions=total_commit_contributions,
+            total_issue_contributions=total_issue_contributions,
+            total_pull_request_contributions=total_pull_request_contributions,
+            total_pull_request_review_contributions=total_pull_request_review_contributions,
+            month_headers=cls._parse_month(weeks),
+            day_levels=[[week[i] for week in parsed_weeks] for i in range(7)],
         )
 
 
