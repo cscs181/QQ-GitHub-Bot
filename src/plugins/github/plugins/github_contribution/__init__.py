@@ -2,15 +2,17 @@
 @Author         : yanyongyu
 @Date           : 2024-05-30 17:30:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-06-10 12:15:42
+@LastEditTime   : 2024-06-10 12:44:50
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
-from datetime import date
+from datetime import date, datetime
 
+from nonebot.adapters import Message
+from nonebot.params import CommandArg
 from nonebot import logger, on_command
 from nonebot.plugin import PluginMetadata
 from playwright.async_api import Error, TimeoutError
@@ -64,12 +66,37 @@ contribution = on_command(
 
 
 @contribution.handle()
-async def handle_contribution(target_info: TARGET_INFO, user: AUTHORIZED_USER):
+async def handle_contribution(
+    target_info: TARGET_INFO, user: AUTHORIZED_USER, args: Message = CommandArg()
+):
+    arg = args.extract_plain_text().strip()
+
+    from_date: date | None = None
+    to_date: date | None = None
+    if arg:
+        try:
+            year = int(arg)
+        except ValueError:
+            await contribution.finish(
+                f"年份 {arg} 错误！请发送有效年份，例如：「/contribute 2024」"
+            )
+
+        from_date = date.min.replace(year=year)
+        to_date = date.max.replace(year=year)
+
     bot = get_github_bot()
 
     try:
         async with bot.as_user(user.access_token):
-            resp = await bot.async_graphql(query=CONTRIBUTION_QUERY)
+            resp = await bot.async_graphql(
+                query=CONTRIBUTION_QUERY,
+                variables={
+                    "from": from_date
+                    and datetime.fromordinal(from_date.toordinal()).isoformat(),
+                    "to": to_date
+                    and datetime.fromordinal(to_date.toordinal()).isoformat(),
+                },
+            )
     except ActionTimeout:
         await contribution.finish("GitHub API 超时，请稍后再试")
     except ActionFailed as e:

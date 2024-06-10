@@ -2,8 +2,8 @@ import re
 import sys
 import asyncio
 from pathlib import Path
-from datetime import date
 from argparse import ArgumentParser
+from datetime import date, datetime
 
 from nonebot import logger, get_adapter
 from nonebot.adapters.github import Adapter
@@ -35,10 +35,26 @@ parser = ArgumentParser()
 sub_parser = parser.add_subparsers(required=True)
 
 
-async def gen_user_contribution_html(token: str, output_file: str | None = None):
+async def gen_user_contribution_html(
+    token: str, year: int | None, output_file: str | None = None
+):
     bot = get_oauth_bot()
+
+    from_date: date | None = None
+    to_date: date | None = None
+    if year:
+        from_date = date.min.replace(year=year)
+        to_date = date.max.replace(year=year)
+
     async with bot.as_user(token):
-        resp = await bot.async_graphql(query=CONTRIBUTION_QUERY)
+        resp = await bot.async_graphql(
+            query=CONTRIBUTION_QUERY,
+            variables={
+                "from": from_date
+                and datetime.fromordinal(from_date.toordinal()).isoformat(),
+                "to": to_date and datetime.fromordinal(to_date.toordinal()).isoformat(),
+            },
+        )
 
     username = resp["viewer"]["login"]
     user_avatar = resp["viewer"]["avatarUrl"]
@@ -78,6 +94,7 @@ async def gen_user_contribution_html(token: str, output_file: str | None = None)
 contribution = sub_parser.add_parser("contribution")
 contribution.set_defaults(func=gen_user_contribution_html)
 contribution.add_argument("token", help="github token")
+contribution.add_argument("year", nargs="?", default=None, type=int, help="year")
 contribution.add_argument(
     "-o", "--output-file", required=False, help="output file path"
 )
