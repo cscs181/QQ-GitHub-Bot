@@ -85,7 +85,7 @@ jobs:
           images: ${{ steps.image.outputs.IMAGE }}
 
       - name: Build and Publish
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         id: build
         with:
           context: .
