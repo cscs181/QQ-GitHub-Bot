@@ -1,18 +1,19 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.11-bookworm as requirements-stage
+FROM python:3.11-bookworm AS requirements-stage
 
 WORKDIR /tmp
 
-RUN curl -sSL https://install.python-poetry.org | python -
+ENV POETRY_HOME="/opt/poetry" PATH="${PATH}:/opt/poetry/bin"
 
-ENV PATH="${PATH}:/root/.local/bin"
+RUN curl -sSL https://install.python-poetry.org | python - -y && \
+  poetry self add poetry-plugin-export
 
 COPY ./pyproject.toml ./poetry.lock* /tmp/
 
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --with deploy
 
-FROM python:3.11-bookworm as build-stage
+FROM python:3.11-bookworm AS build-stage
 
 WORKDIR /wheel
 
@@ -22,7 +23,7 @@ COPY --from=requirements-stage /tmp/requirements.txt /wheel/requirements.txt
 
 RUN pip wheel --wheel-dir=/wheel --no-cache-dir --requirement /wheel/requirements.txt
 
-FROM python:3.11-bookworm as metadata-stage
+FROM python:3.11-bookworm AS metadata-stage
 
 WORKDIR /tmp
 
@@ -35,8 +36,7 @@ FROM python:3.11-slim-bookworm
 
 WORKDIR /app
 
-ENV TZ Asia/Shanghai
-ENV DEBIAN_FRONTEND noninteractive
+ENV TZ=Asia/Shanghai DEBIAN_FRONTEND=noninteractive
 
 COPY ./docker/start.sh /start.sh
 RUN chmod +x /start.sh
@@ -47,7 +47,7 @@ ENV PYTHONPATH=/app
 
 EXPOSE 8086
 
-ENV APP_MODULE bot:app
+ENV APP_MODULE=bot:app
 
 # RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak &&\
 #   echo "deb http://mirrors.aliyun.com/debian/ buster main" >> /etc/apt/sources.list\
