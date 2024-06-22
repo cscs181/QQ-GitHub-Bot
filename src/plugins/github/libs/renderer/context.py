@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 16:20:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-06-10 12:15:22
+@LastEditTime   : 2024-06-22 16:22:19
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -54,9 +54,9 @@ class RepoInfo:
             private=repo.private,
             fork=repo.fork,
             is_template=bool(repo.is_template),
-            parent_full_name=repo.parent and repo.parent.full_name,
+            parent_full_name=repo.parent.full_name if repo.parent else None,
             template_full_name=(
-                repo.template_repository and repo.template_repository.full_name
+                repo.template_repository.full_name if repo.template_repository else None
             ),
             forks_count=repo.forks_count,
             stargazers_count=repo.stargazers_count,
