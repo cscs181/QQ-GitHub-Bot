@@ -26,8 +26,8 @@
         "[python]": {
           "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.codeActionsOnSave": {
-            "source.fixAll.ruff": true,
-            "source.organizeImports": true
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports": "explicit"
           }
         },
         "[javascript]": {
