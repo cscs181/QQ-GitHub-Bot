@@ -14,7 +14,7 @@ actor: str
 actor_avatar: str
 create_at: datetime
 #}
-{% macro auto_squash_enabled(actor, actor_avatar, create_at) %}
+{% macro auto_squash_enabled(actor, actor_avatar, created_at) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_pr() }}
