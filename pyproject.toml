@@ -28,7 +28,7 @@ markdown-it-py = { version = "^3.0.0", extras = ["linkify", "plugins"] }
 nonebot2 = { version = "^2.2.0", extras = ["httpx", "websockets", "fastapi"] }
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.4.0"
+ruff = "^0.5.0"
 isort = "^5.9.3"
 black = "^24.0.0"
 nonemoji = "^0.1.2"
