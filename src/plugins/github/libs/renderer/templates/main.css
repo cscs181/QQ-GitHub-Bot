@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-16 12:36:00
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-31 14:39:34
+ * @LastEditTime   : 2024-08-04 14:10:37
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
  */
@@ -19,9 +19,9 @@
   padding: 0.125em 0.5em 0.125em 0;
   font-size: 12px;
   font-weight: 400;
-  color: var(--color-fg-default);
+  color: var(--fgColor-default);
   text-align: left;
-  fill: var(--color-fg-default);
+  fill: var(--fgColor-default);
 }
 
 .ContributionCalendar-day {
@@ -96,15 +96,17 @@
   transform: translateY(-50%);
 }
 
+/* issue title inline code */
 .markdown-title code {
   padding: 2px 4px;
   font-size: 0.9em;
   line-height: 1;
   vertical-align: middle;
-  background-color: var(--color-neutral-muted);
+  background-color: var(--bgColor-neutral-muted);
   border-radius: 6px;
 }
 
+/* github emoji */
 g-emoji {
   display: inline-block;
   min-width: 1ch;
@@ -116,8 +118,11 @@ g-emoji {
   vertical-align: -0.075em;
 }
 
+/* timeline comment */
 .timeline-comment.timeline-comment-highlight {
-  box-shadow: 0 0 0 1px var(--color-accent-emphasis);
+  border-color: var(--borderColor-accent-emphasis);
+  outline: none !important;
+  box-shadow: 0 0 0 1px var(--fgColor-accent) !important;
 }
 .timeline-comment::before,
 .timeline-comment::after {
@@ -133,18 +138,15 @@ g-emoji {
   --webkit-clip-path: polygon(0 50%, 100% 0, 100% 100%);
 }
 .timeline-comment::before {
-  background-color: var(--color-border-default);
+  background-color: var(--borderColor-default);
 }
 .timeline-comment.timeline-comment-highlight::before {
-  background-color: var(--color-accent-emphasis);
+  background-color: var(--bgColor-accent-emphasis);
 }
 .timeline-comment::after {
   margin-left: 2px;
-  background-color: var(--color-canvas-default);
-  background-image: linear-gradient(
-    var(--color-canvas-subtle),
-    var(--color-canvas-subtle)
-  );
+  background-color: var(--bgColor-default);
+  background-image: linear-gradient(var(--bgColor-muted), var(--bgColor-muted));
 }
 .timeline-comment.timeline-comment-nw::before {
   top: -12px;
@@ -159,6 +161,7 @@ g-emoji {
   transform: rotate(90deg);
 }
 
+/* timeline comment reaction */
 .comment-reaction-button {
   height: 26px;
   line-height: 26px;
@@ -170,6 +173,7 @@ g-emoji {
   margin-left: 2px;
 }
 
+/* issue label */
 .hx_IssueLabel {
   --perceived-lightness: calc(
     (
@@ -239,7 +243,7 @@ g-emoji {
 .diffstat {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-fg-muted);
+  color: var(--fgColor-muted);
   white-space: nowrap;
   cursor: default;
 }
@@ -247,22 +251,20 @@ g-emoji {
 .diffstat-block-added,
 .diffstat-block-neutral {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 0.5rem;
+  height: 0.5rem;
   margin-left: 1px;
-  outline-offset: -1px;
 }
 .diffstat-block-deleted {
-  background-color: var(--color-danger-emphasis);
-  outline: 1px solid var(--color-border-subtle);
+  background-color: var(--bgColor-danger-emphasis);
 }
 .diffstat-block-added {
-  background-color: var(--color-success-emphasis);
-  outline: 1px solid var(--color-border-subtle);
+  background-color: var(--bgColor-success-emphasis);
 }
 .diffstat-block-neutral {
-  background-color: var(--color-neutral-muted);
-  outline: 1px solid var(--color-border-subtle);
+  background-color: var(--bgColor-neutral-muted);
+  outline: 1px solid var(--borderColor-muted);
+  outline-offset: -1px;
 }
 
 .blob-num {
@@ -275,7 +277,7 @@ g-emoji {
     Liberation Mono, monospace;
   font-size: 12px;
   line-height: 20px;
-  color: var(--color-fg-subtle);
+  color: var(--fgColor-muted);
   text-align: right;
   white-space: nowrap;
   vertical-align: top;
@@ -284,12 +286,12 @@ g-emoji {
   user-select: none;
 }
 .blob-num-addition {
-  color: var(--color-fg-default);
-  background-color: var(--color-success-subtle);
+  color: var(--fgColor-default);
+  background-color: var(--bgColor-success-muted);
 }
 .blob-num-deletion {
-  color: var(--color-fg-default);
-  background-color: var(--color-danger-subtle);
+  color: var(--fgColor-default);
+  background-color: var(--bgColor-danger-muted);
 }
 .blob-code {
   position: relative;
@@ -304,7 +306,7 @@ g-emoji {
   font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
     Liberation Mono, monospace;
   font-size: 12px;
-  color: var(--color-fg-default);
+  color: var(--fgColor-default);
   word-wrap: anywhere;
   white-space: pre-wrap;
 }
@@ -318,23 +320,24 @@ g-emoji {
   padding-top: 4px;
   padding-bottom: 4px;
   padding-left: 22px;
-  color: var(--color-fg-subtle);
-  background-color: var(--color-accent-subtle);
+  color: var(--fgColor-muted);
+  background-color: var(--bgColor-accent-muted);
   border-width: 1px 0;
 }
 .blob-code-addition {
-  background-color: var(--color-success-subtle);
+  background-color: var(--bgColor-success-muted);
 }
 .blob-code-deletion {
-  background-color: var(--color-danger-subtle);
+  background-color: var(--bgColor-danger-muted);
 }
 
+/* timeline hidden item */
 .pagination-loader-container {
-  background-color: var(--color-canvas-default);
+  background-color: var(--bgColor-default);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M0 11L8 5L16 11' stroke='%23e1e4e8' stroke-linecap='square' stroke-width='1.5'/%3E%3C/svg%3E");
   background-repeat: repeat-x;
   background-position: center;
-  background-size: 16px;
+  background-size: 1rem;
 }
 [data-color-mode="light"][data-light-theme*="dark"]
   .pagination-loader-container,
@@ -342,6 +345,6 @@ g-emoji {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M0 11L8 5L16 11' stroke='%2330363d' stroke-linecap='square' stroke-width='1.5'/%3E%3C/svg%3E");
 }
 .discussion-item-header {
-  color: var(--color-fg-muted);
+  color: var(--fgColor-muted);
   word-wrap: break-word;
 }

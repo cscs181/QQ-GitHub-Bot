@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:29:08
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 16:02:29
+ * @LastEditTime   : 2024-08-04 13:10:04
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -69,12 +69,12 @@ is_first=false, is_review=false, highlight=false
         ">
         <div class="d-none d-sm-flex">
           {% if author_association != "NONE" %}
-          <span class="Label Label--primary ml-1">
+          <span class="Label Label--secondary ml-1">
             {{ author_association|title|escape }}
           </span>
           {% endif %}
           {% if is_author %}
-          <span class="Label Label--primary ml-1">Author</span>
+          <span class="Label Label--secondary ml-1">Author</span>
           {% endif %}
         </div>
         <h3 class="flex-auto text-normal f5">
