@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2023-04-27 00:44:11
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 16:01:53
+ * @LastEditTime   : 2024-08-18 17:36:07
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,9 +12,9 @@
 {#
 actor: str
 actor_avatar: str
-create_at: datetime
+created_at: datetime
 #}
-{% macro auto_merge_disabled(actor, actor_avatar, create_at) %}
+{% macro auto_merge_disabled(actor, actor_avatar, created_at) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge">
     {{ octicon_pr() }}
