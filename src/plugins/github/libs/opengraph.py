@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2024-05-23 16:57:48
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-08-18 16:30:25
+@LastEditTime   : 2024-08-18 16:45:33
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -25,6 +25,10 @@ from src.plugins.github.cache.message_tag import (
     CommitTag,
     ReleaseTag,
     PullRequestTag,
+)
+
+FORBIDDEN_FALLBACK_HASH = (
+    "74f3b5add54f7102230ed682fbf9d23b5b3a78e6229dbfd49719748e7b806988"
 )
 
 driver = nonebot.get_driver()
@@ -95,10 +99,7 @@ async def get_opengraph_image(tag: Tag) -> bytes | None:
         else:
             if isinstance(content, str):
                 content = content.encode("utf-8")
-            if (
-                sha256(content).hexdigest()
-                == "74f3b5add54f7102230ed682fbf9d23b5b3a78e6229dbfd49719748e7b806988"
-            ):
+            if sha256(content).hexdigest() == FORBIDDEN_FALLBACK_HASH:
                 logger.warning(f"Got fallback opengraph for {tag!r}, retrying")
             else:
                 break
