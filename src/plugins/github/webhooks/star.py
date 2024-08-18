@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-12-18 13:44:11
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 18:02:15
+@LastEditTime   : 2024-08-18 17:27:13
 @Description    : Webhook star event broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -56,8 +56,9 @@ async def handle_star_event(event: StarCreated | StarDeleted, subscribers: SUBSC
             await send_subscriber_text(target.to_subscriber_info(), message, tag)
         except Exception as e:
             logger.opt(exception=e).warning(
-                f"Send message to subscriber failed: {e}",
+                "Send message to subscriber failed: {e}",
                 target_info=target.to_subscriber_info(),
+                e=e,
             )
 
         await asyncio.sleep(SEND_INTERVAL)

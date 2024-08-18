@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 05:14:32
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-08 17:43:38
+@LastEditTime   : 2024-08-18 17:27:21
 @Description    : Webhook unknown event broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -60,8 +60,9 @@ async def handle_unknown_event(
             await send_subscriber_text(target.to_subscriber_info(), message, tag)
         except Exception as e:
             logger.opt(exception=e).warning(
-                f"Send message to subscriber failed: {e}",
+                "Send message to subscriber failed: {e}",
                 target_info=target.to_subscriber_info(),
+                e=e,
             )
 
         await asyncio.sleep(SEND_INTERVAL)

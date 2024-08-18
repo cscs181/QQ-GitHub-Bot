@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-09-14 16:07:50
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-15 17:08:11
+@LastEditTime   : 2024-08-18 17:29:43
 @Description    : Jinja filters for renderer
 @GitHub         : https://github.com/yanyongyu
 """
@@ -92,7 +92,8 @@ def debug_event(event: TimelineEvent) -> str:
     event_data = asdict(event)
     logger.debug(f"Unhandled event: {event_data}")
     logger.error(
-        f"Unhandled event type: {event.__class__.__name__}"
+        "Unhandled event type: {event_type}",
+        event_type=f"{event.__class__.__name__}"
         + (f" {event_name}" if (event_name := getattr(event, "event", None)) else ""),
         event=event_data,
     )

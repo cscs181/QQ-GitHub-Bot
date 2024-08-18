@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-04-04 20:02:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-05 14:41:51
+@LastEditTime   : 2024-08-18 17:26:48
 @Description    : Webhook issue opened broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -98,8 +98,9 @@ async def handle_issue_opened_event(
                 )
         except Exception as e:
             logger.opt(exception=e).warning(
-                f"Send message to subscriber failed: {e}",
+                "Send message to subscriber failed: {e}",
                 target_info=target.to_subscriber_info(),
+                e=e,
             )
 
         await asyncio.sleep(SEND_INTERVAL)

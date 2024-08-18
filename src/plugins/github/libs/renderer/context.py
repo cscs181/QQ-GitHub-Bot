@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 16:20:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-08-18 17:07:10
+@LastEditTime   : 2024-08-18 17:29:14
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -938,7 +938,8 @@ class IssueContext:
                 event_data = event.model_dump(exclude_unset=True)
                 logger.debug(f"Unhandled event: {event_data}")
                 logger.error(
-                    f"Unhandled event type: {event.__class__.__name__}"
+                    "Unhandled event type: {event_type}",
+                    event_type=f"{event.__class__.__name__}"
                     + (
                         f" {event_name}"
                         if (event_name := getattr(event, "event", None))
