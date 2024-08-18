@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2024-05-30 17:30:18
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-06-10 12:44:50
+@LastEditTime   : 2024-08-18 17:11:14
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -76,13 +76,14 @@ async def handle_contribution(
     if arg:
         try:
             year = int(arg)
+            if year <= 0:
+                raise ValueError
+            from_date = date.min.replace(year=year)
+            to_date = date.max.replace(year=year)
         except ValueError:
             await contribution.finish(
                 f"年份 {arg} 错误！请发送有效年份，例如：「/contribute 2024」"
             )
-
-        from_date = date.min.replace(year=year)
-        to_date = date.max.replace(year=year)
 
     bot = get_github_bot()
 
