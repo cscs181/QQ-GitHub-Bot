@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 16:20:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-06-22 16:22:19
+@LastEditTime   : 2024-08-18 17:07:10
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -788,10 +788,18 @@ class UserContributionContext:
     def _parse_week(cls, week: list[tuple[str, date]]) -> list[int | None]:
         date_map = {d: cls._level_to_int(lvl) for lvl, d in week}
         # make sunday as the first day of the week
-        first_day_of_week = week[0][1] - timedelta(days=week[0][1].isoweekday() % 7)
-        return [
-            date_map.get(first_day_of_week + timedelta(days=i), None) for i in range(7)
-        ]
+        # calculate the last day of the week to avoid date overflow error
+        last_day_of_week = week[-1][1] + timedelta(
+            days=6 - week[-1][1].isoweekday() % 7
+        )
+
+        def _get_date_contribute(delta: timedelta) -> int | None:
+            try:
+                return date_map.get(last_day_of_week - delta, None)
+            except OverflowError:
+                return None
+
+        return [_get_date_contribute(timedelta(days=i)) for i in range(6, -1, -1)]
 
     @classmethod
     def _parse_month(cls, weeks: list[list[tuple[str, date]]]) -> list[tuple[str, int]]:
