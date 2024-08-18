@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:16:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-05 14:31:17
+@LastEditTime   : 2024-08-18 17:41:16
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -41,6 +41,10 @@ async def get_repo(
         if e.response.status_code == 404:
             await matcher.finish(
                 f"未找到仓库 {owner}/{repo}" if should_remind else None
+            )
+        elif e.response.status_code == 403:
+            await matcher.finish(
+                "无权限访问该仓库，请检查是否已授权" if should_remind else None
             )
         elif e.response.status_code == 401:
             await matcher.finish(
