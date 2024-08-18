@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 17:49:48
+ * @LastEditTime   : 2024-08-18 17:46:26
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -12,6 +12,7 @@
 {% from "components/timeline/assigned.html.jinja" import assigned %}
 {% from "components/timeline/auto-merge-disabled.html.jinja" import auto_merge_disabled %}
 {% from "components/timeline/auto-merge-enabled.html.jinja" import auto_merge_enabled %}
+{% from "components/timeline/auto-rebase-enabled.html.jinja" import auto_rebase_enabled %}
 {% from "components/timeline/auto-squash-enabled.html.jinja" import auto_squash_enabled %}
 {% from "components/timeline/automatic-base-change-succeeded.html.jinja" import automatic_base_change_succeeded %}
 {% from "components/timeline/base-ref-changed.html.jinja" import base_ref_changed %}
@@ -92,6 +93,10 @@ highlight_comment: int | None
     ) }}
     {% elif event.event == "auto_merge_enabled" %}
     {{ auto_merge_enabled(
+    event.actor, event.actor_avatar, event.created_at
+    ) }}
+    {% elif event.event == "auto_rebase_enabled" %}
+    {{ auto_rebase_enabled(
     event.actor, event.actor_avatar, event.created_at
     ) }}
     {% elif event.event == "auto_squash_enabled" %}
