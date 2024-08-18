@@ -2,14 +2,17 @@
 @Author         : yanyongyu
 @Date           : 2024-05-23 16:57:48
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-23 16:57:48
+@LastEditTime   : 2024-08-18 16:30:25
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
 
 __author__ = "yanyongyu"
 
+import asyncio
 import secrets
+from venv import logger
+from hashlib import sha256
 
 import nonebot
 from nonebot.drivers import Request, HTTPClientMixin
@@ -28,7 +31,7 @@ driver = nonebot.get_driver()
 assert isinstance(driver, HTTPClientMixin)
 
 
-async def get_opengraph_image(tag: Tag) -> bytes:
+async def get_opengraph_image(tag: Tag) -> bytes | None:
     match tag:
         case IssueTag():
             cache_type = "issue"
@@ -71,22 +74,39 @@ async def get_opengraph_image(tag: Tag) -> bytes:
 
     assert isinstance(driver, HTTPClientMixin)
 
-    resp = await driver.request(
-        Request(
-            "GET",
-            link,
-            headers={
-                "User-Agent": (
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like"
-                    " Gecko) Chrome/120.0.0.0 Safari/537.36"
-                )
-            },
+    retry_count = 3
+
+    while retry_count > 0:
+        resp = await driver.request(
+            Request(
+                "GET",
+                link,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                    )
+                },
+            )
         )
-    )
-    if (400 <= resp.status_code < 600) or not (content := resp.content):
-        raise RuntimeError(f"Failed to download opengraph for {tag!r}: {resp}")
-    if isinstance(content, str):
-        content = content.encode("utf-8")
+
+        if 400 <= resp.status_code < 600 or not (content := resp.content):
+            logger.error(f"Failed to download opengraph for {tag!r}: {resp}")
+        else:
+            if isinstance(content, str):
+                content = content.encode("utf-8")
+            if (
+                sha256(content).hexdigest()
+                == "74f3b5add54f7102230ed682fbf9d23b5b3a78e6229dbfd49719748e7b806988"
+            ):
+                logger.warning(f"Got fallback opengraph for {tag!r}, retrying")
+            else:
+                break
+
+        retry_count -= 1
+        await asyncio.sleep(0.1)
+    else:
+        return None
 
     await save_opengraph(cache_type, cache_identifier, content)
     return content

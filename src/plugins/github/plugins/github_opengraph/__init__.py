@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-04-26 18:19:15
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-23 14:23:14
+@LastEditTime   : 2024-08-18 16:36:20
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -10,7 +10,6 @@
 __author__ = "yanyongyu"
 
 from nonebot import on_regex
-from nonebot.typing import T_State
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
@@ -74,18 +73,22 @@ async def handle(
 
     await create_message_tag(message_info, tag)
 
+    if repo.private:
+        return
+
+    if not (image := await get_opengraph_image(tag)):
+        return
+
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
-            result = await repo_graph.send(QQMS.image(await get_opengraph_image(tag)))
+            result = await repo_graph.send(QQMS.image(image))
         case (
             TargetType.QQ_OFFICIAL_USER
             | TargetType.QQGUILD_USER
             | TargetType.QQ_OFFICIAL_GROUP
             | TargetType.QQGUILD_CHANNEL
         ):
-            result = await repo_graph.send(
-                QQOfficialMS.file_image(await get_opengraph_image(tag))
-            )
+            result = await repo_graph.send(QQOfficialMS.file_image(image))
 
     tag = RepoTag(owner=repo.owner.login, repo=repo.name, is_receive=False)
     if sent_message_info := extract_sent_message(target_info, result):
@@ -107,32 +110,37 @@ pr_commit_graph = on_regex(
 @commit_graph.handle(parameterless=(STORE_REGEX_VARS,))
 @pr_commit_graph.handle(parameterless=(STORE_REGEX_VARS,))
 async def handle_commit(
-    state: T_State,
     target_info: TARGET_INFO,
     message_info: MESSAGE_INFO,
+    repo: REPOSITORY,
     commit: COMMIT,
 ):
-    owner = state["owner"]
-    repo = state["repo"]
-
-    tag = CommitTag(owner=owner, repo=repo, commit=commit.sha, is_receive=True)
+    tag = CommitTag(
+        owner=repo.owner.login, repo=repo.name, commit=commit.sha, is_receive=True
+    )
 
     await create_message_tag(message_info, tag)
 
+    if repo.private:
+        return
+
+    if not (image := await get_opengraph_image(tag)):
+        return
+
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
-            result = await commit_graph.send(QQMS.image(await get_opengraph_image(tag)))
+            result = await commit_graph.send(QQMS.image(image))
         case (
             TargetType.QQ_OFFICIAL_USER
             | TargetType.QQGUILD_USER
             | TargetType.QQ_OFFICIAL_GROUP
             | TargetType.QQGUILD_CHANNEL
         ):
-            result = await commit_graph.send(
-                QQOfficialMS.file_image(await get_opengraph_image(tag))
-            )
+            result = await commit_graph.send(QQOfficialMS.file_image(image))
 
-    tag = CommitTag(owner=owner, repo=repo, commit=commit.sha, is_receive=False)
+    tag = CommitTag(
+        owner=repo.owner.login, repo=repo.name, commit=commit.sha, is_receive=False
+    )
     if sent_message_info := extract_sent_message(target_info, result):
         await create_message_tag(sent_message_info, tag)
 
@@ -146,33 +154,36 @@ release_graph = on_regex(
 
 @release_graph.handle(parameterless=(STORE_REGEX_VARS,))
 async def handle_release(
-    state: T_State,
     target_info: TARGET_INFO,
     message_info: MESSAGE_INFO,
+    repo: REPOSITORY,
     release: RELEASE,
 ):
-    owner = state["owner"]
-    repo = state["repo"]
-
-    tag = ReleaseTag(owner=owner, repo=repo, tag=release.tag_name, is_receive=True)
+    tag = ReleaseTag(
+        owner=repo.owner.login, repo=repo.name, tag=release.tag_name, is_receive=True
+    )
 
     await create_message_tag(message_info, tag)
 
+    if repo.private:
+        return
+
+    if not (image := await get_opengraph_image(tag)):
+        return
+
     match target_info.type:
         case TargetType.QQ_USER | TargetType.QQ_GROUP:
-            result = await release_graph.send(
-                QQMS.image(await get_opengraph_image(tag))
-            )
+            result = await release_graph.send(QQMS.image(image))
         case (
             TargetType.QQ_OFFICIAL_USER
             | TargetType.QQGUILD_USER
             | TargetType.QQ_OFFICIAL_GROUP
             | TargetType.QQGUILD_CHANNEL
         ):
-            result = await release_graph.send(
-                QQOfficialMS.file_image(await get_opengraph_image(tag))
-            )
+            result = await release_graph.send(QQOfficialMS.file_image(image))
 
-    tag = ReleaseTag(owner=owner, repo=repo, tag=release.tag_name, is_receive=False)
+    tag = ReleaseTag(
+        owner=repo.owner.login, repo=repo.name, tag=release.tag_name, is_receive=False
+    )
     if sent_message_info := extract_sent_message(target_info, result):
         await create_message_tag(sent_message_info, tag)

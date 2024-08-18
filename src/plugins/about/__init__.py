@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-03-08 00:11:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-23 14:22:49
+@LastEditTime   : 2024-08-18 16:37:23
 @Description    : About plugin
 @GitHub         : https://github.com/yanyongyu
 """
@@ -48,18 +48,19 @@ async def handle_about(target_info: TARGET_INFO, message_info: MESSAGE_INFO):
 
     tag = RepoTag(owner=OWNER, repo=REPO, is_receive=False)
 
-    match target_info.type:
-        case TargetType.QQ_USER | TargetType.QQ_GROUP:
-            result = await about.send(QQMS.image(await get_opengraph_image(tag)))
-        case (
-            TargetType.QQ_OFFICIAL_USER
-            | TargetType.QQGUILD_USER
-            | TargetType.QQ_OFFICIAL_GROUP
-            | TargetType.QQGUILD_CHANNEL
-        ):
-            result = await about.send(
-                QQOfficialMS.file_image(await get_opengraph_image(tag))
-            )
+    if not (image := await get_opengraph_image(tag)):
+        result = await about.send(HOMEPAGE)
+    else:
+        match target_info.type:
+            case TargetType.QQ_USER | TargetType.QQ_GROUP:
+                result = await about.send(QQMS.image(image))
+            case (
+                TargetType.QQ_OFFICIAL_USER
+                | TargetType.QQGUILD_USER
+                | TargetType.QQ_OFFICIAL_GROUP
+                | TargetType.QQGUILD_CHANNEL
+            ):
+                result = await about.send(QQOfficialMS.file_image(image))
 
     if sent_message_info := extract_sent_message(target_info, result):
         await create_message_tag(sent_message_info, tag)
