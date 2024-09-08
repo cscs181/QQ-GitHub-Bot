@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:45:05
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-06-02 16:50:38
+@LastEditTime   : 2024-09-08 11:44:18
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -106,7 +106,7 @@ async def handle_content(
     )
 
     try:
-        async with context as bot:
+        async with context() as bot:
             img = await issue_to_image(bot, issue_info)
     except ActionTimeout:
         await content.finish("GitHub API 超时，请稍后再试")

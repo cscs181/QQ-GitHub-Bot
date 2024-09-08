@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:16:46
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-03-05 14:31:05
+@LastEditTime   : 2024-09-08 11:43:39
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -33,7 +33,7 @@ async def get_release(
     should_remind = event.is_tome()
 
     try:
-        async with context as bot:
+        async with context() as bot:
             resp = await bot.rest.repos.async_get_release_by_tag(
                 owner=owner, repo=repo, tag=tag
             )

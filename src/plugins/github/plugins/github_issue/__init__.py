@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-09 15:15:02
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-06-02 16:49:23
+@LastEditTime   : 2024-09-08 11:44:07
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -96,7 +96,7 @@ async def handle_issue(
     )
 
     try:
-        async with context as bot:
+        async with context() as bot:
             img = await issue_to_image(bot, issue_, highlight_comment=comment)
     except ActionTimeout:
         await issue.finish("GitHub API 超时，请稍后再试")
@@ -150,7 +150,7 @@ async def handle_pr_diff(
     )
 
     try:
-        async with context as bot:
+        async with context() as bot:
             img = await pr_diff_to_image(bot, issue_)
     except ActionTimeout:
         await pr_diff_link.finish("GitHub API 超时，请稍后再试")
@@ -209,7 +209,7 @@ async def handle_short(
     )
 
     try:
-        async with context as bot:
+        async with context() as bot:
             img = await issue_to_image(bot, issue_)
     except TimeoutError:
         await issue_short.finish("生成图片超时！请尝试重试")

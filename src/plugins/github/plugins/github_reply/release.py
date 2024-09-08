@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-11-27 13:46:17
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-11 14:52:29
+@LastEditTime   : 2024-09-08 11:45:06
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -93,7 +93,7 @@ async def handle_content(
     target_tag: str | None = state["target_tag"]
 
     try:
-        async with context as bot:
+        async with context() as bot:
             if target_tag:
                 resp = await bot.rest.repos.async_get_release_by_tag(
                     owner=owner, repo=repo, tag=target_tag

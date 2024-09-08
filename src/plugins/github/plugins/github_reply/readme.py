@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-18 17:08:37
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-06-02 16:51:25
+@LastEditTime   : 2024-09-08 11:44:57
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -88,7 +88,7 @@ async def handle_content(
     )
 
     try:
-        async with context as bot:
+        async with context() as bot:
             resp = await bot.rest.repos.async_get_readme(
                 owner=owner,
                 repo=repo,
@@ -120,7 +120,7 @@ async def render_content(
     content: str = state["content"]
 
     try:
-        async with context as bot:
+        async with context() as bot:
             img = await readme_to_image(bot, repo_info, content)
     except TimeoutError:
         await readme.finish("生成图片超时！请稍后再试")

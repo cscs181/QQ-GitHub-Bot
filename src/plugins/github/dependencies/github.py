@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:16:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-10-07 17:16:28
+@LastEditTime   : 2024-09-08 11:42:36
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -10,8 +10,9 @@
 __author__ = "yanyongyu"
 
 from typing import Annotated
+from functools import partial
 from contextlib import nullcontext
-from collections.abc import AsyncGenerator
+from collections.abc import Callable, AsyncGenerator
 
 from nonebot import logger
 from nonebot.params import Depends
@@ -46,7 +47,12 @@ async def github_user_context(token: str) -> AsyncGenerator[GitHubBot, None]:
 
 async def get_github_public_context(
     matcher: Matcher, state: T_State, user: USER
-) -> AsyncGeneratorContextManager[GitHubBot] | nullcontext[OAuthBot]:
+) -> Callable[[], AsyncGeneratorContextManager[GitHubBot] | nullcontext[OAuthBot]]:
+    """Get current GitHub public context from event user.
+
+    Return a callable to make sure the context can be reused in dependency cache.
+    """
+
     bot = get_github_bot()
 
     # First use user auth, allow user to access private repo if authorized
@@ -57,7 +63,7 @@ async def get_github_public_context(
                     client_id=config.github_app.client_id,
                     access_token=user.access_token,
                 )
-                return github_user_context(user.access_token)
+                return partial(github_user_context, user.access_token)
         except ActionTimeout:
             await matcher.finish("GitHub API 超时，请稍后再试")
         except ActionFailed as e:
@@ -87,7 +93,7 @@ async def get_github_public_context(
             async with bot.as_installation(installation_id):
                 resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
             if not resp.parsed_data.private:
-                return github_installation_context(installation_id)
+                return partial(github_installation_context, installation_id)
         except ActionTimeout:
             await matcher.finish("GitHub API 超时，请稍后再试")
         except ActionFailed as e:
@@ -102,14 +108,14 @@ async def get_github_public_context(
 
     # Finally use oauth bot if available
     if config.oauth_app:
-        return nullcontext(get_oauth_bot())
+        return partial(nullcontext, get_oauth_bot())
 
     # no bot available, prompt user to install
     await matcher.finish("你还没有绑定 GitHub 帐号，请私聊使用 /install 进行安装")
 
 
 GITHUB_PUBLIC_CONTEXT = Annotated[
-    AsyncGeneratorContextManager[GitHubBot] | nullcontext[OAuthBot],
+    Callable[[], AsyncGeneratorContextManager[GitHubBot] | nullcontext[OAuthBot]],
     Depends(get_github_public_context),
 ]
 """Current GitHub bot context from event.

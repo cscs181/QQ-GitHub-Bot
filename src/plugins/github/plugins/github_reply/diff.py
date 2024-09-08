@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2021-03-26 14:59:59
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-06-02 16:51:03
+@LastEditTime   : 2024-09-08 11:44:34
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -98,7 +98,7 @@ async def handle_diff(
     )
 
     try:
-        async with context as bot:
+        async with context() as bot:
             img = await pr_diff_to_image(bot, issue_info)
     except ActionTimeout:
         await diff.finish("GitHub API 超时，请稍后再试")

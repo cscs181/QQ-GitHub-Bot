@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-11-27 13:32:08
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-11 16:01:46
+@LastEditTime   : 2024-09-08 11:44:44
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -85,7 +85,7 @@ async def handle_content(
     )
 
     try:
-        async with context as bot:
+        async with context() as bot:
             resp = await bot.rest.repos.async_get(
                 owner=owner,
                 repo=repo,

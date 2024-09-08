@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-11-27 14:31:21
 @LastEditors    : yanyongyu
-@LastEditTime   : 2023-12-14 17:16:31
+@LastEditTime   : 2024-09-08 11:45:23
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -64,7 +64,7 @@ async def do_code_search(context: GITHUB_PUBLIC_CONTEXT, query: str = ArgPlainTe
         )
 
     try:
-        async with context as bot:
+        async with context() as bot:
             resp = await bot.rest.search.async_code(q=query, per_page=5)
             result = resp.parsed_data
     except ActionTimeout:
@@ -118,7 +118,7 @@ async def do_repo_search(context: GITHUB_PUBLIC_CONTEXT, query: str = ArgPlainTe
         )
 
     try:
-        async with context as bot:
+        async with context() as bot:
             resp = await bot.rest.search.async_repos(q=query, per_page=5)
             result = resp.parsed_data
     except ActionTimeout:
@@ -173,7 +173,7 @@ async def do_user_search(context: GITHUB_PUBLIC_CONTEXT, query: str = ArgPlainTe
         )
 
     try:
-        async with context as bot:
+        async with context() as bot:
             resp = await bot.rest.search.async_users(q=query, per_page=5)
             result = resp.parsed_data
     except ActionTimeout:

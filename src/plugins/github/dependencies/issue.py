@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:16:46
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-05-16 18:19:54
+@LastEditTime   : 2024-09-08 11:43:21
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -29,7 +29,7 @@ async def get_issue(
     number = int(state["issue"])
 
     try:
-        async with context as bot:
+        async with context() as bot:
             resp = await bot.rest.issues.async_get(
                 owner=owner, repo=repo, issue_number=number
             )

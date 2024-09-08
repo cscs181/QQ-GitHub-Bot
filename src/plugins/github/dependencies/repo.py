@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:16:55
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-08-18 17:41:16
+@LastEditTime   : 2024-09-08 11:43:48
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -32,7 +32,7 @@ async def get_repo(
     should_remind = event.is_tome()
 
     try:
-        async with context as bot:
+        async with context() as bot:
             resp = await bot.rest.repos.async_get(owner=owner, repo=repo)
             return resp.parsed_data
     except ActionTimeout:
