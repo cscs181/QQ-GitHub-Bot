@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-04-04 20:02:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-08-18 17:26:48
+@LastEditTime   : 2024-09-08 12:28:15
 @Description    : Webhook issue opened broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -47,6 +47,9 @@ issue_opened = on_type(
 async def handle_issue_opened_event(
     event: IssuesOpened | PullRequestOpened, subscribers: SUBSCRIBERS
 ):
+    if not subscribers:
+        return
+
     repo_name = event.payload.repository.full_name
     owner, repo = repo_name.split("/", 1)
 

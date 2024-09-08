@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-04-04 20:02:19
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-08-18 17:26:59
+@LastEditTime   : 2024-09-08 12:28:26
 @Description    : Webhook release publish broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,8 +39,12 @@ release = on_type(ReleasePublished, priority=config.github_webhook_priority, blo
 async def handle_release_published_event(
     event: ReleasePublished, subscribers: SUBSCRIBERS
 ):
+    if not subscribers:
+        return
+
     owner = event.payload.repository.owner.login
     repo = event.payload.repository.name
+
     tag = ReleaseTag(
         owner=owner, repo=repo, tag=event.payload.release.tag_name, is_receive=False
     )

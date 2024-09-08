@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-04-26 18:39:12
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-08-18 17:26:21
+@LastEditTime   : 2024-09-08 12:28:07
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -44,9 +44,12 @@ issue_commented = on_type(
 
 
 @issue_commented.handle()
-async def handle_issue_opened_event(
+async def handle_issue_comment_created_event(
     event: IssueCommentCreated, subscribers: SUBSCRIBERS
 ):
+    if not subscribers:
+        return
+
     repo_name = event.payload.repository.full_name
     owner, repo = repo_name.split("/", 1)
 

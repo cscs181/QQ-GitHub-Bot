@@ -36,6 +36,9 @@ issue_closed = on_type(
 async def handle_issue_closed_event(
     event: IssuesClosed | PullRequestClosed, subscribers: SUBSCRIBERS
 ):
+    if not subscribers:
+        return
+
     repo_name = event.payload.repository.full_name
     owner, repo = repo_name.split("/", 1)
 

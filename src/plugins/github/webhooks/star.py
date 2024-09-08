@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-12-18 13:44:11
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-08-18 17:27:13
+@LastEditTime   : 2024-09-08 12:27:35
 @Description    : Webhook star event broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -39,6 +39,9 @@ star = on_type(
     parameterless=(Depends(Throttle((StarCreated, StarDeleted), THROTTLE_EXPIRE)),)
 )
 async def handle_star_event(event: StarCreated | StarDeleted, subscribers: SUBSCRIBERS):
+    if not subscribers:
+        return
+
     username = event.payload.sender.login
     repo_name = event.payload.repository.full_name
     action = event.payload.action

@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2022-11-07 05:14:32
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-08-18 17:27:21
+@LastEditTime   : 2024-09-08 12:28:43
 @Description    : Webhook unknown event broadcast
 @GitHub         : https://github.com/yanyongyu
 """
@@ -46,6 +46,9 @@ unknown = on_type(Event, priority=config.github_webhook_priority + 1, block=True
 async def handle_unknown_event(
     event: Event, event_info: EVENT_INFO, subscribers: SUBSCRIBERS
 ):
+    if not subscribers:
+        return
+
     username: str = get_attr_or_item(get_attr_or_item(event.payload, "sender"), "login")
 
     owner, repo, event_name, action = event_info
