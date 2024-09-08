@@ -13,7 +13,6 @@ Jinja2 = "^3.0.0"
 unidiff = "^0.7.0"
 humanize = "^4.0.0"
 asyncpg = "^0.29.0"
-pydantic = "^2.6.3"
 playwright = "^1.17.2"
 mdit-py-emoji = "^0.1.0"
 nonebot-plugin-orm = "^0.7.0"
@@ -22,6 +21,9 @@ nonebot-plugin-sentry = "^2.0.0"
 nonebot-plugin-status = "^0.9.0"
 nonebot-adapter-github = "^0.4.0"
 nonebot-adapter-onebot = "^2.4.2"
+# pydantic 2.9.0 handle the namedtuple type incorrectly
+# https://github.com/pydantic/pydantic/issues/10336
+pydantic = ">=2.6.3, <3.0.0, !=2.9.0"
 redis = { version = "^5.0.0", extras = ["hiredis"] }
 markdown-it-py = { version = "^3.0.0", extras = ["linkify", "plugins"] }
 nonebot2 = { version = "^2.2.0", extras = ["httpx", "websockets", "fastapi"] }
