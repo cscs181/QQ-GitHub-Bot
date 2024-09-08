@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-17 09:17:06
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-08-18 17:46:26
+ * @LastEditTime   : 2024-09-08 12:06:11
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -65,7 +65,7 @@ highlight_comment: int | None
 <div class="ml-0 pl-0 ml-md-6 pl-md-3">
   {# merged: current pr state #}
   {# reviews: previous review events #}
-  {% set ns = namespace(merged=false, reviews={}) %}
+  {% set ns = namespace(merged=false, merge_via_queue=false, reviews={}) %}
   {{ commented(
   issue.user, issue.user_avatar, issue.created_at,
   issue.body_html, issue.body, issue.author_association,
@@ -202,7 +202,7 @@ highlight_comment: int | None
     {% set ns.merged = true %}
     {{ merged(
     event.actor, event.actor_avatar, event.created_at,
-    event.commit_id, issue.base_ref
+    event.commit_id, issue.base_ref, ns.merge_via_queue
     ) }}
     {% elif event.event == "milestoned" %}
     {{ milestoned(
@@ -227,6 +227,10 @@ highlight_comment: int | None
     event.actor, event.actor_avatar, event.created_at,
     is_pull_request, event.commit_id
     ) }}
+    {% elif event.event == "removed_from_merge_queue"%}
+    {# mark pr is merged by merge queue #}
+    {% set ns.merge_via_queue = true %}
+    {# removed_from_merge_queue event ignored #}
     {% elif event.event == "removed_from_project" %}
     {{ removed_from_project(
     event.actor, event.actor_avatar, event.created_at,

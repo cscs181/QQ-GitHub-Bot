@@ -2,7 +2,7 @@
  * @Author         : yanyongyu
  * @Date           : 2022-09-26 05:38:30
  * @LastEditors    : yanyongyu
- * @LastEditTime   : 2024-05-16 16:03:51
+ * @LastEditTime   : 2024-09-08 12:05:49
  * @Description    : None
  * @GitHub         : https://github.com/yanyongyu
 -->
@@ -15,13 +15,28 @@ actor_avatar: str
 created_at: datetime
 commit_id: str
 base_ref: str
+merged_via_queue: bool
 #}
-{% macro merged(actor, actor_avatar, created_at, commit_id, base_ref) %}
+{% macro merged(actor, actor_avatar, created_at, commit_id, base_ref, merged_via_queue) %}
 <div class="TimelineItem">
   <div class="TimelineItem-badge color-fg-on-emphasis color-bg-done-emphasis">
     {{ octicon_pr_merged(16, "color-fg-inherit") }}
   </div>
   <div class="TimelineItem-body">
+    {% if merged_via_queue %}
+    Merged via the queue into
+    <span class="branch-name css-truncate color-fg-muted">
+      <a class="no-underline">
+        {{ base_ref|escape }}
+      </a>
+    </span>
+    with commit
+    <a href="#">
+      <code class="Link--primary text-bold">
+        {{ commit_id[:7] }}
+      </code>
+    </a>
+    {% else %}
     <a>
       <img
         class="avatar avatar-user"
@@ -43,6 +58,7 @@ base_ref: str
         {{ base_ref|escape }}
       </a>
     </span>
+    {% endif %}
     <a class="Link--secondary">{{ created_at|relative_time }}</a>
   </div>
 </div>
