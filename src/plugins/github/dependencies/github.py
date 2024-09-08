@@ -2,7 +2,7 @@
 @Author         : yanyongyu
 @Date           : 2023-10-07 17:16:28
 @LastEditors    : yanyongyu
-@LastEditTime   : 2024-09-08 11:42:36
+@LastEditTime   : 2024-09-08 11:53:02
 @Description    : None
 @GitHub         : https://github.com/yanyongyu
 """
@@ -11,8 +11,8 @@ __author__ = "yanyongyu"
 
 from typing import Annotated
 from functools import partial
-from contextlib import nullcontext
 from collections.abc import Callable, AsyncGenerator
+from contextlib import nullcontext, asynccontextmanager, _AsyncGeneratorContextManager
 
 from nonebot import logger
 from nonebot.params import Depends
@@ -22,7 +22,6 @@ from nonebot.adapters.github import OAuthBot, GitHubBot, ActionFailed, ActionTim
 
 from src.plugins.github import config
 from src.plugins.github.utils import get_oauth_bot, get_github_bot
-from src.plugins.github.context import AsyncGeneratorContextManager, asynccontextmanager
 
 from .user import USER
 
@@ -47,7 +46,7 @@ async def github_user_context(token: str) -> AsyncGenerator[GitHubBot, None]:
 
 async def get_github_public_context(
     matcher: Matcher, state: T_State, user: USER
-) -> Callable[[], AsyncGeneratorContextManager[GitHubBot] | nullcontext[OAuthBot]]:
+) -> Callable[[], _AsyncGeneratorContextManager[GitHubBot] | nullcontext[OAuthBot]]:
     """Get current GitHub public context from event user.
 
     Return a callable to make sure the context can be reused in dependency cache.
@@ -115,7 +114,7 @@ async def get_github_public_context(
 
 
 GITHUB_PUBLIC_CONTEXT = Annotated[
-    Callable[[], AsyncGeneratorContextManager[GitHubBot] | nullcontext[OAuthBot]],
+    Callable[[], _AsyncGeneratorContextManager[GitHubBot] | nullcontext[OAuthBot]],
     Depends(get_github_public_context),
 ]
 """Current GitHub bot context from event.
