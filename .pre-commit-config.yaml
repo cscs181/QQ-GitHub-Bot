@@ -11,19 +11,19 @@ repos:
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
-        stages: [Nonepre-commitNone]
+        stages: [pre-commit]
 
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
       - id: isort
-        stages: [Nonepre-commitNone]
+        stages: [pre-commit]
 
   - repo: https://github.com/psf/black
     rev: 24.8.0
     hooks:
       - id: black
-        stages: [Nonepre-commitNone]
+        stages: [pre-commit]
 
   - repo: https://github.com/nonebot/nonemoji
     rev: v0.1.4
