@@ -84,7 +84,7 @@ async def parse_arg(
 @comment.handle()
 async def check_content(state: T_State):
     if not state["content"]:
-        await comment.reject(
+        await comment.finish(
             "评论内容不能为空！请重新发送要评论的内容\n"
             "例如：「/comment owner/repo#number LGTM」"
         )
