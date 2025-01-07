@@ -129,7 +129,8 @@ _✨ GitHub Bot for QQ ✨_
    # 可选，参考 nonebot superuser 格式
    SUPERUSERS=["机器人管理号"]
 
-   # filehost 配置项，用于上传图片
+   # 可以访问到机器人的公网地址，用于上传图片
+   # eg. http://111.222.333.444:8080
    # 必填
    FILEHOST_URL_BASE=https://<your-domain>
 
@@ -155,12 +156,12 @@ _✨ GitHub Bot for QQ ✨_
    ]
    '
 
-   # 必填，postgres 数据库配置项
+   # 必填，postgres 数据库配置项，如果使用 docker-compose 部署则无需修改
    POSTGRES_USER=bot
    POSTGRES_PASSWORD=postgres_password
    POSTGRES_DB=bot
 
-   # 必填，redis 数据库配置项
+   # 必填，redis 数据库配置项，如果使用 docker-compose 部署则无需修改
    REDIS_PASSWORD=redis_password
 
    # 可选，Sentry DSN 网址
@@ -172,6 +173,7 @@ _✨ GitHub Bot for QQ ✨_
    # 必填，github app 配置
    # 可选，oauth app 配置，用于没有权限时的 fallback
    # webhook_secret 与 github app 配置中的 webhook secret 保持一致，如果没有设置则删除
+   # private_key 是从 github app 配置中下载的 pem 文件中提取出来的私钥
    GITHUB_APPS='
    [
      {
