@@ -92,10 +92,14 @@ async def handle_contribution(
             resp = await bot.async_graphql(
                 query=CONTRIBUTION_QUERY,
                 variables={
-                    "from": from_date
-                    and datetime.fromordinal(from_date.toordinal()).isoformat(),
-                    "to": to_date
-                    and datetime.fromordinal(to_date.toordinal()).isoformat(),
+                    "from": (
+                        from_date
+                        and datetime.fromordinal(from_date.toordinal()).isoformat()
+                    ),
+                    "to": (
+                        to_date
+                        and datetime.fromordinal(to_date.toordinal()).isoformat()
+                    ),
                 },
             )
     except ActionTimeout:
