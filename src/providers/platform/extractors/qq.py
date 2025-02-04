@@ -154,7 +154,9 @@ class QQExtractor(
     async def get_target_bot(cls, target) -> Bot:
         bots = [bot for bot in nonebot.get_bots().values() if isinstance(bot, Bot)]
         private_bots = [bot for bot in bots if bot.bot_info.intent.guild_messages]
-        public_bot = next(bot for bot in bots if not bot.bot_info.intent.guild_messages, None)
+        public_bot = next(
+            (bot for bot in bots if not bot.bot_info.intent.guild_messages), None
+        )
         if public_bot is None and not private_bot:
             raise RuntimeError("No QQ bot available")
         if isinstance(
