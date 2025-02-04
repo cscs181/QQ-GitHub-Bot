@@ -157,7 +157,7 @@ class QQExtractor(
         public_bot = next(
             (bot for bot in bots if not bot.bot_info.intent.guild_messages), None
         )
-        if public_bot is None and not private_bot:
+        if public_bot is None and not private_bots:
             raise RuntimeError("No QQ bot available")
         if isinstance(
             target, QQOfficialUserInfo | QQOfficialGroupInfo | QQGuildUserInfo
@@ -175,7 +175,7 @@ class QQExtractor(
                 continue
             if target.qq_channel_id not in setting.channel_ids:
                 continue
-        return public_bot or private_bot[0]
+        return public_bot or private_bots[0]
 
     @classmethod
     @override
