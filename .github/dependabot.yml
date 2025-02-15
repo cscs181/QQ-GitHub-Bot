@@ -8,6 +8,9 @@ updates:
       actions:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "getsentry/action-release"
+        versions: ["2.0.0"]
 
   - package-ecosystem: github-actions
     directory: "/.github/actions/setup-python"
