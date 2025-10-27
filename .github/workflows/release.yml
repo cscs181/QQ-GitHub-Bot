@@ -102,7 +102,7 @@ jobs:
           touch "/tmp/digests/${digest#sha256:}"
 
       - name: Upload digest
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.image.outputs.ARTIFACT }}
           path: /tmp/digests/*
@@ -124,7 +124,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Download digests
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: /tmp/artifacts
           pattern: '*-digests'
