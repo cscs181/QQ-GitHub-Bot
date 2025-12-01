@@ -7,6 +7,7 @@
 @Description    : Entry File of the Bot
 @GitHub         : https://github.com/yanyongyu
 """
+
 __author__ = "yanyongyu"
 
 import nonebot
