@@ -7,14 +7,14 @@ ci:
   autoupdate_commit_msg: ":arrow_up: auto update by pre-commit hooks"
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.14
+    rev: v0.15.4
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
         stages: [pre-commit]
 
   - repo: https://github.com/pycqa/isort
-    rev: 7.0.0
+    rev: 8.0.1
     hooks:
       - id: isort
         stages: [pre-commit]
