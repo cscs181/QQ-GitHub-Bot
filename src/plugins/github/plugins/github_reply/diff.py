@@ -13,8 +13,8 @@ import re
 
 from nonebot.typing import T_State
 from nonebot.adapters import Message
-from nonebot.params import CommandArg
 from nonebot import logger, on_command
+from nonebot.params import CommandArg
 from nonebot.adapters.github import ActionTimeout
 from playwright.async_api import Error, TimeoutError
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS

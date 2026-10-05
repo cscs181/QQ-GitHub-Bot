@@ -13,28 +13,28 @@ import re
 
 from nonebot.typing import T_State
 from nonebot.adapters import Message
-from nonebot.params import CommandArg
 from nonebot import logger, on_command
+from nonebot.params import CommandArg
 from playwright.async_api import Error, TimeoutError
+from nonebot.adapters.github import ActionFailed, ActionTimeout
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
-from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.libs.github import FULLREPO_REGEX
 from src.plugins.github.libs.renderer import readme_to_image
 from src.plugins.github.cache.message_tag import RepoTag, create_message_tag
 from src.plugins.github.helpers import NO_GITHUB_EVENT, qqofficial_conditional_image
-from src.plugins.github.dependencies import (
-    REPOSITORY,
-    OPTIONAL_REPLY_TAG,
-    GITHUB_PUBLIC_CONTEXT,
-)
 from src.providers.platform import (
     TARGET_INFO,
     MESSAGE_INFO,
     TargetType,
     extract_sent_message,
+)
+from src.plugins.github.dependencies import (
+    REPOSITORY,
+    OPTIONAL_REPLY_TAG,
+    GITHUB_PUBLIC_CONTEXT,
 )
 
 readme = on_command(
