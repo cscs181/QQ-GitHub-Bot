@@ -14,8 +14,8 @@ import re
 from githubkit.utils import UNSET
 from nonebot.typing import T_State
 from nonebot.adapters import Message
-from nonebot.params import CommandArg
 from nonebot import logger, on_command
+from nonebot.params import CommandArg
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config

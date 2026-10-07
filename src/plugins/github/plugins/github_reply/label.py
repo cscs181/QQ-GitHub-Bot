@@ -12,9 +12,9 @@ __author__ = "yanyongyu"
 import re
 
 from nonebot.typing import T_State
+from nonebot import logger, on_shell_command
 from nonebot.adapters import MessageSegment
 from nonebot.params import ShellCommandArgv
-from nonebot import logger, on_shell_command
 from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config

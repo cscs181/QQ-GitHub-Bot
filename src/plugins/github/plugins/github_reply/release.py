@@ -14,11 +14,11 @@ import secrets
 
 from nonebot.typing import T_State
 from nonebot.adapters import Message
-from nonebot.params import CommandArg
 from nonebot import logger, on_command
+from nonebot.params import CommandArg
+from nonebot.adapters.github import ActionFailed, ActionTimeout
 from nonebot.adapters.onebot.v11 import MessageSegment as QQMS
 from nonebot.adapters.qq import MessageSegment as QQOfficialMS
-from nonebot.adapters.github import ActionFailed, ActionTimeout
 
 from src.plugins.github import config
 from src.plugins.github.helpers import NO_GITHUB_EVENT

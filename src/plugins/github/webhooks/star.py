@@ -12,8 +12,8 @@ __author__ = "yanyongyu"
 import asyncio
 from datetime import timedelta
 
-from nonebot.params import Depends
 from nonebot import logger, on_type
+from nonebot.params import Depends
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters.github import StarCreated, StarDeleted
 

@@ -16,8 +16,8 @@ from sqlalchemy import cast as sql_cast
 from sqlalchemy.orm import Mapped, mapped_column
 from nonebot_plugin_orm import Model, get_session
 from sqlalchemy import Index, String, UniqueConstraint, case
-from sqlalchemy.dialects.postgresql import ARRAY, JSONB, insert
 from sqlalchemy import func, select, update, distinct, bindparam
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB, insert
 
 from src.providers.platform import TargetInfo
 
@@ -138,8 +138,9 @@ class Subscription(Model):
                         select(func.array_agg(old_action_elements.column))
                         .select_from(old_action_elements)
                         .where(
-                            old_action_elements.column
-                            != func.all(bindparam("tmp_action"))
+                            old_action_elements.column != func.all(
+                                bindparam("tmp_action")
+                            )
                         )
                         .scalar_subquery()
                     ),

@@ -2,8 +2,8 @@ import re
 import sys
 import asyncio
 from pathlib import Path
-from argparse import ArgumentParser
 from datetime import date, datetime
+from argparse import ArgumentParser
 
 from nonebot import logger, get_adapter
 from nonebot.adapters.github import Adapter
