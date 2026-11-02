@@ -15,9 +15,18 @@ from pydantic import TypeAdapter
 from sqlalchemy import cast as sql_cast
 from sqlalchemy.orm import Mapped, mapped_column
 from nonebot_plugin_orm import Model, get_session
-from sqlalchemy import Index, String, UniqueConstraint, case
-from sqlalchemy import func, select, update, distinct, bindparam
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB, insert
+from sqlalchemy import (
+    Index,
+    String,
+    UniqueConstraint,
+    case,
+    func,
+    select,
+    update,
+    distinct,
+    bindparam,
+)
 
 from src.providers.platform import TargetInfo
 
